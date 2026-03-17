@@ -3,7 +3,7 @@
  * Eliminates duplicated formatTimeAgo / formatBytes / formatDate definitions.
  */
 
-type TranslationFn = (ns: string, key: string) => string;
+type TranslationFn = (ns: any, key: any) => string;
 
 /** Relative time string — e.g. "3m ago", "2h ago", uses i18n when `t` is provided */
 export function formatTimeAgo(date: string, t?: TranslationFn): string {

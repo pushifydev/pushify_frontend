@@ -434,7 +434,7 @@ function OverviewTab({
   project: NonNullable<ReturnType<typeof useProject>['data']>;
   projectId: string;
   deployments: ReturnType<typeof useDeployments>['data'];
-  formatTimeAgo: (date: string) => string;
+  formatTimeAgo: (date: string, t?: any) => string;
   getStatusBadge: (status: string) => string;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
@@ -530,7 +530,7 @@ function DeploymentsTab({
   t,
 }: {
   deployments: ReturnType<typeof useDeployments>['data'];
-  formatTimeAgo: (date: string) => string;
+  formatTimeAgo: (date: string, t?: any) => string;
   getStatusBadge: (status: string) => string;
   onCancel: (id: string) => void;
   onRollback: (id: string) => void;

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Terminal, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { api } from '@/lib/api/client';
 import { useAuthStore } from '@/stores/auth';
 
-export default function CliAuthPage() {
+function CliAuthContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuthStore();
@@ -17,7 +17,6 @@ export default function CliAuthPage() {
 
   useEffect(() => {
     if (!user) {
-      // Redirect to login, then back here
       router.push(`/login?redirect=/cli/auth?code=${code}`);
     }
   }, [user, router, code]);
@@ -176,5 +175,19 @@ export default function CliAuthPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function CliAuthPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-canvas)' }}>
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--text-muted)' }} />
+        </div>
+      }
+    >
+      <CliAuthContent />
+    </Suspense>
   );
 }
