@@ -1,0 +1,448 @@
+// ============ Base Types ============
+
+export interface ApiError {
+  code: string;
+  message: string;
+  details?: Array<{ field: string; message: string }>;
+}
+
+export interface ApiResponse<T> {
+  data?: T;
+  error?: ApiError;
+  message?: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    total: number;
+    limit: number;
+    offset: number;
+    hasMore: boolean;
+  };
+}
+
+// ============ Auth Types ============
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatarUrl: string | null;
+  emailVerified?: boolean;
+  twoFactorEnabled?: boolean;
+  createdAt?: string;
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  organization: Organization;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface RegisterInput {
+  email: string;
+  password: string;
+  name: string;
+}
+
+// ============ Project Types ============
+
+export interface ProjectServer {
+  id: string;
+  name: string;
+  ipv4: string | null;
+  status: string;
+  setupStatus: string;
+}
+
+export interface Project {
+  id: string;
+  organizationId: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  gitRepoUrl: string | null;
+  gitBranch: string | null;
+  gitProvider: string | null;
+  framework: string | null;
+  buildCommand: string | null;
+  installCommand: string | null;
+  outputDirectory: string | null;
+  startCommand: string | null;
+  rootDirectory: string | null;
+  dockerfilePath: string | null;
+  port: number | null;
+  autoDeploy: boolean;
+  status: ProjectStatus;
+  productionUrl: string | null;
+  settings: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+  domains?: Domain[];
+  serverId: string | null;
+  server?: ProjectServer;
+}
+
+export type ProjectStatus = 'active' | 'paused' | 'inactive';
+
+export interface CreateProjectInput {
+  name: string;
+  description?: string;
+  gitRepoUrl?: string;
+  gitBranch?: string;
+  gitProvider?: 'github' | 'gitlab' | 'bitbucket';
+  framework?: string;
+  buildCommand?: string;
+  installCommand?: string;
+  outputDirectory?: string;
+  startCommand?: string;
+  rootDirectory?: string;
+  dockerfilePath?: string;
+  port?: number;
+  autoDeploy?: boolean;
+  serverId?: string;
+}
+
+export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'serverId'>> {
+  serverId?: string | null;
+}
+
+// ============ Environment Variable Types ============
+
+export type Environment = 'production' | 'staging' | 'development' | 'preview';
+
+export interface EnvVar {
+  id: string;
+  projectId: string;
+  environment: Environment;
+  key: string;
+  value: string;
+  isSecret: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEnvVarInput {
+  key: string;
+  value: string;
+  environment?: Environment;
+  isSecret?: boolean;
+}
+
+export interface UpdateEnvVarInput {
+  value?: string;
+  isSecret?: boolean;
+}
+
+// ============ Domain Types ============
+
+export interface Domain {
+  id: string;
+  projectId: string;
+  domain: string;
+  isPrimary: boolean;
+  verified: boolean;
+  sslStatus: string | null;
+  verifiedAt: string | null;
+  createdAt: string;
+}
+
+export interface AddDomainInput {
+  domain: string;
+  isPrimary?: boolean;
+}
+
+export interface DnsSetupInfo {
+  domain: string;
+  serverIp: string | null;
+  recordType: 'A';
+  currentIp: string | null;
+  isConfigured: boolean;
+  message: string;
+}
+
+export interface NginxSettings {
+  proxyPort?: number;
+  proxyTimeout?: number;
+  clientMaxBodySize?: string;
+  enableWebsocket?: boolean;
+  enableGzip?: boolean;
+  forceHttps?: boolean;
+  customHeaders?: Record<string, string>;
+  rateLimit?: {
+    enabled: boolean;
+    requestsPerSecond: number;
+    burst: number;
+  };
+  caching?: {
+    enabled: boolean;
+    maxAge: number;
+    staleWhileRevalidate?: number;
+  };
+  customLocationBlocks?: string;
+}
+
+// ============ Deployment Types ============
+
+export type DeploymentStatus = 'pending' | 'queued' | 'building' | 'deploying' | 'running' | 'ready' | 'failed' | 'cancelled' | 'stopped';
+export type DeploymentTrigger = 'manual' | 'git_push' | 'rollback' | 'redeploy';
+
+export interface Deployment {
+  id: string;
+  projectId: string;
+  status: DeploymentStatus;
+  trigger: DeploymentTrigger;
+  commitHash: string | null;
+  commitMessage: string | null;
+  branch: string;
+  url: string | null;
+  buildLogs: string | null;
+  deployLogs: string | null;
+  errorMessage: string | null;
+  buildStartedAt: string | null;
+  buildFinishedAt: string | null;
+  deployStartedAt: string | null;
+  deployFinishedAt: string | null;
+  triggeredBy?: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  };
+  createdAt: string;
+  // For quick rollback support
+  dockerImageId?: string | null;
+  containerPort?: number | null;
+}
+
+export interface CreateDeploymentInput {
+  commitHash?: string;
+  commitMessage?: string;
+  branch?: string;
+}
+
+// ============ Activity Log Types ============
+
+export type ActivityAction =
+  | 'project.created'
+  | 'project.updated'
+  | 'project.deleted'
+  | 'project.paused'
+  | 'project.resumed'
+  | 'deployment.created'
+  | 'deployment.cancelled'
+  | 'deployment.redeployed'
+  | 'deployment.rolledback'
+  | 'deployment.succeeded'
+  | 'deployment.failed'
+  | 'envvar.created'
+  | 'envvar.updated'
+  | 'envvar.deleted'
+  | 'domain.added'
+  | 'domain.removed'
+  | 'domain.verified'
+  | 'domain.set_primary'
+  | 'apikey.created'
+  | 'apikey.revoked'
+  | 'member.invited'
+  | 'member.removed'
+  | 'member.role_changed'
+  | 'settings.updated'
+  | 'webhook.regenerated'
+  | 'notification.channel_created'
+  | 'notification.channel_updated'
+  | 'notification.channel_deleted'
+  | 'healthcheck.enabled'
+  | 'healthcheck.disabled'
+  | 'healthcheck.updated';
+
+export interface ActivityLogUser {
+  id: string;
+  name: string | null;
+  email: string;
+  avatarUrl: string | null;
+}
+
+export interface ActivityLogProject {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface ActivityLog {
+  id: string;
+  action: ActivityAction;
+  description: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+  user: ActivityLogUser | null;
+  project: ActivityLogProject | null;
+}
+
+export interface ActivityLogFilters {
+  projectId?: string;
+  userId?: string;
+  actions?: ActivityAction[];
+  limit?: number;
+  offset?: number;
+}
+
+// ============ Health Check Types ============
+
+export type HealthCheckStatus = 'healthy' | 'unhealthy' | 'timeout' | 'unknown';
+
+export interface HealthCheckConfig {
+  id: string;
+  projectId: string;
+  endpoint: string;
+  intervalSeconds: number;
+  timeoutSeconds: number;
+  unhealthyThreshold: number;
+  autoRestart: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface HealthCheckConfigInput {
+  endpoint?: string;
+  intervalSeconds?: number;
+  timeoutSeconds?: number;
+  unhealthyThreshold?: number;
+  autoRestart?: boolean;
+  isActive?: boolean;
+}
+
+export interface HealthCheckLog {
+  id: string;
+  projectId: string;
+  deploymentId: string | null;
+  status: HealthCheckStatus;
+  responseTimeMs: number | null;
+  statusCode: number | null;
+  consecutiveFailures: number;
+  actionTaken: string | null;
+  errorMessage: string | null;
+  checkedAt: string;
+}
+
+// ============ Database Types ============
+
+export type DatabaseType = 'postgresql' | 'mysql' | 'redis' | 'mongodb';
+export type DatabaseStatus = 'provisioning' | 'running' | 'stopped' | 'error' | 'deleting';
+
+export interface Database {
+  id: string;
+  organizationId: string;
+  serverId: string | null;
+  name: string;
+  description: string | null;
+  type: DatabaseType;
+  version: string;
+  host: string | null;
+  port: number;
+  databaseName: string;
+  username: string;
+  password: string; // Will be masked
+  connectionString: string | null; // Will be masked
+  status: DatabaseStatus;
+  statusMessage: string | null;
+  maxConnections: number | null;
+  storageMb: number | null;
+  usedStorageMb: number | null;
+  backupEnabled: boolean;
+  backupRetentionDays: number | null;
+  lastBackupAt: string | null;
+  containerName: string | null;
+  containerPort: number | null;
+  externalAccess: boolean;
+  createdAt: string;
+  updatedAt: string;
+  server?: {
+    id: string;
+    name: string;
+    ipv4: string | null;
+    status: string;
+  };
+}
+
+export interface DatabaseCredentials {
+  host: string | null;
+  port: number;
+  databaseName: string;
+  username: string;
+  password: string;
+  connectionString: string | null;
+}
+
+export interface CreateDatabaseInput {
+  name: string;
+  description?: string;
+  type: DatabaseType;
+  version?: string;
+  serverId: string;
+}
+
+export interface UpdateDatabaseInput {
+  name?: string;
+  description?: string;
+  backupEnabled?: boolean;
+  backupRetentionDays?: number;
+}
+
+export interface DatabaseConnection {
+  id: string;
+  databaseId: string;
+  projectId: string;
+  envVarName: string;
+  permissions: 'readonly' | 'readwrite';
+  createdAt: string;
+  project?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  database?: Database;
+}
+
+export interface ConnectDatabaseInput {
+  projectId: string;
+  envVarName?: string;
+  permissions?: 'readonly' | 'readwrite';
+}
+
+export interface DatabaseTypeInfo {
+  type: DatabaseType;
+  defaultVersion: string;
+  defaultPort: number;
+}
+
+// ============ Database Backup Types ============
+
+export type BackupType = 'automatic' | 'manual';
+export type BackupStatus = 'creating' | 'completed' | 'failed' | 'restoring' | 'restored' | 'deleted';
+
+export interface DatabaseBackup {
+  id: string;
+  databaseId: string;
+  name: string;
+  type: BackupType;
+  status: BackupStatus;
+  sizeMb: number | null;
+  filePath: string | null;
+  metadata: Record<string, unknown>;
+  errorMessage: string | null;
+  startedAt: string;
+  completedAt: string | null;
+  expiresAt: string | null;
+}

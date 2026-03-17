@@ -1,7 +1,14 @@
 {
-  "name": "pushify",
+  "name": "pushify-frontend",
   "version": "0.1.0",
   "private": true,
+  "description": "Pushify cloud deployment platform — frontend dashboard",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pushify-dev/pushify",
+    "directory": "pushify_frontend"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,9 +16,17 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.20",
+    "axios": "^1.13.3",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.563.0",
     "next": "16.1.5",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "recharts": "^3.7.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.4.0",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
