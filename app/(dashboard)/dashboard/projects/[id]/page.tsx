@@ -1033,7 +1033,7 @@ function DomainsTab({
             <NginxSettingsModal
               projectId={projectId}
               domainId={settingsDomainId}
-              domainName={domains.find(d => d.id === settingsDomainId)?.domain || ''}
+              domainName={domains?.find(d => d.id === settingsDomainId)?.domain || ''}
               onClose={() => setSettingsDomainId(null)}
               t={t}
             />
