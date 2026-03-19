@@ -9,6 +9,8 @@ export {
   getCurrentUser,
   getGithubLoginUrl,
   githubLoginCallback,
+  getGoogleLoginUrl,
+  googleLoginCallback,
   sendVerificationEmail,
   verifyEmail,
   authService,

@@ -184,6 +184,8 @@ export interface TranslationKeys {
     // Navigation
     features: string;
     frameworks: string;
+    pricing: string;
+    openSource: string;
     // Hero
     openSourcePlatform: string;
     getStartedFree: string;
@@ -200,7 +202,44 @@ export interface TranslationKeys {
     autoDetected: string;
     zeroConfig: string;
     frameworksSupported: string;
-    // Features section
+    // Features page hero
+    platform: string;
+    everythingYouNeedTo: string;
+    shipWithConfidence: string;
+    featuresPageDescription: string;
+    // Features hero blocks
+    deployLabel: string;
+    pushToDeployTitle: string;
+    pushToDeployDesc: string;
+    infrastructureLabel: string;
+    serversFullyManagedTitle: string;
+    serversFullyManagedDesc: string;
+    dataLabel: string;
+    databasesOneClickTitle: string;
+    databasesOneClickDesc: string;
+    cliLabel: string;
+    deployFromTerminalTitle: string;
+    deployFromTerminalDesc: string;
+    // Mini features grid
+    andEverythingElse: string;
+    everyFeatureBuiltIn: string;
+    customDomainsAndSsl: string;
+    customDomainsAndSslDesc: string;
+    teamCollaboration: string;
+    teamCollaborationDesc: string;
+    aiAssistant: string;
+    aiAssistantDesc: string;
+    activityLogs: string;
+    activityLogsDesc: string;
+    healthChecks: string;
+    healthChecksDesc: string;
+    previewDeployments: string;
+    previewDeploymentsDesc: string;
+    environmentVariables: string;
+    environmentVariablesDesc: string;
+    notifications: string;
+    notificationsDesc: string;
+    // Features section (legacy)
     platformFeatures: string;
     everythingYouNeed: string;
     shipFaster: string;
@@ -210,6 +249,56 @@ export interface TranslationKeys {
     ddosProtection: string;
     live: string;
     unlimitedTeamMembers: string;
+    // Pricing section
+    pricingBadge: string;
+    simpleTransparent: string;
+    transparentGradient: string;
+    pricingSubtitle: string;
+    monthly: string;
+    yearly: string;
+    mostPopular: string;
+    forever: string;
+    month: string;
+    freeForever: string;
+    billedMonthly: string;
+    billedAnnually: string;
+    pricingBottomNote: string;
+    // Plan names
+    planFree: string;
+    planPro: string;
+    planBusiness: string;
+    // Plan descriptions
+    planFreeDesc: string;
+    planProDesc: string;
+    planBusinessDesc: string;
+    // Plan button texts
+    planFreeButton: string;
+    planProButton: string;
+    planBusinessButton: string;
+    // Plan features
+    planProjects: string;
+    planDeploysMonth: string;
+    planTeamMembers: string;
+    planCustomDomain: string;
+    planCustomDomains: string;
+    planStorage: string;
+    planBandwidth: string;
+    planCommunitySupport: string;
+    planServers: string;
+    planDatabases: string;
+    planPreviewDeployments: string;
+    planHealthChecks: string;
+    planPrioritySupport: string;
+    // Open Source section
+    openSourceBadge: string;
+    builtInTheOpen: string;
+    poweredByCommunity: string;
+    openSourceDescription: string;
+    openSourceCloudPlatform: string;
+    mitLicensed: string;
+    selfHostable: string;
+    communityDriven: string;
+    noVendorLockIn: string;
     // CTA section
     readyToLaunch: string;
     launch: string;
@@ -223,6 +312,16 @@ export interface TranslationKeys {
     // Footer
     openSourceUnderMit: string;
     twitter: string;
+    cli: string;
+    changelog: string;
+    blog: string;
+    contact: string;
+    product: string;
+    resources: string;
+    company: string;
+    footerDescription: string;
+    builtWithLove: string;
+    forDevelopers: string;
   };
   errors: {
     notFound: string;
@@ -1223,13 +1322,15 @@ export const en: TranslationKeys = {
     // Navigation
     features: 'Features',
     frameworks: 'Frameworks',
+    pricing: 'Pricing',
+    openSource: 'Open Source',
     // Hero
     openSourcePlatform: 'Open Source Cloud Platform',
     getStartedFree: 'Get Started Free',
     viewOnGithub: 'View on GitHub',
-    edgeLocations: 'Edge Locations',
+    edgeLocations: 'Hetzner Regions',
     deployTime: 'Deploy Time',
-    uptimeSla: 'Uptime SLA',
+    uptimeSla: 'Self-hosted',
     configRequired: 'Config Required',
     // Frameworks section
     universalCompatibility: 'Universal Compatibility',
@@ -1239,7 +1340,44 @@ export const en: TranslationKeys = {
     autoDetected: 'Auto-detected',
     zeroConfig: 'Zero config',
     frameworksSupported: 'frameworks supported',
-    // Features section
+    // Features page hero
+    platform: 'Platform',
+    everythingYouNeedTo: 'Everything you need to',
+    shipWithConfidence: 'ship with confidence',
+    featuresPageDescription: 'From git push to production in seconds. Pushify handles infrastructure, SSL, monitoring, and scaling — so you can focus on building.',
+    // Features hero blocks
+    deployLabel: 'Deploy',
+    pushToDeployTitle: 'Push to deploy. Literally.',
+    pushToDeployDesc: 'Connect your GitHub repo and every push triggers an automatic build and deploy pipeline. Framework auto-detection, build caching, zero-downtime deploys, and instant rollbacks — all out of the box.',
+    infrastructureLabel: 'Infrastructure',
+    serversFullyManagedTitle: 'Your servers, fully managed.',
+    serversFullyManagedDesc: 'Provision and manage VPS instances on Hetzner Cloud. Real-time CPU, memory, disk, and network monitoring with live charts. Scale up or down with a click.',
+    dataLabel: 'Data',
+    databasesOneClickTitle: 'Databases in one click.',
+    databasesOneClickDesc: 'Spin up PostgreSQL, MySQL, Redis, or MongoDB with automated backups, connection pooling, and secure access. No DevOps degree required.',
+    cliLabel: 'CLI',
+    deployFromTerminalTitle: 'Deploy from your terminal.',
+    deployFromTerminalDesc: 'The Pushify CLI gives you full control from the command line. Init, deploy, manage env vars, tail logs — everything without leaving your editor.',
+    // Mini features grid
+    andEverythingElse: 'And everything else',
+    everyFeatureBuiltIn: 'Every feature a modern deployment platform needs, built-in from day one.',
+    customDomainsAndSsl: 'Custom Domains & SSL',
+    customDomainsAndSslDesc: "Add your domains with automatic Let's Encrypt certificates. Zero configuration required.",
+    teamCollaboration: 'Team Collaboration',
+    teamCollaborationDesc: 'Invite team members with role-based access control: owner, admin, member, viewer.',
+    aiAssistant: 'AI Assistant',
+    aiAssistantDesc: 'Built-in AI powered by Claude to help you debug, configure, and understand your infrastructure.',
+    activityLogs: 'Activity Logs',
+    activityLogsDesc: 'Full audit trail of every action. Know who deployed what, when, and why.',
+    healthChecks: 'Health Checks',
+    healthChecksDesc: 'Automated endpoint monitoring with configurable intervals and instant alerts on failure.',
+    previewDeployments: 'Preview Deployments',
+    previewDeploymentsDesc: 'Every pull request gets its own preview URL. Review changes before they hit production.',
+    environmentVariables: 'Environment Variables',
+    environmentVariablesDesc: 'Per-environment secrets management. Encrypted at rest, injected at build and runtime.',
+    notifications: 'Notifications',
+    notificationsDesc: 'Email, webhook, and Slack alerts for deploys, failures, and health check incidents.',
+    // Features section (legacy)
     platformFeatures: 'Platform Features',
     everythingYouNeed: 'Everything you need to',
     shipFaster: 'ship faster',
@@ -1249,19 +1387,79 @@ export const en: TranslationKeys = {
     ddosProtection: 'DDoS Protection',
     live: 'Live',
     unlimitedTeamMembers: 'Unlimited team members',
+    // Pricing section
+    pricingBadge: 'Pricing',
+    simpleTransparent: 'Simple,',
+    transparentGradient: 'transparent',
+    pricingSubtitle: 'Start free, scale as you grow. All plans include SSL, CI/CD, and monitoring.',
+    monthly: 'Monthly',
+    yearly: 'Yearly',
+    mostPopular: 'Most Popular',
+    forever: 'forever',
+    month: 'month',
+    freeForever: 'Free forever',
+    billedMonthly: 'billed monthly',
+    billedAnnually: 'billed annually',
+    pricingBottomNote: 'All plans include SSL certificates, CI/CD pipelines, real-time monitoring, and community support.',
+    // Plan names
+    planFree: 'Free',
+    planPro: 'Pro',
+    planBusiness: 'Business',
+    // Plan descriptions
+    planFreeDesc: 'Perfect for personal projects and experiments',
+    planProDesc: 'For growing teams and serious projects',
+    planBusinessDesc: 'For teams that need enterprise-grade features',
+    // Plan button texts
+    planFreeButton: 'Get Started Free',
+    planProButton: 'Start Pro Trial',
+    planBusinessButton: 'Get Started',
+    // Plan features
+    planProjects: 'projects',
+    planDeploysMonth: 'deploys/month',
+    planTeamMembers: 'team members',
+    planCustomDomain: 'custom domain',
+    planCustomDomains: 'custom domains',
+    planStorage: 'storage',
+    planBandwidth: 'bandwidth',
+    planCommunitySupport: 'Community support',
+    planServers: 'servers',
+    planDatabases: 'databases',
+    planPreviewDeployments: 'Preview deployments',
+    planHealthChecks: 'Health checks',
+    planPrioritySupport: 'Priority support',
+    // Open Source section
+    openSourceBadge: 'Open Source',
+    builtInTheOpen: 'Built in the open,',
+    poweredByCommunity: 'powered by the community',
+    openSourceDescription: 'Pushify is fully open-source under the MIT license. Self-host on your own infrastructure, contribute features, or fork and customize to your needs.',
+    openSourceCloudPlatform: 'Open-source cloud deployment platform',
+    mitLicensed: 'MIT Licensed',
+    selfHostable: 'Self-hostable',
+    communityDriven: 'Community driven',
+    noVendorLockIn: 'No vendor lock-in',
     // CTA section
     readyToLaunch: 'Ready to',
     launch: 'launch',
-    ctaDescription: 'Join thousands of developers shipping faster with Pushify.',
-    deployInSeconds: 'Deploy in seconds, scale globally.',
+    ctaDescription: 'Open-source, self-hostable, and free to get started.',
+    deployInSeconds: 'Deploy in seconds on your own servers.',
     startDeployingFree: 'Start Deploying Free',
     starOnGithub: 'Star on GitHub',
-    uptime: '99.99% Uptime',
-    soc2Compliant: 'SOC 2 Compliant',
+    uptime: 'Self-hostable',
+    soc2Compliant: 'MIT Licensed',
     freeForeverPlan: 'Free Forever Plan',
     // Footer
     openSourceUnderMit: 'Open Source under MIT',
     twitter: 'Twitter',
+    cli: 'CLI',
+    changelog: 'Changelog',
+    blog: 'Blog',
+    contact: 'Contact',
+    product: 'Product',
+    resources: 'Resources',
+    company: 'Company',
+    footerDescription: 'Open-source cloud deployment platform. Your servers, your data, your rules.',
+    builtWithLove: 'Built with',
+    forDevelopers: 'for developers',
   },
   errors: {
     notFound: 'Not found',
