@@ -55,7 +55,12 @@ function GoogleCallbackContent() {
         }
 
         if (result.data) {
-          useAuthStore.getState().setAuth(result.data.user, result.data.organization);
+          useAuthStore.setState({
+            user: result.data.user,
+            organization: result.data.organization,
+            isAuthenticated: true,
+            isLoading: false,
+          });
           setStatus('success');
           setTimeout(() => router.push('/dashboard'), 1000);
         }
