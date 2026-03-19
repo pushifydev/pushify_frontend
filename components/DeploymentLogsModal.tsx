@@ -174,19 +174,18 @@ export function DeploymentLogsModal({
           </div>
         )}
 
-        {/* Deployment Error */}
-        {errorMessage && (
-          <div className="flex-shrink-0 px-5 py-3 bg-[var(--status-error)]/10 border-b border-[var(--status-error)]/20">
-            <p className="text-sm text-[var(--status-error)] font-medium">Deployment Error:</p>
-            <p className="text-sm text-[var(--status-error)] break-all">{errorMessage}</p>
-          </div>
-        )}
-
         {/* Logs Container */}
         <div
           ref={logsContainerRef}
           className="flex-1 min-h-0 overflow-auto p-4 bg-[#0d1117]"
         >
+          {/* Deployment Error — inside scrollable area */}
+          {errorMessage && (
+            <div className="mb-4 px-4 py-3 rounded-lg bg-[var(--status-error)]/10 border border-[var(--status-error)]/20">
+              <p className="text-sm text-[var(--status-error)] font-medium mb-1">Deployment Error:</p>
+              <p className="text-sm text-[var(--status-error)] break-all whitespace-pre-wrap">{errorMessage}</p>
+            </div>
+          )}
           {logLines.length > 0 ? (
             <div className="font-mono text-sm text-[#c9d1d9] leading-relaxed">
               {logLines.map((line, i) => {

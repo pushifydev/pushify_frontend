@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, ArrowRight, AlertCircle, Check, X } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useTranslation } from '@/hooks';
-import { getGithubLoginUrl } from '@/lib/api';
+import { getGithubLoginUrl, getGoogleLoginUrl } from '@/lib/api';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -35,6 +35,18 @@ export default function RegisterPage() {
     const state = Math.random().toString(36).substring(2);
     sessionStorage.setItem('github_oauth_state', state);
     sessionStorage.setItem('github_oauth_intent', 'login');
+
+    const url = new URL(result.data.url);
+    url.searchParams.set('state', state);
+    window.location.href = url.toString();
+  };
+
+  const handleGoogleLogin = async () => {
+    const result = await getGoogleLoginUrl();
+    if (result.error || !result.data) return;
+
+    const state = Math.random().toString(36).substring(2);
+    sessionStorage.setItem('google_oauth_state', state);
 
     const url = new URL(result.data.url);
     url.searchParams.set('state', state);
@@ -266,6 +278,7 @@ export default function RegisterPage() {
         </button>
         <button
           type="button"
+          onClick={handleGoogleLogin}
           className="btn btn-secondary h-12"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">

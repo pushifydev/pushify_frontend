@@ -404,6 +404,48 @@ export const githubLoginCallback = async (
   }
 };
 
+// ============ Google OAuth Login ============
+
+export const getGoogleLoginUrl = async (): Promise<ApiResponse<{ url: string }>> => {
+  try {
+    const response = await api.get<{ url: string }>('/auth/google/login-url');
+    return { data: response.data };
+  } catch (error) {
+    const axiosError = error as AxiosError<{ error: ApiError }>;
+    return {
+      error: axiosError.response?.data?.error || {
+        code: 'NETWORK_ERROR',
+        message: 'Unable to connect to server',
+      },
+    };
+  }
+};
+
+export const googleLoginCallback = async (
+  code: string
+): Promise<ApiResponse<AuthResponse>> => {
+  try {
+    const response = await api.post<{
+      data: AuthResponse;
+      accessToken: string;
+      refreshToken: string;
+    }>('/auth/google/login-callback', { code });
+
+    const { data, accessToken, refreshToken } = response.data;
+    setTokens(accessToken, refreshToken);
+
+    return { data };
+  } catch (error) {
+    const axiosError = error as AxiosError<{ error: ApiError }>;
+    return {
+      error: axiosError.response?.data?.error || {
+        code: 'NETWORK_ERROR',
+        message: 'Unable to connect to server',
+      },
+    };
+  }
+};
+
 // ============ Forgot / Reset Password ============
 
 export const forgotPassword = async (email: string): Promise<ApiResponse<{ message: string }>> => {
