@@ -36,7 +36,7 @@ function CliAuthContent() {
 
   if (!code) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-canvas)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
         <div className="text-center" style={{ color: 'var(--text-muted)' }}>
           <XCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>Invalid link. No auth code provided.</p>
@@ -47,18 +47,18 @@ function CliAuthContent() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-canvas)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
         <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--text-muted)' }} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-canvas)' }}>
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-primary)' }}>
       <div
         className="w-full max-w-md rounded-2xl p-8"
         style={{
-          background: 'var(--bg-card)',
+          background: 'var(--bg-secondary)',
           border: '1px solid var(--glass-border)',
         }}
       >
@@ -182,7 +182,7 @@ export default function CliAuthPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-canvas)' }}>
+        <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
           <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--text-muted)' }} />
         </div>
       }
