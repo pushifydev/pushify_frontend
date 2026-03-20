@@ -186,7 +186,7 @@ function ResetPasswordForm() {
               placeholder="••••••••"
               required
               minLength={8}
-              className="input pr-12"
+              className="input pr-12!"
               autoComplete="new-password"
               autoFocus
             />

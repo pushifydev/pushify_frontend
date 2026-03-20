@@ -456,7 +456,7 @@ export default function NewProjectPage() {
                         value={repoSearchQuery}
                         onChange={(e) => setRepoSearchQuery(e.target.value)}
                         placeholder={t('newProject', 'searchRepos')}
-                        className="input pl-10"
+                        className="input pl-10!"
                       />
                       <Globe className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                     </div>

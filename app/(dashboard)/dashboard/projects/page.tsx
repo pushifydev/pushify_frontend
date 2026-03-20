@@ -81,7 +81,7 @@ export default function ProjectsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('projects', 'searchPlaceholder')}
-            className="input pl-9"
+            className="input pl-9!"
           />
         </div>
 
