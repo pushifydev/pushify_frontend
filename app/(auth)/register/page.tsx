@@ -173,7 +173,7 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="input pr-12"
+              className="input pr-12!"
               autoComplete="new-password"
             />
             <button
