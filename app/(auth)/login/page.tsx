@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, ArrowRight, AlertCircle, ArrowLeft, Shield } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useTranslation } from '@/hooks';
@@ -10,6 +10,7 @@ import { getGithubLoginUrl, getGoogleLoginUrl } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const {
     login,
     verifyLogin2fa,
@@ -27,6 +28,8 @@ export default function LoginPage() {
   const [twoFactorCode, setTwoFactorCode] = useState('');
 
   const getPostLoginRedirect = () => {
+    const redirect = searchParams.get('redirect');
+    if (redirect) return redirect;
     const pendingToken = sessionStorage.getItem('pending_invitation_token');
     if (pendingToken) {
       sessionStorage.removeItem('pending_invitation_token');
