@@ -9,17 +9,25 @@ import { useAuthStore } from '@/stores/auth';
 function CliAuthContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, isLoading: authLoading } = useAuthStore();
   const code = searchParams.get('code');
 
   const [status, setStatus] = useState<'confirm' | 'loading' | 'success' | 'error'>('confirm');
   const [errorMessage, setErrorMessage] = useState('');
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      router.push(`/login?redirect=/cli/auth?code=${code}`);
+    // Wait for zustand persist to hydrate
+    const timeout = setTimeout(() => setHydrated(true), 500);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated && !authLoading && !user) {
+      const redirect = encodeURIComponent(`/cli/auth?code=${code}`);
+      router.push(`/login?redirect=${redirect}`);
     }
-  }, [user, router, code]);
+  }, [hydrated, authLoading, user, router, code]);
 
   const handleApprove = async () => {
     if (!code) return;
@@ -45,7 +53,7 @@ function CliAuthContent() {
     );
   }
 
-  if (!user) {
+  if (!hydrated || authLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
         <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--text-muted)' }} />
