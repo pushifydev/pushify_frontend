@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { X, Server, ChevronRight, ChevronLeft, Loader2, Check, AlertCircle } from 'lucide-react';
+import { Server, ChevronRight, ChevronLeft, Loader2, Check, AlertCircle } from 'lucide-react';
+import { Modal } from '@/components/Modal';
 import { useTranslation } from '@/hooks';
 import { useServers } from '@/hooks/useServers';
 import { useDeployMarketplaceApp } from '@/hooks/useMarketplace';
@@ -10,11 +11,12 @@ import type { MarketplaceTemplate } from '@/lib/api';
 import { toast } from 'sonner';
 
 interface DeployModalProps {
+  isOpen: boolean;
   template: MarketplaceTemplate;
   onClose: () => void;
 }
 
-export default function DeployModal({ template, onClose }: DeployModalProps) {
+export default function DeployModal({ isOpen, template, onClose }: DeployModalProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: servers, isLoading: serversLoading } = useServers();
@@ -65,46 +67,13 @@ export default function DeployModal({ template, onClose }: DeployModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 transition-opacity"
-        style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
-        onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div
-        className="relative w-full max-w-lg rounded-2xl overflow-hidden animate-slide-in"
-        style={{
-          background: 'var(--bg-secondary)',
-          border: '1px solid var(--glass-border-md)',
-        }}
-      >
-        {/* Header */}
-        <div
-          className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: '1px solid var(--glass-divider)' }}
-        >
-          <div>
-            <h2
-              className="text-lg font-bold"
-              style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}
-            >
-              {t('marketplace', 'deployTitle')}
-            </h2>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-              {t('marketplace', 'step')} {step} {t('marketplace', 'of')} {totalSteps}
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t('marketplace', 'deployTitle')}
+      description={`${t('marketplace', 'step')} ${step} ${t('marketplace', 'of')} ${totalSteps}`}
+      maxWidth="lg"
+    >
 
         {/* Step indicator */}
         <div className="flex gap-1 px-6 pt-4">
@@ -352,7 +321,6 @@ export default function DeployModal({ template, onClose }: DeployModalProps) {
             </button>
           )}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

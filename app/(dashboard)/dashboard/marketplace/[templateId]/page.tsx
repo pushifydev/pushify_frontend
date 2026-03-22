@@ -326,9 +326,7 @@ export default function TemplateDetailPage() {
       )}
 
       {/* Deploy Modal */}
-      {showDeploy && (
-        <DeployModal template={template} onClose={() => setShowDeploy(false)} />
-      )}
+      <DeployModal isOpen={showDeploy} template={template} onClose={() => setShowDeploy(false)} />
     </div>
   );
 }

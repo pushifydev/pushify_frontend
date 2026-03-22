@@ -159,9 +159,7 @@ export default function DatabasesPage() {
         </div>
       )}
 
-      {createModalOpen && (
-        <CreateDatabaseModal onClose={() => setCreateModalOpen(false)} servers={readyServers} />
-      )}
+      <CreateDatabaseModal isOpen={createModalOpen} onClose={() => setCreateModalOpen(false)} servers={readyServers} />
     </div>
   );
 }
