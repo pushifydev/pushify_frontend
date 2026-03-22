@@ -33,8 +33,8 @@ export default function RegisterPage() {
     if (result.error || !result.data) return;
 
     const state = Math.random().toString(36).substring(2);
-    sessionStorage.setItem('github_oauth_state', state);
-    sessionStorage.setItem('github_oauth_intent', 'login');
+    localStorage.setItem('github_oauth_state', state);
+    localStorage.setItem('github_oauth_intent', 'login');
 
     const url = new URL(result.data.url);
     url.searchParams.set('state', state);
@@ -46,7 +46,7 @@ export default function RegisterPage() {
     if (result.error || !result.data) return;
 
     const state = Math.random().toString(36).substring(2);
-    sessionStorage.setItem('google_oauth_state', state);
+    localStorage.setItem('google_oauth_state', state);
 
     const url = new URL(result.data.url);
     url.searchParams.set('state', state);

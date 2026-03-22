@@ -35,7 +35,7 @@ function GoogleCallbackContent() {
       }
 
       // Verify state matches what we stored
-      const storedState = sessionStorage.getItem('google_oauth_state');
+      const storedState = localStorage.getItem('google_oauth_state');
       if (storedState !== state) {
         setStatus('error');
         setErrorMessage('Invalid state parameter');
@@ -43,7 +43,7 @@ function GoogleCallbackContent() {
       }
 
       // Clear stored state
-      sessionStorage.removeItem('google_oauth_state');
+      localStorage.removeItem('google_oauth_state');
 
       try {
         const result = await googleLoginCallback(code);
