@@ -95,7 +95,7 @@ export default function ServerTerminalPage() {
       ]);
     } finally {
       setIsExecuting(false);
-      inputRef.current?.focus();
+      setTimeout(() => inputRef.current?.focus(), 50);
     }
   };
 
