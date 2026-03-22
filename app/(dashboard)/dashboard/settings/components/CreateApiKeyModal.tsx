@@ -52,7 +52,8 @@ export function CreateApiKeyModal({
 
   const toggleScope = (scope: string) => {
     if (scope === '*') {
-      setSelectedScopes(['*']);
+      setSelectedScopes(selectedScopes.includes('*') ? [] : ['*']);
+      return;
     } else {
       const newScopes = selectedScopes.filter((s) => s !== '*');
       if (newScopes.includes(scope)) {
