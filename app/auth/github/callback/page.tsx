@@ -36,7 +36,7 @@ function GitHubCallbackContent() {
       }
 
       // Verify state matches what we stored
-      const storedState = sessionStorage.getItem('github_oauth_state');
+      const storedState = localStorage.getItem('github_oauth_state');
       if (storedState !== state) {
         setStatus('error');
         setErrorMessage('Invalid state parameter');
@@ -44,9 +44,9 @@ function GitHubCallbackContent() {
       }
 
       // Clear stored state immediately
-      const intent = sessionStorage.getItem('github_oauth_intent');
-      sessionStorage.removeItem('github_oauth_state');
-      sessionStorage.removeItem('github_oauth_intent');
+      const intent = localStorage.getItem('github_oauth_intent');
+      localStorage.removeItem('github_oauth_state');
+      localStorage.removeItem('github_oauth_intent');
 
       // Handle login intent
       if (intent === 'login') {
