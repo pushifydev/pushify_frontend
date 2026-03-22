@@ -71,6 +71,7 @@ export default function NewServerPage() {
           size: 'custom',
           image: 'custom',
           ipv4: byosData.ipv4,
+          authMethod,
           sshPrivateKey: authMethod === 'ssh_key' ? byosData.sshPrivateKey : undefined,
           rootPassword: authMethod === 'password' ? byosData.rootPassword : undefined,
         } as CreateServerInput);

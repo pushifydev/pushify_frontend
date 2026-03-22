@@ -47,6 +47,7 @@ export interface CreateServerInput {
   ipv4?: string;
   sshPrivateKey?: string;
   rootPassword?: string;
+  authMethod?: 'ssh_key' | 'password';
 }
 
 export interface Region {
