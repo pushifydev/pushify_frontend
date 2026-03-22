@@ -16,11 +16,11 @@ import {
   Users,
   Globe,
 } from 'lucide-react';
-import { useTranslation, useBillingInfo, useAvailablePlans, useUpdateBillingEmail } from '@/hooks';
+import { useTranslation, useBillingInfo, useUpdateBillingEmail } from '@/hooks';
 import { useAuthStore } from '@/stores/auth';
 import type { PlanType } from '@/lib/api';
 import { STATUS_COLORS } from '@/lib/constants';
-import { ComparePlansModal } from './components';
+import Link from 'next/link';
 
 const planAccents: Record<PlanType, string> = {
   free:       STATUS_COLORS.neutral,
@@ -43,14 +43,12 @@ export default function BillingPage() {
   const { t } = useTranslation();
   const { organization } = useAuthStore();
   const { data: billingInfo, isLoading } = useBillingInfo();
-  const { data: availablePlans } = useAvailablePlans();
   const updateBillingEmail = useUpdateBillingEmail();
 
   const [billingEmail, setBillingEmail]   = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailSuccess, setEmailSuccess]   = useState(false);
   const [emailError, setEmailError]       = useState<string | null>(null);
-  const [showPlansModal, setShowPlansModal] = useState(false);
 
   const handleUpdateEmail = async () => {
     setEmailError(null);
@@ -138,12 +136,12 @@ export default function BillingPage() {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => setShowPlansModal(true)}
+          <Link
+            href="/dashboard/billing/plans"
             className="btn btn-primary shrink-0"
           >
             {t('billing', 'comparePlans')}
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -333,15 +331,6 @@ export default function BillingPage() {
         )}
       </div>
 
-      {/* Compare Plans Modal */}
-      {availablePlans && (
-        <ComparePlansModal
-          isOpen={showPlansModal}
-          onClose={() => setShowPlansModal(false)}
-          plans={availablePlans}
-          currentPlan={billingInfo?.plan || 'free'}
-        />
-      )}
     </div>
   );
 }

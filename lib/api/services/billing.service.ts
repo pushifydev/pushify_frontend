@@ -37,6 +37,7 @@ export interface BillingInfo {
 
 export interface PlanLimits {
   servers: number;
+  databases: number;
   projects: number;
   deploymentsPerMonth: number;
   teamMembers: number;
@@ -104,10 +105,79 @@ export const updateBillingEmail = async (
   }
 };
 
+// ============ Stripe Types ============
+
+export interface CheckoutInput {
+  planType: PlanType;
+  billingCycle: 'monthly' | 'yearly';
+}
+
+export interface SubscriptionStatus {
+  plan: PlanType;
+  stripeSubscriptionId: string | null;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+  hasPaymentMethod: boolean;
+}
+
+// ============ Stripe API Functions ============
+
+export const createCheckoutSession = async (
+  input: CheckoutInput
+): Promise<ApiResponse<{ url: string }>> => {
+  try {
+    const response = await api.post<{ data: { url: string } }>('/billing/checkout', input);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const createPortalSession = async (): Promise<ApiResponse<{ url: string }>> => {
+  try {
+    const response = await api.post<{ data: { url: string } }>('/billing/portal');
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getSubscriptionStatus = async (): Promise<ApiResponse<SubscriptionStatus>> => {
+  try {
+    const response = await api.get<{ data: SubscriptionStatus }>('/billing/subscription');
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const cancelSubscription = async (): Promise<ApiResponse<void>> => {
+  try {
+    await api.post('/billing/cancel');
+    return { data: undefined };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const resumeSubscription = async (): Promise<ApiResponse<void>> => {
+  try {
+    await api.post('/billing/resume');
+    return { data: undefined };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 // ============ Export as namespace ============
 
 export const billingService = {
   getBillingInfo,
   getAvailablePlans,
   updateBillingEmail,
+  createCheckoutSession,
+  createPortalSession,
+  getSubscriptionStatus,
+  cancelSubscription,
+  resumeSubscription,
 };

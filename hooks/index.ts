@@ -124,6 +124,11 @@ export {
   useBillingInfo,
   useAvailablePlans,
   useUpdateBillingEmail,
+  useSubscriptionStatus,
+  useCreateCheckoutSession,
+  useCreatePortalSession,
+  useCancelSubscription,
+  useResumeSubscription,
 } from './useBilling';
 
 // Servers

@@ -188,6 +188,11 @@ export {
   getBillingInfo,
   getAvailablePlans,
   updateBillingEmail,
+  createCheckoutSession,
+  createPortalSession,
+  getSubscriptionStatus,
+  cancelSubscription,
+  resumeSubscription,
   billingService,
   type PlanType,
   type UsageItem,
@@ -198,6 +203,8 @@ export {
   type PlanInfo,
   type AvailablePlans,
   type UpdateBillingEmailInput,
+  type CheckoutInput,
+  type SubscriptionStatus,
 } from './services/billing.service';
 
 // Servers Functions
@@ -226,6 +233,20 @@ export {
   type ServerSizeOption,
   type ProviderServerType,
 } from './services/servers.service';
+
+// Marketplace Functions
+export {
+  getMarketplaceTemplates,
+  getMarketplaceTemplate,
+  deployMarketplaceApp,
+  getMarketplaceDeployments,
+  marketplaceService,
+  type MarketplaceTemplate,
+  type MarketplaceCategory,
+  type MarketplaceEnvVar,
+  type DeployMarketplaceInput,
+  type MarketplaceDeployment,
+} from './services/marketplace.service';
 
 // Databases Functions
 export {

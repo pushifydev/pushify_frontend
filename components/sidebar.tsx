@@ -21,6 +21,7 @@ import {
   X,
   Zap,
   ExternalLink,
+  Store,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
@@ -45,6 +46,7 @@ export function Sidebar() {
     { href: '/dashboard/projects',   icon: Folder,          label: t('navigation', 'projects') },
     { href: '/dashboard/servers',    icon: Server,          label: t('navigation', 'servers') },
     { href: '/dashboard/databases',  icon: Database,        label: t('databases', 'title') },
+    { href: '/dashboard/marketplace', icon: Store,           label: t('marketplace', 'title') },
   ];
 
   const insightNavItems = [
