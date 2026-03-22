@@ -231,7 +231,7 @@ export default function ServerTerminalPage() {
               onKeyDown={handleKeyDown}
               disabled={isExecuting}
               placeholder={isExecuting ? '...' : ''}
-              className="flex-1 bg-transparent border-none [outline:none_!important] [box-shadow:none_!important] focus:outline-none placeholder:text-[rgba(255,255,255,0.2)]"
+              className="flex-1 bg-transparent border-none [outline:none_!important] [box-shadow:none_!important] focus:outline-none focus-visible:[outline:none]! placeholder:text-[rgba(255,255,255,0.2)]"
               style={{ color: '#e4e4e7', fontFamily: 'var(--font-mono)', fontSize: 13, caretColor: '#22d3ee' }}
               autoComplete="off"
               spellCheck={false}
