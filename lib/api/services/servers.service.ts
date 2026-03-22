@@ -43,6 +43,11 @@ export interface CreateServerInput {
   image: string;
   sshKeyIds?: string[];
   labels?: Record<string, string>;
+  // BYOS fields
+  ipv4?: string;
+  sshPrivateKey?: string;
+  rootPassword?: string;
+  authMethod?: 'ssh_key' | 'password';
 }
 
 export interface Region {
