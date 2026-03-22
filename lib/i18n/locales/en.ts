@@ -970,6 +970,12 @@ export interface TranslationKeys {
     storageGb: string;
     bandwidthGb: string;
     buildMinutes: string;
+    // Payment
+    paymentSuccess: string;
+    planUpgraded: string;
+    redirecting: string;
+    goToBilling: string;
+    stripeNotConfigured: string;
   };
   servers: {
     title: string;
@@ -2161,6 +2167,11 @@ export const en: TranslationKeys = {
     storageGb: 'Storage',
     bandwidthGb: 'Bandwidth',
     buildMinutes: 'Build minutes/month',
+    paymentSuccess: 'Payment Successful!',
+    planUpgraded: 'Your plan has been upgraded successfully.',
+    redirecting: 'Redirecting to billing in',
+    goToBilling: 'Go to Billing',
+    stripeNotConfigured: 'Payment system is not configured',
   },
   servers: {
     title: 'Servers',
