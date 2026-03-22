@@ -134,6 +134,9 @@ body {
 :focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
 
 /* ─── Utilities ─────────────────────────────── */
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
 .terminal-text {
   font-family: var(--font-mono);
   letter-spacing: -0.02em;
