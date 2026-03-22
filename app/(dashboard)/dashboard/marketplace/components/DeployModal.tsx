@@ -25,7 +25,7 @@ export default function DeployModal({ template, onClose }: DeployModalProps) {
   const [selectedServerId, setSelectedServerId] = useState('');
   const [envVars, setEnvVars] = useState<Record<string, string>>({});
 
-  const readyServers = servers?.filter((s: any) => s.status === 'active') ?? [];
+  const readyServers = servers?.filter((s: any) => s.status === 'running' && s.setupStatus === 'completed') ?? [];
   const totalSteps = 3;
 
   useEffect(() => {
