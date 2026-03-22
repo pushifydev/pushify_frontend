@@ -8,22 +8,15 @@ interface CheckboxProps {
   label?: string;
   description?: string;
   disabled?: boolean;
-  id?: string;
 }
 
-export function Checkbox({ checked, onChange, label, description, disabled, id }: CheckboxProps) {
+export function Checkbox({ checked, onChange, label, description, disabled }: CheckboxProps) {
   return (
-    <label
-      className={`flex items-start gap-3 select-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer group'}`}
-      htmlFor={id}
+    <div
+      className={`flex items-start gap-3 select-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+      onClick={() => !disabled && onChange(!checked)}
     >
-      <button
-        id={id}
-        type="button"
-        role="checkbox"
-        aria-checked={checked}
-        disabled={disabled}
-        onClick={() => !disabled && onChange(!checked)}
+      <div
         className="mt-0.5 w-[18px] h-[18px] shrink-0 rounded-[5px] flex items-center justify-center transition-all duration-150"
         style={{
           background: checked ? 'var(--accent-cyan)' : 'transparent',
@@ -32,7 +25,7 @@ export function Checkbox({ checked, onChange, label, description, disabled, id }
         }}
       >
         {checked && <Check className="w-3 h-3" style={{ color: '#020206' }} strokeWidth={3} />}
-      </button>
+      </div>
       {(label || description) && (
         <div className="flex-1 min-w-0">
           {label && (
@@ -47,6 +40,6 @@ export function Checkbox({ checked, onChange, label, description, disabled, id }
           )}
         </div>
       )}
-    </label>
+    </div>
   );
 }
