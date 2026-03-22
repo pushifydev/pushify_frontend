@@ -17,7 +17,7 @@ import {
   Globe,
 } from 'lucide-react';
 import { useTranslation, useServers, useStartServer, useStopServer, useRebootServer, useSyncServer } from '@/hooks';
-import { CreateServerModal, DeleteServerModal } from './components';
+import { DeleteServerModal } from './components';
 import { SERVER_STATUS_COLORS } from '@/lib/constants';
 import type { Server as ServerType, ServerStatus, ServerSetupStatus } from '@/lib/api';
 
@@ -43,7 +43,7 @@ export default function ServersPage() {
   const rebootServer = useRebootServer();
   const syncServer   = useSyncServer();
 
-  const [createModalOpen, setCreateModalOpen] = useState(false);
+  // createModalOpen removed — using /servers/new page instead
   const [deleteServer, setDeleteServer]       = useState<ServerType | null>(null);
   const [actionMenu, setActionMenu]           = useState<string | null>(null);
 
@@ -78,10 +78,10 @@ export default function ServersPage() {
             {t('servers', 'description')}
           </p>
         </div>
-        <button onClick={() => setCreateModalOpen(true)} className="btn btn-primary">
+        <Link href="/dashboard/servers/new" className="btn btn-primary">
           <Plus className="w-4 h-4" />
           {t('servers', 'newServer')}
-        </button>
+        </Link>
       </div>
 
       {/* Empty */}
@@ -100,10 +100,10 @@ export default function ServersPage() {
           <p className="text-sm mb-5 max-w-xs mx-auto" style={{ color: 'var(--text-muted)' }}>
             {t('servers', 'noServersDesc')}
           </p>
-          <button onClick={() => setCreateModalOpen(true)} className="btn btn-primary">
+          <Link href="/dashboard/servers/new" className="btn btn-primary">
             <Plus className="w-4 h-4" />
             {t('servers', 'createServer')}
-          </button>
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -308,7 +308,7 @@ export default function ServersPage() {
         </div>
       )}
 
-      <CreateServerModal isOpen={createModalOpen} onClose={() => setCreateModalOpen(false)} />
+      {/* CreateServerModal removed — using /servers/new page */}
       {deleteServer && (
         <DeleteServerModal isOpen onClose={() => setDeleteServer(null)} server={deleteServer} />
       )}
