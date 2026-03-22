@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Terminal as TerminalIcon, Loader2, AlertCircle, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Terminal as TerminalIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks';
 import { api } from '@/lib/api/client';
@@ -60,25 +60,27 @@ export default function ServerTerminalPage() {
       return;
     }
 
-    setLines((prev) => [...prev, { type: 'input', content: command, timestamp: Date.now() }]);
     setHistory((prev) => [command, ...prev.slice(0, 49)]);
     setHistoryIndex(-1);
     setIsExecuting(true);
 
     try {
-      // Wrap command with cwd context
       const fullCommand = cwd !== '~' ? `cd ${cwd} && ${command}` : command;
       const response = await api.post(`/servers/${serverId}/terminal`, { command: fullCommand });
       const data = response.data.data;
 
+      const newLines: TerminalLine[] = [
+        { type: 'input', content: command, timestamp: Date.now() },
+      ];
       if (data.stdout) {
-        setLines((prev) => [...prev, { type: 'output', content: data.stdout, timestamp: Date.now() }]);
+        newLines.push({ type: 'output', content: data.stdout, timestamp: Date.now() });
       }
       if (data.stderr) {
-        setLines((prev) => [...prev, { type: 'error', content: data.stderr, timestamp: Date.now() }]);
+        newLines.push({ type: 'error', content: data.stderr, timestamp: Date.now() });
       }
+      setLines((prev) => [...prev, ...newLines]);
 
-      // Try to track cd commands
+      // Track cd commands
       if (command.trim().startsWith('cd ')) {
         const pwdResponse = await api.post(`/servers/${serverId}/terminal`, { command: `cd ${cwd !== '~' ? cwd : '~'} && ${command} && pwd` });
         const newCwd = pwdResponse.data.data.stdout?.trim();
@@ -86,10 +88,14 @@ export default function ServerTerminalPage() {
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to execute command';
-      setLines((prev) => [...prev, { type: 'error', content: errorMessage, timestamp: Date.now() }]);
+      setLines((prev) => [
+        ...prev,
+        { type: 'input', content: command, timestamp: Date.now() },
+        { type: 'error', content: errorMessage, timestamp: Date.now() },
+      ]);
     } finally {
       setIsExecuting(false);
-      inputRef.current?.focus();
+      setTimeout(() => inputRef.current?.focus(), 50);
     }
   };
 
@@ -217,21 +223,19 @@ export default function ServerTerminalPage() {
             <span style={{ color: 'rgba(255,255,255,0.3)' }}>:</span>
             <span style={{ color: '#60a5fa' }}>{cwd}</span>
             <span style={{ color: 'rgba(255,255,255,0.5)' }}> $ </span>
-            {isExecuting ? (
-              <Loader2 className="w-3 h-3 animate-spin ml-1" style={{ color: '#22d3ee' }} />
-            ) : (
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus:shadow-none"
-                style={{ color: '#e4e4e7', fontFamily: 'var(--font-mono)', fontSize: 13, caretColor: '#22d3ee', boxShadow: 'none' }}
-                autoComplete="off"
-                spellCheck={false}
-              />
-            )}
+            <input
+              ref={inputRef}
+              type="text"
+              value={isExecuting ? '' : input}
+              onChange={(e) => !isExecuting && setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isExecuting}
+              placeholder={isExecuting ? '...' : ''}
+              className="flex-1 bg-transparent border-none [outline:none_!important] [box-shadow:none_!important] focus:outline-none placeholder:text-[rgba(255,255,255,0.2)]"
+              style={{ color: '#e4e4e7', fontFamily: 'var(--font-mono)', fontSize: 13, caretColor: '#22d3ee' }}
+              autoComplete="off"
+              spellCheck={false}
+            />
           </div>
         </div>
       </div>
