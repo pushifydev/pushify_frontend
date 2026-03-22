@@ -1,6 +1,7 @@
 'use client';
 
 import { use } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft,
@@ -217,6 +218,13 @@ export default function ServerDetailPage({ params }: PageProps) {
                 <Square className="w-4 h-4" />
                 {t('servers', 'stop')}
               </button>
+              <Link
+                href={`/dashboard/servers/${id}/terminal`}
+                className="btn btn-secondary"
+              >
+                <Terminal className="w-4 h-4" />
+                Terminal
+              </Link>
             </>
           )}
 
