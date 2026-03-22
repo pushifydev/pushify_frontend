@@ -180,15 +180,7 @@ export default function ServerDetailPage({ params }: PageProps) {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => syncServer.mutate(id)}
-            disabled={syncServer.isPending}
-            className="btn btn-secondary"
-            title={t('servers', 'sync')}
-          >
-            <RefreshCw className={`w-4 h-4 ${syncServer.isPending ? 'animate-spin' : ''}`} />
-          </button>
-
+          {/* Primary action */}
           {server.status === 'stopped' && (
             <button
               onClick={() => startServer.mutate(id)}
@@ -201,40 +193,62 @@ export default function ServerDetailPage({ params }: PageProps) {
           )}
 
           {server.status === 'running' && (
-            <>
-              <button
-                onClick={() => rebootServer.mutate(id)}
-                disabled={rebootServer.isPending}
-                className="btn btn-secondary"
-              >
-                <RotateCcw className="w-4 h-4" />
-                {t('servers', 'reboot')}
-              </button>
-              <button
-                onClick={() => stopServer.mutate(id)}
-                disabled={stopServer.isPending}
-                className="btn btn-secondary"
-              >
-                <Square className="w-4 h-4" />
-                {t('servers', 'stop')}
-              </button>
-              <Link
-                href={`/dashboard/servers/${id}/terminal`}
-                className="btn btn-secondary"
-              >
-                <Terminal className="w-4 h-4" />
-                Terminal
-              </Link>
-            </>
+            <Link
+              href={`/dashboard/servers/${id}/terminal`}
+              className="btn btn-primary"
+            >
+              <Terminal className="w-4 h-4" />
+              Terminal
+            </Link>
           )}
 
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="btn btn-danger"
-          >
-            <Trash2 className="w-4 h-4" />
-            {t('servers', 'deleteServer')}
-          </button>
+          {/* Secondary actions */}
+          <div className="flex items-center gap-1 rounded-lg" style={{ border: '1px solid var(--glass-border)', padding: 2 }}>
+            <button
+              onClick={() => syncServer.mutate(id)}
+              disabled={syncServer.isPending}
+              className="p-2 rounded-md transition-colors hover:bg-[var(--hover-overlay-lg)]"
+              title={t('servers', 'sync')}
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${syncServer.isPending ? 'animate-spin' : ''}`} />
+            </button>
+
+            {server.status === 'running' && (
+              <>
+                <div style={{ width: 1, height: 16, background: 'var(--glass-divider)' }} />
+                <button
+                  onClick={() => rebootServer.mutate(id)}
+                  disabled={rebootServer.isPending}
+                  className="p-2 rounded-md transition-colors hover:bg-[var(--hover-overlay-lg)]"
+                  title={t('servers', 'reboot')}
+                  style={{ color: 'var(--text-secondary)' }}
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+                <div style={{ width: 1, height: 16, background: 'var(--glass-divider)' }} />
+                <button
+                  onClick={() => stopServer.mutate(id)}
+                  disabled={stopServer.isPending}
+                  className="p-2 rounded-md transition-colors hover:bg-[var(--hover-overlay-lg)]"
+                  title={t('servers', 'stop')}
+                  style={{ color: 'var(--text-secondary)' }}
+                >
+                  <Square className="w-3.5 h-3.5" />
+                </button>
+              </>
+            )}
+
+            <div style={{ width: 1, height: 16, background: 'var(--glass-divider)' }} />
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="p-2 rounded-md transition-colors hover:bg-[rgba(239,68,68,0.1)]"
+              title={t('servers', 'deleteServer')}
+              style={{ color: 'var(--status-error)' }}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 
