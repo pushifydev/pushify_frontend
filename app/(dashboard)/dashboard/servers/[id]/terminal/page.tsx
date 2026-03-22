@@ -226,8 +226,8 @@ export default function ServerTerminalPage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus:shadow-none"
-                style={{ color: '#e4e4e7', fontFamily: 'var(--font-mono)', fontSize: 13, caretColor: '#22d3ee', boxShadow: 'none' }}
+                className="flex-1 bg-transparent border-none [outline:none_!important] [box-shadow:none_!important] focus:outline-none"
+                style={{ color: '#e4e4e7', fontFamily: 'var(--font-mono)', fontSize: 13, caretColor: '#22d3ee' }}
                 autoComplete="off"
                 spellCheck={false}
               />
