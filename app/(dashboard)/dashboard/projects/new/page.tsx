@@ -39,6 +39,7 @@ import {
 import { createDeployment } from '@/lib/api';
 import type { CreateProjectInput, GitHubRepo } from '@/lib/api';
 import { FRAMEWORKS } from '@/lib/frameworks';
+import { Checkbox } from '@/components/Checkbox';
 
 type Step = 'source' | 'configure' | 'environment' | 'review';
 
@@ -837,7 +838,7 @@ export default function NewProjectPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-[var(--text-muted)]">{t('newProject', 'framework')}:</span>
                     <span className="ml-2 font-medium">
@@ -863,7 +864,7 @@ export default function NewProjectPage() {
                   <FolderCode className="w-4 h-4 text-[var(--accent-cyan)]" />
                   {t('newProject', 'buildConfig')}
                 </h4>
-                <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                   <div>
                     <span className="text-[var(--text-muted)]">{t('newProject', 'rootDirectory')}:</span>
                     <span className="ml-2 terminal-text">{rootDirectory}</span>
@@ -1010,15 +1011,11 @@ function EnvVariableRow({
           {showValue ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
         </button>
       </div>
-      <label className="flex items-center gap-2 text-sm text-[var(--text-muted)] cursor-pointer">
-        <input
-          type="checkbox"
-          checked={env.isSecret}
-          onChange={(e) => onUpdate('isSecret', e.target.checked)}
-          className="rounded border-[var(--border-default)]"
-        />
-        {t('newProject', 'secret')}
-      </label>
+      <Checkbox
+        checked={env.isSecret}
+        onChange={(checked) => onUpdate('isSecret', checked)}
+        label={t('newProject', 'secret')}
+      />
       <button
         onClick={onRemove}
         className="p-2 text-[var(--text-muted)] hover:text-[var(--status-error)] transition-colors"

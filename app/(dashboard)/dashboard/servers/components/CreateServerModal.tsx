@@ -226,7 +226,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
             </div>
 
             {/* Region & Image - Side by side */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Region */}
               <div>
                 <label className="block text-sm font-medium mb-2">
@@ -289,7 +289,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                   Loading sizes...
                 </div>
               ) : (
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {providerSizes.map((sizeOption) => (
                     <button
                       key={sizeOption.size}

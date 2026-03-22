@@ -66,7 +66,7 @@ export function AppearanceTab() {
                 {t('appearance', 'themeDesc')}
               </p>
 
-              <div className="grid grid-cols-3 gap-3 max-w-md">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-md">
                 {themes.map((themeOption) => {
                   const Icon = themeOption.icon;
                   const isActive = theme === themeOption.id;

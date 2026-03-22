@@ -118,7 +118,7 @@ export function TwoFactorSetupModal({
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{t('security', 'backupCodesWarning')}</span>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {setupData.backupCodes.map((code, index) => (
                 <code
                   key={index}

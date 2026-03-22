@@ -799,7 +799,7 @@ function EnvironmentTab({
       {/* Single variable form */}
       {showAddForm && (
         <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t('projectDetail', 'key')}</label>
               <input
@@ -1186,7 +1186,7 @@ function DomainCard({
                     </p>
 
                     <div className="bg-[var(--bg-primary)] rounded-lg p-4 border border-[var(--border-subtle)]">
-                      <div className="grid grid-cols-3 gap-4 text-xs mb-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs mb-3">
                         <div>
                           <span className="text-[var(--text-muted)] block mb-1">Type</span>
                           <span className="terminal-text font-medium">A</span>
@@ -1424,7 +1424,7 @@ function NginxSettingsModal({
               <section className="space-y-4">
                 <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Basic Settings</h3>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                       Proxy Timeout (seconds)
@@ -1489,7 +1489,7 @@ function NginxSettingsModal({
                 />
 
                 {rateLimitEnabled && (
-                  <div className="grid grid-cols-2 gap-4 pl-4 border-l-2 border-[var(--border-subtle)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-4 border-l-2 border-[var(--border-subtle)]">
                     <div>
                       <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                         Requests per Second
@@ -2975,7 +2975,7 @@ function MetricsSection({
       <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
         <div className="animate-pulse space-y-4">
           <div className="h-6 w-40 bg-[var(--bg-tertiary)] rounded" />
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="h-20 bg-[var(--bg-tertiary)] rounded" />
             <div className="h-20 bg-[var(--bg-tertiary)] rounded" />
             <div className="h-20 bg-[var(--bg-tertiary)] rounded" />
