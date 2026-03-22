@@ -14,7 +14,7 @@ export function Checkbox({ checked, onChange, label, description, disabled }: Ch
   return (
     <div
       className={`flex items-start gap-3 select-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-      onClick={() => !disabled && onChange(!checked)}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!disabled) onChange(!checked); }}
     >
       <div
         className="mt-0.5 w-[18px] h-[18px] shrink-0 rounded-[5px] flex items-center justify-center transition-all duration-150"
