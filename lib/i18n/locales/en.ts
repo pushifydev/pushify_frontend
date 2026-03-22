@@ -1041,6 +1041,28 @@ export interface TranslationKeys {
     // Detail page
     overview: string;
     network: string;
+    // BYOS
+    cloudProvider: string;
+    existingServer: string;
+    byosTitle: string;
+    byosDescription: string;
+    ipAddressLabel: string;
+    ipAddressPlaceholder: string;
+    ipAddressHint: string;
+    authMethod: string;
+    sshKey: string;
+    rootPassword: string;
+    sshKeyPlaceholder: string;
+    rootPasswordPlaceholder: string;
+    sshKeyHint: string;
+    rootPasswordHint: string;
+    byosInfoTitle: string;
+    byosStep1: string;
+    byosStep2: string;
+    byosStep3: string;
+    byosStep4: string;
+    readyToCreate: string;
+    fillRequiredFields: string;
   };
   databases: {
     title: string;
@@ -2237,6 +2259,28 @@ export const en: TranslationKeys = {
     // Detail page
     overview: 'Overview',
     network: 'Network',
+    // BYOS
+    cloudProvider: 'Cloud Provider',
+    existingServer: 'Existing Server',
+    byosTitle: 'Connect Your Server',
+    byosDescription: 'Connect an existing server to Pushify for deployments.',
+    ipAddressLabel: 'IP Address',
+    ipAddressPlaceholder: '192.168.1.100',
+    ipAddressHint: 'Public IPv4 address of your server',
+    authMethod: 'Authentication',
+    sshKey: 'SSH Private Key',
+    rootPassword: 'Root Password',
+    sshKeyPlaceholder: '-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----',
+    rootPasswordPlaceholder: 'Enter root password',
+    sshKeyHint: 'Paste your SSH private key for secure access',
+    rootPasswordHint: 'Root password for initial connection',
+    byosInfoTitle: 'What happens next',
+    byosStep1: 'Pushify connects to your server via SSH',
+    byosStep2: 'Installs Docker and Nginx if not present',
+    byosStep3: 'Configures the server for deployments',
+    byosStep4: 'Your server is ready to deploy projects',
+    readyToCreate: 'Ready to create',
+    fillRequiredFields: 'Fill all required fields',
   },
   databases: {
     title: 'Databases',

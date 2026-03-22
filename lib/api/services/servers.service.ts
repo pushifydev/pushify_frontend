@@ -46,6 +46,7 @@ export interface CreateServerInput {
   // BYOS fields
   ipv4?: string;
   sshPrivateKey?: string;
+  rootPassword?: string;
 }
 
 export interface Region {
