@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Modal, ModalActions } from './Modal';
+import { Checkbox } from '@/components/Checkbox';
 import { useTranslation } from '@/hooks';
 
 interface CreateApiKeyModalProps {
@@ -102,33 +103,24 @@ export function CreateApiKeyModal({
           {t('apiKeys', 'scopes')}
         </label>
         <p className="text-xs text-[var(--text-muted)] mb-3">{t('apiKeys', 'scopesDesc')}</p>
-        <div className="space-y-2 max-h-48 overflow-y-auto rounded-lg border border-[var(--border-subtle)] p-2">
-          <label className="flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--bg-secondary)] cursor-pointer">
-            <input
-              type="checkbox"
+        <div className="space-y-1 max-h-48 overflow-y-auto rounded-lg border border-[var(--border-subtle)] p-2">
+          <div className="p-2 rounded-lg hover:bg-[var(--bg-secondary)]">
+            <Checkbox
               checked={selectedScopes.includes('*')}
               onChange={() => toggleScope('*')}
-              className="rounded"
+              label={t('apiKeys', 'allPermissions')}
             />
-            <span className="text-sm font-medium">{t('apiKeys', 'allPermissions')}</span>
-          </label>
+          </div>
           {Object.entries(availableScopes).map(([scope, description]) => (
-            <label
-              key={scope}
-              className="flex items-start gap-2 p-2 rounded-lg hover:bg-[var(--bg-secondary)] cursor-pointer"
-            >
-              <input
-                type="checkbox"
+            <div key={scope} className="p-2 rounded-lg hover:bg-[var(--bg-secondary)]">
+              <Checkbox
                 checked={selectedScopes.includes('*') || selectedScopes.includes(scope)}
                 onChange={() => toggleScope(scope)}
                 disabled={selectedScopes.includes('*')}
-                className="rounded mt-0.5"
+                label={scope}
+                description={description}
               />
-              <div>
-                <span className="text-sm font-medium terminal-text">{scope}</span>
-                <p className="text-xs text-[var(--text-muted)]">{description}</p>
-              </div>
-            </label>
+            </div>
           ))}
         </div>
       </div>
