@@ -970,6 +970,11 @@ export const tr: TranslationKeys = {
     storageGb: 'Depolama',
     bandwidthGb: 'Bant Genişliği',
     buildMinutes: 'Aylık build dakikası',
+    paymentSuccess: 'Ödeme Başarılı!',
+    planUpgraded: 'Planınız başarıyla yükseltildi.',
+    redirecting: 'Faturalama sayfasına yönlendiriliyor',
+    goToBilling: 'Faturalama\'ya Git',
+    stripeNotConfigured: 'Ödeme sistemi yapılandırılmamış',
   },
   servers: {
     title: 'Sunucular',
