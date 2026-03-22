@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Server, Loader2, Cpu, HardDrive, MemoryStick } from 'lucide-react';
+import { X, Server, Loader2, Cpu, HardDrive, MemoryStick, Globe, Key } from 'lucide-react';
 import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages } from '@/hooks';
 import type { ServerSize, CreateServerInput } from '@/lib/api';
 
@@ -15,6 +15,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
   const { t } = useTranslation();
   const createServer = useCreateServer();
 
+  const [mode, setMode] = useState<'managed' | 'byos'>('managed');
   const [formData, setFormData] = useState<CreateServerInput>({
     name: '',
     provider: 'hetzner',
@@ -22,6 +23,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
     size: 'sm',
     image: '',
   });
+  const [byosData, setByosData] = useState({ name: '', ipv4: '', sshPrivateKey: '' });
 
   const { data: regions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
   const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner');
@@ -45,35 +47,38 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createServer.mutateAsync(formData);
-      onClose();
-      setFormData({
-        name: '',
-        provider: 'hetzner',
-        region: '',
-        size: 'sm',
-        image: '',
-      });
+      if (mode === 'byos') {
+        await createServer.mutateAsync({
+          name: byosData.name,
+          provider: 'self_hosted' as any,
+          region: 'custom',
+          size: 'custom' as any,
+          image: 'custom',
+          ipv4: byosData.ipv4,
+          sshPrivateKey: byosData.sshPrivateKey || undefined,
+        });
+      } else {
+        await createServer.mutateAsync(formData);
+      }
+      resetAndClose();
     } catch (error) {
       // Error handled by mutation
     }
   };
 
   const resetAndClose = () => {
-    setFormData({
-      name: '',
-      provider: 'hetzner',
-      region: '',
-      size: 'sm',
-      image: '',
-    });
+    setFormData({ name: '', provider: 'hetzner', region: '', size: 'sm', image: '' });
+    setByosData({ name: '', ipv4: '', sshPrivateKey: '' });
+    setMode('managed');
     onClose();
   };
 
   if (!isOpen) return null;
   if (typeof document === 'undefined') return null;
 
-  const isValid = formData.name.trim() && formData.region && formData.size && formData.image;
+  const isValid = mode === 'byos'
+    ? byosData.name.trim() && byosData.ipv4.trim()
+    : formData.name.trim() && formData.region && formData.size && formData.image;
 
   return createPortal(
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -101,7 +106,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
             </div>
             <div>
               <h2 className="text-lg font-semibold">{t('servers', 'createServer')}</h2>
-              <p className="text-sm text-[var(--text-muted)]">Hetzner Cloud</p>
+              <p className="text-sm text-[var(--text-muted)]">{mode === 'managed' ? 'Hetzner Cloud' : 'Bring Your Own Server'}</p>
             </div>
           </div>
           <button
@@ -114,6 +119,96 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
 
         {/* Form - Scrollable */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+          {/* Mode Tabs */}
+          <div className="flex gap-2 px-6 pt-4 pb-2">
+            <button
+              type="button"
+              onClick={() => setMode('managed')}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              style={{
+                background: mode === 'managed' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
+                color: mode === 'managed' ? '#020206' : 'var(--text-secondary)',
+                border: `1px solid ${mode === 'managed' ? 'var(--accent-cyan)' : 'var(--glass-border)'}`,
+              }}
+            >
+              <Globe className="w-3.5 h-3.5" />
+              Cloud Provider
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('byos')}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              style={{
+                background: mode === 'byos' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
+                color: mode === 'byos' ? '#020206' : 'var(--text-secondary)',
+                border: `1px solid ${mode === 'byos' ? 'var(--accent-cyan)' : 'var(--glass-border)'}`,
+              }}
+            >
+              <Key className="w-3.5 h-3.5" />
+              Existing Server
+            </button>
+          </div>
+
+          {mode === 'byos' ? (
+            /* BYOS Form */
+            <div className="p-6 space-y-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">Server Name</label>
+                <input
+                  type="text"
+                  value={byosData.name}
+                  onChange={(e) => setByosData({ ...byosData, name: e.target.value })}
+                  placeholder="my-production-server"
+                  className="input w-full h-12"
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">IP Address</label>
+                <input
+                  type="text"
+                  value={byosData.ipv4}
+                  onChange={(e) => setByosData({ ...byosData, ipv4: e.target.value })}
+                  placeholder="192.168.1.100"
+                  className="input w-full h-12"
+                />
+                <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
+                  Public IPv4 address of your server
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  SSH Private Key <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>(optional)</span>
+                </label>
+                <textarea
+                  value={byosData.sshPrivateKey}
+                  onChange={(e) => setByosData({ ...byosData, sshPrivateKey: e.target.value })}
+                  placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;...&#10;-----END RSA PRIVATE KEY-----"
+                  className="input w-full font-mono text-xs"
+                  rows={6}
+                  style={{ resize: 'none', fontFamily: 'var(--font-mono)' }}
+                />
+                <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
+                  If empty, Pushify will generate a key pair and add it to your server. Root SSH access required.
+                </p>
+              </div>
+
+              <div
+                className="p-4 rounded-lg text-sm"
+                style={{ background: 'var(--hover-overlay-lg)', border: '1px solid var(--glass-border)' }}
+              >
+                <p className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>What happens next:</p>
+                <ul className="space-y-1.5" style={{ color: 'var(--text-secondary)' }}>
+                  <li>• Pushify connects to your server via SSH</li>
+                  <li>• Installs Docker and Nginx if not present</li>
+                  <li>• Configures the server for deployments</li>
+                  <li>• Your server is ready to deploy projects</li>
+                </ul>
+              </div>
+            </div>
+          ) : (
           <div className="p-6 space-y-8">
             {/* Server Name */}
             <div>
@@ -232,6 +327,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
               )}
             </div>
           </div>
+          )}
 
           {/* Actions - Fixed at bottom */}
           <div
