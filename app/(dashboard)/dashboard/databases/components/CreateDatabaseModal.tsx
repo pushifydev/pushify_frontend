@@ -65,7 +65,7 @@ export function CreateDatabaseModal({ isOpen, onClose, servers }: CreateDatabase
         {/* Database Type Selection */}
         <div>
           <label className="block text-sm font-medium mb-2">{t('databases', 'type')}</label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {(['postgresql', 'mysql', 'redis', 'mongodb'] as DatabaseType[]).map((dbType) => {
               const info = DB_TYPE_INFO[dbType];
               const typeInfo = dbTypes.find((dt) => dt.type === dbType);

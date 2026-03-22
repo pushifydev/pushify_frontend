@@ -115,7 +115,7 @@ export function RegenerateBackupCodesModal({
             <p className="text-sm text-[var(--text-secondary)] mb-3">
               {t('security', 'backupCodesDesc')}
             </p>
-            <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
               {newBackupCodes.map((code, index) => (
                 <code
                   key={index}

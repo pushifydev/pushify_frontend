@@ -160,7 +160,7 @@ export default function NewServerPage() {
             </div>
 
             {/* Region & Image */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div
                 className="rounded-xl p-6"
                 style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
@@ -225,7 +225,7 @@ export default function NewServerPage() {
                   <Loader2 className="w-5 h-5 animate-spin mr-2" />
                 </div>
               ) : (
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {providerSizes.map((sizeOption) => {
                     const isSelected = managedData.size === sizeOption.size;
                     return (
@@ -273,7 +273,7 @@ export default function NewServerPage() {
           /* ─── BYOS Form ─── */
           <>
             {/* Name + IP */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div
                 className="rounded-xl p-6"
                 style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}

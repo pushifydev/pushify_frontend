@@ -408,7 +408,7 @@ export default function ServerDetailPage({ params }: PageProps) {
             {providerData.traffic && (
               <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
                 <h3 className="text-sm font-medium text-[var(--text-muted)] mb-3">Traffic</h3>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm text-[var(--text-muted)]">Ingoing</p>
                     <p className="font-mono">{formatBytes(providerData.traffic.ingoing)}</p>
@@ -468,7 +468,7 @@ export default function ServerDetailPage({ params }: PageProps) {
                   <p className="text-sm text-[var(--text-muted)]">Description</p>
                   <p>{providerData.serverType.description}</p>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <p className="text-sm text-[var(--text-muted)]">CPU Type</p>
                     <p className="capitalize">{providerData.serverType.cpuType}</p>
@@ -502,7 +502,7 @@ export default function ServerDetailPage({ params }: PageProps) {
                   <p className="text-sm text-[var(--text-muted)]">Description</p>
                   <p>{providerData.image.description}</p>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <p className="text-sm text-[var(--text-muted)]">OS</p>
                     <p className="capitalize">{providerData.image.osFamily}</p>

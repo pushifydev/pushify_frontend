@@ -71,7 +71,7 @@ export function ComparePlansModal({ isOpen, onClose, plans, currentPlan }: Compa
               return (
                 <div
                   key={planKey}
-                  className={`w-[280px] shrink-0 rounded-xl border p-6 transition-all ${
+                  className={`w-full sm:w-[280px] shrink-0 rounded-xl border p-6 transition-all ${
                     isCurrent
                       ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5 ring-2 ring-[var(--accent-cyan)]'
                       : 'border-[var(--border-subtle)] bg-[var(--bg-secondary)] hover:border-[var(--border-default)]'

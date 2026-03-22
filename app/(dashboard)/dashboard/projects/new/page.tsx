@@ -838,7 +838,7 @@ export default function NewProjectPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-[var(--text-muted)]">{t('newProject', 'framework')}:</span>
                     <span className="ml-2 font-medium">
@@ -864,7 +864,7 @@ export default function NewProjectPage() {
                   <FolderCode className="w-4 h-4 text-[var(--accent-cyan)]" />
                   {t('newProject', 'buildConfig')}
                 </h4>
-                <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                   <div>
                     <span className="text-[var(--text-muted)]">{t('newProject', 'rootDirectory')}:</span>
                     <span className="ml-2 terminal-text">{rootDirectory}</span>
