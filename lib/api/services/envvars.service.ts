@@ -99,6 +99,36 @@ export const bulkCreateEnvVars = async (
   }
 };
 
+// ============ Clone environment variables ============
+
+export interface CloneEnvVarsInput {
+  sourceEnvironment: Environment;
+  targetEnvironment: Environment;
+  overwrite?: boolean;
+}
+
+export interface CloneEnvVarsResult {
+  copied: number;
+  skipped: number;
+  overwritten: number;
+}
+
+export const cloneEnvVars = async (
+  projectId: string,
+  input: CloneEnvVarsInput,
+): Promise<ApiResponse<CloneEnvVarsResult>> => {
+  try {
+    const response = await api.post<{ data: CloneEnvVarsResult; message: string }>(
+      `/projects/${projectId}/env/clone`,
+      input,
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message: string }>;
+    return { error: { message: axiosError.response?.data?.message || 'Failed to clone env vars', code: 'CLONE_FAILED' } };
+  }
+};
+
 // ============ Export as namespace for backward compatibility ============
 
 export const envVarsService = {
@@ -107,4 +137,5 @@ export const envVarsService = {
   update: updateEnvVar,
   delete: deleteEnvVar,
   bulkCreate: bulkCreateEnvVars,
+  clone: cloneEnvVars,
 };
