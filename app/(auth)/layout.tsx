@@ -141,13 +141,13 @@ export default function AuthLayout({
 
         {/* Footer */}
         <div className="flex items-center gap-6 text-sm text-[var(--text-muted)]">
-          <a href="#" className="hover:text-[var(--text-secondary)] transition-colors">
+          <a href="/docs" className="hover:text-[var(--text-secondary)] transition-colors">
             {t('branding', 'documentation')}
           </a>
-          <a href="#" className="hover:text-[var(--text-secondary)] transition-colors">
+          <a href="https://github.com/pushifydev" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--text-secondary)] transition-colors">
             {t('branding', 'github')}
           </a>
-          <a href="#" className="hover:text-[var(--text-secondary)] transition-colors">
+          <a href="https://pushify.dev" className="hover:text-[var(--text-secondary)] transition-colors">
             {t('branding', 'status')}
           </a>
         </div>
