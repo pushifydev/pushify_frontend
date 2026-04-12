@@ -8,6 +8,8 @@ import {
   updateEnvVar,
   deleteEnvVar,
   bulkCreateEnvVars,
+  cloneEnvVars,
+  type CloneEnvVarsInput,
   type Environment,
   type CreateEnvVarInput,
   type UpdateEnvVarInput,
@@ -105,6 +107,24 @@ export function useBulkCreateEnvVars(projectId: string) {
       queryClient.invalidateQueries({ queryKey: envVarKeys.list(projectId) });
       toast.success('Variables added', {
         description: `${data?.length || 0} variables have been added`,
+      });
+    },
+  });
+}
+
+export function useCloneEnvVars(projectId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: CloneEnvVarsInput) => {
+      const result = await cloneEnvVars(projectId, input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: envVarKeys.list(projectId) });
+      toast.success('Environment cloned', {
+        description: `${data?.copied} copied, ${data?.skipped} skipped, ${data?.overwritten} overwritten`,
       });
     },
   });

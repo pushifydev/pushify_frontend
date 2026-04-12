@@ -38,6 +38,7 @@ export {
   useUpdateEnvVar,
   useDeleteEnvVar,
   useBulkCreateEnvVars,
+  useCloneEnvVars,
 } from './useEnvVars';
 
 // Domains

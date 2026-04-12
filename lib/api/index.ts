@@ -52,6 +52,9 @@ export {
   updateEnvVar,
   deleteEnvVar,
   bulkCreateEnvVars,
+  cloneEnvVars,
+  type CloneEnvVarsInput,
+  type CloneEnvVarsResult,
   envVarsService,
 } from './services/envvars.service';
 
