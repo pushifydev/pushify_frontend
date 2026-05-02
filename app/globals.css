@@ -17,8 +17,8 @@
   --text-muted:     #52525e;
 
   /* ─── Accent ─── */
-  --accent-cyan:      #22d3ee;
-  --accent-cyan-dim:  #0891b2;
+  --accent-cyan:      #6366f1;
+  --accent-cyan-dim:  #4f46e5;
   --accent-amber:     #fbbf24;
   --accent-amber-dim: #d97706;
   --accent-green:     #34d399;
@@ -48,7 +48,7 @@
   --status-info:    #3b82f6;
 
   /* ─── Glow ─── */
-  --glow-cyan:   0 0 24px rgba(34, 211, 238, 0.25);
+  --glow-cyan:   0 0 24px rgba(99, 102, 241, 0.25);
   --glow-amber:  0 0 24px rgba(251, 191, 36, 0.25);
 
   /* ─── Typography ─── */
@@ -93,7 +93,7 @@ html.light {
   --hover-overlay-lg:    rgba(0,0,0,0.070);
 
   /* ── Glows ── */
-  --glow-cyan:  0 0 18px rgba(6, 182, 212, 0.18);
+  --glow-cyan:  0 0 18px rgba(99, 102, 241, 0.18);
   --glow-amber: 0 0 18px rgba(245, 158, 11, 0.18);
 }
 
@@ -188,7 +188,7 @@ html.light .input {
   box-shadow: none;
 }
 html.light .input:hover  { border-color: var(--border-strong); }
-html.light .input:focus  { box-shadow: 0 0 0 3px rgba(6,182,212,0.12); }
+html.light .input:focus  { box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
 
 /* ─── Light mode: scrollbar ──────────────────── */
 html.light ::-webkit-scrollbar-track  { background: var(--bg-tertiary); }
@@ -290,7 +290,7 @@ html.light .card-hover:hover {
 }
 .btn-primary:hover {
   background: #38e8ff;
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.28);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.28);
 }
 .btn-secondary {
   background: var(--bg-tertiary);
@@ -330,7 +330,7 @@ html.light .card-hover:hover {
 .input:focus {
   outline: none;
   border-color: var(--accent-cyan);
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
 }
 .input::placeholder { color: var(--text-muted); }
 
