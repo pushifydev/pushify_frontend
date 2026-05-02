@@ -140,9 +140,9 @@ export default function ActivityPage() {
               onClick={() => { setSelectedCategory(cat.key); setPage(1); }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all"
               style={{
-                background: active ? 'rgba(34,211,238,0.1)'            : 'var(--bg-secondary)',
+                background: active ? 'rgba(99,102,241,0.1)'            : 'var(--bg-secondary)',
                 color:      active ? 'var(--accent-cyan)'              : 'var(--text-secondary)',
-                border:     active ? '1px solid rgba(34,211,238,0.25)' : '1px solid var(--glass-border)',
+                border:     active ? '1px solid rgba(99,102,241,0.25)' : '1px solid var(--glass-border)',
               }}
             >
               {cat.icon}

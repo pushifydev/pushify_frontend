@@ -15,7 +15,7 @@ import { useMarketplaceTemplate } from '@/hooks/useMarketplace';
 import DeployModal from '../components/DeployModal';
 
 const CATEGORY_ACCENTS: Record<string, string> = {
-  cms: '#22d3ee',
+  cms: '#6366f1',
   automation: '#a78bfa',
   monitoring: '#22c55e',
   storage: '#f59e0b',
@@ -53,7 +53,7 @@ export default function TemplateDetailPage() {
     );
   }
 
-  const accent = CATEGORY_ACCENTS[template.category] || '#22d3ee';
+  const accent = CATEGORY_ACCENTS[template.category] || '#6366f1';
   const IconComponent = ICON_MAP[template.icon] || Package;
 
   return (
@@ -305,7 +305,7 @@ export default function TemplateDetailPage() {
                 <div className="flex items-center gap-2">
                   {envVar.generate && (
                     <span className="text-[10px] px-1.5 py-0.5 rounded" style={{
-                      background: 'rgba(34,211,238,0.1)', color: 'var(--accent-cyan)',
+                      background: 'rgba(99,102,241,0.1)', color: 'var(--accent-cyan)',
                     }}>auto</span>
                   )}
                   {envVar.required && !envVar.generate && (

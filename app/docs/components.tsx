@@ -83,7 +83,7 @@ export function EndpointCard({
         <MethodBadge method={method} />
         <code className="text-white/90 font-mono text-sm flex-1 truncate">{path}</code>
         {scope && (
-          <code className="hidden md:inline px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400/60 text-xs font-mono shrink-0">
+          <code className="hidden md:inline px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400/60 text-xs font-mono shrink-0">
             {scope}
           </code>
         )}
@@ -116,7 +116,7 @@ export function EndpointCard({
                     {params.map((p) => (
                       <tr key={p.name} className="border-b border-white/[0.04] last:border-0">
                         <td className="px-3 py-2">
-                          <code className="text-cyan-400/80 text-xs font-mono">{p.name}</code>
+                          <code className="text-indigo-400/80 text-xs font-mono">{p.name}</code>
                           {p.required && (
                             <span className="ml-1 text-red-400/60 text-[10px]">*</span>
                           )}
@@ -181,7 +181,7 @@ export function Callout({
   children: React.ReactNode;
 }) {
   const styles = {
-    info: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300',
+    info: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300',
     warning: 'bg-amber-500/10 border-amber-500/20 text-amber-300',
     success: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300',
   };

@@ -9,7 +9,7 @@ import TemplateCard from './components/TemplateCard';
 
 const CATEGORIES: { key: MarketplaceCategory | 'all'; color: string }[] = [
   { key: 'all', color: '#8a8a9a' },
-  { key: 'cms', color: '#22d3ee' },
+  { key: 'cms', color: '#6366f1' },
   { key: 'automation', color: '#a78bfa' },
   { key: 'monitoring', color: '#22c55e' },
   { key: 'storage', color: '#f59e0b' },
@@ -61,8 +61,8 @@ export default function MarketplacePage() {
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center"
             style={{
-              background: 'rgba(34,211,238,0.1)',
-              border: '1px solid rgba(34,211,238,0.2)',
+              background: 'rgba(99,102,241,0.1)',
+              border: '1px solid rgba(99,102,241,0.2)',
             }}
           >
             <Store className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />

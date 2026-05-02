@@ -252,7 +252,7 @@ export default function MonitoringPage() {
           value={agg?.avgCpuPercent || 0}
           subValue={`${t('monitoring', 'totalCpu')}: ${agg?.totalCpuPercent.toFixed(1) || 0}%`}
           icon={Cpu}
-          color="#22d3ee"
+          color="#6366f1"
         />
         <GaugeCard
           label={t('monitoring', 'totalMemory')}
@@ -306,7 +306,7 @@ export default function MonitoringPage() {
         <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-[#22d3ee]" />
+              <Cpu className="w-4 h-4 text-[#6366f1]" />
               <span className="text-sm font-medium">{t('monitoring', 'cpuUsage')}</span>
             </div>
           </div>
@@ -316,8 +316,8 @@ export default function MonitoringPage() {
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="#22d3ee" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#6366f1" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="3 3" vertical={false} />
@@ -341,11 +341,11 @@ export default function MonitoringPage() {
                     type="monotone"
                     dataKey="cpuPercent"
                     name="CPU"
-                    stroke="#22d3ee"
+                    stroke="#6366f1"
                     fill="url(#cpuGradient)"
                     strokeWidth={2}
                     dot={false}
-                    activeDot={{ r: 4, fill: '#22d3ee', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
+                    activeDot={{ r: 4, fill: '#6366f1', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
                   />
                 </AreaChart>
               </ResponsiveContainer>

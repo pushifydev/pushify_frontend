@@ -10,7 +10,7 @@ export const STATUS_COLORS = {
   error:    '#ef4444',
   info:     '#3b82f6',
   neutral:  '#52525e',
-  cyan:     '#22d3ee',
+  cyan:     '#6366f1',
   purple:   '#a78bfa',
   orange:   '#fb923c',
   pink:     '#f87171',

@@ -93,7 +93,7 @@ export default function TeamPage() {
           <div className="flex items-center gap-2.5">
             <div
               className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(34,211,238,0.1)' }}
+              style={{ background: 'rgba(99,102,241,0.1)' }}
             >
               <Users className="w-3.5 h-3.5" style={{ color: 'var(--accent-cyan)' }} />
             </div>
@@ -144,7 +144,7 @@ export default function TeamPage() {
                     {isCurrentUser && (
                       <span
                         className="text-xs px-1.5 py-0.5 rounded-full shrink-0"
-                        style={{ background: 'rgba(34,211,238,0.1)', color: 'var(--accent-cyan)' }}
+                        style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--accent-cyan)' }}
                       >
                         {t('team', 'you')}
                       </span>

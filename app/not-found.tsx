@@ -11,7 +11,7 @@ export default function NotFound() {
     <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center px-4">
       {/* Background effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-cyan-500/[0.03] rounded-full blur-[100px]" />
+        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-indigo-500/[0.03] rounded-full blur-[100px]" />
         <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-purple-500/[0.03] rounded-full blur-[100px]" />
       </div>
 

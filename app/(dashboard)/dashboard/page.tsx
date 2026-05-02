@@ -43,8 +43,8 @@ export default function DashboardPage() {
       <div
         className="relative overflow-hidden rounded-2xl px-7 py-6 mb-6"
         style={{
-          background: 'linear-gradient(135deg, rgba(34,211,238,0.055) 0%, rgba(129,140,248,0.025) 60%, transparent 100%)',
-          border: '1px solid rgba(34,211,238,0.12)',
+          background: 'linear-gradient(135deg, rgba(99,102,241,0.055) 0%, rgba(129,140,248,0.025) 60%, transparent 100%)',
+          border: '1px solid rgba(99,102,241,0.12)',
         }}
       >
         {/* Dot grid */}
@@ -52,7 +52,7 @@ export default function DashboardPage() {
         {/* Radial glow */}
         <div
           className="absolute -top-20 -left-20 w-64 h-64 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.07) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 70%)' }}
         />
         <div
           className="absolute -bottom-16 right-0 w-48 h-48 pointer-events-none"

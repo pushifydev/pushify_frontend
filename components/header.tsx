@@ -223,18 +223,18 @@ export function Header() {
             href="/dashboard/projects/new"
             className="hidden sm:flex items-center gap-1.5 h-8 px-3 rounded-lg font-medium transition-all"
             style={{
-              background: "rgba(34,211,238,0.08)",
-              border: "1px solid rgba(34,211,238,0.18)",
+              background: "rgba(99,102,241,0.08)",
+              border: "1px solid rgba(99,102,241,0.18)",
               color: "var(--accent-cyan)",
               fontSize: 12.5,
             }}
             onMouseEnter={(e) =>
               ((e.currentTarget as HTMLElement).style.background =
-                "rgba(34,211,238,0.13)")
+                "rgba(99,102,241,0.13)")
             }
             onMouseLeave={(e) =>
               ((e.currentTarget as HTMLElement).style.background =
-                "rgba(34,211,238,0.08)")
+                "rgba(99,102,241,0.08)")
             }
           >
             <Plus className="w-3.5 h-3.5" />

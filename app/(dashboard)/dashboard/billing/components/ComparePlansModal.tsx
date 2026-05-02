@@ -15,7 +15,7 @@ const planOrder: PlanType[] = ['free', 'hobby', 'pro', 'business', 'enterprise']
 
 const planColors: Record<PlanType, string> = {
   free: 'from-gray-500 to-gray-600',
-  hobby: 'from-blue-500 to-cyan-500',
+  hobby: 'from-blue-500 to-indigo-500',
   pro: 'from-purple-500 to-pink-500',
   business: 'from-orange-500 to-amber-500',
   enterprise: 'from-emerald-500 to-teal-500',

@@ -92,9 +92,9 @@ export default function ProjectsPage() {
               onClick={() => setFilterStatus(s)}
               className="px-3 py-2 rounded-lg text-sm font-medium transition-all capitalize"
               style={{
-                background: filterStatus === s ? 'rgba(34,211,238,0.1)' : 'var(--bg-secondary)',
+                background: filterStatus === s ? 'rgba(99,102,241,0.1)' : 'var(--bg-secondary)',
                 color: filterStatus === s ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                border: filterStatus === s ? '1px solid rgba(34,211,238,0.25)' : '1px solid var(--glass-border)',
+                border: filterStatus === s ? '1px solid rgba(99,102,241,0.25)' : '1px solid var(--glass-border)',
               }}
             >
               {s === 'all' ? t('projects', 'allStatus') : t('projects', s as 'active' | 'paused' | 'inactive')}

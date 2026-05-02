@@ -49,9 +49,9 @@ function MessageBubble({ entry }: { entry: ChatEntry }) {
         style={
           isUser
             ? {
-                background: 'rgba(34,211,238,0.12)',
+                background: 'rgba(99,102,241,0.12)',
                 color: 'var(--text-primary)',
-                border: '1px solid rgba(34,211,238,0.2)',
+                border: '1px solid rgba(99,102,241,0.2)',
               }
             : {
                 background: 'var(--bg-tertiary)',
