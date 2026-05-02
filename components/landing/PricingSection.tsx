@@ -179,7 +179,7 @@ export function PricingSection() {
               )}
             >
               {plan.isPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--accent-cyan)] text-[var(--bg-primary)]">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--accent-cyan)] text-white">
                   <Star className="w-3 h-3 fill-current" />
                   <span className="text-xs font-bold">{t('landing', 'mostPopular')}</span>
                 </div>
@@ -254,7 +254,7 @@ export function PricingSection() {
                 className={cn(
                   'w-full h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200',
                   plan.isPopular
-                    ? 'bg-[var(--accent-cyan)] text-[var(--bg-primary)] hover:brightness-110 shadow-md shadow-[var(--accent-cyan)]/20'
+                    ? 'bg-[var(--accent-cyan)] text-white hover:bg-[var(--accent-cyan-dim)] shadow-md shadow-[var(--accent-cyan)]/30'
                     : 'bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--glass-border)] hover:border-[var(--glass-border-strong)] hover:bg-[var(--hover-overlay-lg)]',
                 )}
               >

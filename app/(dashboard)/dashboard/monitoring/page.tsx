@@ -131,7 +131,7 @@ function TimeRangeSelector({
           onClick={() => onChange(opt.value)}
           className={`px-3 py-1 text-xs font-mono font-medium rounded-md transition-colors ${
             selected === opt.value
-              ? 'bg-[var(--accent-cyan)] text-[var(--bg-primary)]'
+              ? 'bg-[var(--accent-cyan)] text-white'
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >

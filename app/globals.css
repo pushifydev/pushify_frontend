@@ -285,12 +285,12 @@ html.light .card-hover:hover {
 }
 .btn-primary {
   background: var(--accent-cyan);
-  color: #050508;
+  color: #ffffff;
   font-weight: 600;
 }
 .btn-primary:hover {
-  background: #38e8ff;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.28);
+  background: var(--accent-cyan-dim);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
 }
 .btn-secondary {
   background: var(--bg-tertiary);
