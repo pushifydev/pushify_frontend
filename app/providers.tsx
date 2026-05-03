@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider, MutationCache } from '@tanstack/react-query';
 import { Toaster, toast } from 'sonner';
 import { useThemeStore } from '@/stores/theme';
+import { ConfirmProvider } from '@/hooks/useConfirm';
 
 function DynamicToaster() {
   const { theme } = useThemeStore();
@@ -67,6 +68,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       {children}
       <DynamicToaster />
+      <ConfirmProvider />
     </QueryClientProvider>
   );
 }

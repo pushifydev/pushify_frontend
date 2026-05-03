@@ -68,6 +68,7 @@ import {
   useTestNotificationChannel,
   useServers,
 } from '@/hooks';
+import { useConfirm } from '@/hooks/useConfirm';
 import {
   useHealthCheckConfig,
   useHealthCheckLogs,
@@ -89,6 +90,7 @@ export default function ProjectDetailPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectId = params.id as string;
+  const confirm = useConfirm();
   const { t } = useTranslation();
 
   // Get tab from URL, default to 'overview'
@@ -138,7 +140,14 @@ export default function ProjectDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (confirm(t('projectDetail', 'deleteProjectConfirm'))) {
+    const ok = await confirm({
+      variant: 'danger',
+      title: t('projectDetail', 'deleteProject'),
+      description: t('projectDetail', 'deleteProjectConfirm'),
+      confirmText: t('common', 'delete'),
+      cancelText: t('common', 'cancel'),
+    });
+    if (ok) {
       deleteProjectMutation.mutate(projectId, {
         onSuccess: () => router.push('/dashboard/projects'),
       });
@@ -653,6 +662,7 @@ function EnvironmentTab({
   onBulkCreate: (data: { key: string; value: string }[]) => void;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
+  const confirm = useConfirm();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showPasteForm, setShowPasteForm] = useState(false);
   const [newKey, setNewKey] = useState('');
@@ -854,8 +864,15 @@ function EnvironmentTab({
                   {revealedIds.has(envVar.id) ? t('projectDetail', 'hide') : t('projectDetail', 'reveal')}
                 </button>
                 <button
-                  onClick={() => {
-                    if (confirm(t('projectDetail', 'deleteEnvVarConfirm'))) {
+                  onClick={async () => {
+                    const ok = await confirm({
+                      variant: 'danger',
+                      title: 'Delete environment variable',
+                      description: t('projectDetail', 'deleteEnvVarConfirm'),
+                      confirmText: t('common', 'delete'),
+                      cancelText: t('common', 'cancel'),
+                    });
+                    if (ok) {
                       onDelete(envVar.id);
                     }
                   }}
@@ -1073,6 +1090,7 @@ function DomainCard({
   getSslStatusBadge: (sslStatus: string | null) => { class: string; text: string };
   t: ReturnType<typeof useTranslation>['t'];
 }) {
+  const confirm = useConfirm();
   const { data: dnsSetup, isLoading: isDnsLoading } = useDnsSetup(
     projectId,
     isExpanded && !domain.verifiedAt ? domain.id : null
@@ -1154,10 +1172,15 @@ function DomainCard({
             </button>
           )}
           <button
-            onClick={() => {
-              if (confirm(t('projectDetail', 'removeDomainConfirm'))) {
-                onDelete(domain.id);
-              }
+            onClick={async () => {
+              const ok = await confirm({
+                variant: 'danger',
+                title: `${t('common', 'delete')} ${domain.domain}`,
+                description: t('projectDetail', 'removeDomainConfirm'),
+                confirmText: t('common', 'delete'),
+                cancelText: t('common', 'cancel'),
+              });
+              if (ok) onDelete(domain.id);
             }}
             className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
           >
@@ -2204,6 +2227,7 @@ function NotificationsTab({
     'deployment.failed',
   ]);
 
+  const confirm = useConfirm();
   const { data: channels = [], isLoading } = useNotificationChannels(projectId);
   const createChannel = useCreateNotificationChannel(projectId);
   const updateChannel = useUpdateNotificationChannel(projectId);
@@ -2263,7 +2287,14 @@ function NotificationsTab({
   };
 
   const handleDelete = async (channelId: string) => {
-    if (confirm('Are you sure you want to delete this notification channel?')) {
+    const ok = await confirm({
+      variant: 'danger',
+      title: 'Delete notification channel',
+      description: 'Are you sure you want to delete this notification channel?',
+      confirmText: t('common', 'delete'),
+      cancelText: t('common', 'cancel'),
+    });
+    if (ok) {
       await deleteChannel.mutateAsync(channelId);
     }
   };

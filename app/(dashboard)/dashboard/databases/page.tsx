@@ -23,6 +23,7 @@ import {
 import { DATABASE_STATUS_COLORS, DB_TYPE_COLORS, DB_TYPE_LABELS, STATUS_COLORS } from '@/lib/constants';
 import { formatStorage } from '@/lib/formatters';
 import { CreateDatabaseModal } from './components/CreateDatabaseModal';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import type { Database as DatabaseType, DatabaseStatus } from '@/lib/api';
 
 export default function DatabasesPage() {
@@ -35,12 +36,17 @@ export default function DatabasesPage() {
   const [actionMenu, setActionMenu]           = useState<string | null>(null);
   const [showCredentials, setShowCredentials] = useState<string | null>(null);
   const [copiedField, setCopiedField]         = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget]       = useState<DatabaseType | null>(null);
 
-  const handleDelete = async (id: string) => {
-    if (confirm(t('databases', 'deleteConfirm'))) {
-      setActionMenu(null);
-      await deleteDatabase.mutateAsync(id);
-    }
+  const handleDeleteClick = (db: DatabaseType) => {
+    setActionMenu(null);
+    setDeleteTarget(db);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    await deleteDatabase.mutateAsync(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
   const copyToClipboard = async (text: string, field: string) => {
@@ -152,7 +158,7 @@ export default function DatabasesPage() {
               setShowCredentials={setShowCredentials}
               copiedField={copiedField}
               copyToClipboard={copyToClipboard}
-              onDelete={handleDelete}
+              onDelete={handleDeleteClick}
               t={t}
             />
           ))}
@@ -160,6 +166,18 @@ export default function DatabasesPage() {
       )}
 
       <CreateDatabaseModal isOpen={createModalOpen} onClose={() => setCreateModalOpen(false)} servers={readyServers} />
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        variant="danger"
+        title={deleteTarget ? `${t('common', 'delete')} "${deleteTarget.name}"` : ''}
+        description={t('databases', 'deleteConfirm')}
+        confirmText={t('common', 'delete')}
+        cancelText={t('common', 'cancel')}
+        loading={deleteDatabase.isPending}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }
@@ -179,7 +197,7 @@ function DatabaseCard({
   setShowCredentials: (id: string | null) => void;
   copiedField: string | null;
   copyToClipboard: (text: string, field: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (db: DatabaseType) => void;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
   const accent = statusAccent[database.status];
@@ -251,7 +269,7 @@ function DatabaseCard({
               </button>
               <div className="my-1 mx-3" style={{ height: 1, background: 'var(--glass-divider-md)' }} />
               <button
-                onClick={() => onDelete(database.id)}
+                onClick={() => onDelete(database)}
                 className="w-full px-3 py-2 text-left text-sm flex items-center gap-2"
                 style={{ color: 'var(--status-error)' }}
               >
