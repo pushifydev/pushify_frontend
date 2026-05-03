@@ -211,13 +211,23 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
                           </span>
                         )}
                       </div>
+                      {envVar.label && (
+                        <p className="text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>
+                          {envVar.label}
+                        </p>
+                      )}
                       <input
                         type={envVar.type === 'password' ? 'password' : 'text'}
                         value={envVars[envVar.key] || ''}
                         onChange={(e) => setEnvVars({ ...envVars, [envVar.key]: e.target.value })}
-                        placeholder={envVar.description}
+                        placeholder={envVar.generate ? t('marketplace', 'envVarLeaveBlankToGenerate') : envVar.label}
                         className="input text-sm"
                       />
+                      {envVar.description && (
+                        <p className="text-[11px] mt-1.5 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                          {envVar.description}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
