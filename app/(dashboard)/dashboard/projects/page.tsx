@@ -19,6 +19,7 @@ import {
 import { useProjects, useDeleteProject, useTranslation } from '@/hooks';
 import { formatTimeAgo } from '@/lib/formatters';
 import { PROJECT_STATUS_COLORS } from '@/lib/constants';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import type { Project, ProjectStatus } from '@/lib/api';
 
 type FilterStatus = 'all' | ProjectStatus;
@@ -30,6 +31,7 @@ export default function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
 
   const handleStatusChange = async (projectId: string, status: ProjectStatus) => {
     const { projectsService } = await import('@/lib/api');
@@ -38,11 +40,15 @@ export default function ProjectsPage() {
     window.location.reload();
   };
 
-  const handleDelete = async (projectId: string) => {
-    if (confirm(t('projects', 'deleteConfirm'))) {
-      deleteProject.mutate(projectId);
-    }
+  const handleDeleteClick = (project: Project) => {
+    setDeleteTarget(project);
     setOpenDropdown(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    await deleteProject.mutateAsync(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
   const filteredProjects = projects.filter((project) => {
@@ -252,7 +258,7 @@ export default function ProjectsPage() {
                             </button>
                           )}
                           <button
-                            onClick={() => handleDelete(project.id)}
+                            onClick={() => handleDeleteClick(project)}
                             className="flex items-center gap-2 px-3 py-2 text-sm w-full text-left"
                             style={{ color: 'var(--status-error)' }}
                           >
@@ -316,6 +322,18 @@ export default function ProjectsPage() {
           })}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        variant="danger"
+        title={deleteTarget ? `${t('common', 'delete')} "${deleteTarget.name}"` : ''}
+        description={t('projects', 'deleteConfirm')}
+        confirmText={t('common', 'delete')}
+        cancelText={t('common', 'cancel')}
+        loading={deleteProject.isPending}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }
