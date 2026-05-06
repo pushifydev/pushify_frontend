@@ -46,7 +46,7 @@ export function LandingFooter() {
     [t("landing", "company")]: [
       { label: t("legal", "about"), href: "/about" },
       { label: t("landing", "blog"), href: "#" },
-      { label: t("landing", "contact"), href: "mailto:hello@pushify.dev" },
+      { label: t("landing", "contact"), href: "mailto:support@pushify.dev" },
     ],
     [t("legal", "legal")]: [
       { label: t("legal", "privacy"), href: "/privacy" },
@@ -64,7 +64,7 @@ export function LandingFooter() {
     { icon: <Twitter className="w-4 h-4" />, href: "#", label: "Twitter" },
     {
       icon: <Mail className="w-4 h-4" />,
-      href: "mailto:hello@pushify.dev",
+      href: "mailto:support@pushify.dev",
       label: "Email",
     },
   ];

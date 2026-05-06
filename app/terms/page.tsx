@@ -1,8 +1,134 @@
 'use client';
 
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
+import { useTranslation } from '@/hooks';
 
 export default function TermsPage() {
+  const { locale } = useTranslation();
+  return locale === 'tr' ? <TermsTR /> : <TermsEN />;
+}
+
+function TermsEN() {
+  return (
+    <LegalPageLayout title="Terms of Service" lastUpdated="May 3, 2026">
+      <h2>1. Parties</h2>
+      <p>This Agreement is concluded between the following parties:</p>
+      <ul>
+        <li><strong>SERVICE PROVIDER:</strong> Pushify (pushify.dev)</li>
+        <li><strong>USER:</strong> The natural or legal person who registers and purchases services from this site.</li>
+      </ul>
+
+      <h2>2. Subject of the Agreement</h2>
+      <p>
+        This Agreement governs the rights and obligations of the parties regarding the digital
+        services purchased and delivered electronically by the User. It is subject to applicable
+        consumer protection regulations.
+      </p>
+
+      <h2>3. Service Information</h2>
+      <p>Pushify provides cloud-based deployment and server management services to its users.</p>
+      <ul>
+        <li><strong>Free:</strong> No cost, limited features</li>
+        <li><strong>Hobby:</strong> $10/month — individual projects</li>
+        <li><strong>Pro:</strong> $30/month — professional teams</li>
+        <li><strong>Business:</strong> $100/month — enterprise use</li>
+      </ul>
+      <p>All prices include applicable taxes. Current pricing is published at <a href="/pricing">/pricing</a>.</p>
+
+      <h2>4. General Provisions</h2>
+      <p>
+        The User declares that they have read and understood the qualities of the Service, sales
+        price, payment method, and all preliminary information regarding performance, and have
+        provided the necessary confirmation electronically.
+      </p>
+
+      <h2>5. Payment</h2>
+      <p>
+        Payments are processed via the <strong>iyzico</strong> infrastructure on Visa, Mastercard,
+        American Express, and Troy networks. All payments are encrypted with SSL and processed
+        in a PCI-DSS compliant manner. Card details are never stored on Pushify servers.
+      </p>
+
+      <h2>6. Service Delivery</h2>
+      <p>
+        Service is activated immediately after payment confirmation. As the service is digital,
+        there is no physical delivery. Your subscription auto-renews monthly or yearly depending
+        on the plan you choose.
+      </p>
+
+      <h2>7. Right of Withdrawal</h2>
+      <p>
+        Per applicable Distance Sales regulations, the right of withdrawal expires once
+        performance begins on digital content with the consumer&apos;s consent. That said,
+        Pushify offers a <strong>14-day full refund</strong> from your first purchase if you are
+        not satisfied. See <a href="/refund">Refund Policy</a> for details.
+      </p>
+
+      <h2>8. Obligations of the Parties</h2>
+      <h3>8.1. Provider Obligations</h3>
+      <ul>
+        <li>Provide the service as described in this Agreement</li>
+        <li>Strive to meet the 99.9% SLA target</li>
+        <li>Keep customer data confidential and backed up</li>
+        <li>Provide customer support</li>
+      </ul>
+      <h3>8.2. User Obligations</h3>
+      <ul>
+        <li>Keep your account and password secure</li>
+        <li>Use the service for lawful purposes</li>
+        <li>Respect third-party rights</li>
+        <li>Pay your subscription on time</li>
+      </ul>
+
+      <h2>9. Prohibited Use</h2>
+      <p>Pushify may not be used for:</p>
+      <ul>
+        <li>Hosting or distributing illegal content</li>
+        <li>Spam or malware distribution</li>
+        <li>Sharing copyright-infringing material</li>
+        <li>DDoS attacks, malicious software, or cryptocurrency mining</li>
+        <li>Unauthorized access attempts to third-party systems</li>
+      </ul>
+      <p>
+        In case of violation, Pushify reserves the right to suspend or terminate your account
+        without prior notice.
+      </p>
+
+      <h2>10. Limitation of Liability</h2>
+      <p>
+        Pushify does not guarantee that the service will be uninterrupted or error-free. We accept
+        no liability for outages caused by upstream providers, force majeure, natural disasters,
+        war, terrorism, or similar events. Pushify&apos;s total liability is limited to the fees
+        paid in the last 12 months.
+      </p>
+
+      <h2>11. Subscription Termination</h2>
+      <ul>
+        <li>You can cancel your subscription at any time</li>
+        <li>You can use the service until the end of the current billing period after cancellation</li>
+        <li>When your account is deleted, your data is removed in accordance with our Privacy Policy</li>
+      </ul>
+
+      <h2>12. Dispute Resolution</h2>
+      <p>
+        The laws of the Republic of Türkiye apply to disputes arising from this Agreement. Consumer
+        arbitration committees and consumer courts have jurisdiction; applications can be made
+        based on values determined annually by the Ministry of Industry and Trade.
+      </p>
+
+      <h2>13. Effective Date</h2>
+      <p>
+        The User declares that they have read all the terms of the Agreement and approved them
+        electronically. The Agreement comes into effect at the moment of approval.
+      </p>
+
+      <h2>14. Contact</h2>
+      <p>For all questions related to this Agreement: <a href="mailto:legal@pushify.dev">legal@pushify.dev</a></p>
+    </LegalPageLayout>
+  );
+}
+
+function TermsTR() {
   return (
     <LegalPageLayout title="Mesafeli Satış Sözleşmesi">
       <h2>1. Taraflar</h2>
@@ -11,13 +137,8 @@ export default function TermsPage() {
         arasında akdedilmiştir:
       </p>
       <ul>
-        <li>
-          <strong>SATICI:</strong> Pushify (pushify.dev)
-        </li>
-        <li>
-          <strong>ALICI:</strong> İşbu siteye üye olarak hizmet satın alan gerçek
-          veya tüzel kişi.
-        </li>
+        <li><strong>SATICI:</strong> Pushify (pushify.dev)</li>
+        <li><strong>ALICI:</strong> İşbu siteye üye olarak hizmet satın alan gerçek veya tüzel kişi.</li>
       </ul>
 
       <h2>2. Sözleşmenin Konusu</h2>
@@ -35,22 +156,13 @@ export default function TermsPage() {
         yönetim hizmetleri sunar. Hizmet planları:
       </p>
       <ul>
-        <li>
-          <strong>Free:</strong> Ücretsiz, sınırlı özellikler
-        </li>
-        <li>
-          <strong>Hobby:</strong> Aylık 10 USD &mdash; bireysel projeler
-        </li>
-        <li>
-          <strong>Pro:</strong> Aylık 30 USD &mdash; profesyonel ekipler
-        </li>
-        <li>
-          <strong>Business:</strong> Aylık 100 USD &mdash; kurumsal kullanım
-        </li>
+        <li><strong>Free:</strong> Ücretsiz, sınırlı özellikler</li>
+        <li><strong>Hobby:</strong> Aylık 10 USD &mdash; bireysel projeler</li>
+        <li><strong>Pro:</strong> Aylık 30 USD &mdash; profesyonel ekipler</li>
+        <li><strong>Business:</strong> Aylık 100 USD &mdash; kurumsal kullanım</li>
       </ul>
       <p>
-        Tüm fiyatlara KDV dahildir. Güncel fiyatlar{' '}
-        <a href="/pricing">/pricing</a> sayfasında yayınlanır.
+        Tüm fiyatlara KDV dahildir. Güncel fiyatlar <a href="/pricing">/pricing</a> sayfasında yayınlanır.
       </p>
 
       <h2>4. Genel Hükümler</h2>
@@ -93,7 +205,6 @@ export default function TermsPage() {
         <li>Müşteri verilerini gizli tutmak ve yedeklemek</li>
         <li>Müşteri destek hizmeti sunmak</li>
       </ul>
-
       <h3>8.2. Alıcının Yükümlülükleri</h3>
       <ul>
         <li>Hesabını ve şifresini güvenli tutmak</li>
@@ -147,8 +258,7 @@ export default function TermsPage() {
 
       <h2>14. İletişim</h2>
       <p>
-        Sözleşme ile ilgili tüm sorularınız için:{' '}
-        <a href="mailto:legal@pushify.dev">legal@pushify.dev</a>
+        Sözleşme ile ilgili tüm sorularınız için: <a href="mailto:legal@pushify.dev">legal@pushify.dev</a>
       </p>
     </LegalPageLayout>
   );
