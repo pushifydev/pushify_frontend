@@ -221,15 +221,22 @@ export default function PlansPage() {
                       className="text-3xl font-bold tracking-tight"
                       style={{ color: 'var(--text-primary)' }}
                     >
-                      ${plan.price}
+                      {plan.price < 0 ? 'Custom' : `$${plan.price}`}
                     </span>
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                      /mo
-                    </span>
+                    {plan.price >= 0 && (
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        /mo
+                      </span>
+                    )}
                   </div>
                   {plan.price === 0 && (
                     <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                       Free forever
+                    </span>
+                  )}
+                  {plan.price < 0 && (
+                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                      Contact us for pricing
                     </span>
                   )}
                 </div>

@@ -106,7 +106,8 @@ export function PricingSection() {
     const plan = apiPlans[key];
     if (!plan) return null;
     const meta = PLAN_META[key];
-    const yearlyPrice = Math.round(plan.price * (1 - meta.yearlyDiscount));
+    // For custom-priced plans (enterprise = -1) keep the sentinel value as-is
+    const yearlyPrice = plan.price < 0 ? plan.price : Math.round(plan.price * (1 - meta.yearlyDiscount));
     return { key, ...meta, price: plan.price, yearlyPrice, limits: plan.limits };
   }).filter(Boolean) as Array<{ key: PlanType; nameKey: string; descKey: string; buttonKey: string; href: string; isPopular: boolean; accent: string; price: number; yearlyPrice: number; limits: PlanLimits }>;
 
@@ -193,6 +194,8 @@ export function PricingSection() {
                 <span className="text-4xl font-bold text-[var(--text-primary)]">
                   {plan.price === 0 ? (
                     '$0'
+                  ) : plan.price < 0 ? (
+                    t('landing', 'custom' as any)
                   ) : (
                     <NumberFlow
                       value={isMonthly ? plan.price : plan.yearlyPrice}
@@ -207,7 +210,13 @@ export function PricingSection() {
                 )}
               </div>
               <p className="text-xs text-[var(--text-muted)] mb-5">
-                {plan.price === 0 ? t('landing', 'freeForever') : isMonthly ? t('landing', 'billedMonthly') : t('landing', 'billedAnnually')}
+                {plan.price === 0
+                  ? t('landing', 'freeForever')
+                  : plan.price < 0
+                    ? t('landing', 'contactForPricing' as any)
+                    : isMonthly
+                      ? t('landing', 'billedMonthly')
+                      : t('landing', 'billedAnnually')}
               </p>
 
               {/* Quick highlights */}

@@ -180,6 +180,16 @@ export interface TranslationKeys {
     github: string;
     status: string;
   };
+  legal: {
+    legal: string;
+    about: string;
+    privacy: string;
+    terms: string;
+    refund: string;
+    cookies: string;
+    securePayment: string;
+    ssl: string;
+  };
   landing: {
     // Navigation
     features: string;
@@ -262,6 +272,8 @@ export interface TranslationKeys {
     freeForever: string;
     billedMonthly: string;
     billedAnnually: string;
+    custom: string;
+    contactForPricing: string;
     pricingBottomNote: string;
     // Plan names
     planFree: string;
@@ -1401,6 +1413,16 @@ export const en: TranslationKeys = {
     github: 'GitHub',
     status: 'Status',
   },
+  legal: {
+    legal: 'Legal',
+    about: 'About',
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Service',
+    refund: 'Refund Policy',
+    cookies: 'Cookie Policy',
+    securePayment: 'Secure Payment',
+    ssl: 'SSL Secured',
+  },
   landing: {
     // Navigation
     features: 'Features',
@@ -1483,6 +1505,8 @@ export const en: TranslationKeys = {
     freeForever: 'Free forever',
     billedMonthly: 'billed monthly',
     billedAnnually: 'billed annually',
+    custom: 'Custom',
+    contactForPricing: 'Contact us for pricing',
     pricingBottomNote: 'All plans include SSL certificates, CI/CD pipelines, real-time monitoring, and community support.',
     // Plan names
     planFree: 'Free',

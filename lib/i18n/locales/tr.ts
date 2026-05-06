@@ -181,6 +181,16 @@ export const tr: TranslationKeys = {
     github: 'GitHub',
     status: 'Durum',
   },
+  legal: {
+    legal: 'Yasal',
+    about: 'Hakkımızda',
+    privacy: 'Gizlilik Sözleşmesi',
+    terms: 'Mesafeli Satış Sözleşmesi',
+    refund: 'Teslimat ve İade Şartları',
+    cookies: 'Çerez Politikası',
+    securePayment: 'Güvenli Ödeme',
+    ssl: 'SSL Sertifikalı',
+  },
   landing: {
     // Navigation
     features: 'Özellikler',
@@ -263,6 +273,8 @@ export const tr: TranslationKeys = {
     freeForever: 'Sonsuza kadar ücretsiz',
     billedMonthly: 'aylık faturalandırılır',
     billedAnnually: 'yıllık faturalandırılır',
+    custom: 'Özel',
+    contactForPricing: 'Fiyat için bize ulaşın',
     pricingBottomNote: 'Tüm planlar SSL sertifikaları, CI/CD pipeline\'ları, gerçek zamanlı izleme ve topluluk desteği içerir.',
     // Plan names
     planFree: 'Ücretsiz',
