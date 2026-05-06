@@ -1,0 +1,47 @@
+# Pushify - robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /accept-invitation
+Disallow: /cli/
+Disallow: /auth/
+Disallow: /_next/
+
+# AI Search Crawlers - Allowed
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: Google-Extended
+Allow: /
+
+# Training-only bots - Block
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+Sitemap: https://pushify.dev/sitemap.xml

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+// useState/useEffect kept for useTypewriter hook
 import Link from 'next/link';
 import { Rocket, ArrowRight, GitBranch, Terminal, Github } from 'lucide-react';
 import { useTranslation } from '@/hooks';
@@ -38,12 +39,6 @@ function useTypewriter(lines: string[], typingSpeed = 50, lineDelay = 800) {
 
 export function HeroSection() {
   const { t } = useTranslation();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setMounted(true));
-    return () => cancelAnimationFrame(frame);
-  }, []);
 
   const terminalLines = [
     '$ npx pushify init',
@@ -67,7 +62,7 @@ export function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-32">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left — content */}
-          <div className={`transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="animate-[fadeUp_0.7s_ease-out_both]">
             {/* Badge */}
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--glass-border)] mb-8">
               <span className="relative flex h-2 w-2">
@@ -117,7 +112,8 @@ export function HeroSection() {
               ].map((stat, i) => (
                 <div
                   key={i}
-                  className={`transition-all duration-700 delay-${(i + 1) * 100} ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                  className="animate-[fadeUp_0.7s_ease-out_both]"
+                  style={{ animationDelay: `${(i + 1) * 100}ms` }}
                 >
                   <div className="text-xl md:text-2xl font-bold text-[var(--accent-cyan)] terminal-text">{stat.value}</div>
                   <div className="text-xs text-[var(--text-muted)] mt-0.5">{stat.label}</div>
@@ -127,7 +123,7 @@ export function HeroSection() {
           </div>
 
           {/* Right — Terminal */}
-          <div className={`relative transition-all duration-700 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="relative animate-[fadeUp_0.7s_ease-out_0.2s_both]">
             <div className="relative rounded-2xl overflow-hidden bg-[var(--bg-secondary)] border border-[var(--glass-border-md)] shadow-2xl shadow-black/20">
               {/* Terminal header */}
               <div className="flex items-center justify-between px-4 py-3 bg-[var(--bg-tertiary)] border-b border-[var(--glass-border)]">

@@ -211,6 +211,12 @@ html.light ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
 .row-hover { transition: background var(--transition-fast); }
 .row-hover:hover { background: var(--hover-overlay-md) !important; }
 
+/* ─── SEO-safe fade-up (content visible in SSR, animates on paint) ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(2rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ─── Animations ─────────────────────────────── */
 @keyframes pulse-glow {
   0%, 100% { opacity: 1; }

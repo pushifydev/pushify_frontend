@@ -123,7 +123,7 @@ function TermsEN() {
       </p>
 
       <h2>14. Contact</h2>
-      <p>For all questions related to this Agreement: <a href="mailto:legal@pushify.dev">legal@pushify.dev</a></p>
+      <p>For all questions related to this Agreement: <a href="mailto:support@pushify.dev">support@pushify.dev</a></p>
     </LegalPageLayout>
   );
 }
@@ -258,7 +258,7 @@ function TermsTR() {
 
       <h2>14. İletişim</h2>
       <p>
-        Sözleşme ile ilgili tüm sorularınız için: <a href="mailto:legal@pushify.dev">legal@pushify.dev</a>
+        Sözleşme ile ilgili tüm sorularınız için: <a href="mailto:support@pushify.dev">support@pushify.dev</a>
       </p>
     </LegalPageLayout>
   );

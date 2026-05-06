@@ -43,7 +43,7 @@ function RefundEN() {
 
       <h2>4. How to Request a Refund</h2>
       <ol style={{ listStyle: 'decimal', paddingLeft: '1.5rem', marginBottom: '1rem' }}>
-        <li>Email <a href="mailto:billing@pushify.dev">billing@pushify.dev</a></li>
+        <li>Email <a href="mailto:support@pushify.dev">support@pushify.dev</a></li>
         <li>Include your account email, invoice number, and reason</li>
         <li>Our team reviews your request within <strong>2 business days</strong></li>
         <li>If approved, the refund process is initiated</li>
@@ -99,7 +99,7 @@ function RefundEN() {
 
       <h2>10. Contact</h2>
       <p>
-        For billing, refund, or cancellation: <a href="mailto:billing@pushify.dev">billing@pushify.dev</a>
+        For billing, refund, or cancellation: <a href="mailto:support@pushify.dev">support@pushify.dev</a>
       </p>
     </LegalPageLayout>
   );
@@ -142,7 +142,7 @@ function RefundTR() {
 
       <h2>4. İade Talebi Nasıl Yapılır?</h2>
       <ol style={{ listStyle: 'decimal', paddingLeft: '1.5rem', marginBottom: '1rem' }}>
-        <li><a href="mailto:billing@pushify.dev">billing@pushify.dev</a> adresine e-posta gönderin</li>
+        <li><a href="mailto:support@pushify.dev">support@pushify.dev</a> adresine e-posta gönderin</li>
         <li>Hesap e-postanızı, fatura numaranızı ve iade nedeninizi yazın</li>
         <li>Ekibimiz <strong>2 iş günü içinde</strong> talebinizi inceler</li>
         <li>İade onaylanırsa süreç başlatılır</li>
@@ -198,7 +198,7 @@ function RefundTR() {
 
       <h2>10. İletişim</h2>
       <p>
-        Faturalama, iade veya iptal süreçleri için: <a href="mailto:billing@pushify.dev">billing@pushify.dev</a>
+        Faturalama, iade veya iptal süreçleri için: <a href="mailto:support@pushify.dev">support@pushify.dev</a>
       </p>
     </LegalPageLayout>
   );

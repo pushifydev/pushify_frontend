@@ -97,7 +97,7 @@ function PrivacyEN() {
         <li>Request data portability</li>
       </ul>
       <p>
-        To exercise these rights please contact <a href="mailto:privacy@pushify.dev">privacy@pushify.dev</a>.
+        To exercise these rights please contact <a href="mailto:support@pushify.dev">support@pushify.dev</a>.
       </p>
 
       <h2>8. Children&apos;s Privacy</h2>
@@ -114,7 +114,7 @@ function PrivacyEN() {
 
       <h2>10. Contact</h2>
       <p>
-        For all privacy-related questions: <a href="mailto:privacy@pushify.dev">privacy@pushify.dev</a>
+        For all privacy-related questions: <a href="mailto:support@pushify.dev">support@pushify.dev</a>
       </p>
     </LegalPageLayout>
   );
@@ -212,7 +212,7 @@ function PrivacyTR() {
         <li>Veri taşınabilirliği talebinde bulunma</li>
       </ul>
       <p>
-        Bu haklarınızı kullanmak için <a href="mailto:privacy@pushify.dev">privacy@pushify.dev</a> adresine başvurabilirsiniz.
+        Bu haklarınızı kullanmak için <a href="mailto:support@pushify.dev">support@pushify.dev</a> adresine başvurabilirsiniz.
       </p>
 
       <h2>8. Çocukların Gizliliği</h2>
@@ -229,7 +229,7 @@ function PrivacyTR() {
 
       <h2>10. İletişim</h2>
       <p>
-        Gizlilik ile ilgili tüm sorularınız için: <a href="mailto:privacy@pushify.dev">privacy@pushify.dev</a>
+        Gizlilik ile ilgili tüm sorularınız için: <a href="mailto:support@pushify.dev">support@pushify.dev</a>
       </p>
     </LegalPageLayout>
   );
