@@ -273,6 +273,8 @@ export const tr: TranslationKeys = {
     freeForever: 'Sonsuza kadar ücretsiz',
     billedMonthly: 'aylık faturalandırılır',
     billedAnnually: 'yıllık faturalandırılır',
+    custom: 'Özel',
+    contactForPricing: 'Fiyat için bize ulaşın',
     pricingBottomNote: 'Tüm planlar SSL sertifikaları, CI/CD pipeline\'ları, gerçek zamanlı izleme ve topluluk desteği içerir.',
     // Plan names
     planFree: 'Ücretsiz',

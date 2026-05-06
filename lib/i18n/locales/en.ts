@@ -272,6 +272,8 @@ export interface TranslationKeys {
     freeForever: string;
     billedMonthly: string;
     billedAnnually: string;
+    custom: string;
+    contactForPricing: string;
     pricingBottomNote: string;
     // Plan names
     planFree: string;
@@ -1503,6 +1505,8 @@ export const en: TranslationKeys = {
     freeForever: 'Free forever',
     billedMonthly: 'billed monthly',
     billedAnnually: 'billed annually',
+    custom: 'Custom',
+    contactForPricing: 'Contact us for pricing',
     pricingBottomNote: 'All plans include SSL certificates, CI/CD pipelines, real-time monitoring, and community support.',
     // Plan names
     planFree: 'Free',
