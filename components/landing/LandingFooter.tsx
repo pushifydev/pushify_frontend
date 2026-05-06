@@ -35,7 +35,7 @@ export function LandingFooter() {
       },
     ],
     [t("landing", "resources")]: [
-      { label: t("branding", "documentation"), href: "/docs", external: true },
+      { label: t("branding", "documentation"), href: "/docs" },
       {
         label: t("branding", "github"),
         href: "https://github.com/pushifydev",
