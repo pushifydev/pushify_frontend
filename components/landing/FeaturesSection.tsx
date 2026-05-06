@@ -208,26 +208,21 @@ export function FeaturesSection() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[800px] h-[500px] bg-[var(--accent-cyan)] rounded-full blur-[280px] opacity-[0.05]" />
         <div className="absolute inset-0 grid-pattern opacity-30" />
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="relative z-10 max-w-4xl mx-auto px-6 text-center"
-        >
-          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent-cyan)]/10 border border-[var(--accent-cyan)]/20 mb-6">
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent-cyan)]/10 border border-[var(--accent-cyan)]/20 mb-6 animate-[fadeUp_0.6s_ease-out_both]">
             <Zap className="w-3.5 h-3.5 text-[var(--accent-cyan)]" />
             <span className="text-xs text-[var(--accent-cyan)] terminal-text uppercase tracking-wider">{t('landing', 'platform')}</span>
-          </motion.div>
+          </div>
 
-          <motion.h1 variants={fadeUp} className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[-0.035em] leading-[1.1] mb-5">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[-0.035em] leading-[1.1] mb-5 animate-[fadeUp_0.6s_ease-out_0.08s_both]">
             {t('landing', 'everythingYouNeedTo')}<br />
             <span className="gradient-text">{t('landing', 'shipWithConfidence')}</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p variants={fadeUp} className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed animate-[fadeUp_0.6s_ease-out_0.16s_both]">
             {t('landing', 'featuresPageDescription')}
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
       </section>
 
       {/* ── Hero Features (alternating) ── */}

@@ -1,0 +1,53 @@
+# Pushify
+
+> Pushify is an open-source cloud deployment platform that lets developers
+> deploy web applications to their own VPS servers in under 60 seconds,
+> without configuration. Unlike Vercel or Netlify, Pushify runs on servers
+> you own — provisioned through Hetzner Cloud or any custom VPS — so your
+> data never touches third-party infrastructure. MIT-licensed. Supports 20+
+> frameworks including Next.js, React, Vue.js, Nuxt, Svelte, Astro, Remix,
+> Node.js, Python, Go, and Laravel.
+
+## Key Pages
+
+- [Home](https://pushify.dev): Platform overview and value proposition
+- [Features](https://pushify.dev/features): Full feature set — deploy, servers, databases, CLI, monitoring
+- [Pricing](https://pushify.dev/pricing): Free tier and Pro plans
+- [Docs](https://pushify.dev/docs): REST API reference, authentication, CI/CD integration
+- [Open Source](https://pushify.dev/open-source): MIT license, self-hosting, contribution guide
+- [About](https://pushify.dev/about): Company background, mission, values
+- [GitHub](https://github.com/pushifydev): Source code, issues, contributions
+
+## Core Features
+
+- Push-to-deploy from GitHub with framework auto-detection
+- Managed VPS servers via Hetzner Cloud (5+ regions) or custom servers
+- One-click databases: PostgreSQL, MySQL, Redis, MongoDB with automated backups
+- CLI tool for terminal-based deployments (npm: pushify-cli)
+- Automatic SSL certificates via Let's Encrypt
+- Zero-downtime deploys with instant rollbacks
+- Team collaboration and role-based access
+- Marketplace with 24+ ready-to-deploy apps (WordPress, Supabase, Appwrite, etc.)
+- Real-time monitoring and server metrics
+
+## Alternatives Comparison
+
+Pushify is comparable to Vercel, Railway, Render, and Coolify, with the
+key distinction of running on user-owned infrastructure. Unlike managed
+platforms, Pushify gives developers full control over their servers and data.
+
+## CLI Installation
+
+```
+npm install -g pushify-cli
+```
+
+## License
+
+MIT License. Self-hosting is explicitly permitted and encouraged.
+
+## Contact
+
+- Website: https://pushify.dev
+- Email: support@pushify.dev
+- GitHub: https://github.com/pushifydev
