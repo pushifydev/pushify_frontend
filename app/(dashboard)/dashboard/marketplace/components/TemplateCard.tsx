@@ -10,7 +10,7 @@ import {
 import type { MarketplaceTemplate } from '@/lib/api';
 
 const CATEGORY_ACCENTS: Record<string, string> = {
-  cms: '#22d3ee',
+  cms: '#6366f1',
   automation: '#a78bfa',
   monitoring: '#22c55e',
   storage: '#f59e0b',
@@ -42,7 +42,7 @@ interface TemplateCardProps {
 }
 
 export default function TemplateCard({ template, index, deployLabel }: TemplateCardProps) {
-  const accent = CATEGORY_ACCENTS[template.category] || '#22d3ee';
+  const accent = CATEGORY_ACCENTS[template.category] || '#6366f1';
   const IconComponent = ICON_MAP[template.icon] || Package;
 
   return (

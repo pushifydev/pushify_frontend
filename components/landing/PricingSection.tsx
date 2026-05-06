@@ -21,7 +21,7 @@ const PLAN_ORDER: PlanType[] = ['free', 'hobby', 'pro', 'business', 'enterprise'
 
 const PLAN_META: Record<PlanType, { nameKey: string; descKey: string; buttonKey: string; href: string; isPopular: boolean; accent: string; yearlyDiscount: number }> = {
   free:       { nameKey: 'planFree', descKey: 'planFreeDesc', buttonKey: 'planFreeButton', href: '/register', isPopular: false, accent: 'var(--text-muted)', yearlyDiscount: 0 },
-  hobby:      { nameKey: 'planHobby', descKey: 'planHobbyDesc', buttonKey: 'planHobbyButton', href: '/register?plan=hobby', isPopular: false, accent: '#22d3ee', yearlyDiscount: 0.2 },
+  hobby:      { nameKey: 'planHobby', descKey: 'planHobbyDesc', buttonKey: 'planHobbyButton', href: '/register?plan=hobby', isPopular: false, accent: '#6366f1', yearlyDiscount: 0.2 },
   pro:        { nameKey: 'planPro', descKey: 'planProDesc', buttonKey: 'planProButton', href: '/register?plan=pro', isPopular: true, accent: '#a78bfa', yearlyDiscount: 0.2 },
   business:   { nameKey: 'planBusiness', descKey: 'planBusinessDesc', buttonKey: 'planBusinessButton', href: '/register?plan=business', isPopular: false, accent: '#f59e0b', yearlyDiscount: 0.2 },
   enterprise: { nameKey: 'planEnterprise', descKey: 'planEnterpriseDesc', buttonKey: 'planEnterpriseButton', href: '/register?plan=enterprise', isPopular: false, accent: '#22c55e', yearlyDiscount: 0.2 },
@@ -83,7 +83,7 @@ export function PricingSection() {
         particleCount: 50,
         spread: 60,
         origin: { x: x / window.innerWidth, y: y / window.innerHeight },
-        colors: ['#22d3ee', '#a78bfa', '#fbbf24', '#34d399'],
+        colors: ['#6366f1', '#a78bfa', '#fbbf24', '#34d399'],
         ticks: 200,
         gravity: 1.2,
         decay: 0.94,
@@ -179,7 +179,7 @@ export function PricingSection() {
               )}
             >
               {plan.isPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--accent-cyan)] text-[var(--bg-primary)]">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--accent-cyan)] text-white">
                   <Star className="w-3 h-3 fill-current" />
                   <span className="text-xs font-bold">{t('landing', 'mostPopular')}</span>
                 </div>
@@ -254,7 +254,7 @@ export function PricingSection() {
                 className={cn(
                   'w-full h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200',
                   plan.isPopular
-                    ? 'bg-[var(--accent-cyan)] text-[var(--bg-primary)] hover:brightness-110 shadow-md shadow-[var(--accent-cyan)]/20'
+                    ? 'bg-[var(--accent-cyan)] text-white hover:bg-[var(--accent-cyan-dim)] shadow-md shadow-[var(--accent-cyan)]/30'
                     : 'bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--glass-border)] hover:border-[var(--glass-border-strong)] hover:bg-[var(--hover-overlay-lg)]',
                 )}
               >

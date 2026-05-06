@@ -119,7 +119,7 @@ const variantStyles: Record<string, { bg: string; border: string; color: string 
   warning: { bg: 'rgba(234,179,8,0.1)', border: 'rgba(234,179,8,0.2)', color: '#eab308' },
   error:   { bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', color: '#ef4444' },
   success: { bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.2)', color: '#22c55e' },
-  info:    { bg: 'rgba(34,211,238,0.1)', border: 'rgba(34,211,238,0.2)', color: '#22d3ee' },
+  info:    { bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.2)', color: '#6366f1' },
 };
 
 export function AlertBox({ variant, children, icon }: AlertBoxProps) {

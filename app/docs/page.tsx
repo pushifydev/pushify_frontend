@@ -111,7 +111,7 @@ export default function DocsPage() {
               <Menu className="w-5 h-5 text-white/60" />
             </button>
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center">
                 <Zap className="w-4 h-4 text-[#0a0a0f]" />
               </div>
               <span className="text-base font-bold text-white">Pushify</span>
@@ -127,7 +127,7 @@ export default function DocsPage() {
             </Link>
             <Link
               href="/dashboard/settings"
-              className="px-3.5 py-1.5 rounded-lg bg-cyan-500 text-[#0a0a0f] text-sm font-medium hover:bg-cyan-400 transition-colors"
+              className="px-3.5 py-1.5 rounded-lg bg-indigo-500 text-[#0a0a0f] text-sm font-medium hover:bg-indigo-400 transition-colors"
             >
               Get API Key
             </Link>
@@ -170,7 +170,7 @@ export default function DocsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.06] text-sm text-white/80 placeholder:text-white/25 focus:outline-none focus:border-cyan-500/30 transition-colors"
+                className="w-full pl-9 pr-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.06] text-sm text-white/80 placeholder:text-white/25 focus:outline-none focus:border-indigo-500/30 transition-colors"
               />
             </div>
 
@@ -191,7 +191,7 @@ export default function DocsPage() {
                           onClick={() => navigate(item.id)}
                           className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-all text-sm ${
                             isActive
-                              ? 'bg-cyan-500/10 text-cyan-400'
+                              ? 'bg-indigo-500/10 text-indigo-400'
                               : 'text-white/45 hover:text-white/70 hover:bg-white/[0.03]'
                           }`}
                         >
@@ -241,7 +241,7 @@ function IntroSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
   return (
     <div className="space-y-10">
       <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium mb-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-4">
           <Zap className="w-3 h-3" /> REST API
         </div>
         <h1 className="text-4xl font-bold text-white mb-4">Pushify API Documentation</h1>
@@ -258,7 +258,7 @@ function IntroSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
             icon: Terminal,
             title: 'RESTful API',
             desc: 'Simple REST endpoints with JSON responses',
-            color: 'text-cyan-400 bg-cyan-500/10',
+            color: 'text-indigo-400 bg-indigo-500/10',
           },
           {
             icon: Shield,
@@ -300,7 +300,7 @@ function IntroSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
               desc: (
                 <>
                   Go to{' '}
-                  <Link href="/dashboard/settings" className="text-cyan-400 hover:underline">
+                  <Link href="/dashboard/settings" className="text-indigo-400 hover:underline">
                     Settings &rarr; API Keys
                   </Link>{' '}
                   and create a key with the required scopes.
@@ -319,7 +319,7 @@ function IntroSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
             },
           ].map((s) => (
             <div key={s.step} className="flex items-start gap-4">
-              <div className="w-7 h-7 rounded-full bg-cyan-500 flex items-center justify-center text-[#0a0a0f] font-bold text-xs shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-[#0a0a0f] font-bold text-xs shrink-0 mt-0.5">
                 {s.step}
               </div>
               <div>
@@ -346,12 +346,12 @@ function IntroSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
               onClick={() => onNavigate(link.section)}
               className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-colors text-left group"
             >
-              <link.icon className="w-5 h-5 text-white/30 group-hover:text-cyan-400 transition-colors" />
+              <link.icon className="w-5 h-5 text-white/30 group-hover:text-indigo-400 transition-colors" />
               <div className="flex-1 min-w-0">
                 <h4 className="text-sm font-medium text-white">{link.label}</h4>
                 <p className="text-xs text-white/35">{link.desc}</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-cyan-400 transition-colors" />
+              <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-indigo-400 transition-colors" />
             </button>
           ))}
         </div>
@@ -407,7 +407,7 @@ function AuthSection() {
               key={item.scope}
               className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-white/[0.02] border border-white/[0.06]"
             >
-              <code className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 text-xs font-mono shrink-0">
+              <code className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 text-xs font-mono shrink-0">
                 {item.scope}
               </code>
               <span className="text-white/40 text-xs">{item.desc}</span>
@@ -1161,7 +1161,7 @@ function WebhooksSection() {
             { step: '3', title: 'Auto Deploy', desc: 'Pushify receives the webhook and starts a deployment automatically.' },
           ].map((s) => (
             <div key={s.step} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-              <div className="w-7 h-7 rounded-full bg-cyan-500 flex items-center justify-center text-[#0a0a0f] font-bold text-xs shrink-0">
+              <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-[#0a0a0f] font-bold text-xs shrink-0">
                 {s.step}
               </div>
               <div>
@@ -1229,7 +1229,7 @@ jobs:
 
       <Callout type="info" title="Webhook Secret">
         Webhook payloads are signed with HMAC-SHA256. Retrieve your webhook secret via the
-        project settings or the <code className="px-1.5 py-0.5 rounded bg-white/10 text-cyan-400 text-xs">GET /projects/:id/webhook</code> endpoint.
+        project settings or the <code className="px-1.5 py-0.5 rounded bg-white/10 text-indigo-400 text-xs">GET /projects/:id/webhook</code> endpoint.
       </Callout>
     </div>
   );
@@ -1343,9 +1343,9 @@ function ErrorsSection() {
         </div>
         <p className="text-xs text-white/30 mt-3">
           Rate limit headers are included in every response:{' '}
-          <code className="text-cyan-400/50">X-RateLimit-Limit</code>,{' '}
-          <code className="text-cyan-400/50">X-RateLimit-Remaining</code>,{' '}
-          <code className="text-cyan-400/50">X-RateLimit-Reset</code>
+          <code className="text-indigo-400/50">X-RateLimit-Limit</code>,{' '}
+          <code className="text-indigo-400/50">X-RateLimit-Remaining</code>,{' '}
+          <code className="text-indigo-400/50">X-RateLimit-Reset</code>
         </p>
       </div>
 

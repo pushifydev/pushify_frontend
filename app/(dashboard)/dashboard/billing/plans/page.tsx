@@ -17,7 +17,7 @@ const PLAN_ORDER: PlanType[] = ['free', 'hobby', 'pro', 'business', 'enterprise'
 
 const PLAN_ACCENTS: Record<PlanType, string> = {
   free: '#52525e',
-  hobby: '#22d3ee',
+  hobby: '#6366f1',
   pro: '#a78bfa',
   business: '#f59e0b',
   enterprise: '#22c55e',

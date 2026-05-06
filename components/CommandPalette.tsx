@@ -215,7 +215,7 @@ export function CommandPalette() {
                     <span
                       className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                       style={{
-                        background: 'rgba(34,211,238,0.1)',
+                        background: 'rgba(99,102,241,0.1)',
                         color: 'var(--accent-cyan)',
                       }}
                     >

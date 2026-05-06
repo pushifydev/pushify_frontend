@@ -77,7 +77,7 @@ function CliAuthContent() {
                 ? 'rgba(34,197,94,0.1)'
                 : status === 'error'
                 ? 'rgba(239,68,68,0.1)'
-                : 'rgba(34,211,238,0.1)',
+                : 'rgba(99,102,241,0.1)',
             }}
           >
             {status === 'success' ? (

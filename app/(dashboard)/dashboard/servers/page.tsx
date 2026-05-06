@@ -92,7 +92,7 @@ export default function ServersPage() {
         >
           <div
             className="w-14 h-14 rounded-xl mx-auto mb-4 flex items-center justify-center"
-            style={{ background: 'rgba(34,211,238,0.1)' }}
+            style={{ background: 'rgba(99,102,241,0.1)' }}
           >
             <Server className="w-7 h-7" style={{ color: 'var(--accent-cyan)' }} />
           </div>

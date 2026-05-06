@@ -157,7 +157,7 @@ export default function BillingPage() {
           >
             <div
               className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(34,211,238,0.1)' }}
+              style={{ background: 'rgba(99,102,241,0.1)' }}
             >
               <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--accent-cyan)' }} />
             </div>

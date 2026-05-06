@@ -188,7 +188,7 @@ export default function ServerTerminalPage() {
             <div key={i} className="mb-1" style={{ fontFamily: 'var(--font-mono)', fontSize: 13, lineHeight: '1.6' }}>
               {line.type === 'input' && (
                 <div>
-                  <span style={{ color: '#22d3ee' }}>root</span>
+                  <span style={{ color: '#6366f1' }}>root</span>
                   <span style={{ color: 'rgba(255,255,255,0.3)' }}>@</span>
                   <span style={{ color: '#a78bfa' }}>server</span>
                   <span style={{ color: 'rgba(255,255,255,0.3)' }}>:</span>
@@ -217,7 +217,7 @@ export default function ServerTerminalPage() {
 
           {/* Input line */}
           <div className="flex items-center" style={{ fontFamily: 'var(--font-mono)', fontSize: 13 }}>
-            <span style={{ color: '#22d3ee' }}>root</span>
+            <span style={{ color: '#6366f1' }}>root</span>
             <span style={{ color: 'rgba(255,255,255,0.3)' }}>@</span>
             <span style={{ color: '#a78bfa' }}>server</span>
             <span style={{ color: 'rgba(255,255,255,0.3)' }}>:</span>
@@ -232,7 +232,7 @@ export default function ServerTerminalPage() {
               disabled={isExecuting}
               placeholder={isExecuting ? '...' : ''}
               className="flex-1 bg-transparent border-none [outline:none_!important] [box-shadow:none_!important] focus:outline-none focus-visible:[outline:none]! placeholder:text-[rgba(255,255,255,0.2)]"
-              style={{ color: '#e4e4e7', fontFamily: 'var(--font-mono)', fontSize: 13, caretColor: '#22d3ee' }}
+              style={{ color: '#e4e4e7', fontFamily: 'var(--font-mono)', fontSize: 13, caretColor: '#6366f1' }}
               autoComplete="off"
               spellCheck={false}
             />

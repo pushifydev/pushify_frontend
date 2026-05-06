@@ -77,7 +77,7 @@ export function CreateDatabaseModal({ isOpen, onClose, servers }: CreateDatabase
                   className="p-3 rounded-lg border text-left transition-all"
                   style={{
                     borderColor: type === dbType ? 'var(--accent-cyan)' : 'var(--border-subtle)',
-                    background: type === dbType ? 'rgba(34,211,238,0.08)' : 'transparent',
+                    background: type === dbType ? 'rgba(99,102,241,0.08)' : 'transparent',
                   }}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -134,7 +134,7 @@ export function CreateDatabaseModal({ isOpen, onClose, servers }: CreateDatabase
                 className="w-full p-3 rounded-lg border text-left transition-all flex items-center gap-3"
                 style={{
                   borderColor: serverId === server.id ? 'var(--accent-cyan)' : 'var(--border-subtle)',
-                  background: serverId === server.id ? 'rgba(34,211,238,0.08)' : 'transparent',
+                  background: serverId === server.id ? 'rgba(99,102,241,0.08)' : 'transparent',
                 }}
               >
                 <Server className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />

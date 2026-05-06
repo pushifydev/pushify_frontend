@@ -21,7 +21,7 @@ export function Checkbox({ checked, onChange, label, description, disabled }: Ch
         style={{
           background: checked ? 'var(--accent-cyan)' : 'transparent',
           border: checked ? '1.5px solid var(--accent-cyan)' : '1.5px solid var(--border-strong)',
-          boxShadow: checked ? '0 0 0 2px rgba(34,211,238,0.15)' : 'none',
+          boxShadow: checked ? '0 0 0 2px rgba(99,102,241,0.15)' : 'none',
         }}
       >
         {checked && <Check className="w-3 h-3" style={{ color: '#020206' }} strokeWidth={3} />}

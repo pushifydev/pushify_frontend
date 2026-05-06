@@ -104,7 +104,7 @@ export function Sidebar() {
             height: active ? 16 : 0,
             transform: 'translateY(-50%)',
             background: 'linear-gradient(180deg, var(--accent-cyan), var(--accent-purple))',
-            boxShadow: active ? '0 0 12px rgba(34,211,238,0.5)' : 'none',
+            boxShadow: active ? '0 0 12px rgba(99,102,241,0.5)' : 'none',
             opacity: active ? 1 : 0,
             transitionTimingFunction: spring,
             transitionDuration: '400ms',
@@ -178,7 +178,7 @@ export function Sidebar() {
             fontSize: 10,
             fontFamily: 'var(--font-mono)',
             color: isHigh ? 'var(--accent-amber)' : 'var(--accent-cyan)',
-            background: isHigh ? 'rgba(251,191,36,0.08)' : 'rgba(34,211,238,0.08)',
+            background: isHigh ? 'rgba(251,191,36,0.08)' : 'rgba(99,102,241,0.08)',
             padding: '1px 6px',
             borderRadius: 4,
           }}>
@@ -274,7 +274,7 @@ export function Sidebar() {
       {/* Top shimmer */}
       <div
         className="absolute top-0 left-0 right-0 h-px pointer-events-none"
-        style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(34,211,238,0.35) 50%, transparent 100%)' }}
+        style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(99,102,241,0.35) 50%, transparent 100%)' }}
       />
 
       {/* ─── Logo ─── */}
@@ -347,19 +347,19 @@ export function Sidebar() {
             ${collapsed ? 'md:justify-center md:px-0 px-3' : 'px-3'}
           `}
           style={{
-            background: 'linear-gradient(135deg, rgba(34,211,238,0.08), rgba(129,140,248,0.05))',
-            border: '1px solid rgba(34,211,238,0.18)',
+            background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(129,140,248,0.05))',
+            border: '1px solid rgba(99,102,241,0.18)',
             color: 'var(--accent-cyan)',
             transitionTimingFunction: spring,
             transitionDuration: '300ms',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.borderColor = 'rgba(34,211,238,0.35)';
-            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(34,211,238,0.12), rgba(129,140,248,0.08))';
+            e.currentTarget.style.borderColor = 'rgba(99,102,241,0.35)';
+            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(129,140,248,0.08))';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'rgba(34,211,238,0.18)';
-            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(34,211,238,0.08), rgba(129,140,248,0.05))';
+            e.currentTarget.style.borderColor = 'rgba(99,102,241,0.18)';
+            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(129,140,248,0.05))';
           }}
         >
           <Plus className="w-4 h-4 shrink-0" />
