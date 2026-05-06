@@ -32,6 +32,7 @@ export function CTASection() {
             <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
           </Link>
 
+          {/* Re-enable after iyzico merchant approval — GitHub CTA:
           <a
             href="https://github.com/pushifydev"
             target="_blank"
@@ -41,6 +42,7 @@ export function CTASection() {
             <Github className="w-5 h-5" />
             {t('landing', 'starOnGithub')}
           </a>
+          */}
         </div>
       </div>
     </section>

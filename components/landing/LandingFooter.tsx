@@ -28,19 +28,21 @@ export function LandingFooter() {
     [t("landing", "product")]: [
       { label: t("landing", "features"), href: "/features" },
       { label: t("landing", "pricing"), href: "/pricing" },
-      {
-        label: t("landing", "cli"),
-        href: "https://www.npmjs.com/package/pushify-cli",
-        external: true,
-      },
+      // Re-enable after iyzico merchant approval — external links:
+      // {
+      //   label: t("landing", "cli"),
+      //   href: "https://www.npmjs.com/package/pushify-cli",
+      //   external: true,
+      // },
     ],
     [t("landing", "resources")]: [
       { label: t("branding", "documentation"), href: "/docs" },
-      {
-        label: t("branding", "github"),
-        href: "https://github.com/pushifydev",
-        external: true,
-      },
+      // Re-enable after iyzico merchant approval:
+      // {
+      //   label: t("branding", "github"),
+      //   href: "https://github.com/pushifydev",
+      //   external: true,
+      // },
       { label: t("landing", "changelog"), href: "#" },
     ],
     [t("landing", "company")]: [
@@ -56,12 +58,13 @@ export function LandingFooter() {
   };
 
   const socials = [
-    {
-      icon: <Github className="w-4 h-4" />,
-      href: "https://github.com/pushifydev",
-      label: "GitHub",
-    },
-    { icon: <Twitter className="w-4 h-4" />, href: "#", label: "Twitter" },
+    // Re-enable after iyzico merchant approval — external social links:
+    // {
+    //   icon: <Github className="w-4 h-4" />,
+    //   href: "https://github.com/pushifydev",
+    //   label: "GitHub",
+    // },
+    // { icon: <Twitter className="w-4 h-4" />, href: "#", label: "Twitter" },
     {
       icon: <Mail className="w-4 h-4" />,
       href: "mailto:support@pushify.dev",
@@ -109,21 +112,24 @@ export function LandingFooter() {
                 {title}
               </h4>
               <ul className="space-y-2.5">
-                {items.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      target={link.external ? "_blank" : undefined}
-                      rel={link.external ? "noopener noreferrer" : undefined}
-                      className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1"
-                    >
-                      {link.label}
-                      {link.external && (
-                        <ArrowUpRight className="w-3 h-3 opacity-40" />
-                      )}
-                    </a>
-                  </li>
-                ))}
+                {items.map((link) => {
+                  const isExternal = (link as { external?: boolean }).external;
+                  return (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        target={isExternal ? "_blank" : undefined}
+                        rel={isExternal ? "noopener noreferrer" : undefined}
+                        className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1"
+                      >
+                        {link.label}
+                        {isExternal && (
+                          <ArrowUpRight className="w-3 h-3 opacity-40" />
+                        )}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

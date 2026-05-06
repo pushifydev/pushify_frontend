@@ -45,6 +45,7 @@ export function LandingNavbar() {
         {/* Right side */}
         <div className="flex items-center gap-2 shrink-0">
           <LanguageSwitcher />
+          {/* Re-enable after iyzico merchant approval — GitHub link:
           <a
             href="https://github.com/pushifydev"
             target="_blank"
@@ -53,6 +54,7 @@ export function LandingNavbar() {
           >
             <Github className="w-4 h-4" />
           </a>
+          */}
           <Link
             href="/login"
             className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hidden sm:block px-3 py-1.5 rounded-lg hover:bg-[var(--hover-overlay-md)]"
