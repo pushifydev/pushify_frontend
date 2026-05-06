@@ -180,6 +180,16 @@ export interface TranslationKeys {
     github: string;
     status: string;
   };
+  legal: {
+    legal: string;
+    about: string;
+    privacy: string;
+    terms: string;
+    refund: string;
+    cookies: string;
+    securePayment: string;
+    ssl: string;
+  };
   landing: {
     // Navigation
     features: string;
@@ -1400,6 +1410,16 @@ export const en: TranslationKeys = {
     documentation: 'Documentation',
     github: 'GitHub',
     status: 'Status',
+  },
+  legal: {
+    legal: 'Legal',
+    about: 'About',
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Service',
+    refund: 'Refund Policy',
+    cookies: 'Cookie Policy',
+    securePayment: 'Secure Payment',
+    ssl: 'SSL Secured',
   },
   landing: {
     // Navigation

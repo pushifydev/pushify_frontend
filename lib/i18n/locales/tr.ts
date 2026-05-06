@@ -181,6 +181,16 @@ export const tr: TranslationKeys = {
     github: 'GitHub',
     status: 'Durum',
   },
+  legal: {
+    legal: 'Yasal',
+    about: 'Hakkımızda',
+    privacy: 'Gizlilik Sözleşmesi',
+    terms: 'Mesafeli Satış Sözleşmesi',
+    refund: 'Teslimat ve İade Şartları',
+    cookies: 'Çerez Politikası',
+    securePayment: 'Güvenli Ödeme',
+    ssl: 'SSL Sertifikalı',
+  },
   landing: {
     // Navigation
     features: 'Özellikler',
