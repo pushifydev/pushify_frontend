@@ -144,11 +144,9 @@ export default function AuthLayout({
           <a href="/docs" className="hover:text-[var(--text-secondary)] transition-colors">
             {t('branding', 'documentation')}
           </a>
-          {/* Re-enable after iyzico merchant approval — GitHub:
           <a href="https://github.com/pushifydev" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--text-secondary)] transition-colors">
             {t('branding', 'github')}
           </a>
-          */}
           <a href="/about" className="hover:text-[var(--text-secondary)] transition-colors">
             {t('legal', 'about')}
           </a>
