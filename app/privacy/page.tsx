@@ -28,9 +28,9 @@ function PrivacyEN() {
 
       <h3>1.2. Payment Information</h3>
       <p>
-        Payments are processed through <strong>iyzico</strong>. Your card details are never stored
-        on our servers — they are processed directly by iyzico in a PCI-DSS compliant manner. We
-        only store the payment status, subscription tier, and billing history.
+        Payments are processed through our PCI-DSS compliant payment provider. Your card details
+        are never stored on our servers — they are handled directly by the provider. We only store
+        the payment status, subscription tier, and billing history.
       </p>
 
       <h3>1.3. Usage Data</h3>
@@ -57,7 +57,7 @@ function PrivacyEN() {
         providers strictly required to deliver the service:
       </p>
       <ul>
-        <li><strong>iyzico</strong> — payment processing</li>
+        <li>Payment processor — for billing and subscription management</li>
         <li><strong>Hetzner Cloud</strong> — server infrastructure (only when you opt in)</li>
         <li><strong>Anthropic</strong> — AI Assistant feature (only the messages you explicitly send)</li>
         <li>Legal authorities — only when legally required</li>
@@ -141,10 +141,9 @@ function PrivacyTR() {
 
       <h3>1.2. Ödeme Bilgileri</h3>
       <p>
-        Ödemeler <strong>iyzico</strong> üzerinden gerçekleşir. Kart bilgileriniz
-        sunucularımızda saklanmaz; doğrudan iyzico tarafından işlenir ve PCI-DSS
-        uyumlu bir şekilde korunur. Biz yalnızca ödeme durumunu, abonelik tipini
-        ve fatura geçmişini saklarız.
+        Ödemeler PCI-DSS uyumlu ödeme sağlayıcımız üzerinden gerçekleşir. Kart
+        bilgileriniz sunucularımızda saklanmaz; doğrudan sağlayıcı tarafından işlenir.
+        Biz yalnızca ödeme durumunu, abonelik tipini ve fatura geçmişini saklarız.
       </p>
 
       <h3>1.3. Kullanım Verileri</h3>
@@ -171,7 +170,7 @@ function PrivacyTR() {
         yalnızca hizmetin sağlanması için zorunlu olan tedarikçilerle paylaşılır:
       </p>
       <ul>
-        <li><strong>iyzico</strong> — ödeme işleme</li>
+        <li>Ödeme sağlayıcımız — fatura ve abonelik yönetimi için</li>
         <li><strong>Hetzner Cloud</strong> — sunucu altyapısı (yalnızca isteğe bağlı kullanım)</li>
         <li><strong>Anthropic</strong> — AI Asistan özelliği için (yalnızca açıkça gönderdiğiniz mesajlar)</li>
         <li>Yasal merciler — yalnızca yasal zorunluluk halinde</li>
