@@ -44,9 +44,8 @@ function TermsEN() {
 
       <h2>5. Payment</h2>
       <p>
-        Payments are processed via the <strong>iyzico</strong> infrastructure on Visa, Mastercard,
-        American Express, and Troy networks. All payments are encrypted with SSL and processed
-        in a PCI-DSS compliant manner. Card details are never stored on Pushify servers.
+        Payments are processed by our PCI-DSS compliant payment provider. All payments are
+        encrypted with SSL. Card details are never stored on Pushify servers.
       </p>
 
       <h2>6. Service Delivery</h2>
@@ -174,10 +173,8 @@ function TermsTR() {
 
       <h2>5. Ödeme</h2>
       <p>
-        Ödemeler <strong>iyzico</strong> altyapısı kullanılarak Visa, Mastercard,
-        American Express ve Troy kart sistemleri üzerinden alınır. Tüm ödemeler
-        SSL ile şifrelenir ve PCI-DSS uyumlu şekilde işlenir. Kart bilgileri
-        Pushify sunucularında saklanmaz.
+        Ödemeler PCI-DSS uyumlu ödeme sağlayıcımız üzerinden alınır. Tüm ödemeler
+        SSL ile şifrelenir. Kart bilgileri Pushify sunucularında saklanmaz.
       </p>
 
       <h2>6. Hizmetin İfası</h2>

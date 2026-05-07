@@ -1,8 +1,14 @@
 export { LandingNavbar } from './LandingNavbar';
 export { HeroSection } from './HeroSection';
+export { StatsSection } from './StatsSection';
+export { WhatIsPushifySection } from './WhatIsPushifySection';
+export { HowItWorksSection } from './HowItWorksSection';
 export { FrameworksSection } from './FrameworksSection';
+export { MarketplacePreviewSection } from './MarketplacePreviewSection';
+export { ComparisonSection } from './ComparisonSection';
 export { FeaturesSection } from './FeaturesSection';
 export { OpenSourceSection } from './OpenSourceSection';
 export { PricingSection } from './PricingSection';
+export { FAQSection } from './FAQSection';
 export { CTASection } from './CTASection';
 export { LandingFooter } from './LandingFooter';
