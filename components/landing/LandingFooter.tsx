@@ -35,7 +35,7 @@ export function LandingFooter() {
       },
     ],
     [t("landing", "resources")]: [
-      { label: t("branding", "documentation"), href: "/docs", external: true },
+      { label: t("branding", "documentation"), href: "/docs" },
       {
         label: t("branding", "github"),
         href: "https://github.com/pushifydev",
@@ -109,21 +109,24 @@ export function LandingFooter() {
                 {title}
               </h4>
               <ul className="space-y-2.5">
-                {items.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      target={link.external ? "_blank" : undefined}
-                      rel={link.external ? "noopener noreferrer" : undefined}
-                      className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1"
-                    >
-                      {link.label}
-                      {link.external && (
-                        <ArrowUpRight className="w-3 h-3 opacity-40" />
-                      )}
-                    </a>
-                  </li>
-                ))}
+                {items.map((link) => {
+                  const isExternal = (link as { external?: boolean }).external;
+                  return (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        target={isExternal ? "_blank" : undefined}
+                        rel={isExternal ? "noopener noreferrer" : undefined}
+                        className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1"
+                      >
+                        {link.label}
+                        {isExternal && (
+                          <ArrowUpRight className="w-3 h-3 opacity-40" />
+                        )}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
