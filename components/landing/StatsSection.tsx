@@ -1,36 +1,48 @@
 'use client';
 
 import { useTranslation } from '@/hooks';
-import { Star, Rocket, Package, ShieldCheck } from 'lucide-react';
 
 export function StatsSection() {
   const { t } = useTranslation();
 
   const stats = [
-    { value: '1.2k+', label: t('homepage', 'statsTrusted'), Icon: Star },
-    { value: '50k+', label: t('homepage', 'statsDeployed'), Icon: Rocket },
-    { value: '24+', label: t('homepage', 'statsApps'), Icon: Package },
-    { value: '99.9%', label: t('homepage', 'statsUptime'), Icon: ShieldCheck },
+    { num: '1.2k', sup: '+', label: t('homepage', 'statsTrusted') },
+    { num: '50k',  sup: '+', label: t('homepage', 'statsDeployed') },
+    { num: '24',   sup: '+', label: t('homepage', 'statsApps') },
+    { num: '99.9', sup: '%', label: t('homepage', 'statsUptime') },
   ];
 
   return (
-    <section className="py-12 border-y border-[var(--glass-border)] bg-[var(--bg-secondary)]/40">
-      <div className="max-w-6xl mx-auto px-6">
-        <p className="text-center text-xs uppercase tracking-[0.2em] text-[var(--text-muted)] mb-8 terminal-text">
-          {t('homepage', 'stats')}
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map(({ value, label, Icon }) => (
+    <section className="relative">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-20 md:py-28">
+        <div className="flex items-end justify-between gap-6 mb-12">
+          <div className="flex items-center gap-3">
+            <span className="lp-crosshair" />
+            <span className="lp-eyebrow">By the numbers</span>
+          </div>
+          <div className="lp-eyebrow opacity-60 hidden sm:block">
+            {t('homepage', 'stats')}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4">
+          {stats.map((s, i) => (
             <div
-              key={label}
-              className="flex flex-col items-center text-center p-4 rounded-xl border border-[var(--glass-border)] bg-[var(--bg-primary)]/40 hover:border-[var(--accent-cyan)]/30 transition-colors"
+              key={s.label}
+              className={`relative px-0 md:px-8 py-6 ${
+                i > 0 ? 'md:border-l md:border-[var(--glass-border)]' : ''
+              }`}
             >
-              <Icon className="w-5 h-5 text-[var(--accent-cyan)] mb-2" />
-              <div className="text-2xl md:text-3xl font-extrabold tracking-tight">
-                {value}
+              <div className="lp-editorial leading-[0.9] flex items-start text-[var(--text-primary)]">
+                <span className="text-[64px] md:text-[88px] lg:text-[104px] tabular-nums">
+                  {s.num}
+                </span>
+                <span className="lp-editorial text-2xl md:text-3xl mt-2 md:mt-3 ml-1 text-[var(--accent-cyan)]">
+                  {s.sup}
+                </span>
               </div>
-              <div className="text-xs text-[var(--text-muted)] mt-1">
-                {label}
+              <div className="mt-3 lp-mono text-[11px] uppercase tracking-[0.16em] text-[var(--text-secondary)]">
+                {s.label}
               </div>
             </div>
           ))}

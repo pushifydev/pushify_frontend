@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@/hooks';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 
 export function FAQSection() {
   const { t } = useTranslation();
@@ -18,59 +18,86 @@ export function FAQSection() {
   ];
 
   return (
-    <section id="faq" className="relative py-24 border-t border-[var(--glass-border)]">
-      <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent-purple)]/10 border border-[var(--accent-purple)]/20 mb-5">
-            <HelpCircle className="w-3.5 h-3.5 text-[var(--accent-purple)]" />
-            <span className="text-xs text-[var(--accent-purple)] terminal-text uppercase tracking-wider">
-              {t('homepage', 'faqEyebrow')}
-            </span>
+    <section id="faq" className="relative border-t border-[var(--glass-border)]">
+      <div className="absolute right-2 md:right-10 top-10 lp-index select-none" aria-hidden>
+        05
+      </div>
+
+      <div className="relative max-w-[1400px] mx-auto px-6 md:px-10 py-24 md:py-32">
+        <div className="grid grid-cols-12 gap-6 mb-14 md:mb-20">
+          <div className="col-span-12 md:col-span-3 flex items-start gap-3">
+            <span className="lp-crosshair mt-2" />
+            <div className="lp-eyebrow">§&nbsp;05 / {t('homepage', 'faqEyebrow')}</div>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-            {t('homepage', 'faqTitle')}
+          <h2 className="col-span-12 md:col-span-9 lp-editorial text-[40px] md:text-[72px] lg:text-[88px] leading-[0.98] tracking-[-0.025em]">
+            <span className="block">Things you</span>
+            <span className="block">might <em className="text-[var(--accent-cyan)]">ask</em>.</span>
           </h2>
         </div>
 
-        <div className="space-y-3">
-          {faqs.map((item, i) => {
-            const isOpen = open === i;
-            return (
-              <div
-                key={i}
-                className={`rounded-xl border transition-colors ${
-                  isOpen
-                    ? 'border-[var(--accent-cyan)]/30 bg-[var(--bg-secondary)]'
-                    : 'border-[var(--glass-border)] bg-[var(--bg-secondary)]/60 hover:border-[var(--glass-border-strong)]'
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
-                  aria-expanded={isOpen}
-                >
-                  <span className="font-semibold text-base">{item.q}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 shrink-0 text-[var(--text-muted)] transition-transform ${
-                      isOpen ? 'rotate-180 text-[var(--accent-cyan)]' : ''
-                    }`}
-                  />
-                </button>
+        <div className="grid grid-cols-12 gap-6">
+          <div className="hidden md:block col-span-1 lp-mono text-[11px] tracking-[0.18em] uppercase opacity-50 pt-2">
+            Q & A
+          </div>
+          <div className="col-span-12 md:col-span-11 border-t border-[var(--glass-border-strong)]">
+            {faqs.map((item, i) => {
+              const isOpen = open === i;
+              const Icon = isOpen ? Minus : Plus;
+              return (
                 <div
-                  className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-                    isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-                  }`}
+                  key={i}
+                  className="border-b border-[var(--glass-border-md)]"
                 >
-                  <div className="overflow-hidden">
-                    <p className="px-5 pb-5 text-sm text-[var(--text-secondary)] leading-relaxed">
-                      {item.a}
-                    </p>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(isOpen ? null : i)}
+                    className="w-full grid grid-cols-12 items-start gap-4 py-6 md:py-7 text-left group"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="col-span-1 lp-mono text-[12px] tracking-[0.14em] opacity-50 pt-2 tabular-nums">
+                      Q.{String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="col-span-9 md:col-span-10 text-[17px] md:text-[20px] font-semibold leading-[1.35] tracking-[-0.01em] text-[var(--text-primary)] group-hover:text-[var(--accent-cyan)] transition-colors">
+                      {item.q}
+                    </span>
+                    <span className="col-span-2 md:col-span-1 flex justify-end items-start pt-2">
+                      <span
+                        className="w-9 h-9 rounded-full border flex items-center justify-center transition-colors"
+                        style={{
+                          borderColor: isOpen
+                            ? 'var(--accent-cyan)'
+                            : 'var(--glass-border-strong)',
+                          background: isOpen
+                            ? 'var(--accent-cyan)'
+                            : 'transparent',
+                          color: isOpen ? 'var(--ink-deep)' : 'var(--text-primary)',
+                        }}
+                      >
+                        <Icon className="w-4 h-4" strokeWidth={2.2} />
+                      </span>
+                    </span>
+                  </button>
+
+                  <div
+                    className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+                      isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="grid grid-cols-12 gap-4 pb-7">
+                        <span className="col-span-1 lp-mono text-[12px] tracking-[0.14em] opacity-50 tabular-nums">
+                          A.{String(i + 1).padStart(2, '0')}
+                        </span>
+                        <p className="col-span-11 md:col-span-10 text-[16px] leading-[1.65] text-[var(--text-secondary)] max-w-[68ch]">
+                          {item.a}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

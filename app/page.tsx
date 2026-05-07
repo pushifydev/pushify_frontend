@@ -16,7 +16,7 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] overflow-x-hidden">
+    <div className="lp-page min-h-screen overflow-x-hidden">
       <style jsx global>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
