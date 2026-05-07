@@ -134,7 +134,6 @@ export default function AboutPage() {
                 </a>
               </div>
             </div>
-            {/* Re-enable after iyzico merchant approval — GitHub:
             <div className="flex items-start gap-3">
               <Github className="w-5 h-5 text-[var(--accent-cyan)] mt-0.5 shrink-0" />
               <div>
@@ -144,7 +143,6 @@ export default function AboutPage() {
                 </a>
               </div>
             </div>
-            */}
             <div className="flex items-start gap-3">
               <MapPin className="w-5 h-5 text-[var(--accent-cyan)] mt-0.5 shrink-0" />
               <div>

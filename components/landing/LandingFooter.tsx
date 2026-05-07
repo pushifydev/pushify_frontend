@@ -28,21 +28,19 @@ export function LandingFooter() {
     [t("landing", "product")]: [
       { label: t("landing", "features"), href: "/features" },
       { label: t("landing", "pricing"), href: "/pricing" },
-      // Re-enable after iyzico merchant approval — external links:
-      // {
-      //   label: t("landing", "cli"),
-      //   href: "https://www.npmjs.com/package/pushify-cli",
-      //   external: true,
-      // },
+      {
+        label: t("landing", "cli"),
+        href: "https://www.npmjs.com/package/pushify-cli",
+        external: true,
+      },
     ],
     [t("landing", "resources")]: [
       { label: t("branding", "documentation"), href: "/docs" },
-      // Re-enable after iyzico merchant approval:
-      // {
-      //   label: t("branding", "github"),
-      //   href: "https://github.com/pushifydev",
-      //   external: true,
-      // },
+      {
+        label: t("branding", "github"),
+        href: "https://github.com/pushifydev",
+        external: true,
+      },
       { label: t("landing", "changelog"), href: "#" },
     ],
     [t("landing", "company")]: [
@@ -58,13 +56,12 @@ export function LandingFooter() {
   };
 
   const socials = [
-    // Re-enable after iyzico merchant approval — external social links:
-    // {
-    //   icon: <Github className="w-4 h-4" />,
-    //   href: "https://github.com/pushifydev",
-    //   label: "GitHub",
-    // },
-    // { icon: <Twitter className="w-4 h-4" />, href: "#", label: "Twitter" },
+    {
+      icon: <Github className="w-4 h-4" />,
+      href: "https://github.com/pushifydev",
+      label: "GitHub",
+    },
+    { icon: <Twitter className="w-4 h-4" />, href: "#", label: "Twitter" },
     {
       icon: <Mail className="w-4 h-4" />,
       href: "mailto:support@pushify.dev",

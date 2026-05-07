@@ -23,9 +23,12 @@ export function OpenSourceSection() {
           {t('landing', 'openSourceDescription')}
         </p>
 
-        {/* GitHub card — Re-enable external link after iyzico merchant approval */}
-        <div
-          className="group inline-flex flex-col items-center gap-6 p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] transition-all duration-300 w-full max-w-md mx-auto"
+        {/* GitHub card */}
+        <a
+          href="https://github.com/pushifydev"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex flex-col items-center gap-6 p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] hover:border-[var(--accent-cyan)]/30 transition-all duration-300 w-full max-w-md mx-auto"
         >
           <Github className="w-12 h-12 text-[var(--text-primary)] group-hover:text-[var(--accent-cyan)] transition-colors" />
 
@@ -53,7 +56,7 @@ export function OpenSourceSection() {
             {t('landing', 'viewOnGithub')}
             <Github className="w-4 h-4" />
           </span>
-        </div>
+        </a>
 
         {/* Trust points */}
         <div className="flex flex-wrap items-center justify-center gap-8 mt-10 text-sm text-[var(--text-muted)]">
