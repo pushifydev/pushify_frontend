@@ -3,7 +3,13 @@
 import {
   LandingNavbar,
   HeroSection,
+  StatsSection,
+  WhatIsPushifySection,
+  HowItWorksSection,
   FrameworksSection,
+  MarketplacePreviewSection,
+  ComparisonSection,
+  FAQSection,
   CTASection,
   LandingFooter,
 } from '@/components/landing';
@@ -26,7 +32,13 @@ export default function LandingPage() {
 
       <LandingNavbar />
       <HeroSection />
+      <StatsSection />
+      <WhatIsPushifySection />
+      <HowItWorksSection />
       <FrameworksSection />
+      <MarketplacePreviewSection />
+      <ComparisonSection />
+      <FAQSection />
       <CTASection />
       <LandingFooter />
     </div>

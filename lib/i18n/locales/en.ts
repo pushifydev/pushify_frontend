@@ -187,8 +187,6 @@ export interface TranslationKeys {
     terms: string;
     refund: string;
     cookies: string;
-    securePayment: string;
-    ssl: string;
   };
   landing: {
     // Navigation
@@ -342,6 +340,68 @@ export interface TranslationKeys {
     footerDescription: string;
     builtWithLove: string;
     forDevelopers: string;
+  };
+  homepage: {
+    // Stats
+    stats: string;
+    statsTrusted: string;
+    statsDeployed: string;
+    statsApps: string;
+    statsUptime: string;
+    // What is Pushify
+    whatIsPushifyEyebrow: string;
+    whatIsPushifyTitle: string;
+    whatIsPushifyP1: string;
+    whatIsPushifyP2: string;
+    whatIsPushifyP3: string;
+    // How it works
+    howItWorksEyebrow: string;
+    howItWorksTitle: string;
+    howItWorksSubtitle: string;
+    step1Title: string;
+    step1Desc: string;
+    step2Title: string;
+    step2Desc: string;
+    step3Title: string;
+    step3Desc: string;
+    // Marketplace preview
+    marketplaceEyebrow: string;
+    marketplaceTitle: string;
+    marketplaceSubtitle: string;
+    marketplaceCTA: string;
+    // Comparison
+    comparisonEyebrow: string;
+    comparisonTitle: string;
+    comparisonSubtitle: string;
+    colPushify: string;
+    colVercel: string;
+    colCoolify: string;
+    rowSelfHost: string;
+    rowOpenSource: string;
+    rowMarketplace: string;
+    rowDatabaseMgmt: string;
+    rowOwnServers: string;
+    rowAIAssistant: string;
+    rowPricing: string;
+    rowFreeTier: string;
+    pricingFromVercel: string;
+    pricingPushify: string;
+    pricingCoolify: string;
+    // FAQ
+    faqEyebrow: string;
+    faqTitle: string;
+    faq1Q: string;
+    faq1A: string;
+    faq2Q: string;
+    faq2A: string;
+    faq3Q: string;
+    faq3A: string;
+    faq4Q: string;
+    faq4A: string;
+    faq5Q: string;
+    faq5A: string;
+    faq6Q: string;
+    faq6A: string;
   };
   errors: {
     notFound: string;
@@ -1420,8 +1480,6 @@ export const en: TranslationKeys = {
     terms: 'Terms of Service',
     refund: 'Refund Policy',
     cookies: 'Cookie Policy',
-    securePayment: 'Secure Payment',
-    ssl: 'SSL Secured',
   },
   landing: {
     // Navigation
@@ -1574,6 +1632,68 @@ export const en: TranslationKeys = {
     footerDescription: 'Open-source cloud deployment platform. Your servers, your data, your rules.',
     builtWithLove: 'Built with',
     forDevelopers: 'for developers',
+  },
+  homepage: {
+    // Stats
+    stats: 'Trusted by developers worldwide',
+    statsTrusted: 'GitHub stars',
+    statsDeployed: 'Deployments per month',
+    statsApps: 'Marketplace apps',
+    statsUptime: 'Uptime SLA',
+    // What is Pushify
+    whatIsPushifyEyebrow: 'What is Pushify?',
+    whatIsPushifyTitle: 'Your private cloud, fully managed.',
+    whatIsPushifyP1: 'Pushify is an open-source platform that lets you deploy and manage your applications on your own servers — without the DevOps headache.',
+    whatIsPushifyP2: 'Connect your GitHub repository, choose a server (or bring your own), and Pushify handles framework detection, Docker builds, SSL certificates, and zero-downtime deploys for you.',
+    whatIsPushifyP3: 'Self-host on your VPS, your data center, or our managed cloud. Same UI, same workflow, your servers — your rules.',
+    // How it works
+    howItWorksEyebrow: 'How it works',
+    howItWorksTitle: 'From code to production in 3 steps',
+    howItWorksSubtitle: 'No Dockerfile, no Kubernetes, no DevOps team needed.',
+    step1Title: 'Connect your repo',
+    step1Desc: 'Sign in with GitHub. Pick the repository you want to deploy. Pushify auto-detects the framework — Next.js, Django, Rails, Go, you name it.',
+    step2Title: 'Pick a server',
+    step2Desc: 'Provision a VPS via Hetzner Cloud in one click, or connect your existing server with SSH. Servers are configured automatically.',
+    step3Title: 'Push to deploy',
+    step3Desc: 'Every git push triggers a build, runs in an isolated Docker container, and goes live with HTTPS in under 60 seconds.',
+    // Marketplace preview
+    marketplaceEyebrow: 'Marketplace',
+    marketplaceTitle: '24+ apps. One-click install.',
+    marketplaceSubtitle: 'Self-host the tools you love. WordPress, Supabase, Cal.com, NextCloud, and more — fully configured and ready in minutes.',
+    marketplaceCTA: 'Browse marketplace',
+    // Comparison
+    comparisonEyebrow: 'Compare',
+    comparisonTitle: 'How does Pushify compare?',
+    comparisonSubtitle: 'Different platforms, different trade-offs. Here is where Pushify fits in.',
+    colPushify: 'Pushify',
+    colVercel: 'Vercel',
+    colCoolify: 'Coolify',
+    rowSelfHost: 'Self-host on your servers',
+    rowOpenSource: 'Open source (MIT)',
+    rowMarketplace: 'One-click app marketplace',
+    rowDatabaseMgmt: 'Managed databases',
+    rowOwnServers: 'Bring your own servers',
+    rowAIAssistant: 'Built-in AI assistant',
+    rowPricing: 'Starting price',
+    rowFreeTier: 'Generous free tier',
+    pricingFromVercel: 'From $20/mo',
+    pricingPushify: 'Free / $10+',
+    pricingCoolify: 'Free (self-hosted)',
+    // FAQ
+    faqEyebrow: 'FAQ',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'What exactly is Pushify?',
+    faq1A: 'Pushify is an open-source PaaS (Platform-as-a-Service) for developers who want Vercel-like simplicity without the vendor lock-in. You connect a GitHub repo, choose a server, and Pushify handles building, deploying, scaling, SSL, and monitoring. Either use our managed cloud or self-host the entire platform on your own infrastructure.',
+    faq2Q: 'How is it different from Vercel or Render?',
+    faq2A: 'Vercel and Render are closed-source SaaS — your apps run on their infrastructure, you pay per usage. Pushify is open-source: you can self-host the whole platform, run apps on your own VPS, and avoid lock-in. Plans start at $0 and scale predictably.',
+    faq3Q: 'How is it different from Coolify or CapRover?',
+    faq3A: 'Coolify is excellent open-source self-host but lacks team collaboration, billing, and a hosted option. Pushify offers both: run it yourself for free, or use our managed service for one-click setup. We also include a 24+ app marketplace, AI assistant, and Stripe-compatible billing out of the box.',
+    faq4Q: 'Is the source code really open?',
+    faq4A: 'Yes. Pushify\'s frontend, backend, and CLI are MIT-licensed and public on GitHub. You can fork, audit, contribute, or run a private instance with no restrictions.',
+    faq5Q: 'Can I bring my own servers?',
+    faq5A: 'Absolutely. Add any Linux VPS via SSH (DigitalOcean, AWS, Hetzner, your home server) and Pushify will install Docker and Nginx, then deploy your apps there. You can also provision Hetzner Cloud servers from the dashboard with one click.',
+    faq6Q: 'What payment methods do you accept?',
+    faq6A: 'We accept all major credit and debit cards via our PCI-DSS compliant payment provider. All payments are SSL-encrypted and we never store your card details on our servers.',
   },
   errors: {
     notFound: 'Not found',

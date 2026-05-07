@@ -20,7 +20,7 @@ function RefundEN() {
 
       <h2>2. Delivery Time</h2>
       <p>
-        Once your payment is confirmed by iyzico, your account is upgraded to the relevant plan
+        Once your payment is confirmed, your account is upgraded to the relevant plan
         <strong> immediately</strong>. There is no waiting period — all service features become
         usable instantly.
       </p>
@@ -53,7 +53,6 @@ function RefundEN() {
       <p>Refunds are processed back to the <strong>same card or account</strong> used for payment:</p>
       <ul>
         <li><strong>Credit/Debit card:</strong> 7&ndash;14 business days (including bank processing)</li>
-        <li><strong>iyzico wallet:</strong> 1&ndash;3 business days</li>
       </ul>
       <p>
         Once we initiate the refund, the time taken by your bank to process it is outside our
@@ -118,7 +117,7 @@ function RefundTR() {
 
       <h2>2. Teslimat Süresi</h2>
       <p>
-        Ödemeniz iyzico tarafından onaylandıktan <strong>hemen sonra</strong>{' '}
+        Ödemeniz onaylandıktan <strong>hemen sonra</strong>{' '}
         hesabınız ilgili plana yükseltilir. Bekleme süresi yoktur. Tüm hizmet
         özellikleri anında kullanılabilir hale gelir.
       </p>
@@ -152,7 +151,6 @@ function RefundTR() {
       <p>İadeler ödeme yaptığınız <strong>aynı kart veya hesaba</strong> yapılır:</p>
       <ul>
         <li><strong>Kredi/Banka kartı:</strong> 7&ndash;14 iş günü (banka süreci dahil)</li>
-        <li><strong>iyzico cüzdan:</strong> 1&ndash;3 iş günü</li>
       </ul>
       <p>
         İade işlemi tarafımızdan başlatıldıktan sonra bankanızın işleme alma süresi
