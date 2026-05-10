@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Activity,
@@ -22,6 +22,7 @@ import { formatTimeAgo, formatShortDate } from '@/lib/formatters';
 import { activityService, type ActivityLogsResponse } from '@/lib/api/services/activity.service';
 import type { ActivityLog, ActivityAction } from '@/lib/api/types';
 import { STATUS_COLORS } from '@/lib/constants';
+import { SkeletonActivityRow } from '@/components/Skeleton';
 
 const ACTION_CATEGORIES = {
   project:      ['project.created', 'project.updated', 'project.deleted', 'project.paused', 'project.resumed'],
@@ -100,14 +101,17 @@ export default function ActivityPage() {
 
   const totalPages = Math.ceil(total / limit);
 
-  const categories = [
-    { key: null,         label: 'All',         icon: <Activity   className="w-3.5 h-3.5" /> },
-    { key: 'project',    label: 'Projects',    icon: <GitBranch  className="w-3.5 h-3.5" /> },
-    { key: 'deployment', label: 'Deployments', icon: <Rocket     className="w-3.5 h-3.5" /> },
-    { key: 'envvar',     label: 'Env Vars',    icon: <Settings   className="w-3.5 h-3.5" /> },
-    { key: 'domain',     label: 'Domains',     icon: <Globe      className="w-3.5 h-3.5" /> },
-    { key: 'apikey',     label: 'API Keys',    icon: <Key        className="w-3.5 h-3.5" /> },
-  ];
+  const categories = useMemo(
+    () => [
+      { key: null as string | null, label: t('activityLog', 'filterAll'), icon: <Activity className="w-3.5 h-3.5" /> },
+      { key: 'project' as const, label: t('activityLog', 'filterProjects'), icon: <GitBranch className="w-3.5 h-3.5" /> },
+      { key: 'deployment' as const, label: t('activityLog', 'filterDeployments'), icon: <Rocket className="w-3.5 h-3.5" /> },
+      { key: 'envvar' as const, label: t('activityLog', 'filterEnvVars'), icon: <Settings className="w-3.5 h-3.5" /> },
+      { key: 'domain' as const, label: t('activityLog', 'filterDomains'), icon: <Globe className="w-3.5 h-3.5" /> },
+      { key: 'apikey' as const, label: t('activityLog', 'filterApiKeys'), icon: <Key className="w-3.5 h-3.5" /> },
+    ],
+    [t],
+  );
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-slide-in">
@@ -117,7 +121,7 @@ export default function ActivityPage() {
         <div>
           <h1 className="text-xl font-semibold tracking-tight">{t('navigation', 'activity')}</h1>
           <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-            Track all changes and actions in your organization
+            {t('activityLog', 'subtitle')}
           </p>
         </div>
         <button
@@ -126,7 +130,7 @@ export default function ActivityPage() {
           className="btn btn-primary shrink-0"
         >
           <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
+          {t('common', 'refresh')}
         </button>
       </div>
 
@@ -158,15 +162,27 @@ export default function ActivityPage() {
         style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
       >
         {isLoading ? (
-          <div className="py-14 text-center">
-            <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Loading activity...</p>
+          <div>
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  borderTop: i === 0 ? 'none' : '1px solid var(--glass-divider)',
+                }}
+              >
+                <SkeletonActivityRow />
+              </div>
+            ))}
           </div>
         ) : logs.length === 0 ? (
           <div className="py-14 text-center">
             <Activity className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)', opacity: 0.4 }} />
-            <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>No activity found</p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Activity will appear here as you make changes</p>
+            <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>
+              {t('activityLog', 'emptyTitle')}
+            </p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              {t('activityLog', 'emptyDescription')}
+            </p>
           </div>
         ) : (
           <div>
@@ -250,7 +266,10 @@ export default function ActivityPage() {
             style={{ borderTop: '1px solid var(--glass-border)' }}
           >
             <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              Showing {((page - 1) * limit) + 1}–{Math.min(page * limit, total)} of {total}
+              {t('activityLog', 'paginationShowing')
+                .replace('{start}', String((page - 1) * limit + 1))
+                .replace('{end}', String(Math.min(page * limit, total)))
+                .replace('{total}', String(total))}
             </p>
             <div className="flex items-center gap-2">
               <button

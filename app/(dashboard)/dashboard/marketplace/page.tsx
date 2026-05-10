@@ -6,6 +6,7 @@ import { useTranslation } from '@/hooks';
 import { useMarketplaceTemplates } from '@/hooks/useMarketplace';
 import type { MarketplaceCategory } from '@/lib/api';
 import TemplateCard from './components/TemplateCard';
+import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
 
 const CATEGORIES: { key: MarketplaceCategory | 'all'; color: string }[] = [
   { key: 'all', color: '#8a8a9a' },
@@ -125,15 +126,7 @@ export default function MarketplacePage() {
       {isLoading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="rounded-xl h-52 animate-pulse"
-              style={{
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--glass-border)',
-                borderRadius: 12,
-              }}
-            />
+            <SkeletonMarketplaceTemplateCard key={i} />
           ))}
         </div>
       )}

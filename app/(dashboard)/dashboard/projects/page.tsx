@@ -20,6 +20,7 @@ import { useProjects, useDeleteProject, useTranslation } from '@/hooks';
 import { formatTimeAgo } from '@/lib/formatters';
 import { PROJECT_STATUS_COLORS } from '@/lib/constants';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { SkeletonProjectCard } from '@/components/Skeleton';
 import type { Project, ProjectStatus } from '@/lib/api';
 
 type FilterStatus = 'all' | ProjectStatus;
@@ -113,7 +114,7 @@ export default function ProjectsPage() {
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-40 rounded-xl animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
+            <SkeletonProjectCard key={i} />
           ))}
         </div>
       ) : filteredProjects.length === 0 ? (

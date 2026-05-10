@@ -1,15 +1,25 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Menu, X, Github } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowRight, Menu, X, Github, Sun, Moon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from '@/hooks';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { LogoMark } from '@/components/logo';
+import { useThemeStore } from '@/stores/theme';
 
 export function LandingNavbar() {
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { theme, setTheme } = useThemeStore();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark =
+    !mounted ||
+    theme === 'dark' ||
+    (theme === 'system' &&
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   const navLinks = [
     { href: '/features', label: t('landing', 'features') },
@@ -45,6 +55,14 @@ export function LandingNavbar() {
         {/* Right side */}
         <div className="flex items-center gap-2 shrink-0">
           <LanguageSwitcher />
+          <button
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            className="flex items-center justify-center w-8 h-8 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] transition-colors"
+            title={isDark ? t('common', 'themeSwitchToLight') : t('common', 'themeSwitchToDark')}
+            aria-label={t('common', 'toggleThemeAria')}
+          >
+            {mounted && (isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />)}
+          </button>
           <a
             href="https://github.com/pushifydev"
             target="_blank"
