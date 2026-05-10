@@ -7,10 +7,10 @@ export function WhatIsPushifySection() {
   const { t } = useTranslation();
 
   const pillars = [
-    { code: '01', title: 'Open Source', detail: 'MIT-licensed. Fork it, audit it, run it.' },
-    { code: '02', title: 'Self-Host',   detail: 'Your VPS, your datacenter, your rules.' },
-    { code: '03', title: 'Managed',     detail: 'Or use our cloud. Same UI, no migration.' },
-    { code: '04', title: 'Marketplace', detail: '24+ apps installed in a click.' },
+    { code: '01', titleKey: 'pillar1Title' as const, detailKey: 'pillar1Detail' as const },
+    { code: '02', titleKey: 'pillar2Title' as const, detailKey: 'pillar2Detail' as const },
+    { code: '03', titleKey: 'pillar3Title' as const, detailKey: 'pillar3Detail' as const },
+    { code: '04', titleKey: 'pillar4Title' as const, detailKey: 'pillar4Detail' as const },
   ];
 
   return (
@@ -39,7 +39,7 @@ export function WhatIsPushifySection() {
         {/* Body — manifesto removed; restrained 2-column body + spec card */}
         <div className="grid grid-cols-12 gap-6 md:gap-10">
           <div className="hidden md:block col-span-1 lp-mono text-[11px] tracking-[0.18em] uppercase text-[var(--text-muted)] pt-2">
-            Body
+            {t('homepage', 'whatIsBodyLabel')}
           </div>
 
           <div className="col-span-12 md:col-span-7 space-y-6 text-[16px] md:text-[17px] leading-[1.65] text-[var(--text-secondary)] max-w-[60ch]">
@@ -53,7 +53,7 @@ export function WhatIsPushifySection() {
               <div className="flex items-center gap-2 mb-5">
                 <Github className="w-4 h-4 text-[var(--accent-cyan)]" />
                 <span className="lp-mono text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
-                  License & Source
+                  {t('homepage', 'whatIsLicenseHeading')}
                 </span>
               </div>
 
@@ -62,8 +62,7 @@ export function WhatIsPushifySection() {
               </div>
 
               <p className="mt-4 text-[14px] leading-[1.55] text-[var(--text-secondary)]">
-                Frontend, backend, and CLI — all open source. Run it on your own
-                infrastructure or contribute upstream.
+                {t('homepage', 'whatIsLicenseDescription')}
               </p>
 
               <a
@@ -83,15 +82,15 @@ export function WhatIsPushifySection() {
         <div className="lp-rule mt-20 mb-10" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-8">
           {pillars.map((p) => (
-            <div key={p.title} className="border-t border-[var(--glass-border)] pt-5">
+            <div key={p.code} className="border-t border-[var(--glass-border)] pt-5">
               <div className="lp-mono text-[11px] tracking-[0.16em] text-[var(--accent-cyan)] mb-3">
                 {p.code}
               </div>
               <div className="text-[15px] font-semibold text-[var(--text-primary)] mb-1.5">
-                {p.title}
+                {t('homepage', p.titleKey)}
               </div>
               <div className="text-[14px] leading-[1.55] text-[var(--text-secondary)]">
-                {p.detail}
+                {t('homepage', p.detailKey)}
               </div>
             </div>
           ))}

@@ -40,15 +40,15 @@ export function OpenSourceSection() {
           <div className="flex items-center gap-6 text-sm text-[var(--text-muted)]">
             <span className="flex items-center gap-1.5">
               <Star className="w-4 h-4" />
-              Star
+              {t('landing', 'githubStatStar')}
             </span>
             <span className="flex items-center gap-1.5">
               <GitFork className="w-4 h-4" />
-              Fork
+              {t('landing', 'githubStatFork')}
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-[#3178c6]" />
-              TypeScript
+              {t('landing', 'githubStatLanguage')}
             </span>
           </div>
 

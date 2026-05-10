@@ -23,7 +23,7 @@ export function CTASection() {
         <div className="grid grid-cols-12 gap-6 mb-12">
           <div className="col-span-12 md:col-span-3 flex items-start gap-3">
             <span className="lp-crosshair mt-2" />
-            <div className="lp-eyebrow">§&nbsp;06 / Begin</div>
+            <div className="lp-eyebrow">§&nbsp;06 / {t('homepage', 'ctaSectionEyebrow')}</div>
           </div>
 
           <h2 className="col-span-12 md:col-span-9 lp-editorial text-[var(--text-primary)] text-[40px] md:text-[72px] lg:text-[92px] leading-[0.98] tracking-[-0.025em]">

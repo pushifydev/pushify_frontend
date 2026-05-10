@@ -42,13 +42,13 @@ export function LandingFooter() {
     {
       icon: <Github className="w-4 h-4" />,
       href: "https://github.com/pushifydev",
-      label: "GitHub",
+      label: t("landing", "socialGithub"),
     },
-    { icon: <Twitter className="w-4 h-4" />, href: "#", label: "Twitter" },
+    { icon: <Twitter className="w-4 h-4" />, href: "#", label: t("landing", "twitter") },
     {
       icon: <Mail className="w-4 h-4" />,
       href: "mailto:support@pushify.dev",
-      label: "Email",
+      label: t("landing", "socialEmail"),
     },
   ];
 

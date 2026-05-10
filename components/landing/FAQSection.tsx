@@ -30,8 +30,12 @@ export function FAQSection() {
             <div className="lp-eyebrow">§&nbsp;05 / {t('homepage', 'faqEyebrow')}</div>
           </div>
           <h2 className="col-span-12 md:col-span-9 lp-editorial text-[40px] md:text-[72px] lg:text-[88px] leading-[0.98] tracking-[-0.025em]">
-            <span className="block">Things you</span>
-            <span className="block">might <em className="text-[var(--accent-cyan)]">ask</em>.</span>
+            <span className="block">{t('homepage', 'faqHeadline1')}</span>
+            <span className="block">
+              {t('homepage', 'faqHeadline2a')}
+              <em className="text-[var(--accent-cyan)]">{t('homepage', 'faqHeadlineEm')}</em>
+              {t('homepage', 'faqHeadline2b')}
+            </span>
           </h2>
         </div>
 

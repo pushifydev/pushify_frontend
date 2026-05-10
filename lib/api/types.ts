@@ -92,6 +92,8 @@ export interface Project {
   domains?: Domain[];
   serverId: string | null;
   server?: ProjectServer;
+  /** Returned once when creating a project; configure Git provider webhook HMAC */
+  webhookSecret?: string;
 }
 
 export type ProjectStatus = 'active' | 'paused' | 'inactive';

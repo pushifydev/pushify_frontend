@@ -69,9 +69,10 @@ export function MarketplacePreviewSection() {
 
           <h2 className="col-span-12 md:col-span-9 lp-editorial text-[40px] md:text-[72px] lg:text-[92px] leading-[0.98] tracking-[-0.025em]">
             <span className="block">
-              <em className="text-[var(--accent-cyan)]">24</em> apps,
+              <em className="text-[var(--accent-cyan)]">{t('homepage', 'marketplaceHeadlineAppsCount')}</em>
+              {t('homepage', 'marketplaceHeadlineAppsSuffix')}
             </span>
-            <span className="block">one click each.</span>
+            <span className="block">{t('homepage', 'marketplaceHeadlineTagline')}</span>
           </h2>
 
           <p className="col-span-12 md:col-start-4 md:col-span-7 text-[16px] md:text-[18px] leading-[1.55] text-[var(--text-muted)] max-w-[58ch]">
@@ -81,11 +82,11 @@ export function MarketplacePreviewSection() {
 
         {/* Catalog index header — magazine-style */}
         <div className="hidden md:grid grid-cols-12 gap-6 lp-mono text-[10px] uppercase tracking-[0.16em] opacity-50 pb-3 border-b border-[var(--glass-border-strong)]">
-          <div className="col-span-1">№</div>
-          <div className="col-span-2">Mark</div>
-          <div className="col-span-5">Name</div>
-          <div className="col-span-2">Category</div>
-          <div className="col-span-2 text-right">Status</div>
+          <div className="col-span-1">{t('homepage', 'marketplaceCatalogNo')}</div>
+          <div className="col-span-2">{t('homepage', 'marketplaceCatalogMark')}</div>
+          <div className="col-span-5">{t('homepage', 'marketplaceCatalogName')}</div>
+          <div className="col-span-2">{t('homepage', 'marketplaceCatalogCategory')}</div>
+          <div className="col-span-2 text-right">{t('homepage', 'marketplaceCatalogStatus')}</div>
         </div>
 
         {/* Catalog grid — alternates rows for density */}
@@ -137,7 +138,7 @@ export function MarketplacePreviewSection() {
         {/* CTA row */}
         <div className="mt-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="lp-mono text-[11px] uppercase tracking-[0.14em] opacity-60">
-            Catalog updated weekly. PRs welcome.
+            {t('homepage', 'marketplaceCatalogFooter')}
           </div>
           <Link href="/marketplace" className="lp-cta-ghost">
             {t('homepage', 'marketplaceCTA')}

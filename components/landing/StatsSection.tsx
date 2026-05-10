@@ -18,7 +18,7 @@ export function StatsSection() {
         <div className="flex items-end justify-between gap-6 mb-12">
           <div className="flex items-center gap-3">
             <span className="lp-crosshair" />
-            <span className="lp-eyebrow">By the numbers</span>
+            <span className="lp-eyebrow">{t('homepage', 'statsByTheNumbers')}</span>
           </div>
           <div className="lp-eyebrow opacity-60 hidden sm:block">
             {t('homepage', 'stats')}

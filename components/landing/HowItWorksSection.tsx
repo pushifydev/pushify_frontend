@@ -26,9 +26,16 @@ export function HowItWorksSection() {
           </div>
 
           <h2 className="col-span-12 md:col-span-9 lp-editorial text-[40px] md:text-[72px] lg:text-[92px] leading-[0.98] tracking-[-0.025em]">
-            <span className="block">From <em>commit</em></span>
-            <span className="block">to <em className="text-[var(--accent-cyan)]">production</em>,</span>
-            <span className="block">in three moves.</span>
+            <span className="block">
+              {t('homepage', 'howItWorksH1Before')}
+              <em>{t('homepage', 'howItWorksH1Em')}</em>
+            </span>
+            <span className="block">
+              {t('homepage', 'howItWorksH2Before')}
+              <em className="text-[var(--accent-cyan)]">{t('homepage', 'howItWorksH2Em')}</em>
+              {t('homepage', 'howItWorksH2After')}
+            </span>
+            <span className="block">{t('homepage', 'howItWorksH3')}</span>
           </h2>
 
           <p className="col-span-12 md:col-start-4 md:col-span-7 text-[16px] md:text-[18px] leading-[1.55] text-[var(--text-muted)] max-w-[58ch]">
@@ -68,7 +75,7 @@ export function HowItWorksSection() {
                   {s.n}
                 </span>
                 <span className="lp-mono text-[10px] uppercase tracking-[0.18em] opacity-50">
-                  Step / 0{i + 1}
+                  {t('homepage', 'howItWorksStepLabel').replace('{step}', `0${i + 1}`)}
                 </span>
               </div>
 

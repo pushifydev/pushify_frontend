@@ -14,6 +14,7 @@ import {
 import { formatShortDate } from '@/lib/formatters';
 import { ROLE_COLORS, STATUS_COLORS } from '@/lib/constants';
 import type { OrganizationMember, MemberRole } from '@/lib/api';
+import { Skeleton, SkeletonPageHeader, SkeletonTeamPanel } from '@/components/Skeleton';
 
 const roleIcons: Record<MemberRole, typeof Shield> = {
   owner:  Crown,
@@ -54,9 +55,12 @@ export default function TeamPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="h-7 w-32 rounded-lg animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
-        <div className="h-64 rounded-xl animate-pulse"   style={{ background: 'var(--bg-secondary)' }} />
+      <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <SkeletonPageHeader />
+          <Skeleton className="h-10 w-36 rounded-lg shrink-0 hidden sm:block" />
+        </div>
+        <SkeletonTeamPanel />
       </div>
     );
   }

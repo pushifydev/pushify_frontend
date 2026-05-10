@@ -61,9 +61,11 @@ export function ComparisonSection() {
           </div>
 
           <h2 className="col-span-12 md:col-span-9 lp-editorial text-[40px] md:text-[72px] lg:text-[92px] leading-[0.98] tracking-[-0.025em]">
-            <span className="block">A spec sheet,</span>
+            <span className="block">{t('homepage', 'comparisonHeadline1')}</span>
             <span className="block">
-              not a <em>pitch</em>.
+              {t('homepage', 'comparisonHeadline2a')}
+              <em>{t('homepage', 'comparisonHeadline2Em')}</em>
+              {t('homepage', 'comparisonHeadline2b')}
             </span>
           </h2>
 
@@ -77,7 +79,7 @@ export function ComparisonSection() {
           {/* Header row */}
           <div className="grid grid-cols-12 items-end gap-4 py-5 border-b border-[var(--glass-border-strong)]">
             <div className="col-span-6 lp-mono text-[10px] uppercase tracking-[0.16em] opacity-50">
-              Feature
+              {t('homepage', 'comparisonColumnFeature')}
             </div>
             <div className="col-span-2 text-center">
               <div className="lp-eyebrow text-[var(--accent-cyan)]" style={{ color: 'var(--accent-cyan)' }}>

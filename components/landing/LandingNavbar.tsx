@@ -58,8 +58,8 @@ export function LandingNavbar() {
           <button
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
             className="flex items-center justify-center w-8 h-8 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] transition-colors"
-            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            aria-label="Toggle theme"
+            title={isDark ? t('common', 'themeSwitchToLight') : t('common', 'themeSwitchToDark')}
+            aria-label={t('common', 'toggleThemeAria')}
           >
             {mounted && (isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />)}
           </button>

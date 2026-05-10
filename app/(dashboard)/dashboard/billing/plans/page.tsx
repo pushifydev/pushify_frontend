@@ -11,7 +11,9 @@ import {
 import { useTranslation } from '@/hooks';
 import { useAvailablePlans, useBillingInfo, useCreateCheckoutSession, useCreatePortalSession } from '@/hooks';
 import type { PlanType, PlanLimits } from '@/lib/api';
+import type { TranslationKeys } from '@/lib/i18n/locales/en';
 import { toast } from 'sonner';
+import { Skeleton, SkeletonPlanCompareCard } from '@/components/Skeleton';
 
 const PLAN_ORDER: PlanType[] = ['free', 'hobby', 'pro', 'business', 'enterprise'];
 
@@ -31,32 +33,39 @@ const PLAN_ICONS: Record<PlanType, typeof Zap> = {
   enterprise: HeartPulse,
 };
 
+type BillingLabelKey = keyof TranslationKeys['billing'];
+
 interface LimitRow {
   key: keyof PlanLimits;
-  label: string;
+  labelKey: BillingLabelKey;
   icon: typeof Server;
   type: 'number' | 'boolean';
   unit?: string;
 }
 
 const LIMIT_ROWS: LimitRow[] = [
-  { key: 'servers', label: 'Servers', icon: Server, type: 'number' },
-  { key: 'projects', label: 'Projects', icon: Folder, type: 'number' },
-  { key: 'deploymentsPerMonth', label: 'Deploys / mo', icon: Rocket, type: 'number' },
-  { key: 'teamMembers', label: 'Team Members', icon: Users, type: 'number' },
-  { key: 'customDomains', label: 'Custom Domains', icon: Globe, type: 'number' },
-  { key: 'storageGb', label: 'Storage', icon: HardDrive, type: 'number', unit: 'GB' },
-  { key: 'bandwidthGb', label: 'Bandwidth', icon: Wifi, type: 'number', unit: 'GB' },
-  { key: 'buildMinutesPerMonth', label: 'Build Minutes', icon: Clock, type: 'number', unit: 'min' },
-  { key: 'previewDeployments', label: 'Preview Deploys', icon: Activity, type: 'boolean' },
-  { key: 'healthChecks', label: 'Health Checks', icon: HeartPulse, type: 'boolean' },
-  { key: 'prioritySupport', label: 'Priority Support', icon: Headphones, type: 'boolean' },
+  { key: 'servers', labelKey: 'servers', icon: Server, type: 'number' },
+  { key: 'projects', labelKey: 'projects', icon: Folder, type: 'number' },
+  { key: 'deploymentsPerMonth', labelKey: 'deploymentsPerMonthShort', icon: Rocket, type: 'number' },
+  { key: 'teamMembers', labelKey: 'teamMembers', icon: Users, type: 'number' },
+  { key: 'customDomains', labelKey: 'customDomains', icon: Globe, type: 'number' },
+  { key: 'storageGb', labelKey: 'storageGb', icon: HardDrive, type: 'number', unit: 'GB' },
+  { key: 'bandwidthGb', labelKey: 'bandwidthGb', icon: Wifi, type: 'number', unit: 'GB' },
+  { key: 'buildMinutesPerMonth', labelKey: 'buildMinutes', icon: Clock, type: 'number', unit: 'min' },
+  { key: 'previewDeployments', labelKey: 'previewDeployments', icon: Activity, type: 'boolean' },
+  { key: 'healthChecks', labelKey: 'healthChecks', icon: HeartPulse, type: 'boolean' },
+  { key: 'prioritySupport', labelKey: 'prioritySupport', icon: Headphones, type: 'boolean' },
 ];
 
-function formatLimit(value: number | boolean, type: 'number' | 'boolean', unit?: string): string {
+function formatLimit(
+  value: number | boolean,
+  type: 'number' | 'boolean',
+  unit: string | undefined,
+  unlimitedLabel: string,
+): string {
   if (type === 'boolean') return '';
   if (typeof value === 'number') {
-    if (value >= 9999 || value === -1) return 'Unlimited';
+    if (value >= 9999 || value === -1) return unlimitedLabel;
     return unit ? `${value} ${unit}` : `${value}`;
   }
   return String(value);
@@ -72,6 +81,7 @@ export default function PlansPage() {
   const [pendingPlan, setPendingPlan] = useState<PlanType | null>(null);
   const currentPlan = billingInfo?.plan || 'free';
   const isLoading = plansLoading || billingLoading;
+  const unlimitedLabel = t('billing', 'unlimited');
 
   const handlePlanAction = (planKey: PlanType) => {
     setPendingPlan(planKey);
@@ -94,8 +104,17 @@ export default function PlansPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-32">
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--text-muted)' }} />
+      <div className="max-w-7xl mx-auto space-y-8 animate-slide-in">
+        <Skeleton className="h-4 w-36" />
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <Skeleton className="h-10 w-80 max-w-full mx-auto rounded-lg" />
+          <Skeleton className="h-4 w-full max-w-lg mx-auto" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start">
+          {[...Array(5)].map((_, i) => (
+            <SkeletonPlanCompareCard key={i} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -123,7 +142,7 @@ export default function PlansPage() {
           {t('billing', 'comparePlans')}
         </h1>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Choose the plan that fits your deployment needs. Upgrade or downgrade anytime.
+          {t('billing', 'comparePlansSubtitle')}
         </p>
       </div>
 
@@ -140,13 +159,13 @@ export default function PlansPage() {
           const currentIdx = PLAN_ORDER.indexOf(currentPlan);
           const thisIdx = i;
 
-          let buttonLabel = 'Upgrade';
+          let buttonLabel = t('billing', 'upgradeButton');
           let buttonStyle: 'primary' | 'secondary' | 'current' = 'primary';
           if (isCurrent) {
-            buttonLabel = 'Current Plan';
+            buttonLabel = t('billing', 'currentPlan');
             buttonStyle = 'current';
           } else if (thisIdx < currentIdx) {
-            buttonLabel = 'Downgrade';
+            buttonLabel = t('billing', 'downgradeButton');
             buttonStyle = 'secondary';
           }
 
@@ -174,7 +193,7 @@ export default function PlansPage() {
                   }}
                 >
                   <Star className="w-2.5 h-2.5 fill-current" />
-                  Most Popular
+                  {t('billing', 'planMostPopular')}
                 </div>
               )}
 
@@ -188,7 +207,7 @@ export default function PlansPage() {
                     border: '1px solid var(--glass-border-md)',
                   }}
                 >
-                  Current
+                  {t('billing', 'currentPlanBadge')}
                 </div>
               )}
 
@@ -221,22 +240,22 @@ export default function PlansPage() {
                       className="text-3xl font-bold tracking-tight"
                       style={{ color: 'var(--text-primary)' }}
                     >
-                      {plan.price < 0 ? 'Custom' : `$${plan.price}`}
+                      {plan.price < 0 ? t('billing', 'planPriceCustom') : `$${plan.price}`}
                     </span>
                     {plan.price >= 0 && (
                       <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                        /mo
+                        {t('billing', 'perMonth')}
                       </span>
                     )}
                   </div>
                   {plan.price === 0 && (
                     <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                      Free forever
+                      {t('billing', 'planFreeForeverLabel')}
                     </span>
                   )}
                   {plan.price < 0 && (
                     <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                      Contact us for pricing
+                      {t('billing', 'planContactPricing')}
                     </span>
                   )}
                 </div>
@@ -250,13 +269,18 @@ export default function PlansPage() {
                     const value = plan.limits[row.key];
                     const isBool = row.type === 'boolean';
                     const boolVal = value as boolean;
-                    const numStr = formatLimit(value as number | boolean, row.type, row.unit);
+                    const numStr = formatLimit(
+                      value as number | boolean,
+                      row.type,
+                      row.unit,
+                      unlimitedLabel,
+                    );
 
                     return (
                       <div key={row.key} className="flex items-center justify-between text-[12px]">
                         <span className="flex items-center gap-1.5" style={{ color: 'var(--text-secondary)' }}>
                           <row.icon className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-                          {row.label}
+                          {t('billing', row.labelKey)}
                         </span>
                         {isBool ? (
                           boolVal ? (
@@ -268,7 +292,7 @@ export default function PlansPage() {
                           <span
                             className="font-medium"
                             style={{
-                              color: numStr === 'Unlimited' ? accent : 'var(--text-primary)',
+                              color: numStr === unlimitedLabel ? accent : 'var(--text-primary)',
                               fontFamily: 'var(--font-mono)',
                               fontSize: 11,
                             }}
@@ -316,10 +340,10 @@ export default function PlansPage() {
 
       {/* Footer note */}
       <p className="text-center text-xs" style={{ color: 'var(--text-muted)' }}>
-        All plans include SSL certificates, GitHub integration, and automatic deployments.
-        Need custom limits?{' '}
+        {t('billing', 'plansFooterLead')}{' '}
+        {t('billing', 'plansFooterNeedCustom')}{' '}
         <a href="mailto:support@pushify.dev" style={{ color: 'var(--accent-cyan)' }}>
-          Contact us
+          {t('billing', 'plansContactUs')}
         </a>
       </p>
     </div>

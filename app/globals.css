@@ -26,7 +26,8 @@
   --accent-purple:    #a78bfa;
 
   /* ─── Landing typography support ─── */
-  --ink-deep:        #07070a;   /* deeper than bg-primary for landing sections  */
+  /* Near-black for glyphs on accent fills (FAQ chevron); not the page canvas */
+  --ink-deep:        #07070a;
 
   /* ─── Borders (hex) ─── */
   --border-subtle:  #1a1a24;
@@ -403,7 +404,8 @@ html.light .badge-info     { background: rgba(59,130,246,0.14); }
    ════════════════════════════════════════════════ */
 
 .lp-page {
-  background: var(--ink-deep);
+  /* Use theme canvas (--bg-primary updates under html.light); avoid fixed --ink-deep here */
+  background: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-display);
 }

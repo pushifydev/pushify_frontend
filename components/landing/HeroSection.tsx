@@ -8,10 +8,10 @@ export function HeroSection() {
   const { t } = useTranslation();
 
   const stats = [
-    { num: '01', label: 'MIT licensed' },
+    { num: '01', label: t('landing', 'heroStatMitLicensed') },
     { num: '02', label: t('landing', 'edgeLocations') },
-    { num: '03', label: '< 60s deploy' },
-    { num: '04', label: '0 vendor lock-in' },
+    { num: '03', label: t('landing', 'heroStatDeployFast') },
+    { num: '04', label: t('landing', 'heroStatNoVendorLockIn') },
   ];
 
   const ticker = [
@@ -34,12 +34,12 @@ export function HeroSection() {
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 pt-28 pb-3 flex items-center justify-between gap-6">
         <div className="lp-eyebrow flex items-center gap-3">
           <span className="lp-crosshair" />
-          <span>PSH-01 / OPEN SOURCE PLATFORM</span>
+          <span>{t('landing', 'heroMetaPlatform')}</span>
         </div>
         <div className="lp-eyebrow flex items-center gap-2.5">
           <span className="lp-live-dot" />
-          <span className="hidden sm:inline">DEPLOYMENTS LIVE</span>
-          <span className="sm:hidden">LIVE</span>
+          <span className="hidden sm:inline">{t('landing', 'heroMetaDeploymentsLive')}</span>
+          <span className="sm:hidden">{t('landing', 'heroMetaDeploymentsLiveShort')}</span>
         </div>
       </div>
 
@@ -49,7 +49,7 @@ export function HeroSection() {
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-12">
         <div className="grid grid-cols-12 gap-y-10">
           <div className="hidden md:block col-span-1 lp-mono text-[11px] tracking-[0.18em] uppercase text-[var(--text-muted)] pt-3">
-            §&nbsp;Hero
+            §&nbsp;{t('homepage', 'editorialHeroLabel')}
           </div>
 
           <h1
@@ -66,17 +66,13 @@ export function HeroSection() {
         {/* Sub-rail: lede + CTAs */}
         <div className="grid grid-cols-12 gap-x-8 gap-y-10 mt-16 md:mt-20">
           <div className="hidden md:block col-span-1 lp-mono text-[11px] tracking-[0.18em] uppercase text-[var(--text-muted)]">
-            Lede
+            {t('homepage', 'editorialLedeLabel')}
           </div>
           <p
             className="col-span-12 md:col-span-6 text-[16px] md:text-[18px] leading-[1.6] text-[var(--text-secondary)] max-w-[58ch] lp-reveal"
             style={{ animationDelay: '180ms' }}
           >
-            Open-source PaaS for teams that want Vercel-grade developer
-            experience without the vendor lock-in. Connect a repository,
-            choose a server <span className="lp-mono text-[13px] text-[var(--text-muted)]">(yours or ours)</span>,
-            and ship to production with HTTPS, builds, and zero-downtime
-            cutover — in under a minute.
+            {t('landing', 'heroLead')}
           </p>
 
           <div
@@ -93,7 +89,7 @@ export function HeroSection() {
               rel="noopener noreferrer"
               className="lp-cta-ghost"
             >
-              ★ Star on GitHub
+              {t('landing', 'heroStarGithub')}
               <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
@@ -125,7 +121,7 @@ export function HeroSection() {
       <div className="relative z-10 border-y border-[var(--glass-border)] bg-[var(--bg-secondary)]/40">
         <div className="overflow-hidden py-3 mask-fade">
           <div className="lp-ticker-track">
-            {[...ticker, ...ticker].map((t, i) => (
+            {[...ticker, ...ticker].map((line, i) => (
               <span
                 key={i}
                 className="lp-mono text-[12px] tracking-[0.08em] uppercase whitespace-nowrap text-[var(--text-secondary)] flex items-center gap-3"
@@ -134,7 +130,7 @@ export function HeroSection() {
                   className="inline-block w-1.5 h-1.5 rounded-full"
                   style={{ background: 'var(--status-success)' }}
                 />
-                {t}
+                {line}
               </span>
             ))}
           </div>

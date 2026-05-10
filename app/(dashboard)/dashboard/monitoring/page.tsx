@@ -34,6 +34,7 @@ import {
 } from '@/hooks';
 import { formatStorage } from '@/lib/formatters';
 import { STATUS_COLORS } from '@/lib/constants';
+import { SkeletonMonitoringGaugeCard, SkeletonMonitoringChartBlock } from '@/components/Skeleton';
 
 // ============ Chart Tooltip ============
 
@@ -168,7 +169,7 @@ export default function MonitoringPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6 animate-slide-in">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">{t('monitoring', 'title')}</h1>
@@ -177,10 +178,10 @@ export default function MonitoringPage() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-36 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] animate-pulse" />
+            <SkeletonMonitoringGaugeCard key={i} />
           ))}
         </div>
-        <div className="h-72 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] animate-pulse" />
+        <SkeletonMonitoringChartBlock />
       </div>
     );
   }
