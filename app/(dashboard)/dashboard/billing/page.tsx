@@ -21,6 +21,7 @@ import { useAuthStore } from '@/stores/auth';
 import type { PlanType } from '@/lib/api';
 import { STATUS_COLORS } from '@/lib/constants';
 import Link from 'next/link';
+import { SkeletonPageHeader, SkeletonBillingSummaryCard } from '@/components/Skeleton';
 
 const planAccents: Record<PlanType, string> = {
   free:       STATUS_COLORS.neutral,
@@ -59,16 +60,16 @@ export default function BillingPage() {
       setShowEmailForm(false);
       setTimeout(() => setEmailSuccess(false), 3000);
     } catch (err) {
-      setEmailError(err instanceof Error ? err.message : 'Failed to update email');
+      setEmailError(err instanceof Error ? err.message : t('billing', 'emailUpdateFailed'));
     }
   };
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="h-7 w-32 rounded-lg animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
-        {[1, 2, 3].map(i => (
-          <div key={i} className="h-40 rounded-xl animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
+      <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
+        <SkeletonPageHeader />
+        {[1, 2, 3].map((i) => (
+          <SkeletonBillingSummaryCard key={i} />
         ))}
       </div>
     );
@@ -132,7 +133,7 @@ export default function BillingPage() {
                 )}
               </div>
               <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                {organization?.name || 'Personal'}
+                {organization?.name || t('billing', 'personalOrganization')}
               </p>
             </div>
           </div>

@@ -14,6 +14,7 @@ import { formatTimeAgo } from '@/lib/formatters';
 import { CreateApiKeyModal } from './CreateApiKeyModal';
 import { ApiKeySecretModal } from './ApiKeySecretModal';
 import { RevokeApiKeyModal } from './RevokeApiKeyModal';
+import { SkeletonKeyValueRow } from '@/components/Skeleton';
 
 export function ApiKeysTab() {
   const { t } = useTranslation();
@@ -64,10 +65,7 @@ export function ApiKeysTab() {
         {isLoading ? (
           <div className="divide-y divide-[var(--border-subtle)]">
             {[1, 2].map((i) => (
-              <div key={i} className="p-5 bg-[var(--bg-secondary)] animate-pulse">
-                <div className="h-5 w-40 bg-[var(--bg-tertiary)] rounded mb-3" />
-                <div className="h-4 w-64 bg-[var(--bg-tertiary)] rounded" />
-              </div>
+              <SkeletonKeyValueRow key={i} />
             ))}
           </div>
         ) : apiKeys.length === 0 ? (

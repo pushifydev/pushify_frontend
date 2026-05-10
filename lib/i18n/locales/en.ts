@@ -17,6 +17,13 @@ export interface TranslationKeys {
     continue: string;
     optional: string;
     close: string;
+    operationFailed: string;
+    refresh: string;
+    /** Greeting when user name is missing */
+    fallbackDisplayName: string;
+    themeSwitchToLight: string;
+    themeSwitchToDark: string;
+    toggleThemeAria: string;
   };
   auth: {
     welcomeBack: string;
@@ -117,6 +124,19 @@ export interface TranslationKeys {
     viewLogs: string;
     viewLogsDesc: string;
   };
+  activityLog: {
+    subtitle: string;
+    filterAll: string;
+    filterProjects: string;
+    filterDeployments: string;
+    filterEnvVars: string;
+    filterDomains: string;
+    filterApiKeys: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    /** "{start}–{end}" and "{total}" placeholders */
+    paginationShowing: string;
+  };
   projects: {
     title: string;
     subtitle: string;
@@ -202,6 +222,18 @@ export interface TranslationKeys {
     deployTime: string;
     uptimeSla: string;
     configRequired: string;
+    /** Hero editorial body (below headline) */
+    heroLead: string;
+    heroStarGithub: string;
+    heroStatMitLicensed: string;
+    heroStatDeployFast: string;
+    heroStatNoVendorLockIn: string;
+    heroMetaPlatform: string;
+    heroMetaDeploymentsLive: string;
+    heroMetaDeploymentsLiveShort: string;
+    /** Footer social icon labels */
+    socialGithub: string;
+    socialEmail: string;
     // Frameworks section
     universalCompatibility: string;
     worksWithEvery: string;
@@ -324,6 +356,9 @@ export interface TranslationKeys {
     deployInSeconds: string;
     startDeployingFree: string;
     starOnGithub: string;
+    githubStatStar: string;
+    githubStatFork: string;
+    githubStatLanguage: string;
     uptime: string;
     soc2Compliant: string;
     freeForeverPlan: string;
@@ -348,6 +383,7 @@ export interface TranslationKeys {
     statsDeployed: string;
     statsApps: string;
     statsUptime: string;
+    statsByTheNumbers: string;
     // What is Pushify
     whatIsPushifyEyebrow: string;
     whatIsPushifyTitle: string;
@@ -402,6 +438,50 @@ export interface TranslationKeys {
     faq5A: string;
     faq6Q: string;
     faq6A: string;
+    // Editorial rail labels
+    editorialHeroLabel: string;
+    editorialLedeLabel: string;
+    // How it works — display headline (split for emphasis)
+    howItWorksH1Before: string;
+    howItWorksH1Em: string;
+    howItWorksH2Before: string;
+    howItWorksH2Em: string;
+    howItWorksH2After: string;
+    howItWorksH3: string;
+    /** "{step}" → 01..03 */
+    howItWorksStepLabel: string;
+    // Comparison — display headline
+    comparisonHeadline1: string;
+    comparisonHeadline2a: string;
+    comparisonHeadline2Em: string;
+    comparisonHeadline2b: string;
+    comparisonColumnFeature: string;
+    ctaSectionEyebrow: string;
+    faqHeadline1: string;
+    faqHeadline2a: string;
+    faqHeadlineEm: string;
+    faqHeadline2b: string;
+    whatIsBodyLabel: string;
+    whatIsLicenseHeading: string;
+    whatIsLicenseDescription: string;
+    pillar1Title: string;
+    pillar1Detail: string;
+    pillar2Title: string;
+    pillar2Detail: string;
+    pillar3Title: string;
+    pillar3Detail: string;
+    pillar4Title: string;
+    pillar4Detail: string;
+    marketplaceHeadlineAppsCount: string;
+    marketplaceHeadlineAppsSuffix: string;
+    marketplaceHeadlineTagline: string;
+    marketplaceCatalogNo: string;
+    marketplaceCatalogMark: string;
+    marketplaceCatalogName: string;
+    marketplaceCatalogCategory: string;
+    marketplaceCatalogStatus: string;
+    marketplaceCatalogFooter: string;
+    fullPlanComparisonTitle: string;
   };
   errors: {
     notFound: string;
@@ -614,6 +694,11 @@ export interface TranslationKeys {
     createServerLink: string;
     noServerSelected: string;
     serverSelectionHint: string;
+    webhookSecretOnceTitle: string;
+    webhookSecretOnceDesc: string;
+    webhookSecretCopy: string;
+    webhookSecretCopied: string;
+    webhookSecretContinue: string;
   };
   notifications: {
     title: string;
@@ -1048,6 +1133,19 @@ export interface TranslationKeys {
     redirecting: string;
     goToBilling: string;
     stripeNotConfigured: string;
+    comparePlansSubtitle: string;
+    plansFooterLead: string;
+    plansFooterNeedCustom: string;
+    plansContactUs: string;
+    planMostPopular: string;
+    upgradeButton: string;
+    downgradeButton: string;
+    planPriceCustom: string;
+    planFreeForeverLabel: string;
+    planContactPricing: string;
+    deploymentsPerMonthShort: string;
+    emailUpdateFailed: string;
+    personalOrganization: string;
   };
   servers: {
     title: string;
@@ -1083,6 +1181,10 @@ export interface TranslationKeys {
     rebooting: string;
     error: string;
     deleting: string;
+    setupPending: string;
+    setupInstalling: string;
+    setupReady: string;
+    setupFailed: string;
     // Actions
     start: string;
     stop: string;
@@ -1311,6 +1413,12 @@ export const en: TranslationKeys = {
     continue: 'Continue',
     optional: 'Optional',
     close: 'Close',
+    operationFailed: 'Something went wrong',
+    refresh: 'Refresh',
+    fallbackDisplayName: 'Developer',
+    themeSwitchToLight: 'Switch to light mode',
+    themeSwitchToDark: 'Switch to dark mode',
+    toggleThemeAria: 'Toggle theme',
   },
   auth: {
     welcomeBack: 'Welcome back',
@@ -1410,6 +1518,18 @@ export const en: TranslationKeys = {
     viewLogs: 'View Logs',
     viewLogsDesc: 'Monitor your application in real-time',
   },
+  activityLog: {
+    subtitle: 'Track all changes and actions in your organization',
+    filterAll: 'All',
+    filterProjects: 'Projects',
+    filterDeployments: 'Deployments',
+    filterEnvVars: 'Env Vars',
+    filterDomains: 'Domains',
+    filterApiKeys: 'API Keys',
+    emptyTitle: 'No activity found',
+    emptyDescription: 'Activity will appear here as you make changes',
+    paginationShowing: 'Showing {start}–{end} of {total}',
+  },
   projects: {
     title: 'Projects',
     subtitle: 'Manage and deploy your applications',
@@ -1495,6 +1615,17 @@ export const en: TranslationKeys = {
     deployTime: 'Deploy Time',
     uptimeSla: 'Self-hosted',
     configRequired: 'Config Required',
+    heroLead:
+      'Open-source PaaS for teams that want Vercel-grade developer experience without the vendor lock-in. Connect a repository, choose a server (yours or ours), and ship to production with HTTPS, builds, and zero-downtime cutover — in under a minute.',
+    heroStarGithub: '★ Star on GitHub',
+    heroStatMitLicensed: 'MIT licensed',
+    heroStatDeployFast: '< 60s deploy',
+    heroStatNoVendorLockIn: '0 vendor lock-in',
+    heroMetaPlatform: 'PSH-01 / OPEN SOURCE PLATFORM',
+    heroMetaDeploymentsLive: 'DEPLOYMENTS LIVE',
+    heroMetaDeploymentsLiveShort: 'LIVE',
+    socialGithub: 'GitHub',
+    socialEmail: 'Email',
     // Frameworks section
     universalCompatibility: 'Universal Compatibility',
     worksWithEvery: 'Works with',
@@ -1616,6 +1747,9 @@ export const en: TranslationKeys = {
     deployInSeconds: 'Deploy in seconds on your own servers.',
     startDeployingFree: 'Start Deploying Free',
     starOnGithub: 'Star on GitHub',
+    githubStatStar: 'Star',
+    githubStatFork: 'Fork',
+    githubStatLanguage: 'TypeScript',
     uptime: 'Self-hostable',
     soc2Compliant: 'MIT Licensed',
     freeForeverPlan: 'Free Forever Plan',
@@ -1640,6 +1774,7 @@ export const en: TranslationKeys = {
     statsDeployed: 'Deployments per month',
     statsApps: 'Marketplace apps',
     statsUptime: 'Uptime SLA',
+    statsByTheNumbers: 'By the numbers',
     // What is Pushify
     whatIsPushifyEyebrow: 'What is Pushify?',
     whatIsPushifyTitle: 'Your private cloud, fully managed.',
@@ -1694,6 +1829,47 @@ export const en: TranslationKeys = {
     faq5A: 'Absolutely. Add any Linux VPS via SSH (DigitalOcean, AWS, Hetzner, your home server) and Pushify will install Docker and Nginx, then deploy your apps there. You can also provision Hetzner Cloud servers from the dashboard with one click.',
     faq6Q: 'What payment methods do you accept?',
     faq6A: 'We accept all major credit and debit cards via our PCI-DSS compliant payment provider. All payments are SSL-encrypted and we never store your card details on our servers.',
+    editorialHeroLabel: 'Hero',
+    editorialLedeLabel: 'Lede',
+    howItWorksH1Before: 'From ',
+    howItWorksH1Em: 'commit',
+    howItWorksH2Before: 'to ',
+    howItWorksH2Em: 'production',
+    howItWorksH2After: ',',
+    howItWorksH3: 'in three moves.',
+    howItWorksStepLabel: 'Step / {step}',
+    comparisonHeadline1: 'A spec sheet,',
+    comparisonHeadline2a: 'not a ',
+    comparisonHeadline2Em: 'pitch',
+    comparisonHeadline2b: '.',
+    comparisonColumnFeature: 'Feature',
+    ctaSectionEyebrow: 'Begin',
+    faqHeadline1: 'Things you',
+    faqHeadline2a: 'might ',
+    faqHeadlineEm: 'ask',
+    faqHeadline2b: '.',
+    whatIsBodyLabel: 'Body',
+    whatIsLicenseHeading: 'License & Source',
+    whatIsLicenseDescription:
+      'Frontend, backend, and CLI — all open source. Run it on your own infrastructure or contribute upstream.',
+    pillar1Title: 'Open Source',
+    pillar1Detail: 'MIT-licensed. Fork it, audit it, run it.',
+    pillar2Title: 'Self-Host',
+    pillar2Detail: 'Your VPS, your datacenter, your rules.',
+    pillar3Title: 'Managed',
+    pillar3Detail: 'Or use our cloud. Same UI, no migration.',
+    pillar4Title: 'Marketplace',
+    pillar4Detail: '24+ apps installed in a click.',
+    marketplaceHeadlineAppsCount: '24',
+    marketplaceHeadlineAppsSuffix: ' apps,',
+    marketplaceHeadlineTagline: 'one click each.',
+    marketplaceCatalogNo: '№',
+    marketplaceCatalogMark: 'Mark',
+    marketplaceCatalogName: 'Name',
+    marketplaceCatalogCategory: 'Category',
+    marketplaceCatalogStatus: 'Status',
+    marketplaceCatalogFooter: 'Catalog updated weekly. PRs welcome.',
+    fullPlanComparisonTitle: 'Full plan comparison',
   },
   errors: {
     notFound: 'Not found',
@@ -1906,6 +2082,12 @@ export const en: TranslationKeys = {
     createServerLink: 'Create a server to enable deployments',
     noServerSelected: 'No server selected (configure later)',
     serverSelectionHint: 'Only servers with completed setup are shown',
+    webhookSecretOnceTitle: 'Save your webhook secret',
+    webhookSecretOnceDesc:
+      'Copy it now — it will not be shown again. Paste it in your Git provider’s webhook settings (GitHub: Repository → Settings → Webhooks) along with the webhook URL from the project page.',
+    webhookSecretCopy: 'Copy secret',
+    webhookSecretCopied: 'Secret copied to clipboard',
+    webhookSecretContinue: 'Continue to deploy',
   },
   notifications: {
     title: 'Notifications',
@@ -2339,6 +2521,21 @@ export const en: TranslationKeys = {
     redirecting: 'Redirecting to billing in',
     goToBilling: 'Go to Billing',
     stripeNotConfigured: 'Payment system is not configured',
+    comparePlansSubtitle:
+      'Choose the plan that fits your deployment needs. Upgrade or downgrade anytime.',
+    plansFooterLead:
+      'All plans include SSL certificates, GitHub integration, and automatic deployments.',
+    plansFooterNeedCustom: 'Need custom limits?',
+    plansContactUs: 'Contact us',
+    planMostPopular: 'Most Popular',
+    upgradeButton: 'Upgrade',
+    downgradeButton: 'Downgrade',
+    planPriceCustom: 'Custom',
+    planFreeForeverLabel: 'Free forever',
+    planContactPricing: 'Contact us for pricing',
+    deploymentsPerMonthShort: 'Deploys / mo',
+    emailUpdateFailed: 'Failed to update email',
+    personalOrganization: 'Personal',
   },
   servers: {
     title: 'Servers',
@@ -2374,6 +2571,10 @@ export const en: TranslationKeys = {
     rebooting: 'Rebooting',
     error: 'Error',
     deleting: 'Deleting',
+    setupPending: 'Waiting...',
+    setupInstalling: 'Installing Docker, Nginx...',
+    setupReady: 'Ready',
+    setupFailed: 'Setup Failed',
     // Actions
     start: 'Start',
     stop: 'Stop',

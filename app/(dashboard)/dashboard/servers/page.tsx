@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useTranslation, useServers, useStartServer, useStopServer, useRebootServer, useSyncServer } from '@/hooks';
 import { DeleteServerModal } from './components';
+import { SkeletonServerCard } from '@/components/Skeleton';
 import { SERVER_STATUS_COLORS } from '@/lib/constants';
 import type { Server as ServerType, ServerStatus, ServerSetupStatus } from '@/lib/api';
 
@@ -28,15 +29,14 @@ const providerLogos: Record<string, string> = {
   gcp:          '/providers/gcp.svg',
 };
 
-const setupStatusConfig: Record<ServerSetupStatus, { label: string; color: string }> = {
-  pending:    { label: 'Waiting...', color: 'var(--text-muted)' },
-  installing: { label: 'Installing Docker, Nginx...', color: 'var(--accent-cyan)' },
-  completed:  { label: 'Ready', color: 'var(--status-success)' },
-  failed:     { label: 'Setup Failed', color: 'var(--status-error)' },
-};
-
 export default function ServersPage() {
   const { t } = useTranslation();
+  const setupStatusConfig: Record<ServerSetupStatus, { label: string; color: string }> = {
+    pending:    { label: t('servers', 'setupPending'), color: 'var(--text-muted)' },
+    installing: { label: t('servers', 'setupInstalling'), color: 'var(--accent-cyan)' },
+    completed:  { label: t('servers', 'setupReady'), color: 'var(--status-success)' },
+    failed:     { label: t('servers', 'setupFailed'), color: 'var(--status-error)' },
+  };
   const { data: servers = [], isLoading } = useServers();
   const startServer  = useStartServer();
   const stopServer   = useStopServer();
@@ -53,19 +53,6 @@ export default function ServersPage() {
   const handleSync   = async (id: string) => { setActionMenu(null); await syncServer.mutateAsync(id); };
 
   const formatMemory = (mb: number) => mb >= 1024 ? `${(mb / 1024).toFixed(0)} GB` : `${mb} MB`;
-
-  if (isLoading) {
-    return (
-      <div className="max-w-5xl mx-auto space-y-6">
-        <div className="h-7 w-32 rounded-lg animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-44 rounded-xl animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-slide-in">
@@ -84,8 +71,14 @@ export default function ServersPage() {
         </Link>
       </div>
 
-      {/* Empty */}
-      {servers.length === 0 ? (
+      {/* Loading / empty / grid */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {[...Array(6)].map((_, i) => (
+            <SkeletonServerCard key={i} />
+          ))}
+        </div>
+      ) : servers.length === 0 ? (
         <div
           className="rounded-xl p-12 text-center"
           style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}

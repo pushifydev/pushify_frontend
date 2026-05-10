@@ -19,11 +19,12 @@ import { useProjects, useTranslation, useMetricsOverview } from '@/hooks';
 import { useAuthStore } from '@/stores/auth';
 import { formatTimeAgo, formatStorage } from '@/lib/formatters';
 import { PROJECT_STATUS_COLORS, getStatusColor, STATUS_COLORS } from '@/lib/constants';
+import { Skeleton, SkeletonDashboardProjectRow } from '@/components/Skeleton';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const { data: projects = [], isLoading: projectsLoading } = useProjects();
-  const { data: metricsOverview } = useMetricsOverview();
+  const { data: metricsOverview, isLoading: metricsLoading } = useMetricsOverview();
   const { t } = useTranslation();
 
   const getGreeting = () => {
@@ -83,7 +84,7 @@ export default function DashboardPage() {
                 color: 'var(--text-primary)',
               }}
             >
-              {user?.name?.split(' ')[0] || 'Developer'}
+              {user?.name?.split(' ')[0] || t('common', 'fallbackDisplayName')}
               <span className="gradient-text">.</span>
             </h1>
             <p style={{ marginTop: 10, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
@@ -129,8 +130,12 @@ export default function DashboardPage() {
             icon: <Cpu className="w-4 h-4" />,
             accent: STATUS_COLORS.purple,
           },
-        ].map((card) => (
-          <StatCard key={card.label} {...card} />
+        ].map((card, idx) => (
+          <StatCard
+            key={card.label}
+            {...card}
+            loading={(idx < 2 && projectsLoading) || (idx >= 2 && metricsLoading)}
+          />
         ))}
       </div>
 
@@ -203,11 +208,11 @@ export default function DashboardPage() {
           </SectionLabel>
 
           {projectsLoading ? (
-            <>
+            <div className="space-y-2">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-14 rounded-xl animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
+                <SkeletonDashboardProjectRow key={i} />
               ))}
-            </>
+            </div>
           ) : projects.length === 0 ? (
             <div
               className="rounded-xl p-10 text-center"
@@ -443,11 +448,13 @@ function StatCard({
   value,
   icon,
   accent,
+  loading,
 }: {
   label: string;
   value: string;
   icon: React.ReactNode;
   accent: string;
+  loading?: boolean;
 }) {
   return (
     <div
@@ -479,7 +486,11 @@ function StatCard({
           marginBottom: 6,
         }}
       >
-        {value}
+        {loading ? (
+          <Skeleton className="inline-block align-middle h-10 w-[3.5ch] max-w-[100px] rounded-md" />
+        ) : (
+          value
+        )}
       </p>
       <p
         style={{

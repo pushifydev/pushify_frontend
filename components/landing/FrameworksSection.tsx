@@ -66,14 +66,16 @@ function MarqueeRow({ items, reverse = false }: { items: typeof FRAMEWORKS; reve
   const tripled = [...items, ...items, ...items];
   return (
     <div className="flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-      <div className={`flex gap-4 ${reverse ? 'animate-marquee-reverse' : 'animate-marquee'}`}>
+      <div className={`flex gap-3 ${reverse ? 'animate-marquee-reverse' : 'animate-marquee'}`}>
         {tripled.map((fw, i) => (
           <div
             key={`${fw.name}-${i}`}
-            className="group flex-shrink-0 flex items-center gap-3 px-6 py-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] hover:border-[var(--accent-cyan)]/40 transition-all duration-300 cursor-default"
+            className="group flex-shrink-0 flex items-center gap-3 px-5 py-3 border border-[var(--glass-border-md)] bg-[rgba(255,255,255,0.02)] hover:border-[var(--accent-cyan)] hover:bg-[rgba(99,102,241,0.06)] transition-colors cursor-default"
           >
             <div className="group-hover:scale-110 transition-transform duration-200">{fw.icon}</div>
-            <span className="text-sm font-medium text-[var(--text-primary)] whitespace-nowrap">{fw.name}</span>
+            <span className="lp-mono text-[12px] tracking-[0.06em] text-[var(--text-primary)] whitespace-nowrap uppercase">
+              {fw.name}
+            </span>
           </div>
         ))}
       </div>
@@ -85,29 +87,37 @@ export function FrameworksSection() {
   const { t } = useTranslation();
 
   return (
-    <section id="frameworks" className="relative py-24 border-y border-[var(--glass-border)]">
-      <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent-purple)]/10 border border-[var(--accent-purple)]/20 mb-5">
-          <Globe className="w-3.5 h-3.5 text-[var(--accent-purple)]" />
-          <span className="text-xs text-[var(--accent-purple)] terminal-text uppercase tracking-wider">{t('landing', 'universalCompatibility')}</span>
+    <section id="frameworks" className="relative border-t border-[var(--glass-border)]">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 pt-24 md:pt-32 pb-12">
+        <div className="grid grid-cols-12 gap-6 mb-14">
+          <div className="col-span-12 md:col-span-3 flex items-start gap-3">
+            <span className="lp-crosshair mt-2" />
+            <div className="lp-eyebrow flex items-center gap-2">
+              <Globe className="w-3 h-3" />
+              {t('landing', 'universalCompatibility')}
+            </div>
+          </div>
+          <h2 className="col-span-12 md:col-span-9 lp-editorial text-[34px] md:text-[56px] lg:text-[72px] leading-[0.98] tracking-[-0.025em]">
+            <span className="block">
+              {t('landing', 'worksWithEvery')}{' '}
+              <em className="text-[var(--accent-cyan)]">{t('landing', 'everyFramework')}</em>.
+            </span>
+          </h2>
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
-          {t('landing', 'worksWithEvery')} <span className="gradient-text">{t('landing', 'everyFramework')}</span>
-        </h2>
-        <p className="text-[var(--text-secondary)] max-w-lg mx-auto">
-          {t('landing', 'zeroConfigRequired')}
-        </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 pb-24">
         <MarqueeRow items={FRAMEWORKS} />
         <MarqueeRow items={[...FRAMEWORKS].reverse()} reverse />
       </div>
 
-      <div className="text-center mt-10">
-        <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--bg-tertiary)] border border-[var(--glass-border)] text-sm">
-          <span className="text-xl font-bold gradient-text">20+</span>
-          <span className="text-[var(--text-secondary)]">{t('landing', 'frameworksSupported')}</span>
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 pb-12 flex items-center justify-between">
+        <span className="lp-mono text-[11px] uppercase tracking-[0.14em] opacity-60">
+          {t('landing', 'frameworksSupported')}
+        </span>
+        <span className="flex items-baseline gap-2">
+          <span className="lp-editorial text-[40px] leading-none text-[var(--accent-cyan)]">20</span>
+          <span className="lp-editorial text-[28px] text-[var(--accent-cyan)] -translate-y-1">+</span>
         </span>
       </div>
     </section>

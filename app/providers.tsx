@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider, MutationCache } from '@tanstack/react
 import { Toaster, toast } from 'sonner';
 import { useThemeStore } from '@/stores/theme';
 import { ConfirmProvider } from '@/hooks/useConfirm';
+import { getApiErrorMessage } from '@/lib/api/get-error-message';
 
 function DynamicToaster() {
   const { theme } = useThemeStore();
@@ -55,9 +56,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
           },
         },
         mutationCache: new MutationCache({
-          onError: (error: Error) => {
-            toast.error('Operation failed', {
-              description: error.message,
+          onError: (error: unknown) => {
+            const description = getApiErrorMessage(error);
+            toast.error('Something went wrong', {
+              description,
             });
           },
         }),

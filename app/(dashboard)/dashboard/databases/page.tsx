@@ -24,6 +24,7 @@ import { DATABASE_STATUS_COLORS, DB_TYPE_COLORS, DB_TYPE_LABELS, STATUS_COLORS }
 import { formatStorage } from '@/lib/formatters';
 import { CreateDatabaseModal } from './components/CreateDatabaseModal';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { SkeletonServerCard } from '@/components/Skeleton';
 import type { Database as DatabaseType, DatabaseStatus } from '@/lib/api';
 
 export default function DatabasesPage() {
@@ -57,19 +58,6 @@ export default function DatabasesPage() {
 
   const readyServers = servers.filter(s => s.status === 'running' && s.setupStatus === 'completed');
 
-  if (isLoading) {
-    return (
-      <div className="max-w-5xl mx-auto space-y-6">
-        <div className="h-7 w-32 rounded-lg animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-44 rounded-xl animate-pulse" style={{ background: 'var(--bg-secondary)' }} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-slide-in">
 
@@ -92,7 +80,7 @@ export default function DatabasesPage() {
       </div>
 
       {/* No servers warning */}
-      {readyServers.length === 0 && (
+      {!isLoading && readyServers.length === 0 && (
         <div
           className="flex items-center justify-between gap-4 px-4 py-3 rounded-xl"
           style={{
@@ -118,8 +106,14 @@ export default function DatabasesPage() {
         </div>
       )}
 
-      {/* Empty */}
-      {databases.length === 0 ? (
+      {/* Loading / empty / grid */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {[...Array(6)].map((_, i) => (
+            <SkeletonServerCard key={i} />
+          ))}
+        </div>
+      ) : databases.length === 0 ? (
         <div
           className="rounded-xl p-12 text-center"
           style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}

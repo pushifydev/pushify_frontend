@@ -12,6 +12,7 @@ import {
   Github,
   Globe,
   Loader2,
+  ClipboardCopy,
   Plus,
   Rocket,
   Settings,
@@ -36,10 +37,12 @@ import {
   useFrameworkDetection,
   useServers,
 } from '@/hooks';
-import { createDeployment } from '@/lib/api';
+import { toast } from 'sonner';
+import { createDeployment, getApiErrorMessage } from '@/lib/api';
 import type { CreateProjectInput, GitHubRepo } from '@/lib/api';
 import { FRAMEWORKS } from '@/lib/frameworks';
 import { Checkbox } from '@/components/Checkbox';
+import { Modal } from '@/components/Modal';
 
 type Step = 'source' | 'configure' | 'environment' | 'review';
 
@@ -57,6 +60,9 @@ export default function NewProjectPage() {
 
   const [currentStep, setCurrentStep] = useState<Step>('source');
   const [isCreating, setIsCreating] = useState(false);
+  const [webhookSecretDialog, setWebhookSecretDialog] = useState<{ projectId: string; secret: string } | null>(
+    null
+  );
 
   // Form state
   const [sourceType, setSourceType] = useState<'git' | 'github' | 'template'>('git');
@@ -221,6 +227,13 @@ export default function NewProjectPage() {
     setEnvVariables(envVariables.filter(env => env.id !== id));
   };
 
+  const finalizeCreation = async (projectId: string) => {
+    await createDeployment(projectId, {
+      branch: gitBranch || undefined,
+    });
+    router.push(`/dashboard/projects/${projectId}`);
+  };
+
   const handleSubmit = async () => {
     setIsCreating(true);
 
@@ -246,21 +259,52 @@ export default function NewProjectPage() {
 
       const result = await createProject.mutateAsync(input);
 
-      if (result?.id) {
-        // Trigger initial deployment (backend will use project's gitBranch or git default)
-        await createDeployment(result.id, {
-          branch: gitBranch || undefined,
-        });
+      if (!result?.id) {
+        return;
       }
 
-      router.push(`/dashboard/projects/${result?.id}`);
+      const secret = result.webhookSecret?.trim();
+      if (secret) {
+        setWebhookSecretDialog({ projectId: result.id, secret });
+        return;
+      }
+
+      await finalizeCreation(result.id);
     } catch (error) {
       console.error('Failed to create project:', error);
+      toast.error(t('common', 'operationFailed'), {
+        description: getApiErrorMessage(error),
+      });
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const copyWebhookSecret = async () => {
+    if (!webhookSecretDialog) return;
+    await navigator.clipboard.writeText(webhookSecretDialog.secret);
+    toast.success(t('newProject', 'webhookSecretCopied'));
+  };
+
+  const closeWebhookDialogAndDeploy = async () => {
+    if (!webhookSecretDialog) return;
+    const { projectId } = webhookSecretDialog;
+    setWebhookSecretDialog(null);
+    setIsCreating(true);
+    try {
+      await finalizeCreation(projectId);
+    } catch (error) {
+      console.error('Failed to start deployment:', error);
+      toast.error(t('common', 'operationFailed'), {
+        description: getApiErrorMessage(error),
+      });
+    } finally {
       setIsCreating(false);
     }
   };
 
   return (
+    <>
     <div className="max-w-4xl mx-auto animate-slide-in">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-8">
@@ -970,6 +1014,39 @@ export default function NewProjectPage() {
         </div>
       </div>
     </div>
+
+    <Modal
+      isOpen={!!webhookSecretDialog}
+      onClose={closeWebhookDialogAndDeploy}
+      title={t('newProject', 'webhookSecretOnceTitle')}
+      description={t('newProject', 'webhookSecretOnceDesc')}
+      maxWidth="lg"
+    >
+      <div className="space-y-4">
+        <div
+          className="rounded-xl p-4 font-mono text-sm break-all border border-[var(--border-subtle)] bg-[var(--bg-secondary)]"
+          style={{ wordBreak: 'break-word' }}
+        >
+          {webhookSecretDialog?.secret}
+        </div>
+        <div className="flex flex-wrap gap-3 justify-end">
+          <button type="button" onClick={copyWebhookSecret} className="btn btn-secondary inline-flex items-center gap-2">
+            <ClipboardCopy className="w-4 h-4" />
+            {t('newProject', 'webhookSecretCopy')}
+          </button>
+          <button
+            type="button"
+            onClick={closeWebhookDialogAndDeploy}
+            disabled={isCreating}
+            className="btn btn-primary inline-flex items-center gap-2 disabled:opacity-50"
+          >
+            {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
+            {t('newProject', 'webhookSecretContinue')}
+          </button>
+        </div>
+      </div>
+    </Modal>
+    </>
   );
 }
 
