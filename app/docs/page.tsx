@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   Zap,
@@ -135,11 +136,32 @@ const DATABASE_CONNECT_PARAM_DEFS: Record<string, ParamDef> = {
 
 type SectionProps = { c: DocsContent; apiBase: string };
 
-export default function DocsPage() {
+const VALID_SECTIONS: DocsSectionId[] = [
+  'intro',
+  'auth',
+  'projects',
+  'deployments',
+  'envvars',
+  'domains',
+  'servers',
+  'databases',
+  'webhooks',
+  'errors',
+];
+
+function DocsPageContent() {
   const { content: c } = useDocsContent();
+  const searchParams = useSearchParams();
   const [activeSection, setActiveSection] = useState<DocsSectionId>('intro');
   const [mobileNav, setMobileNav] = useState(false);
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    const section = searchParams.get('section');
+    if (section && VALID_SECTIONS.includes(section as DocsSectionId)) {
+      setActiveSection(section as DocsSectionId);
+    }
+  }, [searchParams]);
 
   const navigate = (section: DocsSectionId) => {
     setActiveSection(section);
@@ -291,6 +313,22 @@ export default function DocsPage() {
       </div>
       </div>
     </div>
+  );
+}
+
+export default function DocsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="lp-page min-h-screen flex items-center justify-center">
+          <p className="text-sm" style={{ color: 'var(--lp-muted)' }}>
+            Loading…
+          </p>
+        </div>
+      }
+    >
+      <DocsPageContent />
+    </Suspense>
   );
 }
 

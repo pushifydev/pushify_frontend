@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import { appendDocsHint } from './error-hints';
 
 /**
  * Extracts a user-facing message from thrown errors (Axios, Error, API `{ error: { message } }`).
@@ -9,19 +10,28 @@ export function getApiErrorMessage(error: unknown): string {
   }
 
   if (error instanceof AxiosError) {
-    const data = error.response?.data as { error?: { message?: string }; message?: string } | undefined;
+    const data = error.response?.data as {
+      error?: { message?: string; code?: string };
+      message?: string;
+    } | undefined;
+    const errorCode =
+      data && typeof data === 'object' && data.error?.code ? data.error.code : undefined;
+
     if (data && typeof data === 'object') {
       const nested = data.error?.message;
       if (typeof nested === 'string' && nested.trim()) {
-        return nested;
+        return appendDocsHint(nested, errorCode);
       }
       if (typeof data.message === 'string' && data.message.trim()) {
-        return data.message;
+        return appendDocsHint(data.message, errorCode);
       }
     }
     const status = error.response?.status;
     if (status === 429) {
-      return 'Too many requests. Please wait a moment and try again.';
+      return appendDocsHint(
+        'Too many requests. Please wait a moment and try again.',
+        errorCode ?? 'RATE_LIMITED'
+      );
     }
     if (status === 413) {
       return 'Request payload is too large.';

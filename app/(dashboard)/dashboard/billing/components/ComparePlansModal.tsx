@@ -104,6 +104,14 @@ export function ComparePlansModal({ isOpen, onClose, plans, currentPlan }: Compa
 
                   {/* Limits */}
                   <div className="space-y-3 mb-6 pb-6 border-b border-[var(--border-subtle)]">
+                    <LimitRow
+                      label={t('billing', 'apiRequestsPerMinuteShort')}
+                      value={
+                        plan.limits.apiRequestsPerMinute === -1
+                          ? t('billing', 'unlimited')
+                          : `${plan.limits.apiRequestsPerMinute}/min`
+                      }
+                    />
                     <LimitRow label={t('billing', 'servers')} value={formatLimit(plan.limits.servers)} />
                     <LimitRow label={t('billing', 'projects')} value={formatLimit(plan.limits.projects)} />
                     <LimitRow label={t('billing', 'deploymentsThisMonth')} value={formatLimit(plan.limits.deploymentsPerMonth)} />
