@@ -148,10 +148,10 @@ export default function ServerDetailPage({ params }: PageProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0 overflow-x-hidden pb-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
           <button
             onClick={() => router.push('/dashboard/servers')}
             className="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
@@ -162,9 +162,9 @@ export default function ServerDetailPage({ params }: PageProps) {
             <div className="p-3 rounded-xl bg-gradient-to-br from-[var(--accent-cyan)]/20 to-[var(--accent-purple)]/20">
               <Server className="w-6 h-6 text-[var(--accent-cyan)]" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold">{server.name}</h1>
-              <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl font-bold truncate">{server.name}</h1>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--text-muted)]">
                 <span className={`w-2 h-2 rounded-full ${getStatusColor(server.status)}`} />
                 <span>{getStatusText(server.status)}</span>
                 {server.ipv4 && (
@@ -179,13 +179,13 @@ export default function ServerDetailPage({ params }: PageProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto shrink-0">
           {/* Primary action */}
           {server.status === 'stopped' && (
             <button
               onClick={() => startServer.mutate(id)}
               disabled={startServer.isPending}
-              className="btn btn-primary"
+              className="btn btn-primary flex-1 sm:flex-none justify-center"
             >
               <Play className="w-4 h-4" />
               {t('servers', 'start')}
@@ -195,7 +195,7 @@ export default function ServerDetailPage({ params }: PageProps) {
           {server.status === 'running' && (
             <Link
               href={`/dashboard/servers/${id}/terminal`}
-              className="btn btn-primary"
+              className="btn btn-primary flex-1 sm:flex-none justify-center"
             >
               <Terminal className="w-4 h-4" />
               Terminal
@@ -300,9 +300,9 @@ export default function ServerDetailPage({ params }: PageProps) {
       )}
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
         {/* Left Column - Server Info */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6 min-w-0">
           {/* Overview Card */}
           <div className="card p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -349,10 +349,10 @@ export default function ServerDetailPage({ params }: PageProps) {
             </h2>
             <div className="space-y-4">
               {server.ipv4 && (
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-secondary)]">
-                  <div>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-[var(--bg-secondary)] min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm text-[var(--text-muted)]">IPv4</p>
-                    <p className="font-mono">{server.ipv4}</p>
+                    <p className="font-mono break-all">{server.ipv4}</p>
                   </div>
                   <button
                     onClick={() => copyToClipboard(server.ipv4!, 'ipv4')}
@@ -367,10 +367,10 @@ export default function ServerDetailPage({ params }: PageProps) {
                 </div>
               )}
               {server.ipv6 && (
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-secondary)]">
-                  <div>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-[var(--bg-secondary)] min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm text-[var(--text-muted)]">IPv6</p>
-                    <p className="font-mono text-sm">{server.ipv6}</p>
+                    <p className="font-mono text-sm break-all">{server.ipv6}</p>
                   </div>
                   <button
                     onClick={() => copyToClipboard(server.ipv6!, 'ipv6')}
@@ -385,10 +385,10 @@ export default function ServerDetailPage({ params }: PageProps) {
                 </div>
               )}
               {server.privateIp && (
-                <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-secondary)]">
-                  <div>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-[var(--bg-secondary)] min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm text-[var(--text-muted)]">Private IP</p>
-                    <p className="font-mono">{server.privateIp}</p>
+                    <p className="font-mono break-all">{server.privateIp}</p>
                   </div>
                   <button
                     onClick={() => copyToClipboard(server.privateIp!, 'privateIp')}
@@ -433,8 +433,8 @@ export default function ServerDetailPage({ params }: PageProps) {
                 <Terminal className="w-5 h-5 text-[var(--accent-cyan)]" />
                 SSH Access
               </h2>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-secondary)]">
-                <code className="font-mono text-sm">ssh root@{server.ipv4}</code>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-[var(--bg-secondary)] min-w-0">
+                <code className="font-mono text-sm break-all min-w-0 flex-1">ssh root@{server.ipv4}</code>
                 <button
                   onClick={() => copyToClipboard(`ssh root@${server.ipv4}`, 'ssh')}
                   className="p-2 hover:bg-[var(--bg-primary)] rounded-lg transition-colors"

@@ -186,10 +186,9 @@ export default function PlansPage() {
               {/* Popular badge */}
               {isPopular && (
                 <div
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider whitespace-nowrap"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider whitespace-nowrap dash-colored-fill"
                   style={{
                     background: accent,
-                    color: '#020206',
                     boxShadow: `0 0 20px ${accent}40`,
                   }}
                 >
@@ -310,10 +309,12 @@ export default function PlansPage() {
                 <button
                   disabled={isCurrent || (pendingPlan !== null && pendingPlan !== planKey)}
                   onClick={() => handlePlanAction(planKey)}
-                  className="w-full py-2.5 rounded-lg text-[13px] font-semibold transition-all duration-200 disabled:opacity-60 disabled:cursor-default"
+                  className={`w-full py-2.5 rounded-lg text-[13px] font-semibold transition-all duration-200 disabled:opacity-60 disabled:cursor-default ${
+                    buttonStyle === 'primary' ? 'dash-colored-fill' : ''
+                  }`}
                   style={
                     buttonStyle === 'primary'
-                      ? { background: accent, color: '#020206' }
+                      ? { background: accent }
                       : buttonStyle === 'current'
                       ? {
                           background: 'var(--hover-overlay)',

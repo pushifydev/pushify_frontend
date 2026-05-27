@@ -15,7 +15,12 @@ import {
   HardDrive,
   MemoryStick,
   Globe,
+  LayoutGrid,
+  Map,
+  Folder,
+  Database,
 } from 'lucide-react';
+import { ServerMapView } from '@/components/servers/ServerMapView';
 import { useTranslation, useServers, useStartServer, useStopServer, useRebootServer, useSyncServer } from '@/hooks';
 import { DeleteServerModal } from './components';
 import { SkeletonServerCard } from '@/components/Skeleton';
@@ -46,6 +51,7 @@ export default function ServersPage() {
   // createModalOpen removed — using /servers/new page instead
   const [deleteServer, setDeleteServer]       = useState<ServerType | null>(null);
   const [actionMenu, setActionMenu]           = useState<string | null>(null);
+  const [viewMode, setViewMode]               = useState<'cards' | 'map'>('cards');
 
   const handleStart  = async (id: string) => { setActionMenu(null); await startServer.mutateAsync(id); };
   const handleStop   = async (id: string) => { setActionMenu(null); await stopServer.mutateAsync(id); };
@@ -65,10 +71,43 @@ export default function ServersPage() {
             {t('servers', 'description')}
           </p>
         </div>
-        <Link href="/dashboard/servers/new" className="btn btn-primary">
-          <Plus className="w-4 h-4" />
-          {t('servers', 'newServer')}
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          {servers.length > 0 && (
+            <div
+              className="flex gap-1 p-1 rounded-lg"
+              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+            >
+              <button
+                type="button"
+                onClick={() => setViewMode('cards')}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs"
+                style={{
+                  background: viewMode === 'cards' ? 'var(--bg-tertiary)' : 'transparent',
+                  color: viewMode === 'cards' ? 'var(--text-primary)' : 'var(--text-muted)',
+                }}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                {t('servers', 'viewCards')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('map')}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs"
+                style={{
+                  background: viewMode === 'map' ? 'var(--bg-tertiary)' : 'transparent',
+                  color: viewMode === 'map' ? 'var(--text-primary)' : 'var(--text-muted)',
+                }}
+              >
+                <Map className="w-3.5 h-3.5" />
+                {t('servers', 'viewMap')}
+              </button>
+            </div>
+          )}
+          <Link href="/dashboard/servers/new" className="btn btn-primary">
+            <Plus className="w-4 h-4" />
+            {t('servers', 'newServer')}
+          </Link>
+        </div>
       </div>
 
       {/* Loading / empty / grid */}
@@ -98,6 +137,8 @@ export default function ServersPage() {
             {t('servers', 'createServer')}
           </Link>
         </div>
+      ) : viewMode === 'map' ? (
+        <ServerMapView servers={servers} t={t} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {servers.map((server) => {
@@ -264,6 +305,29 @@ export default function ServersPage() {
                     <span className="text-xs" style={{ color: 'var(--status-error)' }}>
                       {setupStatusConfig[server.setupStatus].label}
                     </span>
+                  </div>
+                )}
+
+                {(server.projectCount > 0 || server.databaseCount > 0) && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {server.projectCount > 0 && (
+                      <span
+                        className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                        style={{ background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
+                      >
+                        <Folder className="w-3 h-3" />
+                        {t('servers', 'projectCount').replace('{count}', String(server.projectCount))}
+                      </span>
+                    )}
+                    {server.databaseCount > 0 && (
+                      <span
+                        className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                        style={{ background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
+                      >
+                        <Database className="w-3 h-3" />
+                        {t('servers', 'databaseCount').replace('{count}', String(server.databaseCount))}
+                      </span>
+                    )}
                   </div>
                 )}
 

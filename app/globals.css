@@ -19,6 +19,7 @@
   /* ─── Accent ─── */
   --accent-cyan:      #6366f1;
   --accent-cyan-dim:  #4f46e5;
+  --on-accent:        #ffffff;
   --accent-amber:     #fbbf24;
   --accent-amber-dim: #d97706;
   --accent-green:     #34d399;
@@ -411,6 +412,8 @@ html.light .badge-info     { background: rgba(59,130,246,0.14); }
   --accent-cyan-dim: #404040;
   --accent-purple: #737373;
   --glow-cyan: none;
+  /* Text on solid accent fills (pills, time range, toggles) */
+  --on-accent: #ffffff;
 }
 
 html.dark .dash-app {
@@ -427,6 +430,19 @@ html.dark .dash-app {
   --bg-elevated: #1f1f1f;
   --bg-sidebar: #0a0a0a;
   --bg-header-glass: rgba(10, 10, 10, 0.92);
+  --on-accent: var(--bg-primary);
+}
+
+/* Active segment / time-range pill on accent background */
+.dash-app .dash-accent-fill {
+  background: var(--accent-cyan);
+  color: var(--on-accent);
+  border-color: var(--accent-cyan);
+}
+
+/* Text on custom saturated accents (plan tiers, marketplace categories) */
+.dash-app .dash-colored-fill {
+  color: #ffffff;
 }
 
 .dash-app .gradient-text {
@@ -438,11 +454,7 @@ html.dark .dash-app {
 }
 
 .dash-app .btn-primary {
-  color: #ffffff;
-}
-
-html.dark .dash-app .btn-primary {
-  color: #0a0a0a;
+  color: var(--on-accent);
 }
 
 .dash-app .btn-primary:hover {

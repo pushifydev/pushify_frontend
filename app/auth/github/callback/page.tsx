@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { connectGitHub, githubLoginCallback } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
+import { consumeAuthRedirect } from '@/lib/auth-redirect';
 
 function GitHubCallbackContent() {
   const router = useRouter();
@@ -70,7 +71,7 @@ function GitHubCallbackContent() {
 
           setStatus('success');
           setTimeout(() => {
-            router.push('/dashboard');
+            router.push(consumeAuthRedirect('/dashboard'));
           }, 1000);
         } catch {
           setStatus('error');

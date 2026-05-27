@@ -12,6 +12,8 @@ import {
   Eye,
   EyeOff,
   Server,
+  Archive,
+  ArrowUpRight,
 } from 'lucide-react';
 import {
   useTranslation,
@@ -21,7 +23,7 @@ import {
   useServers,
 } from '@/hooks';
 import { DATABASE_STATUS_COLORS, DB_TYPE_COLORS, DB_TYPE_LABELS, STATUS_COLORS } from '@/lib/constants';
-import { formatStorage } from '@/lib/formatters';
+import { formatStorage, formatTimeAgo } from '@/lib/formatters';
 import { CreateDatabaseModal } from './components/CreateDatabaseModal';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { SkeletonServerCard } from '@/components/Skeleton';
@@ -293,6 +295,34 @@ function DatabaseCard({
             {database.server.name}
           </span>
         )}
+      </div>
+
+      <div
+        className="flex items-center justify-between gap-2 mb-4 px-3 py-2 rounded-lg"
+        style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)' }}
+      >
+        <div className="flex items-center gap-2 min-w-0">
+          <Archive className="w-3.5 h-3.5 shrink-0" style={{ color: STATUS_COLORS.purple }} />
+          <div className="min-w-0">
+            <p className="text-xs font-medium">
+              {database.backupEnabled ? t('databases', 'listBackupOn') : t('databases', 'listBackupOff')}
+            </p>
+            <p className="text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
+              {t('databases', 'lastBackup')}:{' '}
+              {database.lastBackupAt
+                ? formatTimeAgo(database.lastBackupAt, t)
+                : t('databases', 'neverBackedUp')}
+            </p>
+          </div>
+        </div>
+        <Link
+          href={`/dashboard/databases/${database.id}`}
+          className="flex items-center gap-0.5 text-xs shrink-0"
+          style={{ color: 'var(--accent-cyan)' }}
+        >
+          {t('databases', 'manageBackupsLink')}
+          <ArrowUpRight className="w-3 h-3" />
+        </Link>
       </div>
 
       {/* Credentials or info */}

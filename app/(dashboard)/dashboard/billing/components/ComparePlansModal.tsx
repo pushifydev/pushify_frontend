@@ -84,7 +84,7 @@ export function ComparePlansModal({ isOpen, onClose, plans, currentPlan }: Compa
                         <Sparkles className="w-5 h-5 text-white" />
                       </div>
                       {isCurrent && (
-                        <span className="text-xs px-2.5 py-1 rounded-full bg-[var(--accent-cyan)] text-white font-semibold">
+                        <span className="text-xs px-2.5 py-1 rounded-full dash-accent-fill font-semibold">
                           {t('billing', 'currentPlanBadge')}
                         </span>
                       )}
