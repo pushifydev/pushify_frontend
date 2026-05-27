@@ -331,12 +331,11 @@ export default function NewServerPage() {
                     key={opt.key}
                     type="button"
                     onClick={() => setAuthMethod(opt.key)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all"
-                    style={{
-                      background: authMethod === opt.key ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
-                      color: authMethod === opt.key ? '#020206' : 'var(--text-secondary)',
-                      border: `1px solid ${authMethod === opt.key ? 'var(--accent-cyan)' : 'var(--glass-border)'}`,
-                    }}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all border ${
+                      authMethod === opt.key
+                        ? 'dash-accent-fill'
+                        : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--glass-border)]'
+                    }`}
                   >
                     <opt.icon className="w-3.5 h-3.5" />
                     {opt.label}

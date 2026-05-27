@@ -24,7 +24,7 @@ export function Checkbox({ checked, onChange, label, description, disabled }: Ch
           boxShadow: checked ? '0 0 0 2px var(--dash-accent-border)' : 'none',
         }}
       >
-        {checked && <Check className="w-3 h-3" style={{ color: '#020206' }} strokeWidth={3} />}
+        {checked && <Check className="w-3 h-3" style={{ color: 'var(--on-accent)' }} strokeWidth={3} />}
       </div>
       {(label || description) && (
         <div className="flex-1 min-w-0">

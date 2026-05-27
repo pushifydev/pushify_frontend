@@ -352,7 +352,7 @@ export default function NewProjectPage() {
                 <div className={`
                   w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
                   ${isCompleted
-                    ? 'bg-[var(--accent-cyan)] text-white'
+                    ? 'dash-accent-fill'
                     : isCurrent
                       ? 'bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-purple)] text-[var(--bg-primary)]'
                       : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)]'

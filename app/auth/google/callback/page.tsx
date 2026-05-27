@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { googleLoginCallback } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
+import { consumeAuthRedirect } from '@/lib/auth-redirect';
 
 function GoogleCallbackContent() {
   const router = useRouter();
@@ -62,7 +63,7 @@ function GoogleCallbackContent() {
             isLoading: false,
           });
           setStatus('success');
-          setTimeout(() => router.push('/dashboard'), 1000);
+          setTimeout(() => router.push(consumeAuthRedirect('/dashboard')), 1000);
         }
       } catch {
         setStatus('error');

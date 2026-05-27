@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, Check, X } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useTranslation } from '@/hooks';
@@ -14,9 +14,11 @@ import {
   AuthDivider,
   AuthPageHeader,
 } from '@/components/auth';
+import { saveAuthRedirect } from '@/lib/auth-redirect';
 
-export default function RegisterPage() {
+function RegisterPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { register, isLoading, error, clearError } = useAuthStore();
   const { t } = useTranslation();
 
@@ -33,6 +35,11 @@ export default function RegisterPage() {
   };
 
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
+
+  useEffect(() => {
+    const redirect = searchParams.get('redirect');
+    if (redirect) saveAuthRedirect(redirect);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,6 +169,18 @@ export default function RegisterPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full h-64 animate-pulse rounded-lg bg-neutral-100 dark:bg-neutral-900" />
+      }
+    >
+      <RegisterPageContent />
+    </Suspense>
   );
 }
 

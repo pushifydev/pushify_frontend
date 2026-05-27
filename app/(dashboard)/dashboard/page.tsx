@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { useProjects, useServers, useTranslation, useMetricsOverview } from '@/hooks';
 import { OnboardingChecklist } from '@/components/dashboard/OnboardingChecklist';
+import { OperationsPanel } from '@/components/dashboard/OperationsPanel';
+import { UsageAlerts } from '@/components/dashboard/UsageAlerts';
 import { useAuthStore } from '@/stores/auth';
 import { formatTimeAgo, formatStorage } from '@/lib/formatters';
 import { PROJECT_STATUS_COLORS, getStatusColor, STATUS_COLORS } from '@/lib/constants';
@@ -94,6 +96,13 @@ export default function DashboardPage() {
             hasLiveDeploy: activeProjects > 0,
           }}
         />
+      )}
+
+      {(projects.length > 0 || servers.length > 0) && (
+        <>
+          <OperationsPanel />
+          <UsageAlerts />
+        </>
       )}
 
       {/* ── Site Studio CTA ──────────────────────────── */}

@@ -24,6 +24,10 @@ export interface TranslationKeys {
     themeSwitchToLight: string;
     themeSwitchToDark: string;
     toggleThemeAria: string;
+    openMenu: string;
+    closeMenu: string;
+    menuTitle: string;
+    githubAria: string;
   };
   auth: {
     welcomeBack: string;
@@ -90,6 +94,7 @@ export interface TranslationKeys {
     projects: string;
     activity: string;
     monitoring: string;
+    alerts: string;
     team: string;
     servers: string;
     newProject: string;
@@ -137,6 +142,48 @@ export interface TranslationKeys {
     onboardingStepProjectDesc: string;
     onboardingStepDeployTitle: string;
     onboardingStepDeployDesc: string;
+    opsPanelTitle: string;
+    opsRunning: string;
+    opsInProgress: string;
+    opsFailed24h: string;
+    opsFailedTotal: string;
+    opsAllClear: string;
+    opsRecentFailures: string;
+    opsNoErrorMessage: string;
+    usageAlertsTitle: string;
+    usageResourceServers: string;
+    usageResourceDatabases: string;
+    usageResourceProjects: string;
+    usageResourceDeployments: string;
+    usageResourceTeamMembers: string;
+    usageResourceCustomDomains: string;
+  };
+  alerts: {
+    title: string;
+    description: string;
+    tabChannels: string;
+    tabHealth: string;
+    tabDelivery: string;
+    statChannels: string;
+    statProjects: string;
+    statFailed24h: string;
+    statUnhealthy: string;
+    issuesBanner: string;
+    channelsTitle: string;
+    addChannelHint: string;
+    events: string;
+    noChannelsTitle: string;
+    noChannelsDesc: string;
+    healthTitle: string;
+    healthDisabled: string;
+    healthPlanUpgrade: string;
+    upgradePlan: string;
+    notConfigured: string;
+    noProjectsTitle: string;
+    noProjectsDesc: string;
+    deliveryTitle: string;
+    noLogsTitle: string;
+    noLogsDesc: string;
   };
   activityLog: {
     subtitle: string;
@@ -777,6 +824,7 @@ export interface TranslationKeys {
     // Status
     healthy: string;
     unhealthy: string;
+    statusTimeout: string;
     unknown: string;
     // Logs
     recentLogs: string;
@@ -845,6 +893,11 @@ export interface TranslationKeys {
     stopped: string;
     noData: string;
     noDataDesc: string;
+    noDeploymentRunning: string;
+    noDeploymentRunningDesc: string;
+    waitingForMetrics: string;
+    hintWaitCollect: string;
+    lastStatus: string;
     lastUpdated: string;
     refreshing: string;
   };
@@ -870,6 +923,13 @@ export interface TranslationKeys {
     stopped: string;
     noData: string;
     noDataDesc: string;
+    noProjects: string;
+    noProjectsDesc: string;
+    noMetricsYet: string;
+    noMetricsYetDesc: string;
+    hintRunningDeploy: string;
+    hintWaitCollect: string;
+    viewProjects: string;
     autoRefresh: string;
     last1Hour: string;
     last6Hours: string;
@@ -1096,6 +1156,10 @@ export interface TranslationKeys {
     invitationInvalid: string;
     loginToAccept: string;
     registerToAccept: string;
+    yourRole: string;
+    invitationEmailMismatch: string;
+    loginOrRegisterToJoin: string;
+    redirectingToDashboard: string;
   };
   billing: {
     title: string;
@@ -1215,6 +1279,13 @@ export interface TranslationKeys {
     deleteConfirm: string;
     sync: string;
     syncing: string;
+    viewCards: string;
+    viewMap: string;
+    mapNoCoords: string;
+    mapNoCoordsDesc: string;
+    mapNoLocationList: string;
+    projectCount: string;
+    databaseCount: string;
     // Specs
     vcpus: string;
     memory: string;
@@ -1296,6 +1367,10 @@ export interface TranslationKeys {
     hideCredentials: string;
     delete: string;
     deleteConfirm: string;
+    listBackupOn: string;
+    listBackupOff: string;
+    neverBackedUp: string;
+    manageBackupsLink: string;
     // Status
     provisioning: string;
     running: string;
@@ -1402,6 +1477,10 @@ export interface TranslationKeys {
     envVarLeaveBlankToGenerate: string;
     featured: string;
     viewDetails: string;
+    tabCatalog: string;
+    tabInstalled: string;
+    noInstallsTitle: string;
+    noInstallsDesc: string;
     backToMarketplace: string;
     step: string;
     of: string;
@@ -1521,6 +1600,10 @@ export const en: TranslationKeys = {
     themeSwitchToLight: 'Switch to light mode',
     themeSwitchToDark: 'Switch to dark mode',
     toggleThemeAria: 'Toggle theme',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    menuTitle: 'Menu',
+    githubAria: 'Pushify on GitHub',
   },
   auth: {
     welcomeBack: 'Welcome back',
@@ -1586,6 +1669,7 @@ export const en: TranslationKeys = {
     projects: 'Projects',
     activity: 'Activity',
     monitoring: 'Monitoring',
+    alerts: 'Alerts',
     team: 'Team',
     servers: 'Servers',
     newProject: 'New Project',
@@ -1633,6 +1717,48 @@ export const en: TranslationKeys = {
     onboardingStepProjectDesc: 'Link a GitHub repository or deploy from the marketplace.',
     onboardingStepDeployTitle: 'Deploy to production',
     onboardingStepDeployDesc: 'Trigger your first deploy — SSL and domains can be added anytime.',
+    opsPanelTitle: 'Operations',
+    opsRunning: 'Running',
+    opsInProgress: 'In progress',
+    opsFailed24h: 'Failed (24h)',
+    opsFailedTotal: 'Failed (all)',
+    opsAllClear: 'No critical issues — deployments and servers look healthy.',
+    opsRecentFailures: 'Recent failed deploys',
+    opsNoErrorMessage: 'Deployment failed — see logs',
+    usageAlertsTitle: 'Plan usage warnings',
+    usageResourceServers: 'Servers',
+    usageResourceDatabases: 'Databases',
+    usageResourceProjects: 'Projects',
+    usageResourceDeployments: 'Deployments this month',
+    usageResourceTeamMembers: 'Team members',
+    usageResourceCustomDomains: 'Custom domains',
+  },
+  alerts: {
+    title: 'Alerts',
+    description: 'Notification channels, health checks, and delivery history across all projects.',
+    tabChannels: 'Channels',
+    tabHealth: 'Health checks',
+    tabDelivery: 'Delivery log',
+    statChannels: 'Active channels',
+    statProjects: 'Projects w/ alerts',
+    statFailed24h: 'Failed (24h)',
+    statUnhealthy: 'Unhealthy apps',
+    issuesBanner: 'Some deliveries failed or health checks reported problems. Review the tabs below.',
+    channelsTitle: 'Notification channels',
+    addChannelHint: 'Manage per project',
+    events: 'events',
+    noChannelsTitle: 'No notification channels',
+    noChannelsDesc: 'Add Slack, email, or webhook alerts on a project’s Notifications tab.',
+    healthTitle: 'Project health monitoring',
+    healthDisabled: 'Not enabled',
+    healthPlanUpgrade: 'Health checks require a Hobby plan or higher.',
+    upgradePlan: 'View plans',
+    notConfigured: 'Not configured',
+    noProjectsTitle: 'No projects yet',
+    noProjectsDesc: 'Create a project to configure health endpoint monitoring.',
+    deliveryTitle: 'Recent deliveries',
+    noLogsTitle: 'No delivery history',
+    noLogsDesc: 'Notification attempts will appear here after deploy or health events fire.',
   },
   activityLog: {
     subtitle: 'Track all changes and actions in your organization',
@@ -2268,6 +2394,7 @@ export const en: TranslationKeys = {
     // Status
     healthy: 'Healthy',
     unhealthy: 'Unhealthy',
+    statusTimeout: 'Timeout',
     unknown: 'Unknown',
     // Logs
     recentLogs: 'Recent Health Checks',
@@ -2336,6 +2463,11 @@ export const en: TranslationKeys = {
     stopped: 'Stopped',
     noData: 'No Metrics Data',
     noDataDesc: 'Metrics will appear once your container is running and collecting data.',
+    noDeploymentRunning: 'No running deployment',
+    noDeploymentRunningDesc: 'Deploy your project successfully. Metrics are collected only while a deployment is in the running state.',
+    waitingForMetrics: 'Collecting metrics…',
+    hintWaitCollect: 'Metrics refresh every ~15 seconds after the container is running.',
+    lastStatus: 'Latest deployment status',
     lastUpdated: 'Last updated',
     refreshing: 'Refreshing...',
   },
@@ -2361,6 +2493,13 @@ export const en: TranslationKeys = {
     stopped: 'Stopped',
     noData: 'No Monitoring Data',
     noDataDesc: 'Metrics will appear once your containers are running and collecting data.',
+    noProjects: 'No projects yet',
+    noProjectsDesc: 'Create a project and deploy it to start seeing organization-wide metrics here.',
+    noMetricsYet: 'No metrics collected yet',
+    noMetricsYetDesc: 'You have projects, but no container metrics have been recorded yet.',
+    hintRunningDeploy: 'Ensure at least one deployment status is running (not building or failed).',
+    hintWaitCollect: 'After a successful deploy, wait ~15 seconds for the first data point.',
+    viewProjects: 'View projects',
     autoRefresh: 'Auto-refresh',
     last1Hour: '1H',
     last6Hours: '6H',
@@ -2587,6 +2726,11 @@ export const en: TranslationKeys = {
     invitationInvalid: 'This invitation link is invalid',
     loginToAccept: 'Log in to accept',
     registerToAccept: 'Create an account to accept',
+    yourRole: 'Your role',
+    invitationEmailMismatch:
+      'This invitation was sent to {invited} but you are logged in as {current}.',
+    loginOrRegisterToJoin: 'Log in or create an account to join {org}',
+    redirectingToDashboard: 'Redirecting to dashboard…',
   },
   billing: {
     title: 'Billing & Usage',
@@ -2708,6 +2852,13 @@ export const en: TranslationKeys = {
     deleteConfirm: 'Are you sure you want to delete this server? This action cannot be undone.',
     sync: 'Sync',
     syncing: 'Syncing...',
+    viewCards: 'Cards',
+    viewMap: 'Map',
+    mapNoCoords: 'No geolocation data yet',
+    mapNoCoordsDesc: 'Sync Hetzner servers to load datacenter coordinates, or use the card view.',
+    mapNoLocationList: 'Servers without map coordinates',
+    projectCount: '{count} projects',
+    databaseCount: '{count} databases',
     // Specs
     vcpus: 'vCPUs',
     memory: 'Memory',
@@ -2789,6 +2940,10 @@ export const en: TranslationKeys = {
     hideCredentials: 'Hide Credentials',
     delete: 'Delete',
     deleteConfirm: 'Are you sure you want to delete this database? This action cannot be undone.',
+    listBackupOn: 'Auto backup on',
+    listBackupOff: 'Auto backup off',
+    neverBackedUp: 'Never backed up',
+    manageBackupsLink: 'Backups',
     // Status
     provisioning: 'Provisioning',
     running: 'Running',
@@ -2896,6 +3051,10 @@ export const en: TranslationKeys = {
     envVarLeaveBlankToGenerate: 'Leave blank to auto-generate a secure value',
     featured: 'Featured',
     viewDetails: 'View Details',
+    tabCatalog: 'Catalog',
+    tabInstalled: 'Installed',
+    noInstallsTitle: 'No marketplace apps installed',
+    noInstallsDesc: 'Deploy WordPress, n8n, Uptime Kuma, and more from the catalog tab.',
     backToMarketplace: 'Back to Marketplace',
     step: 'Step',
     of: 'of',

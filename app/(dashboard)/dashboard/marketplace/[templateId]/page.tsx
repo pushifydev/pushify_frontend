@@ -57,7 +57,7 @@ export default function TemplateDetailPage() {
   const IconComponent = ICON_MAP[template.icon] || Package;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-slide-in">
+    <div className="max-w-4xl mx-auto space-y-8 animate-slide-in min-w-0 overflow-x-hidden pb-8">
       {/* Back */}
       <Link
         href="/dashboard/marketplace"
@@ -70,7 +70,7 @@ export default function TemplateDetailPage() {
 
       {/* Hero */}
       <div
-        className="rounded-xl p-8"
+        className="rounded-xl p-5 sm:p-8"
         style={{
           background: 'var(--bg-secondary)',
           borderWidth: '2px 1px 1px 1px',
@@ -89,7 +89,7 @@ export default function TemplateDetailPage() {
           }}
         />
 
-        <div className="relative flex items-start gap-5">
+        <div className="relative flex flex-col sm:flex-row items-start gap-5 min-w-0">
           <div
             className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shrink-0"
             style={{
@@ -100,8 +100,8 @@ export default function TemplateDetailPage() {
             <IconComponent className="w-7 h-7" style={{ color: accent }} />
           </div>
 
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-1">
+          <div className="flex-1 min-w-0 w-full">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
               <h1
                 className="text-2xl font-bold"
                 style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}
@@ -123,8 +123,8 @@ export default function TemplateDetailPage() {
             <div className="flex items-center gap-4 flex-wrap">
               <button
                 onClick={() => setShowDeploy(true)}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200"
-                style={{ background: accent, color: '#020206' }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 dash-colored-fill"
+                style={{ background: accent }}
               >
                 <Rocket className="w-4 h-4" />
                 {t('marketplace', 'deploy')}
@@ -174,26 +174,26 @@ export default function TemplateDetailPage() {
             {t('marketplace', 'requirements')}
           </h3>
           <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-sm">
+              <span className="flex items-center gap-2 shrink-0" style={{ color: 'var(--text-secondary)' }}>
                 <Cpu className="w-3.5 h-3.5" />
                 {t('marketplace', 'minMemory')}
               </span>
-              <span style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+              <span className="sm:text-right" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
                 {template.minMemoryMb} MB
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-sm">
+              <span className="flex items-center gap-2 shrink-0" style={{ color: 'var(--text-secondary)' }}>
                 <HardDrive className="w-3.5 h-3.5" />
                 {t('marketplace', 'minDisk')}
               </span>
-              <span style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+              <span className="sm:text-right" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
                 {template.minDiskGb} GB
               </span>
             </div>
             {template.requiresDatabase && (
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-sm">
                 <span className="flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
                   <Database className="w-3.5 h-3.5" />
                   {t('marketplace', 'requiresDatabase')}
@@ -222,21 +222,21 @@ export default function TemplateDetailPage() {
             Details
           </h3>
           <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span style={{ color: 'var(--text-secondary)' }}>{t('marketplace', 'dockerImage')}</span>
-              <span style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between text-sm gap-y-1">
+              <span className="shrink-0" style={{ color: 'var(--text-secondary)' }}>{t('marketplace', 'dockerImage')}</span>
+              <span className="break-all sm:text-right sm:max-w-[60%]" style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
                 {template.dockerImage}
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-sm">
               <span style={{ color: 'var(--text-secondary)' }}>{t('marketplace', 'version')}</span>
-              <span style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+              <span className="sm:text-right" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
                 {template.appVersion}
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-sm">
               <span style={{ color: 'var(--text-secondary)' }}>Port</span>
-              <span style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+              <span className="sm:text-right" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
                 {template.port}
               </span>
             </div>
@@ -293,7 +293,7 @@ export default function TemplateDetailPage() {
             {template.envVars.map((envVar) => (
               <div
                 key={envVar.key}
-                className="flex items-center justify-between py-2 px-3 rounded-lg"
+                className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between py-2 px-3 rounded-lg min-w-0"
                 style={{ background: 'var(--hover-overlay)' }}
               >
                 <span

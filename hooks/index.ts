@@ -132,6 +132,12 @@ export {
   useResumeSubscription,
 } from './useBilling';
 
+// Dashboard overview
+export { dashboardKeys, useDashboardOverview } from './useDashboardOverview';
+
+// Alerts overview
+export { alertsKeys, useAlertsOverview } from './useAlertsOverview';
+
 // Servers
 export {
   serverKeys,
@@ -208,6 +214,15 @@ export {
 
 // AI Assistant
 export { useAiAssistant, type ChatEntry } from './useAiAssistant';
+
+// Marketplace
+export {
+  marketplaceKeys,
+  useMarketplaceTemplates,
+  useMarketplaceTemplate,
+  useDeployMarketplaceApp,
+  useMarketplaceDeployments,
+} from './useMarketplace';
 
 // Site Studio
 export {

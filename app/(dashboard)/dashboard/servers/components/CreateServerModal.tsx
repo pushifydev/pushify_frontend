@@ -124,12 +124,11 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
             <button
               type="button"
               onClick={() => setMode('managed')}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
-              style={{
-                background: mode === 'managed' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
-                color: mode === 'managed' ? '#020206' : 'var(--text-secondary)',
-                border: `1px solid ${mode === 'managed' ? 'var(--accent-cyan)' : 'var(--glass-border)'}`,
-              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+                mode === 'managed'
+                  ? 'dash-accent-fill'
+                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--glass-border)]'
+              }`}
             >
               <Globe className="w-3.5 h-3.5" />
               Cloud Provider
@@ -137,12 +136,11 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
             <button
               type="button"
               onClick={() => setMode('byos')}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
-              style={{
-                background: mode === 'byos' ? 'var(--accent-cyan)' : 'var(--bg-tertiary)',
-                color: mode === 'byos' ? '#020206' : 'var(--text-secondary)',
-                border: `1px solid ${mode === 'byos' ? 'var(--accent-cyan)' : 'var(--glass-border)'}`,
-              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+                mode === 'byos'
+                  ? 'dash-accent-fill'
+                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--glass-border)]'
+              }`}
             >
               <Key className="w-3.5 h-3.5" />
               Existing Server

@@ -301,11 +301,7 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
             <button
               onClick={() => setStep(step + 1)}
               disabled={!canProceed()}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-40"
-              style={{
-                background: 'var(--accent-cyan)',
-                color: '#020206',
-              }}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-40 dash-accent-fill"
             >
               {t('marketplace', 'next')}
               <ChevronRight className="w-3.5 h-3.5" />
@@ -314,11 +310,7 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
             <button
               onClick={handleDeploy}
               disabled={deployMutation.isPending}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-60"
-              style={{
-                background: 'var(--accent-cyan)',
-                color: '#020206',
-              }}
+              className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-60 dash-accent-fill"
             >
               {deployMutation.isPending ? (
                 <>
