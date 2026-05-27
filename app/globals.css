@@ -593,6 +593,86 @@ html.dark .lp-page {
   transform: translateY(-1px);
 }
 
+/* Auth pages — same CTA as landing (ink on canvas, not accent purple) */
+.auth-shell {
+  --lp-ink: var(--text-primary);
+  --lp-body: var(--text-secondary);
+  --lp-muted: var(--text-muted);
+  --lp-border: var(--border-subtle);
+  --lp-btn: var(--text-primary);
+  --lp-btn-fg: var(--bg-primary);
+}
+
+html.light .auth-shell {
+  --lp-border: #e4e4e7;
+  --lp-btn: #09090b;
+  --lp-btn-fg: #ffffff;
+}
+
+html.dark .auth-shell {
+  --lp-border: rgba(255, 255, 255, 0.1);
+  --lp-btn: #fafafa;
+  --lp-btn-fg: #09090b;
+}
+
+.auth-shell .lp-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--lp-btn-fg) !important;
+  background: var(--lp-btn) !important;
+  text-decoration: none;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.auth-shell .lp-cta span,
+.auth-shell .lp-cta svg {
+  color: inherit !important;
+}
+
+.auth-shell .lp-cta:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.auth-shell .lp-cta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.auth-shell .lp-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--lp-ink);
+  background: transparent;
+  border: 1px solid var(--lp-border);
+  text-decoration: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.auth-shell .lp-cta-ghost:hover:not(:disabled) {
+  background: var(--hover-overlay-md);
+  border-color: var(--lp-muted);
+}
+
+.auth-shell .lp-cta-ghost:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .lp-page .lp-cta-ghost {
   display: inline-flex;
   align-items: center;
