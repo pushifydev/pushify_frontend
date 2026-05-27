@@ -3,17 +3,16 @@
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import {
-  ArrowRight,
-  AlertCircle,
-  Eye,
-  EyeOff,
-  CheckCircle,
-  ArrowLeft,
-  XCircle,
-} from 'lucide-react';
+import { Eye, EyeOff, CheckCircle, ArrowLeft, XCircle } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { authService } from '@/lib/api/services/auth.service';
+import {
+  AuthSubmitButton,
+  AuthErrorAlert,
+  AuthMobileBrand,
+  AuthPageHeader,
+  AuthPrimaryLink,
+} from '@/components/auth';
 
 function ResetPasswordForm() {
   const { t } = useTranslation();
@@ -27,32 +26,27 @@ function ResetPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // No token — invalid link
   if (!token) {
     return (
       <div className="w-full animate-slide-in">
+        <AuthMobileBrand />
         <div className="mb-8">
           <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4">
-            <XCircle className="w-6 h-6 text-red-400" />
+            <XCircle className="w-6 h-6 text-red-500" />
           </div>
-          <h2 className="text-3xl font-bold tracking-tight mb-2">
-            {t('auth', 'resetPasswordTitle')}
-          </h2>
-          <p className="text-[var(--text-secondary)]">
-            {t('auth', 'invalidResetLink')}
-          </p>
+          <AuthPageHeader
+            title={t('auth', 'resetPasswordTitle')}
+            description={t('auth', 'invalidResetLink')}
+          />
         </div>
 
-        <Link
-          href="/forgot-password"
-          className="btn btn-primary w-full h-12 text-base"
-        >
+        <AuthPrimaryLink href="/forgot-password" showArrow={false}>
           {t('auth', 'sendResetLink')}
-        </Link>
+        </AuthPrimaryLink>
 
         <Link
           href="/login"
-          className="mt-6 flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+          className="mt-6 flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           {t('auth', 'backToSignIn')}
@@ -61,29 +55,21 @@ function ResetPasswordForm() {
     );
   }
 
-  // Success state
   if (success) {
     return (
       <div className="w-full animate-slide-in">
+        <AuthMobileBrand />
         <div className="mb-8">
           <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
-            <CheckCircle className="w-6 h-6 text-emerald-400" />
+            <CheckCircle className="w-6 h-6 text-emerald-500" />
           </div>
-          <h2 className="text-3xl font-bold tracking-tight mb-2">
-            {t('auth', 'passwordResetSuccess')}
-          </h2>
-          <p className="text-[var(--text-secondary)]">
-            {t('auth', 'passwordResetSuccessDesc')}
-          </p>
+          <AuthPageHeader
+            title={t('auth', 'passwordResetSuccess')}
+            description={t('auth', 'passwordResetSuccessDesc')}
+          />
         </div>
 
-        <Link
-          href="/login"
-          className="btn btn-primary w-full h-12 text-base group"
-        >
-          {t('auth', 'signIn')}
-          <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-        </Link>
+        <AuthPrimaryLink href="/login">{t('auth', 'signIn')}</AuthPrimaryLink>
       </div>
     );
   }
@@ -117,65 +103,16 @@ function ResetPasswordForm() {
 
   return (
     <div className="w-full animate-slide-in">
-      {/* Mobile logo */}
-      <div className="lg:hidden mb-8 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-[var(--accent-cyan)] flex items-center justify-center">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="text-[var(--bg-primary)]"
-          >
-            <path
-              d="M12 2L2 7L12 12L22 7L12 2Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M2 17L12 22L22 17"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M2 12L12 17L22 12"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-        <span className="text-2xl font-bold tracking-tight">Pushify</span>
-      </div>
+      <AuthMobileBrand />
+      <AuthPageHeader
+        title={t('auth', 'resetPasswordTitle')}
+        description={t('auth', 'resetPasswordDesc')}
+      />
+      {error && <AuthErrorAlert message={error} />}
 
-      {/* Header */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold tracking-tight mb-2">
-          {t('auth', 'resetPasswordTitle')}
-        </h2>
-        <p className="text-[var(--text-secondary)]">
-          {t('auth', 'resetPasswordDesc')}
-        </p>
-      </div>
-
-      {/* Error message */}
-      {error && (
-        <div className="mb-6 p-4 rounded-lg bg-[var(--status-error)]/10 border border-[var(--status-error)]/20 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-[var(--status-error)] shrink-0 mt-0.5" />
-          <p className="text-sm text-[var(--status-error)]">{error}</p>
-        </div>
-      )}
-
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* New Password */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-secondary)]">
+          <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400">
             {t('auth', 'newPasswordLabel')}
           </label>
           <div className="relative">
@@ -193,20 +130,16 @@ function ResetPasswordForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? (
-                <EyeOff className="w-5 h-5" />
-              ) : (
-                <Eye className="w-5 h-5" />
-              )}
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Confirm Password */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-secondary)]">
+          <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400">
             {t('auth', 'confirmPasswordLabel')}
           </label>
           <input
@@ -221,35 +154,16 @@ function ResetPasswordForm() {
           />
         </div>
 
-        {/* Password requirements hint */}
-        <p className="text-xs text-[var(--text-muted)]">
-          {t('auth', 'minCharacters')}
-        </p>
+        <p className="text-xs text-neutral-500">{t('auth', 'minCharacters')}</p>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={isLoading || password.length < 8}
-          className="btn btn-primary w-full h-12 text-base group relative overflow-hidden"
-        >
-          <span className={isLoading ? 'opacity-0' : ''}>
-            {t('auth', 'resetPasswordBtn')}
-          </span>
-          {!isLoading && (
-            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-          )}
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-5 h-5 border-2 border-[var(--bg-primary)] border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
-        </button>
+        <AuthSubmitButton isLoading={isLoading} disabled={password.length < 8}>
+          {t('auth', 'resetPasswordBtn')}
+        </AuthSubmitButton>
       </form>
 
-      {/* Back to login */}
       <Link
         href="/login"
-        className="mt-8 flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+        className="mt-8 flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         {t('auth', 'backToSignIn')}

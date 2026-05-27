@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuthStore } from '@/stores/auth';
 import { useTranslation } from '@/hooks';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { LogoMark } from '@/components/logo';
 import { Check } from 'lucide-react';
 
 export default function AuthLayout({
@@ -47,11 +48,12 @@ export default function AuthLayout({
   ];
 
   return (
-    <div className="min-h-screen flex bg-white dark:bg-[#0a0a0a]">
+    <div className="auth-shell min-h-screen flex bg-white dark:bg-[#0a0a0a]">
       <div className="hidden lg:flex w-1/2 flex-col justify-between p-12 border-r border-neutral-200 dark:border-neutral-800">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-white">
-            Pushify
+          <Link href="/" className="flex items-center gap-2.5 text-neutral-900 dark:text-white hover:opacity-90 transition-opacity">
+            <LogoMark size={28} />
+            <span className="text-xl font-semibold tracking-tight">Pushify</span>
           </Link>
           <LanguageSwitcher />
         </div>
