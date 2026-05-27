@@ -237,7 +237,7 @@ export default function NewServerPage() {
                         style={{
                           background: 'var(--bg-secondary)',
                           border: `1.5px solid ${isSelected ? 'var(--accent-cyan)' : 'var(--glass-border)'}`,
-                          boxShadow: isSelected ? '0 0 0 3px rgba(99,102,241,0.1)' : 'none',
+                          boxShadow: isSelected ? '0 0 0 3px var(--dash-accent-bg)' : 'none',
                         }}
                       >
                         <div className="flex items-center justify-between mb-3">
@@ -387,7 +387,7 @@ export default function NewServerPage() {
             {/* Info Box */}
             <div
               className="rounded-xl p-5 flex gap-4"
-              style={{ background: 'rgba(99,102,241,0.05)', border: '1px solid rgba(99,102,241,0.15)' }}
+              style={{ background: 'var(--dash-accent-bg)', border: '1px solid var(--dash-accent-border)' }}
             >
               <Info className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'var(--accent-cyan)' }} />
               <div>

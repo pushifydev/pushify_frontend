@@ -7,7 +7,6 @@ import {
   Key,
   Folder,
   Rocket,
-  ExternalLink,
   Shield,
   Terminal,
   BookOpen,
@@ -23,72 +22,135 @@ import {
   Gauge,
 } from 'lucide-react';
 import { CodeBlock, EndpointCard, SectionHeading, Callout } from './components';
+import { LandingNavbar } from '@/components/landing';
+import { DOCS_API_BASE_URL } from '@/lib/api/public-url';
+import { useDocsContent } from '@/hooks/useDocsContent';
+import type { DocsContent, DocsSectionId } from '@/lib/i18n/docs';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.pushify.dev/api/v1';
+const API_BASE = DOCS_API_BASE_URL;
 
-type Section =
-  | 'intro'
-  | 'auth'
-  | 'projects'
-  | 'deployments'
-  | 'envvars'
-  | 'domains'
-  | 'servers'
-  | 'databases'
-  | 'webhooks'
-  | 'errors';
+const sectionIcons: Record<DocsSectionId, typeof BookOpen> = {
+  intro: BookOpen,
+  auth: Key,
+  projects: Folder,
+  deployments: Rocket,
+  envvars: Variable,
+  domains: Globe,
+  servers: Server,
+  databases: Database,
+  webhooks: Webhook,
+  errors: Shield,
+};
 
-const navGroups = [
-  {
-    label: 'Getting Started',
-    items: [
-      { id: 'intro' as Section, label: 'Introduction', icon: BookOpen },
-      { id: 'auth' as Section, label: 'Authentication', icon: Key },
-    ],
-  },
-  {
-    label: 'API Reference',
-    items: [
-      { id: 'projects' as Section, label: 'Projects', icon: Folder },
-      { id: 'deployments' as Section, label: 'Deployments', icon: Rocket },
-      { id: 'envvars' as Section, label: 'Environment Variables', icon: Variable },
-      { id: 'domains' as Section, label: 'Domains', icon: Globe },
-    ],
-  },
-  {
-    label: 'Infrastructure',
-    items: [
-      { id: 'servers' as Section, label: 'Servers', icon: Server },
-      { id: 'databases' as Section, label: 'Databases', icon: Database },
-    ],
-  },
-  {
-    label: 'Integrations',
-    items: [
-      { id: 'webhooks' as Section, label: 'Webhooks & CI/CD', icon: Webhook },
-    ],
-  },
-  {
-    label: 'Reference',
-    items: [
-      { id: 'errors' as Section, label: 'Error Handling', icon: Shield },
-    ],
-  },
+const exploreSections: DocsSectionId[] = ['projects', 'deployments', 'servers', 'databases'];
+const exploreIcons = [Folder, Rocket, Server, Database];
+
+const introFeatureIcons = [
+  { icon: Terminal, iconClass: 'text-[var(--lp-ink)]', bgClass: 'bg-[var(--hover-overlay-lg)]' },
+  { icon: Shield, iconClass: 'text-purple-600 dark:text-purple-400', bgClass: 'bg-purple-500/10' },
+  { icon: Rocket, iconClass: 'text-amber-600 dark:text-amber-400', bgClass: 'bg-amber-500/10' },
 ];
 
+const statusCodeColors: Record<string, string> = {
+  '200': 'text-emerald-600 dark:text-emerald-400',
+  '201': 'text-emerald-600 dark:text-emerald-400',
+  '400': 'text-amber-600 dark:text-amber-400',
+  '401': 'text-red-600 dark:text-red-400',
+  '403': 'text-red-600 dark:text-red-400',
+  '404': 'text-red-600 dark:text-red-400',
+  '429': 'text-orange-600 dark:text-orange-400',
+  '500': 'text-red-600 dark:text-red-400',
+};
+
+type ParamDef = { type: string; required?: boolean };
+
+function buildParams(
+  defs: Record<string, ParamDef>,
+  descriptions?: Record<string, string>,
+) {
+  return Object.entries(defs).map(([name, { type, required }]) => ({
+    name,
+    type,
+    ...(required ? { required: true } : {}),
+    desc: descriptions?.[name] ?? '',
+  }));
+}
+
+const PROJECT_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
+  name: { type: 'string', required: true },
+  gitRepoUrl: { type: 'string', required: true },
+  gitBranch: { type: 'string' },
+  buildCommand: { type: 'string' },
+  startCommand: { type: 'string' },
+  port: { type: 'number' },
+};
+
+const DEPLOYMENT_LIST_PARAM_DEFS: Record<string, ParamDef> = {
+  limit: { type: 'number' },
+  offset: { type: 'number' },
+};
+
+const DEPLOYMENT_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
+  branch: { type: 'string' },
+  commitHash: { type: 'string' },
+  commitMessage: { type: 'string' },
+};
+
+const DEPLOYMENT_LOGS_PARAM_DEFS: Record<string, ParamDef> = {
+  type: { type: 'string', required: true },
+};
+
+const ENVVAR_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
+  key: { type: 'string', required: true },
+  value: { type: 'string', required: true },
+  isSecret: { type: 'boolean' },
+};
+
+const ENVVAR_BULK_PARAM_DEFS: Record<string, ParamDef> = {
+  variables: { type: 'array', required: true },
+};
+
+const DOMAIN_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
+  domain: { type: 'string', required: true },
+};
+
+const SERVER_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
+  name: { type: 'string', required: true },
+  provider: { type: 'string', required: true },
+  region: { type: 'string', required: true },
+  size: { type: 'string', required: true },
+};
+
+const DATABASE_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
+  name: { type: 'string', required: true },
+  type: { type: 'string', required: true },
+  serverId: { type: 'string', required: true },
+  description: { type: 'string' },
+};
+
+const DATABASE_CONNECT_PARAM_DEFS: Record<string, ParamDef> = {
+  projectId: { type: 'string', required: true },
+  envPrefix: { type: 'string' },
+};
+
+type SectionProps = { c: DocsContent; apiBase: string };
+
 export default function DocsPage() {
-  const [activeSection, setActiveSection] = useState<Section>('intro');
+  const { content: c } = useDocsContent();
+  const [activeSection, setActiveSection] = useState<DocsSectionId>('intro');
   const [mobileNav, setMobileNav] = useState(false);
   const [search, setSearch] = useState('');
 
-  const navigate = (section: Section) => {
+  const navigate = (section: DocsSectionId) => {
     setActiveSection(section);
     setMobileNav(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    requestAnimationFrame(() => {
+      document.getElementById('docs-main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   };
 
   const filteredGroups = search
-    ? navGroups
+    ? c.navGroups
         .map((g) => ({
           ...g,
           items: g.items.filter((i) =>
@@ -96,47 +158,47 @@ export default function DocsPage() {
           ),
         }))
         .filter((g) => g.items.length > 0)
-    : navGroups;
+    : c.navGroups;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0a0a0f]/90 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-4">
+    <div className="lp-page docs-page min-h-screen">
+      <LandingNavbar />
+
+      <div className="pt-14 md:pt-16">
+      <header
+        className="sticky top-14 md:top-16 z-40 border-b backdrop-blur-xl"
+        style={{ borderColor: 'var(--lp-border)', background: 'color-mix(in srgb, var(--bg-primary) 92%, transparent)' }}
+      >
+        <div className="lp-container flex items-center justify-between gap-4 h-12">
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => setMobileNav(true)}
-              className="lg:hidden p-1.5 -ml-1.5 rounded-md hover:bg-white/5"
+              className="lg:hidden p-1.5 -ml-1.5 rounded-md hover:opacity-70"
+              style={{ color: 'var(--lp-muted)' }}
             >
-              <Menu className="w-5 h-5 text-white/60" />
+              <Menu className="w-5 h-5" />
             </button>
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center">
-                <Zap className="w-4 h-4 text-[#0a0a0f]" />
-              </div>
-              <span className="text-base font-bold text-white">Pushify</span>
-              <span className="text-sm text-white/30 hidden sm:inline">/ Docs</span>
-            </Link>
+            <span className="text-sm font-medium" style={{ color: 'var(--lp-muted)' }}>
+              {c.shell.title}
+            </span>
           </div>
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard"
-              className="text-sm text-white/50 hover:text-white transition-colors hidden sm:block"
+              className="text-sm hidden sm:block hover:opacity-80 transition-opacity"
+              style={{ color: 'var(--lp-muted)' }}
             >
-              Dashboard
+              {c.shell.dashboard}
             </Link>
-            <Link
-              href="/dashboard/settings"
-              className="px-3.5 py-1.5 rounded-lg bg-indigo-500 text-[#0a0a0f] text-sm font-medium hover:bg-indigo-400 transition-colors"
-            >
-              Get API Key
+            <Link href="/dashboard/settings" className="lp-cta text-sm py-2 px-4 h-auto min-h-0">
+              {c.shell.getApiKey}
             </Link>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto flex">
-        {/* Mobile Nav Overlay */}
+      <div className="lp-container max-w-7xl flex">
         {mobileNav && (
           <div
             className="fixed inset-0 bg-black/60 z-50 lg:hidden"
@@ -144,59 +206,56 @@ export default function DocsPage() {
           />
         )}
 
-        {/* Sidebar */}
         <aside
-          className={`fixed lg:sticky top-0 lg:top-16 left-0 h-screen lg:h-[calc(100vh-4rem)] w-72 lg:w-64 bg-[#0a0a0f] lg:bg-transparent border-r border-white/[0.06] lg:border-0 z-50 lg:z-0 transition-transform lg:translate-x-0 shrink-0 ${
+          className={`fixed lg:sticky top-14 md:top-28 left-0 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] lg:h-[calc(100vh-7rem)] w-72 lg:w-64 border-r lg:border-0 z-50 lg:z-0 transition-transform lg:translate-x-0 shrink-0 ${
             mobileNav ? 'translate-x-0' : '-translate-x-full'
           }`}
+          style={{ background: 'var(--bg-primary)', borderColor: 'var(--lp-border)' }}
         >
           <div className="flex flex-col h-full p-4 lg:py-8 lg:pr-6 lg:pl-4 overflow-y-auto">
-            {/* Mobile close */}
             <div className="flex items-center justify-between mb-4 lg:hidden">
-              <span className="text-sm font-semibold text-white/60">Navigation</span>
+              <span className="text-sm font-semibold docs-h3 mb-0">{c.shell.navigation}</span>
               <button
+                type="button"
                 onClick={() => setMobileNav(false)}
-                className="p-1 rounded-md hover:bg-white/5"
+                className="p-1 rounded-md hover:bg-[var(--hover-overlay-md)]"
+                style={{ color: 'var(--lp-muted)' }}
               >
-                <X className="w-5 h-5 text-white/60" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Search */}
             <div className="relative mb-5">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none"
+                style={{ color: 'var(--lp-muted)' }}
+              />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search..."
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.06] text-sm text-white/80 placeholder:text-white/25 focus:outline-none focus:border-indigo-500/30 transition-colors"
+                placeholder={c.shell.searchPlaceholder}
+                className="docs-sidebar-input"
               />
             </div>
 
-            {/* Nav groups */}
             <nav className="space-y-5 flex-1">
               {filteredGroups.map((group) => (
                 <div key={group.label}>
-                  <h3 className="text-[10px] font-semibold text-white/25 uppercase tracking-[0.15em] mb-2 px-3">
-                    {group.label}
-                  </h3>
+                  <h3 className="docs-nav-group-label">{group.label}</h3>
                   <div className="space-y-0.5">
                     {group.items.map((item) => {
-                      const Icon = item.icon;
+                      const Icon = sectionIcons[item.id];
                       const isActive = activeSection === item.id;
                       return (
                         <button
                           key={item.id}
+                          type="button"
                           onClick={() => navigate(item.id)}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-all text-sm ${
-                            isActive
-                              ? 'bg-indigo-500/10 text-indigo-400'
-                              : 'text-white/45 hover:text-white/70 hover:bg-white/[0.03]'
-                          }`}
+                          className={isActive ? 'docs-nav-item docs-nav-item-active' : 'docs-nav-item'}
                         >
                           <Icon className="w-4 h-4 shrink-0" />
-                          <span className="font-medium truncate">{item.label}</span>
+                          <span className="truncate">{item.label}</span>
                         </button>
                       );
                     })}
@@ -205,178 +264,146 @@ export default function DocsPage() {
               ))}
             </nav>
 
-            {/* Version */}
-            <div className="pt-4 border-t border-white/[0.06] mt-4">
-              <div className="flex items-center gap-2 px-3 text-xs text-white/25">
+            <div className="pt-4 mt-4" style={{ borderTop: '1px solid var(--lp-border)' }}>
+              <div className="flex items-center gap-2 px-3 docs-muted-sm">
                 <Gauge className="w-3.5 h-3.5" />
-                <span>API v1.0</span>
+                <span>{c.shell.apiVersion}</span>
               </div>
             </div>
           </div>
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 min-w-0 px-4 sm:px-6 lg:px-10 py-8 lg:py-10">
-          {activeSection === 'intro' && <IntroSection onNavigate={navigate} />}
-          {activeSection === 'auth' && <AuthSection />}
-          {activeSection === 'projects' && <ProjectsSection />}
-          {activeSection === 'deployments' && <DeploymentsSection />}
-          {activeSection === 'envvars' && <EnvVarsSection />}
-          {activeSection === 'domains' && <DomainsSection />}
-          {activeSection === 'servers' && <ServersSection />}
-          {activeSection === 'databases' && <DatabasesSection />}
-          {activeSection === 'webhooks' && <WebhooksSection />}
-          {activeSection === 'errors' && <ErrorsSection />}
+        <main
+          id="docs-main"
+          className="flex-1 min-w-0 px-4 sm:px-6 lg:px-10 py-8 lg:py-10 scroll-mt-[6.5rem] md:scroll-mt-28"
+        >
+          {activeSection === 'intro' && <IntroSection c={c} apiBase={API_BASE} onNavigate={navigate} />}
+          {activeSection === 'auth' && <AuthSection c={c} apiBase={API_BASE} />}
+          {activeSection === 'projects' && <ProjectsSection c={c} apiBase={API_BASE} />}
+          {activeSection === 'deployments' && <DeploymentsSection c={c} apiBase={API_BASE} />}
+          {activeSection === 'envvars' && <EnvVarsSection c={c} apiBase={API_BASE} />}
+          {activeSection === 'domains' && <DomainsSection c={c} apiBase={API_BASE} />}
+          {activeSection === 'servers' && <ServersSection c={c} apiBase={API_BASE} />}
+          {activeSection === 'databases' && <DatabasesSection c={c} apiBase={API_BASE} />}
+          {activeSection === 'webhooks' && <WebhooksSection c={c} apiBase={API_BASE} />}
+          {activeSection === 'errors' && <ErrorsSection c={c} apiBase={API_BASE} />}
         </main>
+      </div>
       </div>
     </div>
   );
 }
 
-/* ============================================================
-   SECTIONS
-   ============================================================ */
+function IntroSection({
+  c,
+  apiBase,
+  onNavigate,
+}: SectionProps & { onNavigate: (s: DocsSectionId) => void }) {
+  const step0 = c.intro.steps[0];
 
-function IntroSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
   return (
     <div className="space-y-10">
       <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-4">
-          <Zap className="w-3 h-3" /> REST API
+        <div className="docs-badge mb-4">
+          <Zap className="w-3 h-3" /> {c.intro.badge}
         </div>
-        <h1 className="text-4xl font-bold text-white mb-4">Pushify API Documentation</h1>
-        <p className="text-lg text-white/50 leading-relaxed max-w-2xl">
-          Deploy, manage, and monitor your applications programmatically.
-          Perfect for CI/CD pipelines, automation scripts, and custom integrations.
+        <h1 className="docs-h1">{c.intro.title}</h1>
+        <p className="text-lg docs-lead leading-relaxed max-w-2xl">
+          {c.intro.lead}
         </p>
       </div>
 
-      {/* Feature cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[
-          {
-            icon: Terminal,
-            title: 'RESTful API',
-            desc: 'Simple REST endpoints with JSON responses',
-            color: 'text-indigo-400 bg-indigo-500/10',
-          },
-          {
-            icon: Shield,
-            title: 'Secure',
-            desc: 'Scope-based API key permissions',
-            color: 'text-purple-400 bg-purple-500/10',
-          },
-          {
-            icon: Rocket,
-            title: 'CI/CD Ready',
-            desc: 'Webhook triggers and deploy API',
-            color: 'text-amber-400 bg-amber-500/10',
-          },
-        ].map((f) => (
-          <div key={f.title} className="p-5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-            <div className={`w-9 h-9 rounded-lg ${f.color} flex items-center justify-center mb-3`}>
-              <f.icon className="w-4.5 h-4.5" />
+        {c.intro.features.map((f, i) => {
+          const meta = introFeatureIcons[i];
+          const Icon = meta.icon;
+          return (
+            <div key={f.title} className="p-5 docs-card">
+              <div className={`w-9 h-9 rounded-lg ${meta.bgClass} flex items-center justify-center mb-3`}>
+                <Icon className={`w-4 h-4 ${meta.iconClass}`} />
+              </div>
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--lp-ink)' }}>{f.title}</h3>
+              <p className="text-xs docs-muted-sm">{f.desc}</p>
             </div>
-            <h3 className="text-sm font-semibold text-white mb-1">{f.title}</h3>
-            <p className="text-xs text-white/40">{f.desc}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Base URL */}
       <div>
-        <h3 className="text-sm font-semibold text-white/60 mb-2">Base URL</h3>
-        <CodeBlock code={API_BASE} />
+        <h3 className="text-sm font-semibold docs-h3 mb-2">{c.labels.baseUrl}</h3>
+        <CodeBlock code={apiBase} />
       </div>
 
-      {/* Quick Start */}
       <div>
-        <h2 className="text-xl font-bold text-white mb-5">Quick Start</h2>
+        <h2 className="docs-h2 mb-5">{c.labels.quickStart}</h2>
         <div className="space-y-4">
-          {[
-            {
-              step: '1',
-              title: 'Create an API Key',
-              desc: (
-                <>
-                  Go to{' '}
-                  <Link href="/dashboard/settings" className="text-indigo-400 hover:underline">
-                    Settings &rarr; API Keys
-                  </Link>{' '}
-                  and create a key with the required scopes.
-                </>
-              ),
-            },
-            {
-              step: '2',
-              title: 'Make a Request',
-              desc: 'Use your API key in the Authorization header to authenticate.',
-            },
-            {
-              step: '3',
-              title: 'Automate',
-              desc: 'Integrate with GitHub Actions, GitLab CI, or any CI/CD tool.',
-            },
-          ].map((s) => (
-            <div key={s.step} className="flex items-start gap-4">
-              <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-[#0a0a0f] font-bold text-xs shrink-0 mt-0.5">
-                {s.step}
+          {c.intro.steps.map((s, i) => (
+            <div key={i} className="flex items-start gap-4">
+              <div className="docs-step-num shrink-0 mt-0.5">
+                {i + 1}
               </div>
               <div>
-                <h4 className="text-sm font-medium text-white mb-0.5">{s.title}</h4>
-                <p className="text-sm text-white/40">{typeof s.desc === 'string' ? s.desc : s.desc}</p>
+                <h4 className="text-sm font-medium" style={{ color: 'var(--lp-ink)' }}>{s.title}</h4>
+                <p className="text-sm docs-muted-sm">
+                  {i === 0 && step0.linkText ? (
+                    <>
+                      {step0.descBefore}
+                      <Link href="/dashboard/settings" className="docs-link">
+                        {step0.linkText}
+                      </Link>
+                      {step0.descAfter}
+                    </>
+                  ) : (
+                    s.desc
+                  )}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Quick links */}
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">Explore</h2>
+        <h2 className="docs-h2">{c.labels.explore}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {[
-            { section: 'projects' as Section, label: 'Projects API', desc: 'Manage your projects', icon: Folder },
-            { section: 'deployments' as Section, label: 'Deployments API', desc: 'Trigger and manage deploys', icon: Rocket },
-            { section: 'servers' as Section, label: 'Servers API', desc: 'Manage infrastructure', icon: Server },
-            { section: 'databases' as Section, label: 'Databases API', desc: 'Manage databases & backups', icon: Database },
-          ].map((link) => (
-            <button
-              key={link.section}
-              onClick={() => onNavigate(link.section)}
-              className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-colors text-left group"
-            >
-              <link.icon className="w-5 h-5 text-white/30 group-hover:text-indigo-400 transition-colors" />
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium text-white">{link.label}</h4>
-                <p className="text-xs text-white/35">{link.desc}</p>
-              </div>
-              <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-indigo-400 transition-colors" />
-            </button>
-          ))}
+          {c.intro.exploreLinks.map((link, i) => {
+            const Icon = exploreIcons[i];
+            return (
+              <button
+                key={exploreSections[i]}
+                type="button"
+                onClick={() => onNavigate(exploreSections[i])}
+                className="docs-card-interactive w-full group"
+              >
+                <Icon className="w-5 h-5 shrink-0 transition-opacity group-hover:opacity-80" style={{ color: 'var(--lp-muted)' }} />
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-medium" style={{ color: 'var(--lp-ink)' }}>{link.label}</h4>
+                  <p className="text-xs docs-muted-sm">{link.desc}</p>
+                </div>
+                <ArrowRight className="w-4 h-4 shrink-0 transition-opacity group-hover:opacity-80" style={{ color: 'var(--lp-muted)' }} />
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
   );
 }
 
-function AuthSection() {
+function AuthSection({ c, apiBase }: SectionProps) {
   return (
     <div className="space-y-8">
-      <SectionHeading
-        title="Authentication"
-        description="All API requests require an API key. Include it in the Authorization header as a Bearer token."
-      />
+      <SectionHeading title={c.auth.title} description={c.auth.description} />
 
       <div>
-        <h3 className="text-sm font-semibold text-white/60 mb-2">Header Format</h3>
+        <h3 className="text-sm font-semibold docs-h3 mb-2">{c.labels.headerFormat}</h3>
         <CodeBlock code="Authorization: Bearer pk_live_YOUR_API_KEY" />
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-white/60 mb-2">Example Request</h3>
+        <h3 className="text-sm font-semibold docs-h3 mb-2">{c.labels.exampleRequest}</h3>
         <CodeBlock
-          code={`curl -X GET "${API_BASE}/projects" \\
+          code={`curl -X GET "${apiBase}/projects" \\
   -H "Authorization: Bearer pk_live_YOUR_API_KEY" \\
   -H "Content-Type: application/json"`}
           language="bash"
@@ -384,60 +411,47 @@ function AuthSection() {
       </div>
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">Available Scopes</h2>
-        <p className="text-sm text-white/40 mb-4">
-          Limit API key access by selecting specific scopes when creating a key.
+        <h2 className="docs-h2">{c.labels.availableScopes}</h2>
+        <p className="text-sm docs-muted-sm mb-4">
+          {c.labels.scopesIntro}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {[
-            { scope: 'projects:read', desc: 'List and view projects' },
-            { scope: 'projects:write', desc: 'Create, update, delete projects' },
-            { scope: 'deployments:read', desc: 'View deployments and logs' },
-            { scope: 'deployments:write', desc: 'Trigger, cancel, rollback deploys' },
-            { scope: 'envvars:read', desc: 'View environment variables' },
-            { scope: 'envvars:write', desc: 'Manage environment variables' },
-            { scope: 'servers:read', desc: 'View servers' },
-            { scope: 'servers:write', desc: 'Manage servers' },
-            { scope: 'databases:read', desc: 'View databases' },
-            { scope: 'databases:write', desc: 'Manage databases' },
-            { scope: 'domains:read', desc: 'View domains' },
-            { scope: 'domains:write', desc: 'Manage domains' },
-          ].map((item) => (
+          {c.auth.scopes.map((item) => (
             <div
               key={item.scope}
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-white/[0.02] border border-white/[0.06]"
+              className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg docs-card-sm"
             >
-              <code className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 text-xs font-mono shrink-0">
+              <code className="docs-inline-code shrink-0">
                 {item.scope}
               </code>
-              <span className="text-white/40 text-xs">{item.desc}</span>
+              <span className="docs-muted-sm text-xs">{item.desc}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <Callout type="warning" title="Security">
-        Never expose API keys in client-side code or public repositories. Store them in environment variables.
+      <Callout type="warning" title={c.auth.securityTitle}>
+        {c.auth.securityText}
       </Callout>
     </div>
   );
 }
 
-function ProjectsSection() {
+function ProjectsSection({ c, apiBase }: SectionProps) {
+  const ep = c.projects.endpoints;
+
   return (
     <div className="space-y-6">
-      <SectionHeading
-        title="Projects"
-        description="Manage your projects programmatically. Create, update, configure, and delete projects."
-      />
+      <SectionHeading title={c.projects.title} description={c.projects.description} />
 
       <div className="space-y-3">
         <EndpointCard
           method="GET"
           path="/projects"
-          description="List all projects in your organization."
+          description={ep.list.description}
           scope="projects:read"
-          request={`curl "${API_BASE}/projects" \\
+          labels={c.labels}
+          request={`curl "${apiBase}/projects" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
@@ -457,9 +471,10 @@ function ProjectsSection() {
         <EndpointCard
           method="GET"
           path="/projects/:projectId"
-          description="Get detailed information about a specific project including build config and domains."
+          description={ep.get.description}
           scope="projects:read"
-          request={`curl "${API_BASE}/projects/proj_abc123" \\
+          labels={c.labels}
+          request={`curl "${apiBase}/projects/proj_abc123" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": {
@@ -483,17 +498,11 @@ function ProjectsSection() {
         <EndpointCard
           method="POST"
           path="/projects"
-          description="Create a new project with Git repository configuration."
+          description={ep.create.description}
           scope="projects:write"
-          params={[
-            { name: 'name', type: 'string', required: true, desc: 'Project name' },
-            { name: 'gitRepoUrl', type: 'string', required: true, desc: 'Git repository URL' },
-            { name: 'gitBranch', type: 'string', desc: 'Branch to deploy (default: main)' },
-            { name: 'buildCommand', type: 'string', desc: 'Build command (e.g. npm run build)' },
-            { name: 'startCommand', type: 'string', desc: 'Start command (e.g. npm start)' },
-            { name: 'port', type: 'number', desc: 'Application port (default: 3000)' },
-          ]}
-          request={`curl -X POST "${API_BASE}/projects" \\
+          labels={c.labels}
+          params={buildParams(PROJECT_CREATE_PARAM_DEFS, ep.create.params)}
+          request={`curl -X POST "${apiBase}/projects" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -513,9 +522,10 @@ function ProjectsSection() {
         <EndpointCard
           method="PATCH"
           path="/projects/:projectId"
-          description="Update project configuration. Only include fields you want to change."
+          description={ep.update.description}
           scope="projects:write"
-          request={`curl -X PATCH "${API_BASE}/projects/proj_abc123" \\
+          labels={c.labels}
+          request={`curl -X PATCH "${apiBase}/projects/proj_abc123" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "buildCommand": "npm run build:prod" }'`}
@@ -528,9 +538,10 @@ function ProjectsSection() {
         <EndpointCard
           method="DELETE"
           path="/projects/:projectId"
-          description="Delete a project and all associated resources."
+          description={ep.remove.description}
           scope="projects:write"
-          request={`curl -X DELETE "${API_BASE}/projects/proj_abc123" \\
+          labels={c.labels}
+          request={`curl -X DELETE "${apiBase}/projects/proj_abc123" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Project deleted successfully" }`}
         />
@@ -539,25 +550,22 @@ function ProjectsSection() {
   );
 }
 
-function DeploymentsSection() {
+function DeploymentsSection({ c, apiBase }: SectionProps) {
+  const ep = c.deployments.endpoints;
+
   return (
     <div className="space-y-6">
-      <SectionHeading
-        title="Deployments"
-        description="Trigger and manage deployments. Monitor build progress, view logs, and rollback when needed."
-      />
+      <SectionHeading title={c.deployments.title} description={c.deployments.description} />
 
       <div className="space-y-3">
         <EndpointCard
           method="GET"
           path="/projects/:projectId/deployments"
-          description="List all deployments for a project, ordered by newest first."
+          description={ep.list.description}
           scope="deployments:read"
-          params={[
-            { name: 'limit', type: 'number', desc: 'Results per page (default: 20)' },
-            { name: 'offset', type: 'number', desc: 'Pagination offset' },
-          ]}
-          request={`curl "${API_BASE}/projects/proj_abc123/deployments?limit=10" \\
+          labels={c.labels}
+          params={buildParams(DEPLOYMENT_LIST_PARAM_DEFS, ep.list.params)}
+          request={`curl "${apiBase}/projects/proj_abc123/deployments?limit=10" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
@@ -577,14 +585,11 @@ function DeploymentsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/deployments"
-          description="Trigger a new deployment for a project."
+          description={ep.create.description}
           scope="deployments:write"
-          params={[
-            { name: 'branch', type: 'string', desc: 'Branch to deploy' },
-            { name: 'commitHash', type: 'string', desc: 'Specific commit to deploy' },
-            { name: 'commitMessage', type: 'string', desc: 'Commit message for reference' },
-          ]}
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/deployments" \\
+          labels={c.labels}
+          params={buildParams(DEPLOYMENT_CREATE_PARAM_DEFS, ep.create.params)}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/deployments" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "branch": "main" }'`}
@@ -597,9 +602,10 @@ function DeploymentsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/deployments/:deploymentId/cancel"
-          description="Cancel a pending or building deployment."
+          description={ep.cancel.description}
           scope="deployments:write"
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/deployments/dep_xyz789/cancel" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/deployments/dep_xyz789/cancel" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": { "id": "dep_xyz789", "status": "cancelled", ... },
@@ -610,9 +616,10 @@ function DeploymentsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/deployments/:deploymentId/redeploy"
-          description="Create a new deployment with the same configuration as a previous one."
+          description={ep.redeploy.description}
           scope="deployments:write"
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/deployments/dep_xyz789/redeploy" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/deployments/dep_xyz789/redeploy" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": { "id": "dep_new002", "status": "pending", "trigger": "redeploy", ... },
@@ -623,9 +630,10 @@ function DeploymentsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/deployments/:deploymentId/rollback"
-          description="Rollback to a previous successful deployment."
+          description={ep.rollback.description}
           scope="deployments:write"
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/deployments/dep_xyz789/rollback" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/deployments/dep_xyz789/rollback" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": { "id": "dep_new003", "status": "pending", "trigger": "rollback", ... },
@@ -636,12 +644,11 @@ function DeploymentsSection() {
         <EndpointCard
           method="GET"
           path="/projects/:projectId/deployments/:deploymentId/logs"
-          description="Get build or runtime logs for a deployment."
+          description={ep.logs.description}
           scope="deployments:read"
-          params={[
-            { name: 'type', type: 'string', required: true, desc: '"build" or "deploy"' },
-          ]}
-          request={`curl "${API_BASE}/projects/proj_abc123/deployments/dep_xyz789/logs?type=build" \\
+          labels={c.labels}
+          params={buildParams(DEPLOYMENT_LOGS_PARAM_DEFS, ep.logs.params)}
+          request={`curl "${apiBase}/projects/proj_abc123/deployments/dep_xyz789/logs?type=build" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": {
@@ -655,26 +662,25 @@ function DeploymentsSection() {
   );
 }
 
-function EnvVarsSection() {
+function EnvVarsSection({ c, apiBase }: SectionProps) {
+  const ep = c.envvars.endpoints;
+
   return (
     <div className="space-y-6">
-      <SectionHeading
-        title="Environment Variables"
-        description="Manage environment variables for your projects. Changes take effect on next deployment."
-      />
+      <SectionHeading title={c.envvars.title} description={c.envvars.description} />
 
-      <Callout type="info" title="Sensitive Values">
-        Environment variable values are encrypted at rest and masked in API responses.
-        Only the first and last characters are visible.
+      <Callout type="info" title={c.envvars.sensitiveTitle}>
+        {c.envvars.sensitiveText}
       </Callout>
 
       <div className="space-y-3">
         <EndpointCard
           method="GET"
           path="/projects/:projectId/env"
-          description="List all environment variables for a project. Values are masked for security."
+          description={ep.list.description}
           scope="envvars:read"
-          request={`curl "${API_BASE}/projects/proj_abc123/env" \\
+          labels={c.labels}
+          request={`curl "${apiBase}/projects/proj_abc123/env" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
@@ -692,14 +698,11 @@ function EnvVarsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/env"
-          description="Create a new environment variable."
+          description={ep.create.description}
           scope="envvars:write"
-          params={[
-            { name: 'key', type: 'string', required: true, desc: 'Variable name (e.g. DATABASE_URL)' },
-            { name: 'value', type: 'string', required: true, desc: 'Variable value' },
-            { name: 'isSecret', type: 'boolean', desc: 'Mark as secret (default: true)' },
-          ]}
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/env" \\
+          labels={c.labels}
+          params={buildParams(ENVVAR_CREATE_PARAM_DEFS, ep.create.params)}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/env" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "key": "API_SECRET", "value": "s3cret", "isSecret": true }'`}
@@ -712,12 +715,11 @@ function EnvVarsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/env/bulk"
-          description="Create or update multiple environment variables at once. Useful for syncing .env files."
+          description={ep.bulk.description}
           scope="envvars:write"
-          params={[
-            { name: 'variables', type: 'array', required: true, desc: 'Array of { key, value, isSecret } objects' },
-          ]}
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/env/bulk" \\
+          labels={c.labels}
+          params={buildParams(ENVVAR_BULK_PARAM_DEFS, ep.bulk.params)}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/env/bulk" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -735,9 +737,10 @@ function EnvVarsSection() {
         <EndpointCard
           method="PATCH"
           path="/projects/:projectId/env/:envVarId"
-          description="Update an existing environment variable's key or value."
+          description={ep.update.description}
           scope="envvars:write"
-          request={`curl -X PATCH "${API_BASE}/projects/proj_abc123/env/env_001" \\
+          labels={c.labels}
+          request={`curl -X PATCH "${apiBase}/projects/proj_abc123/env/env_001" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "value": "new_value" }'`}
@@ -750,9 +753,10 @@ function EnvVarsSection() {
         <EndpointCard
           method="DELETE"
           path="/projects/:projectId/env/:envVarId"
-          description="Delete an environment variable."
+          description={ep.remove.description}
           scope="envvars:write"
-          request={`curl -X DELETE "${API_BASE}/projects/proj_abc123/env/env_001" \\
+          labels={c.labels}
+          request={`curl -X DELETE "${apiBase}/projects/proj_abc123/env/env_001" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Environment variable deleted" }`}
         />
@@ -761,21 +765,21 @@ function EnvVarsSection() {
   );
 }
 
-function DomainsSection() {
+function DomainsSection({ c, apiBase }: SectionProps) {
+  const ep = c.domains.endpoints;
+
   return (
     <div className="space-y-6">
-      <SectionHeading
-        title="Domains"
-        description="Add custom domains to your projects. Manage DNS settings, SSL certificates, and Nginx configuration."
-      />
+      <SectionHeading title={c.domains.title} description={c.domains.description} />
 
       <div className="space-y-3">
         <EndpointCard
           method="GET"
           path="/projects/:projectId/domains"
-          description="List all domains configured for a project."
+          description={ep.list.description}
           scope="domains:read"
-          request={`curl "${API_BASE}/projects/proj_abc123/domains" \\
+          labels={c.labels}
+          request={`curl "${apiBase}/projects/proj_abc123/domains" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
@@ -801,12 +805,11 @@ function DomainsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/domains"
-          description="Add a custom domain to a project. Returns DNS records to configure."
+          description={ep.create.description}
           scope="domains:write"
-          params={[
-            { name: 'domain', type: 'string', required: true, desc: 'Domain name (e.g. myapp.com)' },
-          ]}
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/domains" \\
+          labels={c.labels}
+          params={buildParams(DOMAIN_CREATE_PARAM_DEFS, ep.create.params)}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/domains" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "domain": "myapp.com" }'`}
@@ -827,9 +830,10 @@ function DomainsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/domains/:domainId/verify"
-          description="Verify domain DNS configuration and provision SSL certificate."
+          description={ep.verify.description}
           scope="domains:write"
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/domains/dom_003/verify" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/domains/dom_003/verify" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": { "id": "dom_003", "verified": true, "sslStatus": "provisioning" },
@@ -840,9 +844,10 @@ function DomainsSection() {
         <EndpointCard
           method="POST"
           path="/projects/:projectId/domains/:domainId/primary"
-          description="Set a domain as the primary domain for the project."
+          description={ep.primary.description}
           scope="domains:write"
-          request={`curl -X POST "${API_BASE}/projects/proj_abc123/domains/dom_003/primary" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/projects/proj_abc123/domains/dom_003/primary" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": { "id": "dom_003", "isPrimary": true },
@@ -853,9 +858,10 @@ function DomainsSection() {
         <EndpointCard
           method="DELETE"
           path="/projects/:projectId/domains/:domainId"
-          description="Remove a domain from the project."
+          description={ep.remove.description}
           scope="domains:write"
-          request={`curl -X DELETE "${API_BASE}/projects/proj_abc123/domains/dom_003" \\
+          labels={c.labels}
+          request={`curl -X DELETE "${apiBase}/projects/proj_abc123/domains/dom_003" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Domain removed" }`}
         />
@@ -864,21 +870,21 @@ function DomainsSection() {
   );
 }
 
-function ServersSection() {
+function ServersSection({ c, apiBase }: SectionProps) {
+  const ep = c.servers.endpoints;
+
   return (
     <div className="space-y-6">
-      <SectionHeading
-        title="Servers"
-        description="Provision and manage servers. Create cloud servers, control their state, and monitor status."
-      />
+      <SectionHeading title={c.servers.title} description={c.servers.description} />
 
       <div className="space-y-3">
         <EndpointCard
           method="GET"
           path="/servers"
-          description="List all servers in your organization."
+          description={ep.list.description}
           scope="servers:read"
-          request={`curl "${API_BASE}/servers" \\
+          labels={c.labels}
+          request={`curl "${apiBase}/servers" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
@@ -900,15 +906,11 @@ function ServersSection() {
         <EndpointCard
           method="POST"
           path="/servers"
-          description="Create and provision a new server."
+          description={ep.create.description}
           scope="servers:write"
-          params={[
-            { name: 'name', type: 'string', required: true, desc: 'Server name' },
-            { name: 'provider', type: 'string', required: true, desc: 'Cloud provider (hetzner, digitalocean)' },
-            { name: 'region', type: 'string', required: true, desc: 'Region identifier' },
-            { name: 'size', type: 'string', required: true, desc: 'Server size/type' },
-          ]}
-          request={`curl -X POST "${API_BASE}/servers" \\
+          labels={c.labels}
+          params={buildParams(SERVER_CREATE_PARAM_DEFS, ep.create.params)}
+          request={`curl -X POST "${apiBase}/servers" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -926,9 +928,10 @@ function ServersSection() {
         <EndpointCard
           method="GET"
           path="/servers/:serverId"
-          description="Get detailed server information including specs and status."
+          description={ep.get.description}
           scope="servers:read"
-          request={`curl "${API_BASE}/servers/srv_001" \\
+          labels={c.labels}
+          request={`curl "${apiBase}/servers/srv_001" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": {
@@ -947,9 +950,10 @@ function ServersSection() {
         <EndpointCard
           method="POST"
           path="/servers/:serverId/start"
-          description="Start a stopped server."
+          description={ep.start.description}
           scope="servers:write"
-          request={`curl -X POST "${API_BASE}/servers/srv_001/start" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/servers/srv_001/start" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Server is starting" }`}
         />
@@ -957,9 +961,10 @@ function ServersSection() {
         <EndpointCard
           method="POST"
           path="/servers/:serverId/stop"
-          description="Stop a running server. All containers on the server will be stopped."
+          description={ep.stop.description}
           scope="servers:write"
-          request={`curl -X POST "${API_BASE}/servers/srv_001/stop" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/servers/srv_001/stop" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Server is stopping" }`}
         />
@@ -967,9 +972,10 @@ function ServersSection() {
         <EndpointCard
           method="POST"
           path="/servers/:serverId/reboot"
-          description="Reboot a server. Brief downtime expected during restart."
+          description={ep.reboot.description}
           scope="servers:write"
-          request={`curl -X POST "${API_BASE}/servers/srv_001/reboot" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/servers/srv_001/reboot" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Server is rebooting" }`}
         />
@@ -977,9 +983,10 @@ function ServersSection() {
         <EndpointCard
           method="DELETE"
           path="/servers/:serverId"
-          description="Delete a server. This is permanent and will destroy all data on the server."
+          description={ep.remove.description}
           scope="servers:write"
-          request={`curl -X DELETE "${API_BASE}/servers/srv_001" \\
+          labels={c.labels}
+          request={`curl -X DELETE "${apiBase}/servers/srv_001" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Server deleted" }`}
         />
@@ -988,21 +995,21 @@ function ServersSection() {
   );
 }
 
-function DatabasesSection() {
+function DatabasesSection({ c, apiBase }: SectionProps) {
+  const ep = c.databases.endpoints;
+
   return (
     <div className="space-y-6">
-      <SectionHeading
-        title="Databases"
-        description="Create and manage databases on your servers. Supports PostgreSQL, MySQL, Redis, and MongoDB."
-      />
+      <SectionHeading title={c.databases.title} description={c.databases.description} />
 
       <div className="space-y-3">
         <EndpointCard
           method="GET"
           path="/databases"
-          description="List all databases in your organization."
+          description={ep.list.description}
           scope="databases:read"
-          request={`curl "${API_BASE}/databases" \\
+          labels={c.labels}
+          request={`curl "${apiBase}/databases" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
@@ -1024,15 +1031,11 @@ function DatabasesSection() {
         <EndpointCard
           method="POST"
           path="/databases"
-          description="Create a new database on a server."
+          description={ep.create.description}
           scope="databases:write"
-          params={[
-            { name: 'name', type: 'string', required: true, desc: 'Database name' },
-            { name: 'type', type: 'string', required: true, desc: 'postgresql, mysql, redis, mongodb' },
-            { name: 'serverId', type: 'string', required: true, desc: 'Server to create database on' },
-            { name: 'description', type: 'string', desc: 'Optional description' },
-          ]}
-          request={`curl -X POST "${API_BASE}/databases" \\
+          labels={c.labels}
+          params={buildParams(DATABASE_CREATE_PARAM_DEFS, ep.create.params)}
+          request={`curl -X POST "${apiBase}/databases" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -1049,9 +1052,10 @@ function DatabasesSection() {
         <EndpointCard
           method="GET"
           path="/databases/:id/credentials"
-          description="Get database connection credentials including host, port, username, password, and connection string."
+          description={ep.credentials.description}
           scope="databases:read"
-          request={`curl "${API_BASE}/databases/db_001/credentials" \\
+          labels={c.labels}
+          request={`curl "${apiBase}/databases/db_001/credentials" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": {
@@ -1068,13 +1072,11 @@ function DatabasesSection() {
         <EndpointCard
           method="POST"
           path="/databases/:id/connect"
-          description="Connect a database to a project. This injects connection credentials as environment variables."
+          description={ep.connect.description}
           scope="databases:write"
-          params={[
-            { name: 'projectId', type: 'string', required: true, desc: 'Project to connect to' },
-            { name: 'envPrefix', type: 'string', desc: 'Environment variable prefix (default: DATABASE)' },
-          ]}
-          request={`curl -X POST "${API_BASE}/databases/db_001/connect" \\
+          labels={c.labels}
+          params={buildParams(DATABASE_CONNECT_PARAM_DEFS, ep.connect.params)}
+          request={`curl -X POST "${apiBase}/databases/db_001/connect" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "projectId": "proj_abc123", "envPrefix": "DATABASE" }'`}
@@ -1087,9 +1089,10 @@ function DatabasesSection() {
         <EndpointCard
           method="POST"
           path="/databases/:id/start"
-          description="Start a stopped database."
+          description={ep.start.description}
           scope="databases:write"
-          request={`curl -X POST "${API_BASE}/databases/db_001/start" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/databases/db_001/start" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Database is starting" }`}
         />
@@ -1097,9 +1100,10 @@ function DatabasesSection() {
         <EndpointCard
           method="POST"
           path="/databases/:id/stop"
-          description="Stop a running database."
+          description={ep.stop.description}
           scope="databases:write"
-          request={`curl -X POST "${API_BASE}/databases/db_001/stop" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/databases/db_001/stop" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Database is stopping" }`}
         />
@@ -1107,9 +1111,10 @@ function DatabasesSection() {
         <EndpointCard
           method="POST"
           path="/databases/:id/backups"
-          description="Create a manual backup of the database."
+          description={ep.backup.description}
           scope="databases:write"
-          request={`curl -X POST "${API_BASE}/databases/db_001/backups" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/databases/db_001/backups" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": { "id": "bak_001", "status": "creating", "type": "manual", ... },
@@ -1120,9 +1125,10 @@ function DatabasesSection() {
         <EndpointCard
           method="POST"
           path="/databases/:id/backups/:backupId/restore"
-          description="Restore a database from a backup. Warning: this overwrites the current database."
+          description={ep.restore.description}
           scope="databases:write"
-          request={`curl -X POST "${API_BASE}/databases/db_001/backups/bak_001/restore" \\
+          labels={c.labels}
+          request={`curl -X POST "${apiBase}/databases/db_001/backups/bak_001/restore" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": { "id": "bak_001", "status": "restoring", ... },
@@ -1133,9 +1139,10 @@ function DatabasesSection() {
         <EndpointCard
           method="DELETE"
           path="/databases/:id"
-          description="Delete a database and all its data permanently."
+          description={ep.remove.description}
           scope="databases:write"
-          request={`curl -X DELETE "${API_BASE}/databases/db_001" \\
+          labels={c.labels}
+          request={`curl -X DELETE "${apiBase}/databases/db_001" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Database deleted" }`}
         />
@@ -1144,29 +1151,22 @@ function DatabasesSection() {
   );
 }
 
-function WebhooksSection() {
+function WebhooksSection({ c, apiBase }: SectionProps) {
   return (
     <div className="space-y-8">
-      <SectionHeading
-        title="Webhooks & CI/CD"
-        description="Automatically deploy when you push to GitHub. Pushify listens for webhook events and triggers deployments."
-      />
+      <SectionHeading title={c.webhooks.title} description={c.webhooks.description} />
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">How It Works</h2>
+        <h2 className="docs-h2">{c.webhooks.howItWorks}</h2>
         <div className="space-y-3">
-          {[
-            { step: '1', title: 'Connect GitHub', desc: 'Link your GitHub account in project settings.' },
-            { step: '2', title: 'Push to Branch', desc: 'Push code to the configured branch (e.g. main).' },
-            { step: '3', title: 'Auto Deploy', desc: 'Pushify receives the webhook and starts a deployment automatically.' },
-          ].map((s) => (
-            <div key={s.step} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-              <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-[#0a0a0f] font-bold text-xs shrink-0">
-                {s.step}
+          {c.webhooks.steps.map((s, i) => (
+            <div key={i} className="flex items-start gap-3 docs-card-sm">
+              <div className="docs-step-num shrink-0">
+                {i + 1}
               </div>
               <div>
-                <h4 className="text-sm font-medium text-white">{s.title}</h4>
-                <p className="text-xs text-white/40 mt-0.5">{s.desc}</p>
+                <h4 className="text-sm font-medium" style={{ color: 'var(--lp-ink)' }}>{s.title}</h4>
+                <p className="text-xs docs-muted-sm mt-0.5">{s.desc}</p>
               </div>
             </div>
           ))}
@@ -1174,12 +1174,12 @@ function WebhooksSection() {
       </div>
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">Manual Webhook URL</h2>
-        <p className="text-sm text-white/40 mb-3">
-          Each project has a unique webhook URL for manual integration with other Git providers.
+        <h2 className="docs-h2">{c.webhooks.manualTitle}</h2>
+        <p className="text-sm docs-muted-sm mb-3">
+          {c.webhooks.manualDesc}
         </p>
         <CodeBlock
-          code={`POST ${API_BASE}/webhooks/github/:projectId
+          code={`POST ${apiBase}/webhooks/github/:projectId
 
 Headers:
   X-Hub-Signature-256: sha256=<HMAC signature>
@@ -1198,9 +1198,9 @@ Body:
       </div>
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">GitHub Actions Example</h2>
-        <p className="text-sm text-white/40 mb-3">
-          Trigger deployments directly from GitHub Actions using the Deployments API.
+        <h2 className="docs-h2">{c.webhooks.githubTitle}</h2>
+        <p className="text-sm docs-muted-sm mb-3">
+          {c.webhooks.githubDesc}
         </p>
         <CodeBlock
           code={`# .github/workflows/deploy.yml
@@ -1215,7 +1215,7 @@ jobs:
     steps:
       - name: Trigger deployment
         run: |
-          curl -X POST "${API_BASE}/projects/\${{ secrets.PROJECT_ID }}/deployments" \\
+          curl -X POST "${apiBase}/projects/\${{ secrets.PROJECT_ID }}/deployments" \\
             -H "Authorization: Bearer \${{ secrets.PUSHIFY_API_KEY }}" \\
             -H "Content-Type: application/json" \\
             -d '{
@@ -1227,48 +1227,44 @@ jobs:
         />
       </div>
 
-      <Callout type="info" title="Webhook Secret">
-        Webhook payloads are signed with HMAC-SHA256. Retrieve your webhook secret via the
-        project settings or the <code className="px-1.5 py-0.5 rounded bg-white/10 text-indigo-400 text-xs">GET /projects/:id/webhook</code> endpoint.
+      <Callout type="info" title={c.webhooks.secretTitle}>
+        {c.webhooks.secretText.split('GET /projects/:id/webhook').map((part, i, arr) =>
+          i < arr.length - 1 ? (
+            <span key={i}>
+              {part}
+              <code className="docs-inline-code">GET /projects/:id/webhook</code>
+            </span>
+          ) : (
+            <span key={i}>{part}</span>
+          )
+        )}
       </Callout>
     </div>
   );
 }
 
-function ErrorsSection() {
+function ErrorsSection({ c, apiBase }: SectionProps) {
   return (
     <div className="space-y-8">
-      <SectionHeading
-        title="Error Handling"
-        description="The API uses standard HTTP status codes and returns detailed error messages in JSON format."
-      />
+      <SectionHeading title={c.errors.title} description={c.errors.description} />
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">HTTP Status Codes</h2>
-        <div className="rounded-xl border border-white/[0.06] overflow-hidden">
+        <h2 className="docs-h2">{c.errors.httpStatusTitle}</h2>
+        <div className="docs-table-wrap">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                <th className="text-left px-4 py-3 text-white/40 font-medium text-xs">Code</th>
-                <th className="text-left px-4 py-3 text-white/40 font-medium text-xs">Description</th>
+              <tr className="border-b">
+                <th className="text-left px-4 py-3 docs-muted-sm font-medium text-xs">{c.labels.code}</th>
+                <th className="text-left px-4 py-3 docs-muted-sm font-medium text-xs">{c.labels.description}</th>
               </tr>
             </thead>
             <tbody>
-              {[
-                { code: '200', desc: 'Success', color: 'text-emerald-400' },
-                { code: '201', desc: 'Created - Resource created successfully', color: 'text-emerald-400' },
-                { code: '400', desc: 'Bad Request - Invalid parameters', color: 'text-amber-400' },
-                { code: '401', desc: 'Unauthorized - Invalid or missing API key', color: 'text-red-400' },
-                { code: '403', desc: 'Forbidden - Insufficient permissions / scope', color: 'text-red-400' },
-                { code: '404', desc: 'Not Found - Resource does not exist', color: 'text-red-400' },
-                { code: '429', desc: 'Too Many Requests - Rate limit exceeded', color: 'text-orange-400' },
-                { code: '500', desc: 'Internal Server Error', color: 'text-red-400' },
-              ].map((item) => (
-                <tr key={item.code} className="border-b border-white/[0.04] last:border-0">
+              {c.errors.statusRows.map((item) => (
+                <tr key={item.code} className="border-b last:border-0">
                   <td className="px-4 py-3">
-                    <span className={`font-mono font-bold text-sm ${item.color}`}>{item.code}</span>
+                    <span className={`font-mono font-bold text-sm ${statusCodeColors[item.code]}`}>{item.code}</span>
                   </td>
-                  <td className="px-4 py-3 text-white/50">{item.desc}</td>
+                  <td className="px-4 py-3 docs-muted">{item.desc}</td>
                 </tr>
               ))}
             </tbody>
@@ -1277,7 +1273,7 @@ function ErrorsSection() {
       </div>
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-3">Error Response Format</h2>
+        <h2 className="docs-h2 mb-3">{c.errors.responseFormatTitle}</h2>
         <CodeBlock
           code={`{
   "error": {
@@ -1290,70 +1286,55 @@ function ErrorsSection() {
       </div>
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">Common Error Codes</h2>
+        <h2 className="docs-h2">{c.errors.commonCodesTitle}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {[
-            { code: 'UNAUTHORIZED', desc: 'API key is missing, invalid, or expired' },
-            { code: 'INSUFFICIENT_SCOPE', desc: 'API key lacks required permissions' },
-            { code: 'NOT_FOUND', desc: 'Requested resource was not found' },
-            { code: 'VALIDATION_ERROR', desc: 'Request body or parameters are invalid' },
-            { code: 'RATE_LIMITED', desc: 'Too many requests, slow down' },
-            { code: 'CONFLICT', desc: 'Resource already exists or state conflict' },
-          ].map((item) => (
+          {c.errors.errorCodes.map((item) => (
             <div
               key={item.code}
-              className="flex items-start gap-3 px-3.5 py-3 rounded-lg bg-white/[0.02] border border-white/[0.06]"
+              className="flex items-start gap-3 px-3.5 py-3 rounded-lg docs-card-sm"
             >
-              <code className="px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-xs font-mono shrink-0">
+              <code className="px-2 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-mono shrink-0">
                 {item.code}
               </code>
-              <span className="text-white/40 text-xs leading-relaxed">{item.desc}</span>
+              <span className="docs-muted-sm text-xs leading-relaxed">{item.desc}</span>
             </div>
           ))}
         </div>
       </div>
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-3">Rate Limits</h2>
-        <p className="text-sm text-white/40 mb-4">
-          API requests are rate-limited per API key. Limits vary by plan.
+        <h2 className="docs-h2 mb-3">{c.errors.rateLimitsTitle}</h2>
+        <p className="text-sm docs-muted-sm mb-4">
+          {c.errors.rateLimitsIntro}
         </p>
-        <div className="rounded-xl border border-white/[0.06] overflow-hidden">
+        <div className="docs-table-wrap">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                <th className="text-left px-4 py-3 text-white/40 font-medium text-xs">Plan</th>
-                <th className="text-left px-4 py-3 text-white/40 font-medium text-xs">Rate Limit</th>
+              <tr className="border-b">
+                <th className="text-left px-4 py-3 docs-muted-sm font-medium text-xs">{c.labels.plan}</th>
+                <th className="text-left px-4 py-3 docs-muted-sm font-medium text-xs">{c.labels.rateLimit}</th>
               </tr>
             </thead>
             <tbody>
-              {[
-                { plan: 'Free', limit: '60 requests/min' },
-                { plan: 'Hobby', limit: '120 requests/min' },
-                { plan: 'Pro', limit: '300 requests/min' },
-                { plan: 'Business', limit: '600 requests/min' },
-              ].map((item) => (
-                <tr key={item.plan} className="border-b border-white/[0.04] last:border-0">
-                  <td className="px-4 py-3 text-white/70 font-medium">{item.plan}</td>
-                  <td className="px-4 py-3 text-white/50 font-mono text-xs">{item.limit}</td>
+              {c.errors.rateLimitRows.map((item) => (
+                <tr key={item.plan} className="border-b last:border-0">
+                  <td className="px-4 py-3 font-medium" style={{ color: 'var(--lp-ink)' }}>{item.plan}</td>
+                  <td className="px-4 py-3 docs-muted font-mono text-xs">{item.limit}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-white/30 mt-3">
-          Rate limit headers are included in every response:{' '}
-          <code className="text-indigo-400/50">X-RateLimit-Limit</code>,{' '}
-          <code className="text-indigo-400/50">X-RateLimit-Remaining</code>,{' '}
-          <code className="text-indigo-400/50">X-RateLimit-Reset</code>
+        <p className="text-xs docs-muted-sm mt-3">
+          {c.errors.rateLimitFooter}
         </p>
       </div>
 
       <div>
-        <h2 className="text-xl font-bold text-white mb-3">Error Handling Example</h2>
+        <h2 className="docs-h2 mb-3">{c.errors.exampleTitle}</h2>
         <CodeBlock
           code={`async function apiRequest(endpoint, options = {}) {
-  const response = await fetch('${API_BASE}' + endpoint, {
+  const response = await fetch('${apiBase}' + endpoint, {
     ...options,
     headers: {
       'Authorization': 'Bearer ' + process.env.PUSHIFY_API_KEY,

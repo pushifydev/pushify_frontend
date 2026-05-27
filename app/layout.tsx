@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Public_Sans, JetBrains_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';
 
-const publicSans = Public_Sans({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-public-sans',
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-inter',
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
 
@@ -105,7 +105,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${publicSans.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

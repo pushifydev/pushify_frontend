@@ -32,34 +32,8 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="relative w-12 h-12">
-            <div className="absolute inset-0 rounded-lg bg-[var(--accent-cyan)] animate-ping opacity-20" />
-            <div className="relative w-12 h-12 rounded-lg bg-[var(--accent-cyan)] flex items-center justify-center">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="text-[var(--bg-primary)] animate-pulse"
-              >
-                <path
-                  d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] animate-bounce" style={{ animationDelay: '0ms' }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] animate-bounce" style={{ animationDelay: '150ms' }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] animate-bounce" style={{ animationDelay: '300ms' }} />
-          </div>
-        </div>
+      <div className="dash-app min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+        <div className="w-8 h-8 rounded-full border-2 border-[var(--border-default)] border-t-[var(--accent-cyan)] animate-spin" />
       </div>
     );
   }
@@ -70,7 +44,7 @@ export default function DashboardLayout({
 
   return (
     <WebSocketProvider>
-      <div className="min-h-screen bg-[var(--bg-primary)]">
+      <div className="dash-app min-h-screen bg-[var(--bg-primary)]">
         <CommandPalette />
         <AiAssistantSheet />
         <Sidebar />
