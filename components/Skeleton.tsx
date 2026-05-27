@@ -260,6 +260,39 @@ export function SkeletonPlanCompareCard() {
   );
 }
 
+/** Project detail — header, tabs, overview panels */
+export function SkeletonProjectDetailPage() {
+  return (
+    <div className="max-w-6xl mx-auto space-y-6 animate-slide-in">
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-px" />
+        <Skeleton className="h-5 w-40" />
+      </div>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div className="space-y-2 flex-1">
+          <Skeleton className="h-8 w-56 max-w-full" />
+          <Skeleton className="h-4 w-72 max-w-full" />
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <Skeleton className="h-9 w-24 rounded-lg" />
+          <Skeleton className="h-9 w-28 rounded-lg" />
+        </div>
+      </div>
+      <div className="flex gap-1 overflow-hidden border-b border-[var(--border-subtle)] pb-px">
+        {[...Array(6)].map((_, i) => (
+          <Skeleton key={i} className="h-9 w-24 rounded-t-lg shrink-0" />
+        ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Skeleton className="h-32 rounded-xl lg:col-span-2" />
+        <Skeleton className="h-32 rounded-xl" />
+      </div>
+      <Skeleton className="h-48 rounded-xl w-full" />
+    </div>
+  );
+}
+
 /** Narrow list row — API keys, settings rows */
 export function SkeletonKeyValueRow() {
   return (

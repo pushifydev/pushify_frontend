@@ -36,7 +36,7 @@ export function MarketingPageHero({
   const alignClass = align === 'center' ? 'text-center mx-auto max-w-3xl' : 'max-w-2xl';
 
   return (
-    <header className={`lp-container pt-12 md:pt-16 pb-12 md:pb-14 ${alignClass}`}>
+    <header className={`lp-container pt-20 md:pt-24 pb-12 md:pb-14 ${alignClass}`}>
       {label && <p className="lp-label mb-4">{label}</p>}
       <h1 className="lp-hero-title">{title}</h1>
       {description && <p className="lp-lead mt-5">{description}</p>}

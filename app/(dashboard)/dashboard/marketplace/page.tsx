@@ -7,6 +7,7 @@ import { useMarketplaceTemplates } from '@/hooks/useMarketplace';
 import type { MarketplaceCategory } from '@/lib/api';
 import TemplateCard from './components/TemplateCard';
 import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
+import { CrossPromoBanner } from '@/components/dashboard/CrossPromoBanner';
 
 const CATEGORIES: { key: MarketplaceCategory | 'all'; color: string }[] = [
   { key: 'all', color: '#8a8a9a' },
@@ -81,6 +82,12 @@ export default function MarketplacePage() {
           </div>
         </div>
       </div>
+
+      <CrossPromoBanner
+        message={t('marketplace', 'siteStudioBanner')}
+        ctaLabel={t('marketplace', 'siteStudioBannerCta')}
+        href="/dashboard/sites"
+      />
 
       {/* Search + Filters */}
       <div className="space-y-4">

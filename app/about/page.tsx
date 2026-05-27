@@ -23,7 +23,7 @@ const content = {
     web: 'Web',
     email: 'Email',
     location: 'Location',
-    locationValue: 'Türkiye',
+    locationValue: 'Remote-first · Global',
     valuesTitle: 'Our Values',
     values: [
       {
@@ -60,7 +60,7 @@ const content = {
     web: 'Web',
     email: 'E-posta',
     location: 'Konum',
-    locationValue: 'Türkiye',
+    locationValue: 'Uzaktan · Küresel',
     valuesTitle: 'Değerlerimiz',
     values: [
       {

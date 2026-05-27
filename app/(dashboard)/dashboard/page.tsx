@@ -15,7 +15,8 @@ import {
   Zap,
   TrendingUp,
 } from 'lucide-react';
-import { useProjects, useTranslation, useMetricsOverview } from '@/hooks';
+import { useProjects, useServers, useTranslation, useMetricsOverview } from '@/hooks';
+import { OnboardingChecklist } from '@/components/dashboard/OnboardingChecklist';
 import { useAuthStore } from '@/stores/auth';
 import { formatTimeAgo, formatStorage } from '@/lib/formatters';
 import { PROJECT_STATUS_COLORS, getStatusColor, STATUS_COLORS } from '@/lib/constants';
@@ -24,6 +25,7 @@ import { Skeleton, SkeletonDashboardProjectRow } from '@/components/Skeleton';
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const { data: projects = [], isLoading: projectsLoading } = useProjects();
+  const { data: servers = [], isLoading: serversLoading } = useServers();
   const { data: metricsOverview, isLoading: metricsLoading } = useMetricsOverview();
   const { t } = useTranslation();
 
@@ -83,6 +85,16 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {!projectsLoading && !serversLoading && (
+        <OnboardingChecklist
+          progress={{
+            hasServer: servers.length > 0,
+            hasProject: projects.length > 0,
+            hasLiveDeploy: activeProjects > 0,
+          }}
+        />
+      )}
 
       {/* ── Site Studio CTA ──────────────────────────── */}
       <Link
