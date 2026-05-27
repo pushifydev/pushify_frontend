@@ -183,6 +183,7 @@ export {
 
 // Translation
 export { useTranslation } from './useTranslation';
+export { useDocsContent } from './useDocsContent';
 
 // 2FA
 export {
@@ -207,3 +208,12 @@ export {
 
 // AI Assistant
 export { useAiAssistant, type ChatEntry } from './useAiAssistant';
+
+// Site Studio
+export {
+  siteStudioKeys,
+  useSiteStudioTemplates,
+  useSiteStudioTemplate,
+  useSiteStudioStacks,
+  useLaunchSite,
+} from './useSiteStudio';

@@ -10,11 +10,11 @@ import {
   HardDrive, Clock, Activity, HeartPulse, Headphones, Wifi, Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useRef } from 'react';
-import confetti from 'canvas-confetti';
+import { useState } from 'react';
 import NumberFlow from '@number-flow/react';
 import { useTranslation } from '@/hooks';
 import { useAvailablePlans } from '@/hooks/useBilling';
+import { LandingSectionHeader } from './LandingSectionHeader';
 import type { PlanType, PlanLimits } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
 
@@ -80,33 +80,16 @@ export function PricingSection() {
   const perMonthSuffix = t('billing', 'perMonth');
   const [isMonthly, setIsMonthly] = useState(true);
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  const switchRef = useRef<HTMLButtonElement>(null);
   const { data: apiPlans, isLoading } = useAvailablePlans();
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
-    if (checked && switchRef.current) {
-      const rect = switchRef.current.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { x: x / window.innerWidth, y: y / window.innerHeight },
-        colors: ['#6366f1', '#a78bfa', '#fbbf24', '#34d399'],
-        ticks: 200,
-        gravity: 1.2,
-        decay: 0.94,
-        startVelocity: 30,
-        shapes: ['circle'],
-      });
-    }
   };
 
   if (isLoading || !apiPlans) {
     return (
-      <section className="py-24 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--text-muted)' }} />
+      <section className="lp-section flex items-center justify-center min-h-[40vh]">
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--lp-muted)' }} />
       </section>
     );
   }
@@ -124,37 +107,39 @@ export function PricingSection() {
   const mainPlans = allPlans;
 
   return (
-    <section id="pricing" className="relative py-24 overflow-hidden">
-      <div className="absolute inset-0 grid-pattern opacity-20" />
+    <section id="pricing" className="lp-section">
+      <div className="lp-container">
+        <LandingSectionHeader
+          label={t('landing', 'pricingBadge')}
+          title={
+            <>
+              {t('landing', 'simpleTransparent')} {t('landing', 'transparentGradient')}{' '}
+              {t('landing', 'pricing').toLowerCase()}
+            </>
+          }
+          description={t('landing', 'pricingSubtitle')}
+          align="center"
+          className="mx-auto text-center max-w-2xl"
+        />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent-amber)]/10 border border-[var(--accent-amber)]/20 mb-5">
-            <Zap className="w-3.5 h-3.5 text-[var(--accent-amber)]" />
-            <span className="text-xs text-[var(--accent-amber)] terminal-text uppercase tracking-wider">{t('landing', 'pricingBadge')}</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
-            {t('landing', 'simpleTransparent')} <span className="gradient-text">{t('landing', 'transparentGradient')}</span> {t('landing', 'pricing').toLowerCase()}
-          </h2>
-          <p className="text-[var(--text-secondary)] max-w-lg mx-auto">
-            {t('landing', 'pricingSubtitle')}
-          </p>
-        </div>
-
-        {/* Toggle */}
         <div className="flex items-center justify-center gap-3 mb-12">
-          <span className={cn('text-sm font-medium', isMonthly ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]')}>{t('landing', 'monthly')}</span>
+          <span
+            className="text-sm font-medium"
+            style={{ color: isMonthly ? 'var(--lp-ink)' : 'var(--lp-muted)' }}
+          >
+            {t('landing', 'monthly')}
+          </span>
           <Label>
-            <Switch
-              ref={switchRef as any}
-              checked={!isMonthly}
-              onCheckedChange={handleToggle}
-            />
+            <Switch checked={!isMonthly} onCheckedChange={handleToggle} />
           </Label>
-          <span className={cn('text-sm font-medium', !isMonthly ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]')}>
+          <span
+            className="text-sm font-medium"
+            style={{ color: !isMonthly ? 'var(--lp-ink)' : 'var(--lp-muted)' }}
+          >
             {t('landing', 'yearly')}
-            <span className="ml-1.5 text-xs text-[var(--accent-cyan)] font-semibold">-20%</span>
+            <span className="ml-1.5 text-xs font-semibold" style={{ color: 'var(--lp-muted)' }}>
+              -20%
+            </span>
           </span>
         </div>
 
@@ -182,26 +167,26 @@ export function PricingSection() {
                 delay: 0.2 + index * 0.1,
               }}
               className={cn(
-                'relative rounded-2xl p-6 flex flex-col',
-                'bg-[var(--bg-secondary)] border transition-all duration-300',
-                plan.isPopular
-                  ? 'border-[var(--accent-cyan)] shadow-lg shadow-[var(--accent-cyan)]/10'
-                  : 'border-[var(--glass-border)] hover:border-[var(--glass-border-strong)]',
+                'lp-card relative p-6 flex flex-col transition-colors',
+                plan.isPopular && 'border-[var(--lp-ink)]',
               )}
             >
               {plan.isPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--accent-cyan)] text-white">
+                <div
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white"
+                  style={{ background: 'var(--lp-ink)' }}
+                >
                   <Star className="w-3 h-3 fill-current" />
-                  <span className="text-xs font-bold">{t('landing', 'mostPopular')}</span>
+                  {t('landing', 'mostPopular')}
                 </div>
               )}
 
-              <p className="text-sm font-semibold text-[var(--text-muted)] terminal-text uppercase tracking-wider mb-4">
+              <p className="lp-label mb-4 normal-case tracking-normal">
                 {t('landing', plan.nameKey as any)}
               </p>
 
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-4xl font-bold text-[var(--text-primary)]">
+                <span className="text-4xl font-bold tracking-tight" style={{ color: 'var(--lp-ink)' }}>
                   {plan.price === 0 ? (
                     '$0'
                   ) : plan.price < 0 ? (
@@ -216,10 +201,12 @@ export function PricingSection() {
                   )}
                 </span>
                 {plan.price > 0 && (
-                  <span className="text-sm text-[var(--text-muted)]">/ {t('landing', 'month' as any)}</span>
+                  <span className="text-sm" style={{ color: 'var(--lp-muted)' }}>
+                    / {t('landing', 'month' as any)}
+                  </span>
                 )}
               </div>
-              <p className="text-xs text-[var(--text-muted)] mb-5">
+              <p className="text-xs mb-5" style={{ color: 'var(--lp-muted)' }}>
                 {plan.price === 0
                   ? t('landing', 'freeForever')
                   : plan.price < 0
@@ -230,7 +217,7 @@ export function PricingSection() {
               </p>
 
               {/* Quick highlights */}
-              <div className="space-y-2 mb-6 pb-6 border-b border-[var(--glass-border)]">
+              <div className="space-y-2 mb-6 pb-6 border-b" style={{ borderColor: 'var(--lp-border)' }}>
                 {[
                   { icon: Server, value: fmtNum(plan.limits.servers, unlimitedLabel), labelKey: 'servers' as const },
                   { icon: Rocket, value: fmtNum(plan.limits.projects, unlimitedLabel), labelKey: 'projects' as const },
@@ -271,16 +258,16 @@ export function PricingSection() {
               <Link
                 href={plan.href}
                 className={cn(
-                  'w-full h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200',
-                  plan.isPopular
-                    ? 'bg-[var(--accent-cyan)] text-white hover:bg-[var(--accent-cyan-dim)] shadow-md shadow-[var(--accent-cyan)]/30'
-                    : 'bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--glass-border)] hover:border-[var(--glass-border-strong)] hover:bg-[var(--hover-overlay-lg)]',
+                  'w-full h-11 text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200',
+                  plan.isPopular ? 'lp-cta' : 'lp-cta-ghost',
                 )}
               >
                 {t('landing', plan.buttonKey as any)}
               </Link>
 
-              <p className="text-xs text-[var(--text-muted)] text-center mt-3">{t('landing', plan.descKey as any)}</p>
+              <p className="text-xs text-center mt-3" style={{ color: 'var(--lp-muted)' }}>
+                {t('landing', plan.descKey as any)}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -292,17 +279,9 @@ export function PricingSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <h3 className="text-xl font-bold text-center mb-8" style={{ color: 'var(--text-primary)' }}>
-            {t('homepage', 'fullPlanComparisonTitle')}
-          </h3>
+          <h3 className="lp-section-title text-center mb-8">{t('homepage', 'fullPlanComparisonTitle')}</h3>
 
-          <div
-            className="rounded-2xl overflow-hidden"
-            style={{
-              background: 'var(--bg-secondary)',
-              border: '1px solid var(--glass-border)',
-            }}
-          >
+          <div className="lp-card overflow-hidden p-0 rounded-2xl">
             {/* Table header */}
             <div
               className="grid items-center py-4 px-5"
@@ -382,7 +361,7 @@ export function PricingSection() {
           </div>
         </motion.div>
 
-        <p className="text-center text-sm text-[var(--text-muted)] mt-8">
+        <p className="text-center text-sm mt-8" style={{ color: 'var(--lp-muted)' }}>
           {t('landing', 'pricingBottomNote')}
         </p>
       </div>

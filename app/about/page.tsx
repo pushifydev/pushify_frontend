@@ -1,7 +1,6 @@
 'use client';
 
-import { LandingNavbar } from '@/components/landing/LandingNavbar';
-import { LandingFooter } from '@/components/landing/LandingFooter';
+import { MarketingShell, MarketingPageHero } from '@/components/landing';
 import { useTranslation } from '@/hooks';
 import { Mail, MapPin, Globe, Github, Heart } from 'lucide-react';
 
@@ -82,109 +81,124 @@ const content = {
   },
 };
 
+function InfoRow({
+  icon,
+  label,
+  children,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 shrink-0" style={{ color: 'var(--lp-ink)' }}>
+        {icon}
+      </span>
+      <div>
+        <p className="text-sm font-semibold mb-1" style={{ color: 'var(--lp-ink)' }}>
+          {label}
+        </p>
+        <div className="text-sm" style={{ color: 'var(--lp-muted)' }}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AboutPage() {
   const { locale } = useTranslation();
   const c = content[locale === 'tr' ? 'tr' : 'en'];
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)]">
-      <LandingNavbar />
+    <MarketingShell>
+      <MarketingPageHero title={c.title} description={c.intro} />
 
-      <main className="max-w-4xl mx-auto px-6 pt-32 pb-20">
-        <div className="mb-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{c.title}</h1>
-          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed">{c.intro}</p>
-        </div>
-
-        <section className="mb-12 rounded-2xl border border-[var(--glass-border)] bg-[var(--bg-secondary)] p-8">
-          <h2 className="text-2xl font-bold mb-4">{c.missionTitle}</h2>
-          <p className="text-[var(--text-secondary)] leading-relaxed">{c.mission}</p>
+      <div className="lp-container max-w-4xl pb-20 md:pb-24 space-y-8">
+        <section className="lp-card p-8">
+          <h2 className="lp-section-title text-xl mb-4">{c.missionTitle}</h2>
+          <p className="lp-body">{c.mission}</p>
         </section>
 
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">{c.whatWeDoTitle}</h2>
+        <section>
+          <h2 className="lp-section-title text-xl mb-6">{c.whatWeDoTitle}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {c.items.map((item) => (
-              <div key={item.title} className="rounded-xl border border-[var(--glass-border)] bg-[var(--bg-secondary)] p-5">
-                <h3 className="font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{item.desc}</p>
+              <div key={item.title} className="lp-card p-5">
+                <h3 className="font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="mb-12 rounded-2xl border border-[var(--glass-border)] bg-[var(--bg-secondary)] p-8">
-          <h2 className="text-2xl font-bold mb-6">{c.companyTitle}</h2>
+        <section className="lp-card p-8">
+          <h2 className="lp-section-title text-xl mb-6">{c.companyTitle}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-start gap-3">
-              <Globe className="w-5 h-5 text-[var(--accent-cyan)] mt-0.5 shrink-0" />
-              <div>
-                <p className="text-sm font-semibold mb-1">{c.web}</p>
-                <a href="https://pushify.dev" className="text-sm text-[var(--text-secondary)] hover:text-[var(--accent-cyan)]">
-                  pushify.dev
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Mail className="w-5 h-5 text-[var(--accent-cyan)] mt-0.5 shrink-0" />
-              <div>
-                <p className="text-sm font-semibold mb-1">{c.email}</p>
-                <a href="mailto:support@pushify.dev" className="text-sm text-[var(--text-secondary)] hover:text-[var(--accent-cyan)]">
-                  support@pushify.dev
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Github className="w-5 h-5 text-[var(--accent-cyan)] mt-0.5 shrink-0" />
-              <div>
-                <p className="text-sm font-semibold mb-1">GitHub</p>
-                <a href="https://github.com/pushifydev" className="text-sm text-[var(--text-secondary)] hover:text-[var(--accent-cyan)]">
-                  github.com/pushifydev
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-[var(--accent-cyan)] mt-0.5 shrink-0" />
-              <div>
-                <p className="text-sm font-semibold mb-1">{c.location}</p>
-                <p className="text-sm text-[var(--text-secondary)]">{c.locationValue}</p>
-              </div>
-            </div>
+            <InfoRow icon={<Globe className="w-5 h-5" />} label={c.web}>
+              <a href="https://pushify.dev" className="hover:underline" style={{ color: 'var(--lp-ink)' }}>
+                pushify.dev
+              </a>
+            </InfoRow>
+            <InfoRow icon={<Mail className="w-5 h-5" />} label={c.email}>
+              <a href="mailto:support@pushify.dev" className="hover:underline" style={{ color: 'var(--lp-ink)' }}>
+                support@pushify.dev
+              </a>
+            </InfoRow>
+            <InfoRow icon={<Github className="w-5 h-5" />} label="GitHub">
+              <a
+                href="https://github.com/pushifydev"
+                className="hover:underline"
+                style={{ color: 'var(--lp-ink)' }}
+              >
+                github.com/pushifydev
+              </a>
+            </InfoRow>
+            <InfoRow icon={<MapPin className="w-5 h-5" />} label={c.location}>
+              {c.locationValue}
+            </InfoRow>
           </div>
         </section>
 
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">{c.valuesTitle}</h2>
+        <section>
+          <h2 className="lp-section-title text-xl mb-6">{c.valuesTitle}</h2>
           <div className="space-y-4">
             {c.values.map((v) => (
-              <div key={v.title} className="rounded-xl border border-[var(--glass-border)] bg-[var(--bg-secondary)] p-5">
-                <h3 className="font-semibold mb-2">{v.title}</h3>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{v.desc}</p>
+              <div key={v.title} className="lp-card p-5">
+                <h3 className="font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
+                  {v.title}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
+                  {v.desc}
+                </p>
               </div>
             ))}
           </div>
         </section>
 
-        <div className="text-center mt-16 pt-8 border-t border-[var(--glass-divider)]">
-          <p className="text-sm text-[var(--text-muted)] inline-flex items-center gap-2">
+        <div className="text-center pt-8 border-t" style={{ borderColor: 'var(--lp-border)' }}>
+          <p className="text-sm inline-flex items-center gap-2" style={{ color: 'var(--lp-muted)' }}>
             {locale === 'tr' ? (
               <>
                 {c.builtWith} {c.builtFor}
-                <Heart className="w-4 h-4 text-[var(--accent-red)] fill-current" />
+                <Heart className="w-4 h-4 fill-current" style={{ color: 'var(--lp-ink)' }} />
                 ile yapıldı
               </>
             ) : (
               <>
                 {c.builtWith}
-                <Heart className="w-4 h-4 text-[var(--accent-red)] fill-current" />
+                <Heart className="w-4 h-4 fill-current" style={{ color: 'var(--lp-ink)' }} />
                 {c.builtFor}
               </>
             )}
           </p>
         </div>
-      </main>
-
-      <LandingFooter />
-    </div>
+      </div>
+    </MarketingShell>
   );
 }

@@ -1,69 +1,68 @@
-"use client";
+'use client';
 
-import { useTranslation } from "@/hooks";
-import { LogoMark } from "@/components/logo";
-import { Github, Twitter, Mail, ArrowUpRight } from "lucide-react";
+import { useTranslation } from '@/hooks';
+import { LogoMark } from '@/components/logo';
+import { Github, Twitter, Mail, ArrowUpRight } from 'lucide-react';
 
 export function LandingFooter() {
   const { t } = useTranslation();
 
   const links = {
-    [t("landing", "product")]: [
-      { label: t("landing", "features"), href: "/features" },
-      { label: t("landing", "pricing"), href: "/pricing" },
+    [t('landing', 'product')]: [
+      { label: t('landing', 'features'), href: '/features' },
+      { label: t('landing', 'pricing'), href: '/pricing' },
       {
-        label: t("landing", "cli"),
-        href: "https://www.npmjs.com/package/pushify-cli",
+        label: t('landing', 'cli'),
+        href: 'https://www.npmjs.com/package/pushify-cli',
         external: true,
       },
     ],
-    [t("landing", "resources")]: [
-      { label: t("branding", "documentation"), href: "/docs" },
+    [t('landing', 'resources')]: [
+      { label: t('branding', 'documentation'), href: '/docs' },
       {
-        label: t("branding", "github"),
-        href: "https://github.com/pushifydev",
+        label: t('branding', 'github'),
+        href: 'https://github.com/pushifydev',
         external: true,
       },
-      { label: t("landing", "changelog"), href: "#" },
+      { label: t('landing', 'changelog'), href: '#' },
     ],
-    [t("landing", "company")]: [
-      { label: t("legal", "about"), href: "/about" },
-      { label: t("landing", "blog"), href: "#" },
-      { label: t("landing", "contact"), href: "mailto:support@pushify.dev" },
+    [t('landing', 'company')]: [
+      { label: t('legal', 'about'), href: '/about' },
+      { label: t('landing', 'blog'), href: '#' },
+      { label: t('landing', 'contact'), href: 'mailto:support@pushify.dev' },
     ],
-    [t("legal", "legal")]: [
-      { label: t("legal", "privacy"), href: "/privacy" },
-      { label: t("legal", "terms"), href: "/terms" },
-      { label: t("legal", "refund"), href: "/refund" },
+    [t('legal', 'legal')]: [
+      { label: t('legal', 'privacy'), href: '/privacy' },
+      { label: t('legal', 'terms'), href: '/terms' },
+      { label: t('legal', 'refund'), href: '/refund' },
     ],
   };
 
   const socials = [
     {
       icon: <Github className="w-4 h-4" />,
-      href: "https://github.com/pushifydev",
-      label: t("landing", "socialGithub"),
+      href: 'https://github.com/pushifydev',
+      label: t('landing', 'socialGithub'),
     },
-    { icon: <Twitter className="w-4 h-4" />, href: "#", label: t("landing", "twitter") },
+    { icon: <Twitter className="w-4 h-4" />, href: '#', label: t('landing', 'twitter') },
     {
       icon: <Mail className="w-4 h-4" />,
-      href: "mailto:support@pushify.dev",
-      label: t("landing", "socialEmail"),
+      href: 'mailto:support@pushify.dev',
+      label: t('landing', 'socialEmail'),
     },
   ];
 
   return (
-    <footer className="border-t border-[var(--glass-border)]">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+    <footer className="border-t border-[var(--lp-border)]">
+      <div className="lp-container py-14 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10">
-          {/* Brand */}
           <div className="col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <LogoMark size={32} />
-              <span className="font-bold text-lg">Pushify</span>
+              <LogoMark size={28} />
+              <span className="font-semibold text-base tracking-tight">Pushify</span>
             </div>
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-5 max-w-xs">
-              {t("landing", "footerDescription")}
+            <p className="text-sm leading-relaxed mb-5 max-w-xs" style={{ color: 'var(--lp-muted)' }}>
+              {t('landing', 'footerDescription')}
             </p>
             <div className="flex items-center gap-2">
               {socials.map((s) => (
@@ -72,7 +71,9 @@ export function LandingFooter() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] transition-colors"
+                  className="w-9 h-9 rounded-md flex items-center justify-center border border-[var(--lp-border)] transition-colors hover:bg-[var(--hover-overlay-md)]"
+                  style={{ color: 'var(--lp-muted)' }}
+                  aria-label={s.label}
                 >
                   {s.icon}
                 </a>
@@ -80,10 +81,9 @@ export function LandingFooter() {
             </div>
           </div>
 
-          {/* Link columns */}
           {Object.entries(links).map(([title, items]) => (
             <div key={title}>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-4">
+              <h4 className="text-xs font-medium mb-4" style={{ color: 'var(--lp-muted)' }}>
                 {title}
               </h4>
               <ul className="space-y-2.5">
@@ -93,14 +93,13 @@ export function LandingFooter() {
                     <li key={link.label}>
                       <a
                         href={link.href}
-                        target={isExternal ? "_blank" : undefined}
-                        rel={isExternal ? "noopener noreferrer" : undefined}
-                        className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center gap-1"
+                        target={isExternal ? '_blank' : undefined}
+                        rel={isExternal ? 'noopener noreferrer' : undefined}
+                        className="text-sm inline-flex items-center gap-1 transition-colors hover:underline underline-offset-4"
+                        style={{ color: 'var(--lp-body)' }}
                       >
                         {link.label}
-                        {isExternal && (
-                          <ArrowUpRight className="w-3 h-3 opacity-40" />
-                        )}
+                        {isExternal && <ArrowUpRight className="w-3 h-3 opacity-50" />}
                       </a>
                     </li>
                   );
@@ -110,16 +109,16 @@ export function LandingFooter() {
           ))}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-[var(--glass-divider)] flex flex-col md:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-[var(--text-muted)]">
-            &copy; {new Date().getFullYear()} Pushify.{" "}
-            {t("landing", "openSourceUnderMit")}.
+        <div
+          className="mt-12 pt-8 border-t border-[var(--lp-border)] flex flex-col md:flex-row items-center justify-between gap-3 text-xs"
+          style={{ color: 'var(--lp-muted)' }}
+        >
+          <p>
+            &copy; {new Date().getFullYear()} Pushify. {t('landing', 'openSourceUnderMit')}.
           </p>
-          <div className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
-            <span>{t("landing", "builtWithLove")}</span>
-            <span className="text-[var(--accent-red)]">&#9829;</span>
-            <span>{t("landing", "forDevelopers")}</span>
-          </div>
+          <p>
+            {t('landing', 'builtWithLove')} {t('landing', 'forDevelopers')}
+          </p>
         </div>
       </div>
     </footer>

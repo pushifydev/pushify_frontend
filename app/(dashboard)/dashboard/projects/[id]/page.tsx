@@ -16,6 +16,7 @@ import {
   Play,
   Pause,
   Rocket,
+  Sparkles,
   Activity,
   Key,
   ChevronRight,
@@ -202,6 +203,17 @@ export default function ProjectDetailPage() {
     );
   }
 
+  const fromStudio = searchParams.get('studio') === '1';
+  const projectSettings = (project.settings || {}) as Record<string, unknown>;
+  const isCalcomStack =
+    projectSettings.siteStudioStack === 'calcom' ||
+    projectSettings.marketplaceTemplateId === 'calcom';
+  const latestDeployment = deployments[0];
+  const deployInProgress =
+    latestDeployment &&
+    ['pending', 'queued', 'building', 'deploying'].includes(latestDeployment.status);
+  const siteUrl = project.productionUrl || null;
+
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'overview', label: t('projectDetail', 'overview'), icon: <Activity className="w-4 h-4" /> },
     { id: 'deployments', label: t('projectDetail', 'deployments'), icon: <Rocket className="w-4 h-4" /> },
@@ -225,6 +237,54 @@ export default function ProjectDetailPage() {
         <ChevronRight className="w-4 h-4" />
         <span className="text-[var(--text-primary)]">{project.name}</span>
       </div>
+
+      {fromStudio && (
+        <div
+          className="rounded-xl p-5 border border-[var(--accent-primary)]/30 bg-[var(--accent-primary)]/5"
+          role="status"
+        >
+          <div className="flex items-start gap-3">
+            <Sparkles className="w-5 h-5 text-[var(--accent-primary)] shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0 space-y-2">
+              <p className="font-semibold text-[var(--text-primary)]">
+                {t('siteStudio', 'projectDeployBannerTitle')}
+              </p>
+              <p className="text-sm text-[var(--text-secondary)]">
+                {t('siteStudio', 'projectDeployBannerDesc')}
+              </p>
+              {deployInProgress && (
+                <p className="text-sm text-[var(--text-muted)] flex items-center gap-2">
+                  <RefreshCw className="w-4 h-4 animate-spin shrink-0" />
+                  {t('siteStudio', 'projectDeployInProgress')}
+                </p>
+              )}
+              {siteUrl && !deployInProgress && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <a
+                    href={siteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary btn-sm"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    {t('siteStudio', 'projectDeployOpenSite')}
+                  </a>
+                  {isCalcomStack && (
+                    <a
+                      href={`${siteUrl.replace(/\/$/, '')}/auth/setup`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-secondary btn-sm"
+                    >
+                      {t('siteStudio', 'projectDeploySetupCalcom')}
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">

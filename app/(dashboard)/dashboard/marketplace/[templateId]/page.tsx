@@ -305,7 +305,7 @@ export default function TemplateDetailPage() {
                 <div className="flex items-center gap-2">
                   {envVar.generate && (
                     <span className="text-[10px] px-1.5 py-0.5 rounded" style={{
-                      background: 'rgba(99,102,241,0.1)', color: 'var(--accent-cyan)',
+                      background: 'var(--dash-accent-bg)', color: 'var(--accent-cyan)',
                     }}>auto</span>
                   )}
                   {envVar.required && !envVar.generate && (

@@ -9,15 +9,15 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react';
+import { useDocsContent } from '@/hooks/useDocsContent';
 
-// Method Badge
 export function MethodBadge({ method }: { method: string }) {
   const colors: Record<string, string> = {
-    GET: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
-    POST: 'bg-blue-500/15 text-blue-400 border-blue-500/25',
-    PATCH: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
-    PUT: 'bg-orange-500/15 text-orange-400 border-orange-500/25',
-    DELETE: 'bg-red-500/15 text-red-400 border-red-500/25',
+    GET: 'bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-400 dark:border-emerald-500/25',
+    POST: 'bg-blue-500/15 text-blue-700 border-blue-500/30 dark:text-blue-400 dark:border-blue-500/25',
+    PATCH: 'bg-amber-500/15 text-amber-700 border-amber-500/30 dark:text-amber-400 dark:border-amber-500/25',
+    PUT: 'bg-orange-500/15 text-orange-700 border-orange-500/30 dark:text-orange-400 dark:border-orange-500/25',
+    DELETE: 'bg-red-500/15 text-red-700 border-red-500/30 dark:text-red-400 dark:border-red-500/25',
   };
 
   return (
@@ -29,8 +29,8 @@ export function MethodBadge({ method }: { method: string }) {
   );
 }
 
-// Code Block with self-contained copy
-export function CodeBlock({ code, language = 'text' }: { code: string; language?: string }) {
+export function CodeBlock({ code }: { code: string; language?: string }) {
+  const { content } = useDocsContent();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -40,21 +40,17 @@ export function CodeBlock({ code, language = 'text' }: { code: string; language?
   };
 
   return (
-    <div className="relative group">
-      <pre className="p-4 rounded-lg bg-[#08080d] border border-white/[0.06] overflow-x-auto">
-        <code className="text-[13px] leading-relaxed font-mono text-white/75">{code}</code>
+    <div className="docs-code-block group">
+      <pre>
+        <code>{code}</code>
       </pre>
-      <button
-        onClick={handleCopy}
-        className="absolute top-2.5 right-2.5 p-1.5 rounded-md bg-white/5 hover:bg-white/10 text-white/30 hover:text-white transition-all opacity-0 group-hover:opacity-100"
-      >
-        {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+      <button type="button" onClick={handleCopy} className="docs-code-copy" aria-label={content.labels.copyCode}>
+        {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
       </button>
     </div>
   );
 }
 
-// Collapsible Endpoint Card
 export function EndpointCard({
   method,
   path,
@@ -63,6 +59,7 @@ export function EndpointCard({
   request,
   response,
   params,
+  labels: labelsOverride,
 }: {
   method: string;
   path: string;
@@ -71,58 +68,64 @@ export function EndpointCard({
   request?: string;
   response?: string;
   params?: { name: string; type: string; required?: boolean; desc: string }[];
+  labels?: {
+    parameters: string;
+    paramName: string;
+    paramType: string;
+    paramDesc: string;
+    request: string;
+    response: string;
+  };
 }) {
+  const { content } = useDocsContent();
+  const labels = labelsOverride ?? content.labels;
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden transition-colors hover:border-white/[0.1]">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-3 p-4 text-left"
-      >
+    <div className="docs-endpoint-card">
+      <button type="button" onClick={() => setExpanded(!expanded)} className="docs-endpoint-header">
         <MethodBadge method={method} />
-        <code className="text-white/90 font-mono text-sm flex-1 truncate">{path}</code>
-        {scope && (
-          <code className="hidden md:inline px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400/60 text-xs font-mono shrink-0">
-            {scope}
-          </code>
-        )}
+        <code className="docs-endpoint-path">{path}</code>
+        {scope && <code className="docs-scope-badge">{scope}</code>}
         {expanded ? (
-          <ChevronDown className="w-4 h-4 text-white/30 shrink-0" />
+          <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--lp-muted)' }} />
         ) : (
-          <ChevronRight className="w-4 h-4 text-white/30 shrink-0" />
+          <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--lp-muted)' }} />
         )}
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 space-y-4 border-t border-white/[0.06] pt-4">
-          <p className="text-white/50 text-sm leading-relaxed">{description}</p>
+        <div
+          className="px-4 pb-4 space-y-4 pt-4"
+          style={{ borderTop: '1px solid var(--lp-border)' }}
+        >
+          <p className="docs-muted">{description}</p>
 
           {params && params.length > 0 && (
             <div>
-              <h4 className="text-xs font-medium text-white/40 uppercase tracking-wider mb-2">
-                Parameters
-              </h4>
-              <div className="rounded-lg border border-white/[0.06] overflow-hidden">
-                <table className="w-full text-sm">
+              <h4 className="docs-h3 uppercase tracking-wider">{labels.parameters}</h4>
+              <div className="docs-table-wrap">
+                <table>
                   <thead>
-                    <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                      <th className="text-left px-3 py-2 text-white/40 font-medium text-xs">Name</th>
-                      <th className="text-left px-3 py-2 text-white/40 font-medium text-xs">Type</th>
-                      <th className="text-left px-3 py-2 text-white/40 font-medium text-xs">Description</th>
+                    <tr>
+                      <th>{labels.paramName}</th>
+                      <th>{labels.paramType}</th>
+                      <th>{labels.paramDesc}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {params.map((p) => (
-                      <tr key={p.name} className="border-b border-white/[0.04] last:border-0">
-                        <td className="px-3 py-2">
-                          <code className="text-indigo-400/80 text-xs font-mono">{p.name}</code>
+                      <tr key={p.name}>
+                        <td>
+                          <code className="docs-inline-code">{p.name}</code>
                           {p.required && (
-                            <span className="ml-1 text-red-400/60 text-[10px]">*</span>
+                            <span className="ml-1 text-red-500 text-[10px]">*</span>
                           )}
                         </td>
-                        <td className="px-3 py-2 text-white/40 text-xs font-mono">{p.type}</td>
-                        <td className="px-3 py-2 text-white/50 text-xs">{p.desc}</td>
+                        <td className="font-mono text-xs" style={{ color: 'var(--lp-muted)' }}>
+                          {p.type}
+                        </td>
+                        <td className="docs-muted-sm">{p.desc}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -133,8 +136,8 @@ export function EndpointCard({
 
           {request && (
             <div>
-              <h4 className="text-xs font-medium text-white/40 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Terminal className="w-3.5 h-3.5" /> Request
+              <h4 className="docs-h3 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                <Terminal className="w-3.5 h-3.5" /> {labels.request}
               </h4>
               <CodeBlock code={request} language="bash" />
             </div>
@@ -142,8 +145,8 @@ export function EndpointCard({
 
           {response && (
             <div>
-              <h4 className="text-xs font-medium text-white/40 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Code2 className="w-3.5 h-3.5" /> Response
+              <h4 className="docs-h3 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                <Code2 className="w-3.5 h-3.5" /> {labels.response}
               </h4>
               <CodeBlock code={response} language="json" />
             </div>
@@ -154,23 +157,15 @@ export function EndpointCard({
   );
 }
 
-// Section heading
-export function SectionHeading({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
+export function SectionHeading({ title, description }: { title: string; description: string }) {
   return (
-    <div className="mb-8">
-      <h1 className="text-3xl font-bold text-white mb-3">{title}</h1>
-      <p className="text-base text-white/50 leading-relaxed max-w-2xl">{description}</p>
+    <div className="docs-section-heading mb-8">
+      <h1>{title}</h1>
+      <p>{description}</p>
     </div>
   );
 }
 
-// Info/warning callout
 export function Callout({
   type = 'info',
   title,
@@ -180,16 +175,17 @@ export function Callout({
   title?: string;
   children: React.ReactNode;
 }) {
-  const styles = {
-    info: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-300',
-    warning: 'bg-amber-500/10 border-amber-500/20 text-amber-300',
-    success: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300',
-  };
+  const className =
+    type === 'warning'
+      ? 'docs-callout-warning'
+      : type === 'success'
+        ? 'docs-callout-success'
+        : 'docs-callout-info';
 
   return (
-    <div className={`p-4 rounded-xl border ${styles[type]}`}>
-      {title && <h4 className="font-semibold mb-1 text-sm">{title}</h4>}
-      <div className="text-sm text-white/60 leading-relaxed">{children}</div>
+    <div className={className}>
+      {title && <h4 className="font-semibold mb-1 text-sm" style={{ color: 'var(--lp-ink)' }}>{title}</h4>}
+      <div className="text-sm leading-relaxed">{children}</div>
     </div>
   );
 }

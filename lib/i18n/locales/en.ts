@@ -1392,6 +1392,80 @@ export interface TranslationKeys {
     dockerImage: string;
     version: string;
   };
+  siteStudio: {
+    navTitle: string;
+    title: string;
+    badge: string;
+    heroDescription: string;
+    heroPoint1: string;
+    heroPoint2: string;
+    heroPoint3: string;
+    comingSoonTitle: string;
+    comingSoonDesc: string;
+    roadmap: string;
+    searchPlaceholder: string;
+    launch: string;
+    launchNow: string;
+    launchTitle: string;
+    launchSuccess: string;
+    launching: string;
+    featured: string;
+    allTemplates: string;
+    noTemplates: string;
+    categoryAll: string;
+    categoryEcommerce: string;
+    categoryCorporate: string;
+    categoryBlog: string;
+    categoryPortfolio: string;
+    categoryRestaurant: string;
+    categoryNewsletter: string;
+    categoryBooking: string;
+    categorySaas: string;
+    filterCategory: string;
+    filterPlatform: string;
+    platformsTitle: string;
+    platformNote: string;
+    stackWordpress: string;
+    stackGhost: string;
+    stackStrapi: string;
+    stackDirectus: string;
+    stackPocketbase: string;
+    stackCalcom: string;
+    backToStudio: string;
+    siteName: string;
+    siteNamePlaceholder: string;
+    customDomain: string;
+    domainPlaceholder: string;
+    domainHint: string;
+    selectServer: string;
+    noServers: string;
+    paymentIntegrations: string;
+    paymentNote: string;
+    afterLaunch: string;
+    reviewTitle: string;
+    template: string;
+    estimatedTime: string;
+    minutes: string;
+    includedFeatures: string;
+    setupGuide: string;
+    step: string;
+    of: string;
+    next: string;
+    previous: string;
+    optional: string;
+    devCtaTitle: string;
+    devCtaDesc: string;
+    devCtaLink: string;
+    dashboardCtaTitle: string;
+    dashboardCtaDesc: string;
+    dashboardCtaButton: string;
+    projectDeployBannerTitle: string;
+    projectDeployBannerDesc: string;
+    projectDeployInProgress: string;
+    projectDeployOpenSite: string;
+    projectDeploySetupCalcom: string;
+    launchSuccessDetail: string;
+  };
 }
 
 export const en: TranslationKeys = {
@@ -2781,5 +2855,83 @@ export const en: TranslationKeys = {
     website: 'Website',
     dockerImage: 'Docker Image',
     version: 'Version',
+  },
+  siteStudio: {
+    navTitle: 'Site Studio',
+    title: 'Launch your website in minutes',
+    badge: 'Site Studio',
+    heroDescription:
+      'Professional templates for e-commerce, business, blogs, and more. Deploy on your own server with SSL — connect iyzico, PayTR, and global payments after launch.',
+    heroPoint1: 'Live in ~10 minutes',
+    heroPoint2: 'Your domain & SSL',
+    heroPoint3: 'Your data, your server',
+    comingSoonTitle: 'On the roadmap',
+    comingSoonDesc: 'Visual drag-and-drop editor and more Turkish payment connectors built into the dashboard.',
+    roadmap: 'Phase 2 · Visual editor',
+    searchPlaceholder: 'Search templates…',
+    launch: 'Configure',
+    launchNow: 'Launch site',
+    launchTitle: 'Launch your site',
+    launchSuccess: 'Your site is being deployed!',
+    launching: 'Launching…',
+    featured: 'Popular templates',
+    allTemplates: 'More templates',
+    noTemplates: 'No templates match your search.',
+    categoryAll: 'All',
+    categoryEcommerce: 'E-Commerce',
+    categoryCorporate: 'Corporate',
+    categoryBlog: 'Blog',
+    categoryPortfolio: 'Portfolio',
+    categoryRestaurant: 'Restaurant',
+    categoryNewsletter: 'Newsletter',
+    categoryBooking: 'Booking',
+    categorySaas: 'SaaS / MVP',
+    filterCategory: 'Use case',
+    filterPlatform: 'Platform',
+    platformsTitle: '6 platforms · 12 templates',
+    platformNote: 'Not every template uses WordPress — pick Ghost for blogs, Cal.com for appointments, Directus or PocketBase for modern stacks.',
+    stackWordpress: 'WordPress',
+    stackGhost: 'Ghost',
+    stackStrapi: 'Strapi',
+    stackDirectus: 'Directus',
+    stackPocketbase: 'PocketBase',
+    stackCalcom: 'Cal.com',
+    backToStudio: 'Back to Site Studio',
+    siteName: 'Site name',
+    siteNamePlaceholder: 'My Store',
+    customDomain: 'Custom domain',
+    domainPlaceholder: 'shop.example.com',
+    domainHint: 'Point DNS to your server after deploy. You can add domains later in project settings.',
+    selectServer: 'Deploy to server',
+    noServers: 'No ready servers. Add a server and wait for setup to complete.',
+    paymentIntegrations: 'Payment integrations',
+    paymentNote: 'Configured inside your store admin after launch (plugins). Keys never leave your server.',
+    afterLaunch: 'After launch checklist',
+    reviewTitle: 'Ready to launch',
+    template: 'Template',
+    estimatedTime: 'Est. setup',
+    minutes: 'min',
+    includedFeatures: "What's included",
+    setupGuide: 'Setup guide',
+    step: 'Step',
+    of: 'of',
+    next: 'Next',
+    previous: 'Back',
+    optional: 'optional',
+    devCtaTitle: 'Building a custom app?',
+    devCtaDesc: 'Deploy from GitHub with framework auto-detection.',
+    devCtaLink: 'New project',
+    dashboardCtaTitle: 'Launch a website without code',
+    dashboardCtaDesc: 'E-commerce, corporate sites, blogs — templates with Turkish payment setup guides.',
+    dashboardCtaButton: 'Open Site Studio',
+    projectDeployBannerTitle: 'Pushify is installing your site automatically',
+    projectDeployBannerDesc:
+      'No SSH or manual Docker steps — env vars, containers, and firewall on the server are configured for you. Watch the Deployments tab for progress; when status is running, open your site below.',
+    projectDeployInProgress:
+      'Deployment in progress… This usually takes 5–15 minutes (Cal.com may take a few minutes longer).',
+    projectDeployOpenSite: 'Open your site',
+    projectDeploySetupCalcom: 'Complete Cal.com setup',
+    launchSuccessDetail:
+      'Installation started. Pushify will configure everything on your server — check Deployments for progress.',
   },
 };

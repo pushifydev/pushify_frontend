@@ -7,79 +7,29 @@ import { useTranslation } from '@/hooks';
 export function HeroSection() {
   const { t } = useTranslation();
 
-  const stats = [
-    { num: '01', label: t('landing', 'heroStatMitLicensed') },
-    { num: '02', label: t('landing', 'edgeLocations') },
-    { num: '03', label: t('landing', 'heroStatDeployFast') },
-    { num: '04', label: t('landing', 'heroStatNoVendorLockIn') },
-  ];
-
-  const ticker = [
-    'DEP-9142 ▸ next.js ▸ fra1 ▸ 47s',
-    'DEP-9141 ▸ supabase ▸ ams1 ▸ 2m12s',
-    'DEP-9140 ▸ rails ▸ nbg1 ▸ 1m04s',
-    'DEP-9139 ▸ pocketbase ▸ hel1 ▸ 38s',
-    'DEP-9138 ▸ wordpress ▸ fsn1 ▸ 1m29s',
-    'DEP-9137 ▸ go-fiber ▸ fra1 ▸ 22s',
-    'DEP-9136 ▸ astro ▸ ams1 ▸ 19s',
-    'DEP-9135 ▸ django ▸ nbg1 ▸ 54s',
+  const highlights = [
+    t('landing', 'heroStatMitLicensed'),
+    t('landing', 'edgeLocations'),
+    t('landing', 'heroStatDeployFast'),
+    t('landing', 'heroStatNoVendorLockIn'),
   ];
 
   return (
-    <section className="relative overflow-hidden">
-      {/* Restrained backdrop */}
-      <div className="lp-grid-backdrop" />
-
-      {/* Top meta-rail */}
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 pt-28 pb-3 flex items-center justify-between gap-6">
-        <div className="lp-eyebrow flex items-center gap-3">
-          <span className="lp-crosshair" />
-          <span>{t('landing', 'heroMetaPlatform')}</span>
-        </div>
-        <div className="lp-eyebrow flex items-center gap-2.5">
-          <span className="lp-live-dot" />
-          <span className="hidden sm:inline">{t('landing', 'heroMetaDeploymentsLive')}</span>
-          <span className="sm:hidden">{t('landing', 'heroMetaDeploymentsLiveShort')}</span>
-        </div>
-      </div>
-
-      <div className="relative z-10 lp-rule mx-6 md:mx-10" />
-
-      {/* Editorial headline block */}
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-12">
-        <div className="grid grid-cols-12 gap-y-10">
-          <div className="hidden md:block col-span-1 lp-mono text-[11px] tracking-[0.18em] uppercase text-[var(--text-muted)] pt-3">
-            §&nbsp;{t('homepage', 'editorialHeroLabel')}
-          </div>
-
-          <h1
-            className="col-span-12 md:col-span-11 lp-editorial lp-reveal text-[14vw] md:text-[9vw] lg:text-[8vw] xl:text-[140px] text-[var(--text-primary)]"
-            style={{ animationDelay: '60ms' }}
-          >
-            <span className="block">{t('branding', 'deployAt')}</span>
-            <span className="block">
-              <span className="text-[var(--accent-cyan)]">{t('branding', 'speedOfThought')}.</span>
-            </span>
+    <section className="pt-28 md:pt-32 pb-16 md:pb-20">
+      <div className="lp-container">
+        <div className="max-w-3xl mx-auto text-center lp-reveal" style={{ animationDelay: '40ms' }}>
+          <p className="lp-label mb-5">{t('landing', 'openSourcePlatform')}</p>
+          <h1 className="lp-hero-title">
+            {t('branding', 'deployAt')}{' '}
+            <span style={{ color: 'var(--lp-ink)' }}>{t('branding', 'speedOfThought')}</span>.
           </h1>
-        </div>
-
-        {/* Sub-rail: lede + CTAs */}
-        <div className="grid grid-cols-12 gap-x-8 gap-y-10 mt-16 md:mt-20">
-          <div className="hidden md:block col-span-1 lp-mono text-[11px] tracking-[0.18em] uppercase text-[var(--text-muted)]">
-            {t('homepage', 'editorialLedeLabel')}
-          </div>
-          <p
-            className="col-span-12 md:col-span-6 text-[16px] md:text-[18px] leading-[1.6] text-[var(--text-secondary)] max-w-[58ch] lp-reveal"
-            style={{ animationDelay: '180ms' }}
-          >
-            {t('landing', 'heroLead')}
-          </p>
+          <p className="lp-lead mt-6 max-w-xl mx-auto">{t('landing', 'heroLead')}</p>
 
           <div
-            className="col-span-12 md:col-span-5 flex flex-wrap items-start gap-3 lp-reveal"
-            style={{ animationDelay: '300ms' }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8 lp-reveal"
+            style={{ animationDelay: '120ms' }}
           >
-            <Link href="/register" className="lp-cta group">
+            <Link href="/register" className="lp-cta group w-full sm:w-auto">
               {t('landing', 'getStartedFree')}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
@@ -87,74 +37,66 @@ export function HeroSection() {
               href="https://github.com/pushifydev"
               target="_blank"
               rel="noopener noreferrer"
-              className="lp-cta-ghost"
+              className="lp-cta-ghost w-full sm:w-auto"
             >
               {t('landing', 'heroStarGithub')}
               <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
         </div>
-      </div>
 
-      {/* Stat strip */}
-      <div className="relative z-10 lp-rule mx-6 md:mx-10" />
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8">
-          {stats.map((s, i) => (
-            <div
-              key={s.num}
-              className="flex items-baseline gap-3 lp-reveal"
-              style={{ animationDelay: `${420 + i * 80}ms` }}
-            >
-              <span className="lp-mono text-[12px] tracking-[0.14em] text-[var(--accent-cyan)] tabular-nums">
-                {s.num}
-              </span>
-              <span className="lp-mono text-[12px] uppercase tracking-[0.12em] text-[var(--text-secondary)]">
-                {s.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent deployments ticker */}
-      <div className="relative z-10 border-y border-[var(--glass-border)] bg-[var(--bg-secondary)]/40">
-        <div className="overflow-hidden py-3 mask-fade">
-          <div className="lp-ticker-track">
-            {[...ticker, ...ticker].map((line, i) => (
-              <span
-                key={i}
-                className="lp-mono text-[12px] tracking-[0.08em] uppercase whitespace-nowrap text-[var(--text-secondary)] flex items-center gap-3"
+        {/* Product preview — Cal.com-style framed UI mock */}
+        <div
+          className="lp-preview mt-14 md:mt-20 max-w-4xl mx-auto lp-reveal"
+          style={{ animationDelay: '200ms' }}
+        >
+          <div
+            className="flex items-center gap-2 px-4 py-3 border-b border-[var(--lp-border)]"
+            style={{ background: 'var(--bg-tertiary)' }}
+          >
+            <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444]/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#eab308]/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#22c55e]/80" />
+            <span className="ml-3 text-xs font-medium" style={{ color: 'var(--lp-muted)' }}>
+              pushify.dev — dashboard
+            </span>
+          </div>
+          <div className="p-6 md:p-8 grid sm:grid-cols-3 gap-4 md:gap-6">
+            {[
+              { label: 'Project', value: 'my-app', sub: 'Next.js · running' },
+              { label: 'Server', value: 'fra1', sub: 'Hetzner · 2 vCPU' },
+              { label: 'Last deploy', value: '47s', sub: 'main · auto' },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-lg p-4 border border-[var(--lp-border)]"
+                style={{ background: 'var(--bg-primary)' }}
               >
-                <span
-                  className="inline-block w-1.5 h-1.5 rounded-full"
-                  style={{ background: 'var(--status-success)' }}
-                />
-                {line}
-              </span>
+                <p className="text-xs font-medium mb-2" style={{ color: 'var(--lp-muted)' }}>
+                  {item.label}
+                </p>
+                <p className="text-lg font-semibold tracking-tight" style={{ color: 'var(--lp-ink)' }}>
+                  {item.value}
+                </p>
+                <p className="text-xs mt-1" style={{ color: 'var(--lp-muted)' }}>
+                  {item.sub}
+                </p>
+              </div>
             ))}
           </div>
         </div>
-      </div>
 
-      <style jsx>{`
-        .mask-fade {
-          mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            #000 10%,
-            #000 90%,
-            transparent 100%
-          );
-          -webkit-mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            #000 10%,
-            #000 90%,
-            transparent 100%
-          );
-        }
-      `}</style>
+        <ul
+          className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-12 md:mt-14 lp-reveal"
+          style={{ animationDelay: '280ms' }}
+        >
+          {highlights.map((item) => (
+            <li key={item} className="text-sm" style={{ color: 'var(--lp-muted)' }}>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }

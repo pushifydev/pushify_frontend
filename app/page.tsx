@@ -19,15 +19,27 @@ export default function LandingPage() {
     <div className="lp-page min-h-screen overflow-x-hidden">
       <style jsx global>{`
         @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-33.333%); }
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-33.333%);
+          }
         }
         @keyframes marquee-reverse {
-          0% { transform: translateX(-33.333%); }
-          100% { transform: translateX(0); }
+          0% {
+            transform: translateX(-33.333%);
+          }
+          100% {
+            transform: translateX(0);
+          }
         }
-        .animate-marquee { animation: marquee 40s linear infinite; }
-        .animate-marquee-reverse { animation: marquee-reverse 40s linear infinite; }
+        .animate-marquee {
+          animation: marquee 40s linear infinite;
+        }
+        .animate-marquee-reverse {
+          animation: marquee-reverse 40s linear infinite;
+        }
       `}</style>
 
       <LandingNavbar />

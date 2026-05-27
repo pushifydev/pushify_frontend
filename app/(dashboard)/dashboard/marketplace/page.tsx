@@ -62,8 +62,8 @@ export default function MarketplacePage() {
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center"
             style={{
-              background: 'rgba(99,102,241,0.1)',
-              border: '1px solid rgba(99,102,241,0.2)',
+              background: 'var(--dash-accent-bg)',
+              border: '1px solid var(--dash-accent-border)',
             }}
           >
             <Store className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />
