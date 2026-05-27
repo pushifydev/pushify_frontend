@@ -868,6 +868,9 @@ export const tr: TranslationKeys = {
   apiKeys: {
     title: 'API Anahtarları',
     description: 'CI/CD pipeline\'larından veya CLI araçlarından projelerinize programatik erişim için API anahtarları oluşturun.',
+    rateLimitBanner: 'Organizasyon planınız her API anahtarı için dakikada {count} isteğe izin verir.',
+    rateLimitBannerUnlimited: 'Organizasyon planınızda API anahtarı başına hız limiti yoktur.',
+    viewBilling: 'Faturalamayı gör',
     createKey: 'API Anahtarı Oluştur',
     keyName: 'Anahtar Adı',
     keyNamePlaceholder: 'örn. CI/CD Pipeline, Geliştirme',
@@ -1079,6 +1082,11 @@ export const tr: TranslationKeys = {
     title: 'Faturalama & Kullanım',
     description: 'Mevcut planınızı, kullanım istatistiklerinizi görüntüleyin ve faturalama ayarlarını yönetin.',
     currentPlan: 'Mevcut Plan',
+    apiRateLimit: 'API hız limiti',
+    apiRateLimitValue: 'API anahtarı başına dakikada {count} istek',
+    apiRateLimitUnlimited: 'API anahtarı başına sınırsız istek',
+    apiRateLimitHint:
+      'Limitler API anahtarı başına uygulanır. Yanıtlarda X-RateLimit-Limit, Remaining ve Reset başlıkları bulunur.',
     usage: 'Kullanım',
     usageDescription: 'Bu faturalama dönemindeki kaynak kullanımınız.',
     features: 'Plan Özellikleri',
@@ -1344,6 +1352,9 @@ export const tr: TranslationKeys = {
   marketplace: {
     title: 'Uygulama Mağazası',
     description: 'Popüler açık kaynak uygulamaları tek tıkla deploy edin',
+    siteStudioBanner:
+      'İş sitesi, mağaza veya blog mu kuruyorsunuz? Site Studio rehberli şablonlar, domain ve SSL sunar.',
+    siteStudioBannerCta: 'Site Studio\'yu aç',
     searchPlaceholder: 'Uygulama ara...',
     deploy: 'Deploy Et',
     deployTitle: 'Uygulama Deploy Et',
@@ -1392,6 +1403,9 @@ export const tr: TranslationKeys = {
     navTitle: 'Site Studio',
     title: 'Web sitenizi dakikalar içinde yayına alın',
     badge: 'Site Studio',
+    marketplaceBanner:
+      'Geliştirici araçları, izleme veya veritabanı mı lazım? Marketplace\'te Grafana, n8n ve daha fazlası tek tıkla.',
+    marketplaceBannerCta: 'Marketplace\'e git',
     heroDescription:
       'E-ticaret, kurumsal site, blog ve daha fazlası için profesyonel şablonlar. Kendi sunucunuzda SSL ile yayınlayın — iyzico, PayTR ve global ödemeleri kurulum sonrası bağlayın.',
     heroPoint1: '~10 dakikada canlı',

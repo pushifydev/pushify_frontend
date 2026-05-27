@@ -205,7 +205,7 @@ export function FeaturesSection() {
 
   return (
     <div>
-      <header className="lp-container pt-12 md:pt-16 pb-12 md:pb-14 text-center mx-auto max-w-3xl">
+      <header className="lp-container pt-20 md:pt-24 pb-12 md:pb-14 text-center mx-auto max-w-3xl">
         <p className="lp-label mb-4">{t('landing', 'platform')}</p>
         <h1 className="lp-hero-title">
           {t('landing', 'everythingYouNeedTo')}

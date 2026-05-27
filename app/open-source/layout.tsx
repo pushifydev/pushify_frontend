@@ -1,16 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Open Source - MIT Licensed, Self-Hostable',
+  title: 'Open Source',
   description:
-    'Pushify is fully open-source under the MIT license. Self-host on your own infrastructure, contribute on GitHub, and own your deployment stack.',
-  alternates: {
-    canonical: '/open-source',
-  },
+    'Pushify is MIT licensed. Self-host the platform, contribute on GitHub, and use the pushify-cli for deployments.',
+  alternates: { canonical: '/open-source' },
   openGraph: {
-    title: 'Open Source - Pushify',
-    description:
-      'Fully open-source under MIT license. Self-host, contribute, and own your deployment stack.',
+    title: 'Open Source | Pushify',
     url: 'https://pushify.dev/open-source',
   },
 };

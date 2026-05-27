@@ -15,6 +15,7 @@ import {
   Rocket,
   Users,
   Globe,
+  Key,
 } from 'lucide-react';
 import { useTranslation, useBillingInfo, useUpdateBillingEmail } from '@/hooks';
 import { useAuthStore } from '@/stores/auth';
@@ -145,6 +146,38 @@ export default function BillingPage() {
           </Link>
         </div>
       </div>
+
+      {/* API rate limit */}
+      {billingInfo && (
+        <div
+          className="rounded-xl p-5 flex items-start gap-4"
+          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+        >
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+            style={{ background: 'var(--dash-accent-bg)', border: '1px solid var(--dash-accent-border)' }}
+          >
+            <Key className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium">{t('billing', 'apiRateLimit')}</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+              {billingInfo.apiRequestsPerMinute === -1
+                ? t('billing', 'apiRateLimitUnlimited')
+                : t('billing', 'apiRateLimitValue').replace(
+                    '{count}',
+                    String(billingInfo.apiRequestsPerMinute)
+                  )}
+            </p>
+            <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
+              {t('billing', 'apiRateLimitHint')}
+            </p>
+          </div>
+          <Link href="/dashboard/settings?tab=api-keys" className="btn btn-secondary text-xs shrink-0">
+            {t('apiKeys', 'title')}
+          </Link>
+        </div>
+      )}
 
       {/* Usage Stats */}
       {billingInfo && (

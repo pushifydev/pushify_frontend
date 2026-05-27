@@ -8,6 +8,7 @@ import { useSiteStudioTemplates, useSiteStudioStacks } from '@/hooks/useSiteStud
 import type { SiteStudioCategory, SiteStudioStack } from '@/lib/api';
 import SiteTemplateCard from './components/SiteTemplateCard';
 import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
+import { CrossPromoBanner } from '@/components/dashboard/CrossPromoBanner';
 import { STACK_I18N } from './lib/stacks';
 
 const CATEGORIES: (SiteStudioCategory | 'all')[] = [
@@ -99,6 +100,14 @@ export default function SiteStudioPage() {
           </p>
         )}
       </header>
+
+      <div className="mb-10">
+        <CrossPromoBanner
+          message={t('siteStudio', 'marketplaceBanner')}
+          ctaLabel={t('siteStudio', 'marketplaceBannerCta')}
+          href="/dashboard/marketplace"
+        />
+      </div>
 
       {/* Search */}
       <div className="relative mb-10">

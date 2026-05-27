@@ -1,16 +1,13 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Features - Deploy, Manage Servers & Databases',
+  title: 'Features',
   description:
-    'Auto-deploy from GitHub, managed VPS servers, one-click databases, CLI tool, SSL certificates, team collaboration, and monitoring. Everything you need to ship with confidence.',
-  alternates: {
-    canonical: '/features',
-  },
+    'Deploy to your own servers in under 60 seconds. Git push deploys, marketplace apps, monitoring, teams, and open-source MIT license.',
+  alternates: { canonical: '/features' },
   openGraph: {
-    title: 'Features - Pushify',
-    description:
-      'Auto-deploy from GitHub, managed VPS servers, one-click databases, CLI tool, and more.',
+    title: 'Features | Pushify',
+    description: 'Open-source cloud deployment with zero config on your VPS.',
     url: 'https://pushify.dev/features',
   },
 };

@@ -3,21 +3,25 @@
 import { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider, MutationCache } from '@tanstack/react-query';
 import { Toaster, toast } from 'sonner';
-import { useThemeStore } from '@/stores/theme';
+import { useThemeStore, type Theme } from '@/stores/theme';
 import { ConfirmProvider } from '@/hooks/useConfirm';
 import { getApiErrorMessage } from '@/lib/api/get-error-message';
+import { LocaleHtmlLang } from '@/components/LocaleHtmlLang';
+
+function resolveThemeMode(theme: Theme): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'light';
+  if (theme === 'system') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  return theme === 'light' ? 'light' : 'dark';
+}
 
 function DynamicToaster() {
   const { theme } = useThemeStore();
-  const [resolved, setResolved] = useState<'light' | 'dark'>('dark');
+  const [resolved, setResolved] = useState<'light' | 'dark'>(() => resolveThemeMode(theme));
 
   useEffect(() => {
-    if (theme === 'system') {
-      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setResolved(dark ? 'dark' : 'light');
-    } else {
-      setResolved(theme === 'light' ? 'light' : 'dark');
-    }
+    setResolved(resolveThemeMode(theme));
   }, [theme]);
 
   return (
@@ -68,6 +72,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <LocaleHtmlLang />
       {children}
       <DynamicToaster />
       <ConfirmProvider />

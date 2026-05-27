@@ -873,6 +873,9 @@ export interface TranslationKeys {
   apiKeys: {
     title: string;
     description: string;
+    rateLimitBanner: string;
+    rateLimitBannerUnlimited: string;
+    viewBilling: string;
     createKey: string;
     keyName: string;
     keyNamePlaceholder: string;
@@ -1084,6 +1087,10 @@ export interface TranslationKeys {
     title: string;
     description: string;
     currentPlan: string;
+    apiRateLimit: string;
+    apiRateLimitValue: string;
+    apiRateLimitUnlimited: string;
+    apiRateLimitHint: string;
     usage: string;
     usageDescription: string;
     features: string;
@@ -1348,6 +1355,8 @@ export interface TranslationKeys {
   marketplace: {
     title: string;
     description: string;
+    siteStudioBanner: string;
+    siteStudioBannerCta: string;
     searchPlaceholder: string;
     deploy: string;
     deployTitle: string;
@@ -1396,6 +1405,8 @@ export interface TranslationKeys {
     navTitle: string;
     title: string;
     badge: string;
+    marketplaceBanner: string;
+    marketplaceBannerCta: string;
     heroDescription: string;
     heroPoint1: string;
     heroPoint2: string;
@@ -2336,6 +2347,9 @@ export const en: TranslationKeys = {
   apiKeys: {
     title: 'API Keys',
     description: 'Create API keys to access your projects programmatically from CI/CD pipelines or CLI tools.',
+    rateLimitBanner: 'Your organization plan allows {count} API requests per minute for each API key.',
+    rateLimitBannerUnlimited: 'Your organization plan has no API rate limit per key.',
+    viewBilling: 'View billing',
     createKey: 'Create API Key',
     keyName: 'Key Name',
     keyNamePlaceholder: 'e.g., CI/CD Pipeline, Development',
@@ -2547,6 +2561,11 @@ export const en: TranslationKeys = {
     title: 'Billing & Usage',
     description: 'View your current plan, usage statistics, and manage billing settings.',
     currentPlan: 'Current Plan',
+    apiRateLimit: 'API rate limit',
+    apiRateLimitValue: '{count} requests/min per API key',
+    apiRateLimitUnlimited: 'Unlimited API requests per key',
+    apiRateLimitHint:
+      'Limits apply per API key. Responses include X-RateLimit-Limit, Remaining, and Reset headers.',
     usage: 'Usage',
     usageDescription: 'Your current resource usage for this billing period.',
     features: 'Plan Features',
@@ -2812,6 +2831,9 @@ export const en: TranslationKeys = {
   marketplace: {
     title: 'Marketplace',
     description: 'Deploy popular open-source applications with one click',
+    siteStudioBanner:
+      'Building a business site, store, or blog? Site Studio offers guided templates with domain and SSL.',
+    siteStudioBannerCta: 'Open Site Studio',
     searchPlaceholder: 'Search applications...',
     deploy: 'Deploy',
     deployTitle: 'Deploy Application',
@@ -2860,6 +2882,9 @@ export const en: TranslationKeys = {
     navTitle: 'Site Studio',
     title: 'Launch your website in minutes',
     badge: 'Site Studio',
+    marketplaceBanner:
+      'Need dev tools, monitoring, or databases? The Marketplace has one-click apps like Grafana, n8n, and more.',
+    marketplaceBannerCta: 'Browse Marketplace',
     heroDescription:
       'Professional templates for e-commerce, business, blogs, and more. Deploy on your own server with SSL — connect iyzico, PayTR, and global payments after launch.',
     heroPoint1: 'Live in ~10 minutes',
