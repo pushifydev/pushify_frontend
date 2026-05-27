@@ -49,9 +49,9 @@ function MessageBubble({ entry }: { entry: ChatEntry }) {
         style={
           isUser
             ? {
-                background: 'rgba(99,102,241,0.12)',
+                background: 'var(--dash-accent-border)',
                 color: 'var(--text-primary)',
-                border: '1px solid rgba(99,102,241,0.2)',
+                border: '1px solid var(--dash-accent-border)',
               }
             : {
                 background: 'var(--bg-tertiary)',
@@ -196,7 +196,7 @@ export function AiAssistantSheet() {
           <div className="flex items-center gap-2.5">
             <div
               className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(167,139,250,0.12)' }}
+              style={{ background: 'var(--dash-accent-bg-md)' }}
             >
               <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent-purple)' }} />
             </div>
@@ -240,7 +240,7 @@ export function AiAssistantSheet() {
               <div className="flex-1 flex flex-col items-center justify-center pb-4">
                 <div
                   className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                  style={{ background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.15)' }}
+                  style={{ background: 'var(--dash-accent-bg)', border: '1px solid var(--dash-accent-border)' }}
                 >
                   <Sparkles className="w-5 h-5" style={{ color: 'var(--accent-purple)' }} />
                 </div>

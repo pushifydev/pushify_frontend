@@ -1,5 +1,6 @@
 // Axios Instance & Token Management
 export { api, getAccessToken, getRefreshToken, setTokens, clearTokens, API_BASE_URL } from './client';
+export { DOCS_API_BASE_URL, PRODUCTION_API_BASE_URL } from './public-url';
 
 export { getApiErrorMessage } from './get-error-message';
 
@@ -252,6 +253,23 @@ export {
   type DeployMarketplaceInput,
   type MarketplaceDeployment,
 } from './services/marketplace.service';
+
+// Site Studio
+export {
+  getSiteStudioTemplates,
+  getSiteStudioTemplate,
+  launchSite,
+  siteStudioService,
+  type SiteStudioTemplate,
+  type SiteStudioCategory,
+  type SiteStudioStack,
+  type SiteStudioLaunchField,
+  getSiteStudioStacks,
+  type LaunchSiteInput,
+  type LaunchSiteResult,
+  type PaymentIntegrationInfo,
+  type SetupGuideStep,
+} from './services/site-studio.service';
 
 // Databases Functions
 export {

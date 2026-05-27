@@ -29,35 +29,43 @@ export function LandingNavbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-4">
-      <div className="w-full max-w-7xl flex items-center justify-between h-14 px-5 rounded-2xl bg-[var(--bg-secondary)]/85 backdrop-blur-2xl border border-[var(--glass-border-md)] shadow-lg shadow-black/5">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-          <LogoMark size={30} className="group-hover:scale-110 transition-transform duration-200" />
-          <span className="text-[15px] font-bold tracking-tight hidden sm:block">Pushify</span>
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--lp-border)] bg-[var(--bg-primary)]/90 backdrop-blur-md">
+      <div className="lp-container flex items-center justify-between h-14 md:h-16">
+        <Link href="/" className="flex items-center gap-2.5 shrink-0">
+          <LogoMark size={28} />
+          <span className="text-[15px] font-semibold tracking-tight" style={{ color: 'var(--lp-ink)' }}>
+            Pushify
+          </span>
         </Link>
 
-        {/* Center links */}
-        <div className="hidden md:flex items-center gap-0.5">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               target={link.external ? '_blank' : undefined}
               rel={link.external ? 'noopener noreferrer' : undefined}
-              className="px-3.5 py-1.5 text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors rounded-lg hover:bg-[var(--hover-overlay-md)]"
+              className="px-3 py-2 text-sm font-medium rounded-md transition-colors"
+              style={{ color: 'var(--lp-body)' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--lp-ink)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--lp-body)';
+              }}
             >
               {link.label}
             </a>
           ))}
-        </div>
+        </nav>
 
-        {/* Right side */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           <LanguageSwitcher />
           <button
+            type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            className="flex items-center justify-center w-8 h-8 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] transition-colors"
+            className="flex items-center justify-center w-9 h-9 rounded-md transition-colors"
+            style={{ color: 'var(--lp-muted)' }}
             title={isDark ? t('common', 'themeSwitchToLight') : t('common', 'themeSwitchToDark')}
             aria-label={t('common', 'toggleThemeAria')}
           >
@@ -67,52 +75,61 @@ export function LandingNavbar() {
             href="https://github.com/pushifydev"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] transition-colors"
+            className="hidden sm:flex items-center justify-center w-9 h-9 rounded-md transition-colors"
+            style={{ color: 'var(--lp-muted)' }}
+            aria-label="GitHub"
           >
             <Github className="w-4 h-4" />
           </a>
           <Link
             href="/login"
-            className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hidden sm:block px-3 py-1.5 rounded-lg hover:bg-[var(--hover-overlay-md)]"
+            className="hidden sm:block text-sm font-medium px-3 py-2 transition-colors"
+            style={{ color: 'var(--lp-body)' }}
           >
             {t('auth', 'signIn')}
           </Link>
-          <Link href="/register" className="btn btn-primary h-8 px-3.5 text-[13px] rounded-xl">
+          <Link href="/register" className="lp-cta h-9 px-4 text-sm hidden sm:inline-flex">
             {t('auth', 'signUp')}
-            <ArrowRight className="w-3 h-3" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
           <button
+            type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-1.5 rounded-lg hover:bg-[var(--hover-overlay-md)]"
+            className="md:hidden p-2 rounded-md"
+            style={{ color: 'var(--lp-ink)' }}
+            aria-label="Menu"
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-[4.5rem] left-4 right-4 bg-[var(--bg-secondary)] border border-[var(--glass-border-md)] rounded-2xl shadow-xl shadow-black/10 px-5 py-4 space-y-1">
+        <div
+          className="md:hidden border-t border-[var(--lp-border)] px-6 py-4 space-y-1"
+          style={{ background: 'var(--bg-primary)' }}
+        >
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="block py-2.5 px-3 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] rounded-lg transition-colors"
+              className="block py-2.5 text-sm font-medium"
+              style={{ color: 'var(--lp-body)' }}
             >
               {link.label}
             </a>
           ))}
-          <div className="border-t border-[var(--glass-divider)] my-2" />
-          <Link
-            href="/login"
-            onClick={() => setMobileOpen(false)}
-            className="block py-2.5 px-3 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg"
-          >
-            {t('auth', 'signIn')}
-          </Link>
+          <div className="pt-3 mt-2 border-t border-[var(--lp-border)] flex flex-col gap-2">
+            <Link href="/login" onClick={() => setMobileOpen(false)} className="text-sm font-medium py-2">
+              {t('auth', 'signIn')}
+            </Link>
+            <Link href="/register" onClick={() => setMobileOpen(false)} className="lp-cta w-full">
+              {t('auth', 'signUp')}
+            </Link>
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

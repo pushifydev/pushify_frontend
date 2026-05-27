@@ -20,15 +20,13 @@ import {
   Database,
   X,
   Zap,
-  ExternalLink,
   Store,
+  Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
 import { useTranslation, useBillingInfo } from '@/hooks';
 import { LogoMark } from '@/components/logo';
-
-const spring = 'cubic-bezier(0.25, 1.1, 0.4, 1)';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -42,23 +40,24 @@ export function Sidebar() {
   }, [pathname, closeMobile]);
 
   const mainNavItems = [
-    { href: '/dashboard',            icon: LayoutDashboard, label: t('navigation', 'overview') },
-    { href: '/dashboard/projects',   icon: Folder,          label: t('navigation', 'projects') },
-    { href: '/dashboard/servers',    icon: Server,          label: t('navigation', 'servers') },
-    { href: '/dashboard/databases',  icon: Database,        label: t('databases', 'title') },
-    { href: '/dashboard/marketplace', icon: Store,           label: t('marketplace', 'title') },
+    { href: '/dashboard', icon: LayoutDashboard, label: t('navigation', 'overview') },
+    { href: '/dashboard/projects', icon: Folder, label: t('navigation', 'projects') },
+    { href: '/dashboard/servers', icon: Server, label: t('navigation', 'servers') },
+    { href: '/dashboard/databases', icon: Database, label: t('databases', 'title') },
+    { href: '/dashboard/sites', icon: Sparkles, label: t('siteStudio', 'navTitle') },
+    { href: '/dashboard/marketplace', icon: Store, label: t('marketplace', 'title') },
   ];
 
   const insightNavItems = [
-    { href: '/dashboard/monitoring', icon: BarChart3,       label: t('navigation', 'monitoring') },
-    { href: '/dashboard/activity',   icon: Activity,        label: t('navigation', 'activity') },
-    { href: '/dashboard/team',       icon: Users,           label: t('navigation', 'team') },
-    { href: '/dashboard/billing',    icon: CreditCard,      label: t('billing', 'title') },
+    { href: '/dashboard/monitoring', icon: BarChart3, label: t('navigation', 'monitoring') },
+    { href: '/dashboard/activity', icon: Activity, label: t('navigation', 'activity') },
+    { href: '/dashboard/team', icon: Users, label: t('navigation', 'team') },
+    { href: '/dashboard/billing', icon: CreditCard, label: t('billing', 'title') },
   ];
 
   const bottomNavItems = [
-    { href: '/dashboard/settings', icon: Settings,   label: t('common', 'settings') },
-    { href: '/docs',               icon: HelpCircle, label: t('navigation', 'helpDocs') },
+    { href: '/dashboard/settings', icon: Settings, label: t('common', 'settings') },
+    { href: '/docs', icon: HelpCircle, label: t('navigation', 'helpDocs') },
   ];
 
   const isActive = (href: string) => {
@@ -66,88 +65,47 @@ export function Sidebar() {
     return pathname.startsWith(href);
   };
 
-  /* ─── Nav Item ─── */
   const NavItem = ({ href, icon: Icon, label }: { href: string; icon: typeof Settings; label: string }) => {
     const active = isActive(href);
     return (
       <Link
         href={href}
         title={collapsed ? label : undefined}
-        className={`group relative flex items-center gap-3 h-9 rounded-lg text-[13px] transition-all
+        className={`group relative flex items-center gap-3 h-9 rounded-lg text-[13px] transition-colors duration-200
           ${collapsed ? 'md:justify-center md:px-0 px-3' : 'px-2.5'}
+          ${active ? 'font-medium' : 'font-normal'}
         `}
         style={{
           color: active ? 'var(--text-primary)' : 'var(--text-muted)',
           background: active ? 'var(--hover-overlay-lg)' : 'transparent',
-          fontWeight: active ? 500 : 400,
-          transitionTimingFunction: spring,
-          transitionDuration: '400ms',
-        }}
-        onMouseEnter={(e) => {
-          if (!active) {
-            e.currentTarget.style.color = 'var(--text-secondary)';
-            e.currentTarget.style.background = 'var(--hover-overlay-md)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!active) {
-            e.currentTarget.style.color = 'var(--text-muted)';
-            e.currentTarget.style.background = 'transparent';
-          }
         }}
       >
-        {/* Active indicator */}
         <span
-          className="absolute left-0 top-1/2 rounded-r-full transition-all"
+          className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full transition-all duration-200"
           style={{
-            width: active ? 3 : 0,
-            height: active ? 16 : 0,
-            transform: 'translateY(-50%)',
-            background: 'linear-gradient(180deg, var(--accent-cyan), var(--accent-purple))',
-            boxShadow: active ? '0 0 12px rgba(99,102,241,0.5)' : 'none',
-            opacity: active ? 1 : 0,
-            transitionTimingFunction: spring,
-            transitionDuration: '400ms',
+            width: active ? 2 : 0,
+            height: active ? 14 : 0,
+            background: 'var(--accent-cyan)',
           }}
         />
-        <Icon
-          className="w-[17px] h-[17px] shrink-0 transition-colors"
-          strokeWidth={active ? 2 : 1.7}
-          style={{
-            color: active ? 'var(--accent-cyan)' : undefined,
-            transitionTimingFunction: spring,
-            transitionDuration: '300ms',
-          }}
-        />
+        <Icon className="w-[17px] h-[17px] shrink-0" strokeWidth={active ? 2 : 1.7} />
         {!collapsed && <span className="truncate">{label}</span>}
         {collapsed && <span className="md:hidden truncate">{label}</span>}
       </Link>
     );
   };
 
-  /* ─── Section Label ─── */
   const SectionLabel = ({ label }: { label: string }) => {
-    if (collapsed) return <div className="hidden md:block my-1.5 mx-3 h-px" style={{ background: 'var(--glass-divider)' }} />;
+    if (collapsed) return <div className="hidden md:block my-1.5 mx-3 h-px bg-[var(--glass-divider)]" />;
     return (
       <div className="px-3 pt-4 pb-1.5">
-        <span
-          className="select-none"
-          style={{
-            fontSize: 10,
-            fontFamily: 'var(--font-mono)',
-            color: 'var(--text-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            opacity: 0.7,
-          }}
-        >
+        <span className="text-[10px] font-medium uppercase tracking-widest text-[var(--text-muted)] opacity-70">
           {label}
         </span>
       </div>
     );
   };
 
-  /* ─── Billing Card ─── */
   const BillingCard = () => {
     if (!billingInfo || collapsed) return null;
     const usage = billingInfo.usage.deploymentsThisMonth;
@@ -157,43 +115,27 @@ export function Sidebar() {
     return (
       <Link
         href="/dashboard/billing"
-        className="group block rounded-xl p-3 mx-1 mb-1.5 transition-all"
-        style={{
-          background: 'var(--hover-overlay)',
-          border: '1px solid var(--glass-border)',
-          transitionTimingFunction: spring,
-          transitionDuration: '300ms',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--glass-border-md)'; }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
+        className="block rounded-lg p-3 mx-1 mb-1.5 border border-[var(--border-subtle)] bg-[var(--hover-overlay)] hover:border-[var(--border-default)] transition-colors"
       >
         <div className="flex items-center justify-between mb-2.5">
-          <div className="flex items-center gap-1.5">
-            <Zap className="w-3 h-3" style={{ color: 'var(--accent-cyan)' }} />
-            <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              {billingInfo.planName}
-            </span>
+          <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wide text-[var(--text-muted)]">
+            <Zap className="w-3 h-3" />
+            {billingInfo.planName}
           </div>
-          <span style={{
-            fontSize: 10,
-            fontFamily: 'var(--font-mono)',
-            color: isHigh ? 'var(--accent-amber)' : 'var(--accent-cyan)',
-            background: isHigh ? 'rgba(251,191,36,0.08)' : 'rgba(99,102,241,0.08)',
-            padding: '1px 6px',
-            borderRadius: 4,
-          }}>
-            {usage.used}{!usage.unlimited && `/${usage.limit}`}
+          <span
+            className="text-[10px] font-medium tabular-nums"
+            style={{ color: isHigh ? 'var(--accent-amber)' : 'var(--text-secondary)' }}
+          >
+            {usage.used}
+            {!usage.unlimited && `/${usage.limit}`}
           </span>
         </div>
-        <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--glass-border)' }}>
+        <div className="h-1 rounded-full overflow-hidden bg-[var(--glass-border)]">
           <div
-            className="h-full rounded-full transition-all duration-700"
+            className="h-full rounded-full transition-all duration-500"
             style={{
               width: `${pct}%`,
-              background: isHigh
-                ? 'linear-gradient(90deg, var(--accent-amber), var(--accent-red))'
-                : 'linear-gradient(90deg, var(--accent-cyan), var(--accent-purple))',
-              transitionTimingFunction: spring,
+              background: isHigh ? 'var(--accent-amber)' : 'var(--accent-cyan)',
             }}
           />
         </div>
@@ -201,31 +143,24 @@ export function Sidebar() {
     );
   };
 
-  /* ─── User Row ─── */
   const UserRow = () => (
     <div
-      className={`group flex items-center gap-2.5 px-2 py-2 rounded-xl cursor-default transition-all
-        ${collapsed ? 'md:justify-center md:px-0' : ''}
-      `}
-      style={{ transitionTimingFunction: spring, transitionDuration: '300ms' }}
-      onMouseEnter={e => { e.currentTarget.style.background = 'var(--hover-overlay-md)'; }}
-      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+      className={`group flex items-center gap-2.5 px-2 py-2 rounded-lg cursor-default transition-colors hover:bg-[var(--hover-overlay-md)]
+        ${collapsed ? 'md:justify-center md:px-0' : ''}`}
     >
       <div
-        className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 select-none"
-        style={{ background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-purple))', color: '#020206' }}
+        className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0"
+        style={{ background: 'var(--accent-cyan)', color: 'var(--bg-primary)' }}
       >
         {user?.name?.charAt(0).toUpperCase() || 'U'}
       </div>
 
       {!collapsed && (
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-medium truncate leading-tight" style={{ color: 'var(--text-primary)' }}>
+          <p className="text-[13px] font-medium truncate leading-tight text-[var(--text-primary)]">
             {user?.name || 'User'}
           </p>
-          <p className="text-[10px] truncate" style={{ color: 'var(--text-muted)' }}>
-            {organization?.name || 'Personal'}
-          </p>
+          <p className="text-[10px] truncate text-[var(--text-muted)]">{organization?.name || 'Personal'}</p>
         </div>
       )}
       {collapsed && (
@@ -236,18 +171,10 @@ export function Sidebar() {
 
       {!collapsed && (
         <button
+          type="button"
           onClick={() => logout()}
-          className="w-7 h-7 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+          className="w-7 h-7 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-[var(--accent-red)] hover:bg-[rgba(248,113,113,0.08)] transition-all"
           title={t('common', 'logout')}
-          style={{ color: 'var(--text-muted)', transitionTimingFunction: spring }}
-          onMouseEnter={e => {
-            e.currentTarget.style.color = 'var(--accent-red)';
-            e.currentTarget.style.background = 'rgba(248,113,113,0.1)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.color = 'var(--text-muted)';
-            e.currentTarget.style.background = 'transparent';
-          }}
         >
           <LogOut className="w-3.5 h-3.5" />
         </button>
@@ -255,112 +182,59 @@ export function Sidebar() {
     </div>
   );
 
-  /* ─── Sidebar Shell ─── */
   const sidebarContent = (
     <aside
-      className={`fixed left-0 top-0 h-screen flex flex-col z-50 transition-all
+      className={`fixed left-0 top-0 h-screen flex flex-col z-50 transition-all duration-300 bg-[var(--bg-sidebar)] border-r border-[var(--border-subtle)]
         ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0
         ${collapsed ? 'md:w-17' : 'md:w-60'}
-        w-67
-      `}
-      style={{
-        background: 'var(--bg-sidebar)',
-        borderRight: '1px solid var(--glass-border)',
-        transitionTimingFunction: spring,
-        transitionDuration: '500ms',
-      }}
+        w-67`}
     >
-      {/* Top shimmer */}
       <div
-        className="absolute top-0 left-0 right-0 h-px pointer-events-none"
-        style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(99,102,241,0.35) 50%, transparent 100%)' }}
-      />
-
-      {/* ─── Logo ─── */}
-      <div
-        className={`h-14 flex items-center shrink-0 px-3.5 ${collapsed ? 'md:justify-center md:px-0' : 'justify-between'}`}
-        style={{ borderBottom: '1px solid var(--glass-border)' }}
+        className={`h-14 flex items-center shrink-0 px-3.5 border-b border-[var(--border-subtle)] ${collapsed ? 'md:justify-center md:px-0' : 'justify-between'}`}
       >
         <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
           <LogoMark size={30} className="shrink-0" />
           {!collapsed && (
-            <span className="text-[15px] font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-              Pushify
-            </span>
+            <span className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)]">Pushify</span>
           )}
-          {collapsed && (
-            <span className="font-bold truncate md:hidden text-[15px]">Pushify</span>
-          )}
+          {collapsed && <span className="font-semibold truncate md:hidden text-[15px]">Pushify</span>}
         </Link>
 
         {!collapsed && (
           <button
+            type="button"
             onClick={toggleCollapse}
-            className="hidden md:flex w-7 h-7 rounded-lg items-center justify-center transition-all"
-            style={{ color: 'var(--text-muted)', transitionTimingFunction: spring }}
-            onMouseEnter={e => {
-              e.currentTarget.style.color = 'var(--text-secondary)';
-              e.currentTarget.style.background = 'var(--hover-overlay-md)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.color = 'var(--text-muted)';
-              e.currentTarget.style.background = 'transparent';
-            }}
+            className="hidden md:flex w-7 h-7 rounded-lg items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--hover-overlay-md)] transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
         )}
 
         <button
+          type="button"
           onClick={closeMobile}
-          className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ color: 'var(--text-muted)' }}
+          className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)]"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Expand button (collapsed) */}
       {collapsed && (
         <button
+          type="button"
           onClick={toggleCollapse}
-          className="hidden md:flex absolute -right-3 top-[18px] w-6 h-6 rounded-full items-center justify-center z-10 transition-all"
-          style={{
-            background: 'var(--bg-tertiary)',
-            border: '1px solid var(--glass-border-strong)',
-            color: 'var(--text-muted)',
-            transitionTimingFunction: spring,
-          }}
-          onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent-cyan)'; }}
-          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+          className="hidden md:flex absolute -right-3 top-[18px] w-6 h-6 rounded-full items-center justify-center z-10 bg-[var(--bg-tertiary)] border border-[var(--border-default)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
         >
           <ChevronRight className="w-3.5 h-3.5" />
         </button>
       )}
 
-      {/* ─── New Project ─── */}
       <div className="px-2.5 pt-3 pb-0.5">
         <Link
           href="/dashboard/projects/new"
-          className={`flex items-center gap-2 h-9 rounded-lg text-[13px] font-semibold transition-all
-            ${collapsed ? 'md:justify-center md:px-0 px-3' : 'px-3'}
-          `}
-          style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(129,140,248,0.05))',
-            border: '1px solid rgba(99,102,241,0.18)',
-            color: 'var(--accent-cyan)',
-            transitionTimingFunction: spring,
-            transitionDuration: '300ms',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.borderColor = 'rgba(99,102,241,0.35)';
-            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(129,140,248,0.08))';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'rgba(99,102,241,0.18)';
-            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(129,140,248,0.05))';
-          }}
+          className={`flex items-center gap-2 h-9 rounded-lg text-[13px] font-semibold border border-[var(--border-default)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:bg-[var(--hover-overlay-lg)] transition-colors
+            ${collapsed ? 'md:justify-center md:px-0 px-3' : 'px-3'}`}
         >
           <Plus className="w-4 h-4 shrink-0" />
           {!collapsed && <span>{t('navigation', 'newProject')}</span>}
@@ -368,7 +242,6 @@ export function Sidebar() {
         </Link>
       </div>
 
-      {/* ─── Main Nav ─── */}
       <nav className="flex-1 px-2 overflow-y-auto">
         <SectionLabel label={t('navigation', 'overview')} />
         <div className="space-y-0.5">
@@ -385,25 +258,19 @@ export function Sidebar() {
         </div>
       </nav>
 
-      {/* ─── Bottom ─── */}
       <div className="px-2 pb-2.5 space-y-0.5">
         <BillingCard />
-
         {bottomNavItems.map((item) => (
           <NavItem key={item.href} {...item} />
         ))}
-
-        <div className="my-1.5 mx-2" style={{ height: 1, background: 'var(--glass-divider)' }} />
-
-        {/* Version */}
+        <div className="my-1.5 mx-2 h-px bg-[var(--glass-divider)]" />
         {!collapsed && process.env.NEXT_PUBLIC_APP_VERSION && (
           <div className="px-3 pb-0.5">
-            <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', opacity: 0.4 }}>
+            <span className="text-[10px] text-[var(--text-muted)] opacity-40">
               v{process.env.NEXT_PUBLIC_APP_VERSION}
             </span>
           </div>
         )}
-
         <UserRow />
       </div>
     </aside>
@@ -412,10 +279,7 @@ export function Sidebar() {
   return (
     <>
       {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm"
-          onClick={closeMobile}
-        />
+        <div className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm" onClick={closeMobile} />
       )}
       {sidebarContent}
     </>

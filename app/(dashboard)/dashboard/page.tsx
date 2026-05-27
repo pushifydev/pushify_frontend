@@ -41,25 +41,7 @@ export default function DashboardPage() {
     <div className="max-w-6xl mx-auto pb-10 stagger-children">
 
       {/* ── Hero ─────────────────────────────────────── */}
-      <div
-        className="relative overflow-hidden rounded-2xl px-7 py-6 mb-6"
-        style={{
-          background: 'linear-gradient(135deg, rgba(99,102,241,0.055) 0%, rgba(129,140,248,0.025) 60%, transparent 100%)',
-          border: '1px solid rgba(99,102,241,0.12)',
-        }}
-      >
-        {/* Dot grid */}
-        <div className="absolute inset-0 dot-grid pointer-events-none" style={{ opacity: 0.35 }} />
-        {/* Radial glow */}
-        <div
-          className="absolute -top-20 -left-20 w-64 h-64 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 70%)' }}
-        />
-        <div
-          className="absolute -bottom-16 right-0 w-48 h-48 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 70%)' }}
-        />
-
+      <div className="dash-card relative px-7 py-6 mb-6">
         <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
           <div>
             <p
@@ -84,8 +66,7 @@ export default function DashboardPage() {
                 color: 'var(--text-primary)',
               }}
             >
-              {user?.name?.split(' ')[0] || t('common', 'fallbackDisplayName')}
-              <span className="gradient-text">.</span>
+              {user?.name?.split(' ')[0] || t('common', 'fallbackDisplayName')}.
             </h1>
             <p style={{ marginTop: 10, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
               {t('dashboard', 'whatsHappening')}
@@ -102,6 +83,37 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* ── Site Studio CTA ──────────────────────────── */}
+      <Link
+        href="/dashboard/sites"
+        className="group block mb-5 rounded-lg px-6 py-5 transition-colors"
+        style={{
+          background: 'var(--bg-secondary)',
+          border: '1px solid var(--border-subtle)',
+        }}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <p
+              className="text-[0.9375rem] font-semibold mb-1 tracking-tight"
+              style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}
+            >
+              {t('siteStudio', 'dashboardCtaTitle')}
+            </p>
+            <p className="text-sm leading-relaxed max-w-lg" style={{ color: 'var(--text-muted)' }}>
+              {t('siteStudio', 'dashboardCtaDesc')}
+            </p>
+          </div>
+          <span
+            className="flex items-center gap-1 text-sm font-medium shrink-0 underline underline-offset-4 decoration-[var(--border-default)] group-hover:decoration-[var(--text-primary)]"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            {t('siteStudio', 'dashboardCtaButton')}
+            <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2} />
+          </span>
+        </div>
+      </Link>
 
       {/* ── Stat cards ───────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">

@@ -1,3 +1,5 @@
+export { MarketingShell, MarketingPageHero } from './MarketingShell';
+export { LandingSectionHeader } from './LandingSectionHeader';
 export { LandingNavbar } from './LandingNavbar';
 export { HeroSection } from './HeroSection';
 export { StatsSection } from './StatsSection';

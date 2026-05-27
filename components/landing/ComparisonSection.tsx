@@ -1,6 +1,8 @@
 'use client';
 
 import { useTranslation } from '@/hooks';
+import { LandingSectionHeader } from './LandingSectionHeader';
+import { Check } from 'lucide-react';
 
 type Cell = boolean | string;
 
@@ -8,17 +10,17 @@ export function ComparisonSection() {
   const { t } = useTranslation();
 
   const rows: { label: string; pushify: Cell; vercel: Cell; coolify: Cell }[] = [
-    { label: t('homepage', 'rowSelfHost'),     pushify: true, vercel: false, coolify: true },
-    { label: t('homepage', 'rowOpenSource'),   pushify: true, vercel: false, coolify: true },
-    { label: t('homepage', 'rowMarketplace'),  pushify: true, vercel: false, coolify: false },
-    { label: t('homepage', 'rowDatabaseMgmt'), pushify: true, vercel: true,  coolify: true },
-    { label: t('homepage', 'rowOwnServers'),   pushify: true, vercel: false, coolify: true },
-    { label: t('homepage', 'rowAIAssistant'),  pushify: true, vercel: false, coolify: false },
-    { label: t('homepage', 'rowFreeTier'),     pushify: true, vercel: true,  coolify: true },
+    { label: t('homepage', 'rowSelfHost'), pushify: true, vercel: false, coolify: true },
+    { label: t('homepage', 'rowOpenSource'), pushify: true, vercel: false, coolify: true },
+    { label: t('homepage', 'rowMarketplace'), pushify: true, vercel: false, coolify: false },
+    { label: t('homepage', 'rowDatabaseMgmt'), pushify: true, vercel: true, coolify: true },
+    { label: t('homepage', 'rowOwnServers'), pushify: true, vercel: false, coolify: true },
+    { label: t('homepage', 'rowAIAssistant'), pushify: true, vercel: false, coolify: false },
+    { label: t('homepage', 'rowFreeTier'), pushify: true, vercel: true, coolify: true },
     {
       label: t('homepage', 'rowPricing'),
       pushify: t('homepage', 'pricingPushify'),
-      vercel:  t('homepage', 'pricingFromVercel'),
+      vercel: t('homepage', 'pricingFromVercel'),
       coolify: t('homepage', 'pricingCoolify'),
     },
   ];
@@ -26,90 +28,71 @@ export function ComparisonSection() {
   const cellRender = (val: Cell, highlight: boolean) => {
     if (typeof val === 'string') {
       return (
-        <span
-          className="lp-mono text-[12px] tracking-[0.04em]"
-          style={{ color: highlight ? 'var(--accent-cyan)' : 'var(--text-secondary)' }}
-        >
+        <span className="text-sm" style={{ color: highlight ? 'var(--lp-ink)' : 'var(--lp-body)' }}>
           {val}
         </span>
       );
     }
     return val ? (
-      <span
-        className="lp-editorial text-[28px] leading-none"
-        style={{ color: highlight ? 'var(--accent-cyan)' : 'var(--text-primary)' }}
-      >
-        ✓
-      </span>
+      <Check className="w-5 h-5 mx-auto" style={{ color: highlight ? 'var(--lp-ink)' : 'var(--lp-muted)' }} strokeWidth={2} />
     ) : (
-      <span className="text-[18px] opacity-30">—</span>
+      <span className="text-[var(--lp-muted)] opacity-40">—</span>
     );
   };
 
   return (
-    <section id="comparison" className="relative border-t border-[var(--glass-border)]">
-      <div className="absolute right-2 md:right-10 top-10 lp-index select-none" aria-hidden>
-        04
-      </div>
-
-      <div className="relative max-w-[1400px] mx-auto px-6 md:px-10 py-24 md:py-32">
-        {/* Header */}
-        <div className="grid grid-cols-12 gap-6 mb-14 md:mb-16">
-          <div className="col-span-12 md:col-span-3 flex items-start gap-3">
-            <span className="lp-crosshair mt-2" />
-            <div className="lp-eyebrow">§&nbsp;04 / {t('homepage', 'comparisonEyebrow')}</div>
-          </div>
-
-          <h2 className="col-span-12 md:col-span-9 lp-editorial text-[40px] md:text-[72px] lg:text-[92px] leading-[0.98] tracking-[-0.025em]">
-            <span className="block">{t('homepage', 'comparisonHeadline1')}</span>
-            <span className="block">
+    <section id="comparison" className="lp-section">
+      <div className="lp-container">
+        <LandingSectionHeader
+          label={t('homepage', 'comparisonEyebrow')}
+          title={
+            <>
+              {t('homepage', 'comparisonHeadline1')}{' '}
               {t('homepage', 'comparisonHeadline2a')}
-              <em>{t('homepage', 'comparisonHeadline2Em')}</em>
+              {t('homepage', 'comparisonHeadline2Em')}
               {t('homepage', 'comparisonHeadline2b')}
-            </span>
-          </h2>
+            </>
+          }
+          description={t('homepage', 'comparisonSubtitle')}
+        />
 
-          <p className="col-span-12 md:col-start-4 md:col-span-7 text-[16px] md:text-[18px] leading-[1.55] text-[var(--text-muted)] max-w-[58ch]">
-            {t('homepage', 'comparisonSubtitle')}
-          </p>
-        </div>
-
-        {/* Spec table */}
-        <div className="border-t border-[var(--glass-border-strong)]">
-          {/* Header row */}
-          <div className="grid grid-cols-12 items-end gap-4 py-5 border-b border-[var(--glass-border-strong)]">
-            <div className="col-span-6 lp-mono text-[10px] uppercase tracking-[0.16em] opacity-50">
-              {t('homepage', 'comparisonColumnFeature')}
+        <div className="lp-card overflow-hidden">
+          <div
+            className="hidden md:grid grid-cols-4 gap-4 px-6 py-4 text-sm font-medium border-b border-[var(--lp-border)]"
+            style={{ color: 'var(--lp-muted)', background: 'var(--bg-tertiary)' }}
+          >
+            <div>{t('homepage', 'comparisonColumnFeature')}</div>
+            <div className="text-center" style={{ color: 'var(--lp-ink)' }}>
+              {t('homepage', 'colPushify')}
             </div>
-            <div className="col-span-2 text-center">
-              <div className="lp-eyebrow text-[var(--accent-cyan)]" style={{ color: 'var(--accent-cyan)' }}>
-                ◆ {t('homepage', 'colPushify')}
-              </div>
-            </div>
-            <div className="col-span-2 text-center lp-mono text-[11px] uppercase tracking-[0.14em] opacity-70">
-              {t('homepage', 'colVercel')}
-            </div>
-            <div className="col-span-2 text-center lp-mono text-[11px] uppercase tracking-[0.14em] opacity-70">
-              {t('homepage', 'colCoolify')}
-            </div>
+            <div className="text-center">{t('homepage', 'colVercel')}</div>
+            <div className="text-center">{t('homepage', 'colCoolify')}</div>
           </div>
 
-          {/* Rows */}
           {rows.map((row) => (
             <div
               key={row.label}
-              className="grid grid-cols-12 items-center gap-4 py-5 border-b border-[var(--glass-border)] transition-colors hover:bg-[rgba(99,102,241,0.05)]"
+              className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 px-6 py-4 border-b border-[var(--lp-border)] last:border-b-0"
             >
-              <div className="col-span-6 text-[14px] md:text-[15px] text-[var(--text-primary)] leading-[1.4]">
+              <div className="text-sm font-medium md:font-normal" style={{ color: 'var(--lp-ink)' }}>
                 {row.label}
               </div>
-              <div className="col-span-2 flex justify-center items-center min-h-[28px]">
+              <div className="flex md:justify-center items-center gap-2 md:block text-center">
+                <span className="md:hidden text-xs" style={{ color: 'var(--lp-muted)' }}>
+                  {t('homepage', 'colPushify')}
+                </span>
                 {cellRender(row.pushify, true)}
               </div>
-              <div className="col-span-2 flex justify-center items-center min-h-[28px]">
+              <div className="flex md:justify-center items-center gap-2 md:block text-center">
+                <span className="md:hidden text-xs" style={{ color: 'var(--lp-muted)' }}>
+                  {t('homepage', 'colVercel')}
+                </span>
                 {cellRender(row.vercel, false)}
               </div>
-              <div className="col-span-2 flex justify-center items-center min-h-[28px]">
+              <div className="flex md:justify-center items-center gap-2 md:block text-center">
+                <span className="md:hidden text-xs" style={{ color: 'var(--lp-muted)' }}>
+                  {t('homepage', 'colCoolify')}
+                </span>
                 {cellRender(row.coolify, false)}
               </div>
             </div>

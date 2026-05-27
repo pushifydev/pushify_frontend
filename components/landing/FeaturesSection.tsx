@@ -5,7 +5,7 @@ import {
   GitBranch, Server, Database, Globe, Activity, Users,
   Bot, ScrollText, HeartPulse, Eye, Lock, Terminal,
   Bell, Sun, Check, ArrowRight, Cpu, HardDrive, Wifi,
-  Shield, Zap, GitCommit, GitPullRequest, Play, Clock,
+  Shield, GitCommit, GitPullRequest, Play, Clock,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 
@@ -168,11 +168,9 @@ function HeroFeature({
       className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center ${reverse ? 'lg:direction-rtl' : ''}`}
     >
       <div className={reverse ? 'lg:direction-ltr lg:order-2' : ''}>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent-cyan)]/8 border border-[var(--accent-cyan)]/15 mb-4">
-          <span className="text-[10px] text-[var(--accent-cyan)] terminal-text uppercase tracking-widest font-medium">{label}</span>
-        </div>
-        <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 leading-snug">{title}</h3>
-        <p className="text-[var(--text-secondary)] text-[15px] leading-relaxed max-w-md">{description}</p>
+        <p className="lp-label mb-4">{label}</p>
+        <h3 className="lp-section-title mb-4">{title}</h3>
+        <p className="lp-body max-w-md">{description}</p>
       </div>
       <div className={reverse ? 'lg:direction-ltr lg:order-1' : ''}>
         {mockup}
@@ -184,15 +182,19 @@ function HeroFeature({
 /* ───────────────── Mini Feature Card ───────────────── */
 function MiniFeature({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <motion.div
-      variants={fadeUp}
-      className="group p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] hover:border-[var(--glass-border-strong)] transition-all duration-200"
-    >
-      <div className="w-9 h-9 rounded-lg bg-[var(--accent-cyan)]/8 flex items-center justify-center mb-3.5 text-[var(--accent-cyan)] group-hover:bg-[var(--accent-cyan)]/15 transition-colors">
+    <motion.div variants={fadeUp} className="lp-card p-5 hover:border-[var(--lp-muted)] transition-colors">
+      <div
+        className="w-9 h-9 rounded-lg flex items-center justify-center mb-3.5"
+        style={{ color: 'var(--lp-ink)', background: 'var(--lp-border)' }}
+      >
         {icon}
       </div>
-      <h4 className="text-sm font-semibold mb-1.5">{title}</h4>
-      <p className="text-xs text-[var(--text-muted)] leading-relaxed">{desc}</p>
+      <h4 className="text-sm font-semibold mb-1.5" style={{ color: 'var(--lp-ink)' }}>
+        {title}
+      </h4>
+      <p className="text-xs leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
+        {desc}
+      </p>
     </motion.div>
   );
 }
@@ -202,31 +204,18 @@ export function FeaturesSection() {
   const { t } = useTranslation();
 
   return (
-    <div className="relative">
-      {/* ── Page Hero ── */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[800px] h-[500px] bg-[var(--accent-cyan)] rounded-full blur-[280px] opacity-[0.05]" />
-        <div className="absolute inset-0 grid-pattern opacity-30" />
+    <div>
+      <header className="lp-container pt-12 md:pt-16 pb-12 md:pb-14 text-center mx-auto max-w-3xl">
+        <p className="lp-label mb-4">{t('landing', 'platform')}</p>
+        <h1 className="lp-hero-title">
+          {t('landing', 'everythingYouNeedTo')}
+          <br />
+          {t('landing', 'shipWithConfidence')}
+        </h1>
+        <p className="lp-lead mt-5">{t('landing', 'featuresPageDescription')}</p>
+      </header>
 
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent-cyan)]/10 border border-[var(--accent-cyan)]/20 mb-6 animate-[fadeUp_0.6s_ease-out_both]">
-            <Zap className="w-3.5 h-3.5 text-[var(--accent-cyan)]" />
-            <span className="text-xs text-[var(--accent-cyan)] terminal-text uppercase tracking-wider">{t('landing', 'platform')}</span>
-          </div>
-
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[-0.035em] leading-[1.1] mb-5 animate-[fadeUp_0.6s_ease-out_0.08s_both]">
-            {t('landing', 'everythingYouNeedTo')}<br />
-            <span className="gradient-text">{t('landing', 'shipWithConfidence')}</span>
-          </h1>
-
-          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed animate-[fadeUp_0.6s_ease-out_0.16s_both]">
-            {t('landing', 'featuresPageDescription')}
-          </p>
-        </div>
-      </section>
-
-      {/* ── Hero Features (alternating) ── */}
-      <section className="max-w-6xl mx-auto px-6 space-y-28 pb-28">
+      <section className="lp-container space-y-28 pb-28">
         <HeroFeature
           label={t('landing', 'deployLabel')}
           title={t('landing', 'pushToDeployTitle')}
@@ -258,22 +247,19 @@ export function FeaturesSection() {
         />
       </section>
 
-      {/* ── Mini Features Grid ── */}
-      <section className="relative py-24 border-t border-[var(--glass-border)]">
-        <div className="absolute inset-0 grid-pattern opacity-15" />
-
-        <div className="relative z-10 max-w-6xl mx-auto px-6">
+      <section className="lp-section border-t" style={{ borderColor: 'var(--lp-border)' }}>
+        <div className="lp-container">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={stagger}
-            className="text-center mb-14"
+            className="text-center mb-14 mx-auto max-w-2xl"
           >
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
+            <motion.h2 variants={fadeUp} className="lp-section-title mb-3">
               {t('landing', 'andEverythingElse')}
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-[var(--text-secondary)] max-w-lg mx-auto">
+            <motion.p variants={fadeUp} className="lp-lead">
               {t('landing', 'everyFeatureBuiltIn')}
             </motion.p>
           </motion.div>

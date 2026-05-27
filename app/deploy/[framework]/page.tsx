@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import { useTranslation } from '@/hooks';
-import { LandingNavbar, LandingFooter } from '@/components/landing';
+import { MarketingShell } from '@/components/landing';
 
 interface FrameworkData {
   name: string;
@@ -219,108 +219,117 @@ export default function DeployFrameworkPage() {
 
   const content = fw[locale] || fw.en;
 
+  const speedLine = locale === 'tr' ? '60 Saniyeden Kısa Sürede' : 'in Under 60 Seconds';
+
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)]">
-      <LandingNavbar />
-
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 grid-pattern opacity-30" />
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl text-2xl font-bold mb-6 border border-[var(--glass-border)]"
-            style={{ backgroundColor: `${fw.color}15`, color: fw.color }}
-          >
-            {fw.icon}
-          </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-5">
-            {content.title}{' '}
-            <span className="gradient-text">
-              {locale === 'tr' ? '60 Saniyeden Kısa Sürede' : 'in Under 60 Seconds'}
-            </span>
-          </h1>
-          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed">
-            {content.description}
-          </p>
+    <MarketingShell noPad>
+      <header className="lp-container pt-12 md:pt-16 pb-12 text-center max-w-3xl mx-auto">
+        <div
+          className="inline-flex items-center justify-center w-14 h-14 rounded-xl text-xl font-bold mb-6 border mx-auto"
+          style={{ borderColor: 'var(--lp-border)', backgroundColor: `${fw.color}12`, color: fw.color }}
+        >
+          {fw.icon}
         </div>
-      </section>
+        <h1 className="lp-hero-title">
+          {content.title}
+          <br />
+          <span className="font-normal" style={{ color: 'var(--lp-muted)' }}>
+            {speedLine}
+          </span>
+        </h1>
+        <p className="lp-lead mt-5">{content.description}</p>
+      </header>
 
-      {/* Steps */}
-      <section className="max-w-3xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-10 text-center">{content.howToTitle}</h2>
+      <section className="lp-container max-w-3xl pb-16">
+        <h2 className="lp-section-title text-center mb-10">{content.howToTitle}</h2>
         <div className="space-y-8">
           {content.steps.map((step, i) => (
             <div key={i} className="flex gap-5">
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[var(--accent-cyan)]/10 border border-[var(--accent-cyan)]/20 flex items-center justify-center text-[var(--accent-cyan)] font-bold text-sm">
+              <div
+                className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-sm font-semibold border"
+                style={{ borderColor: 'var(--lp-border)', color: 'var(--lp-ink)' }}
+              >
                 {i + 1}
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
+                <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
+                  {step.title}
+                </h3>
                 {step.code && (
-                  <div className="rounded-lg bg-[var(--bg-secondary)] border border-[var(--glass-border)] px-4 py-3 mb-3 font-mono text-sm text-[var(--accent-cyan)]">
+                  <div
+                    className="lp-preview px-4 py-3 mb-3 font-mono text-sm"
+                    style={{ color: 'var(--lp-ink)' }}
+                  >
                     $ {step.code}
                   </div>
                 )}
-                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{step.description}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
+                  {step.description}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Terminal Preview */}
-      <section className="max-w-3xl mx-auto px-6 pb-20">
-        <div className="rounded-2xl overflow-hidden bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
-          <div className="flex items-center gap-2 px-4 py-3 bg-[var(--bg-tertiary)] border-b border-[var(--glass-border)]">
+      <section className="lp-container max-w-3xl pb-16">
+        <div className="lp-preview">
+          <div
+            className="flex items-center gap-2 px-4 py-3 border-b"
+            style={{ borderColor: 'var(--lp-border)' }}
+          >
             <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
             <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
             <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-            <span className="ml-2 text-xs text-[var(--text-muted)] font-mono">pushify-cli</span>
+            <span className="ml-2 text-xs font-mono" style={{ color: 'var(--lp-muted)' }}>
+              pushify-cli
+            </span>
           </div>
-          <div className="p-5 font-mono text-sm leading-7">
-            <div className="text-[var(--text-primary)]">$ pushify init</div>
-            <div className="text-[var(--accent-purple)]">◆ {fw.detectMessage}</div>
-            <div className="text-[var(--accent-cyan)]">▸ Configuring build pipeline...</div>
-            <div className="text-[var(--text-primary)] mt-2">$ pushify deploy --prod</div>
-            <div className="text-[var(--accent-cyan)]">▸ Running: {fw.buildCommand}</div>
-            <div className="text-[var(--accent-cyan)]">▸ Deploying to your server...</div>
-            <div className="text-[var(--status-success)]">✓ Live at https://app.pushify.dev</div>
+          <div className="p-5 font-mono text-sm leading-7" style={{ color: 'var(--lp-ink)' }}>
+            <div>$ pushify init</div>
+            <div style={{ color: 'var(--lp-muted)' }}>◆ {fw.detectMessage}</div>
+            <div style={{ color: 'var(--lp-muted)' }}>▸ Configuring build pipeline...</div>
+            <div className="mt-2">$ pushify deploy --prod</div>
+            <div style={{ color: 'var(--lp-muted)' }}>▸ Running: {fw.buildCommand}</div>
+            <div style={{ color: 'var(--lp-muted)' }}>▸ Deploying to your server...</div>
+            <div className="text-emerald-600 dark:text-emerald-400">✓ Live at https://app.pushify.dev</div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="max-w-3xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-8 text-center">{content.whatYouGet}</h2>
+      <section className="lp-container max-w-3xl pb-16">
+        <h2 className="lp-section-title text-center mb-8">{content.whatYouGet}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {content.features.map((feature, i) => (
-            <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
-              <div className="w-5 h-5 rounded bg-[var(--status-success)]/10 flex items-center justify-center flex-shrink-0">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[var(--status-success)]">
+            <div key={i} className="lp-card flex items-center gap-3 p-4">
+              <div
+                className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400"
+                style={{ background: 'var(--lp-border)' }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="currentColor">
                   <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span className="text-sm text-[var(--text-secondary)]">{feature}</span>
+              <span className="text-sm" style={{ color: 'var(--lp-muted)' }}>
+                {feature}
+              </span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="max-w-3xl mx-auto px-6 pb-32 text-center">
-        <h2 className="text-3xl font-bold mb-4">{content.readyTitle}</h2>
-        <p className="text-[var(--text-secondary)] mb-8">{content.readyDesc}</p>
+      <section className="lp-container max-w-3xl pb-24 md:pb-32 text-center">
+        <h2 className="lp-section-title mb-4">{content.readyTitle}</h2>
+        <p className="lp-lead mb-8 max-w-lg mx-auto">{content.readyDesc}</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/register" className="btn btn-primary h-12 px-8 text-[15px] font-semibold">
+          <Link href="/register" className="lp-cta">
             {content.startBtn}
           </Link>
-          <Link href="/docs" className="btn btn-secondary h-12 px-8 text-[15px] font-semibold">
+          <Link href="/docs" className="lp-cta-ghost">
             {content.docsBtn}
           </Link>
         </div>
       </section>
-
-      <LandingFooter />
 
       {/* JSON-LD HowTo Schema */}
       <script
@@ -343,6 +352,6 @@ export default function DeployFrameworkPage() {
           }),
         }}
       />
-    </div>
+    </MarketingShell>
   );
 }
