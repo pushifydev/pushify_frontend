@@ -101,7 +101,11 @@ export default function SiteTemplateDetailPage() {
                     <span className="text-sm font-medium" style={{ color: 'var(--ss-ink)' }}>
                       {p.name}
                     </span>
-                    <span className="ss-tag">{p.region === 'tr' ? 'Türkiye' : 'Global'}</span>
+                    <span className="ss-tag">
+                      {p.region === 'tr'
+                        ? t('siteStudio', 'paymentRegionRegional')
+                        : t('siteStudio', 'paymentRegionGlobal')}
+                    </span>
                   </div>
                   <p className="text-sm" style={{ color: 'var(--ss-muted)' }}>
                     {p.setupNote}

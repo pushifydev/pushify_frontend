@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { Key, Plus, Trash2, Clock, Shield } from 'lucide-react';
+import Link from 'next/link';
 import {
   useTranslation,
   useApiKeys,
   useApiKeyScopes,
   useCreateApiKey,
   useRevokeApiKey,
+  useBillingInfo,
 } from '@/hooks';
 import type { ApiKeyWithSecret } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
@@ -20,6 +22,7 @@ export function ApiKeysTab() {
   const { t } = useTranslation();
 
   // API Keys hooks
+  const { data: billingInfo } = useBillingInfo();
   const { data: apiKeys = [], isLoading } = useApiKeys();
   const { data: availableScopes = {} } = useApiKeyScopes();
   const createApiKey = useCreateApiKey();
@@ -59,6 +62,26 @@ export function ApiKeysTab() {
           {t('apiKeys', 'createKey')}
         </button>
       </div>
+
+      {billingInfo && (
+        <div
+          className="rounded-xl px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+        >
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            <Shield className="w-4 h-4 inline-block mr-2 -mt-0.5 opacity-70" />
+            {billingInfo.apiRequestsPerMinute === -1
+              ? t('apiKeys', 'rateLimitBannerUnlimited')
+              : t('apiKeys', 'rateLimitBanner').replace(
+                  '{count}',
+                  String(billingInfo.apiRequestsPerMinute ?? 60)
+                )}
+          </p>
+          <Link href="/dashboard/billing" className="text-sm font-medium shrink-0 hover:opacity-80" style={{ color: 'var(--accent-cyan)' }}>
+            {t('apiKeys', 'viewBilling')}
+          </Link>
+        </div>
+      )}
 
       {/* API Keys List */}
       <div className="rounded-xl border border-[var(--border-subtle)] overflow-hidden">

@@ -123,6 +123,20 @@ export interface TranslationKeys {
     addDomainDesc: string;
     viewLogs: string;
     viewLogsDesc: string;
+    onboardingTitle: string;
+    onboardingSubtitle: string;
+    onboardingDismiss: string;
+    onboardingContinue: string;
+    onboardingLocked: string;
+    onboardingDocs: string;
+    onboardingMarketplace: string;
+    onboardingSiteStudio: string;
+    onboardingStepServerTitle: string;
+    onboardingStepServerDesc: string;
+    onboardingStepProjectTitle: string;
+    onboardingStepProjectDesc: string;
+    onboardingStepDeployTitle: string;
+    onboardingStepDeployDesc: string;
   };
   activityLog: {
     subtitle: string;
@@ -873,6 +887,9 @@ export interface TranslationKeys {
   apiKeys: {
     title: string;
     description: string;
+    rateLimitBanner: string;
+    rateLimitBannerUnlimited: string;
+    viewBilling: string;
     createKey: string;
     keyName: string;
     keyNamePlaceholder: string;
@@ -1084,6 +1101,10 @@ export interface TranslationKeys {
     title: string;
     description: string;
     currentPlan: string;
+    apiRateLimit: string;
+    apiRateLimitValue: string;
+    apiRateLimitUnlimited: string;
+    apiRateLimitHint: string;
     usage: string;
     usageDescription: string;
     features: string;
@@ -1127,6 +1148,7 @@ export interface TranslationKeys {
     storageGb: string;
     bandwidthGb: string;
     buildMinutes: string;
+    apiRequestsPerMinuteShort: string;
     // Payment
     paymentSuccess: string;
     planUpgraded: string;
@@ -1348,6 +1370,8 @@ export interface TranslationKeys {
   marketplace: {
     title: string;
     description: string;
+    siteStudioBanner: string;
+    siteStudioBannerCta: string;
     searchPlaceholder: string;
     deploy: string;
     deployTitle: string;
@@ -1396,6 +1420,10 @@ export interface TranslationKeys {
     navTitle: string;
     title: string;
     badge: string;
+    marketplaceBanner: string;
+    marketplaceBannerCta: string;
+    paymentRegionGlobal: string;
+    paymentRegionRegional: string;
     heroDescription: string;
     heroPoint1: string;
     heroPoint2: string;
@@ -1591,6 +1619,20 @@ export const en: TranslationKeys = {
     addDomainDesc: 'Point your domain to your project',
     viewLogs: 'View Logs',
     viewLogsDesc: 'Monitor your application in real-time',
+    onboardingTitle: 'Get your first app live',
+    onboardingSubtitle: 'Three steps — works on any VPS worldwide (Hetzner, AWS, DigitalOcean, or your own server).',
+    onboardingDismiss: 'Dismiss checklist',
+    onboardingContinue: 'Continue',
+    onboardingLocked: 'Complete the step above first',
+    onboardingDocs: 'Documentation',
+    onboardingMarketplace: 'One-click apps',
+    onboardingSiteStudio: 'Website templates',
+    onboardingStepServerTitle: 'Connect a server',
+    onboardingStepServerDesc: 'Add a VPS via Hetzner or connect any Linux server with SSH.',
+    onboardingStepProjectTitle: 'Create a project',
+    onboardingStepProjectDesc: 'Link a GitHub repository or deploy from the marketplace.',
+    onboardingStepDeployTitle: 'Deploy to production',
+    onboardingStepDeployDesc: 'Trigger your first deploy — SSL and domains can be added anytime.',
   },
   activityLog: {
     subtitle: 'Track all changes and actions in your organization',
@@ -1685,7 +1727,7 @@ export const en: TranslationKeys = {
     openSourcePlatform: 'Open Source Cloud Platform',
     getStartedFree: 'Get Started Free',
     viewOnGithub: 'View on GitHub',
-    edgeLocations: 'Hetzner Regions',
+    edgeLocations: 'Any VPS · Any region',
     deployTime: 'Deploy Time',
     uptimeSla: 'Self-hosted',
     configRequired: 'Config Required',
@@ -2336,6 +2378,9 @@ export const en: TranslationKeys = {
   apiKeys: {
     title: 'API Keys',
     description: 'Create API keys to access your projects programmatically from CI/CD pipelines or CLI tools.',
+    rateLimitBanner: 'Your organization plan allows {count} API requests per minute for each API key.',
+    rateLimitBannerUnlimited: 'Your organization plan has no API rate limit per key.',
+    viewBilling: 'View billing',
     createKey: 'Create API Key',
     keyName: 'Key Name',
     keyNamePlaceholder: 'e.g., CI/CD Pipeline, Development',
@@ -2547,6 +2592,11 @@ export const en: TranslationKeys = {
     title: 'Billing & Usage',
     description: 'View your current plan, usage statistics, and manage billing settings.',
     currentPlan: 'Current Plan',
+    apiRateLimit: 'API rate limit',
+    apiRateLimitValue: '{count} requests/min per API key',
+    apiRateLimitUnlimited: 'Unlimited API requests per key',
+    apiRateLimitHint:
+      'Limits apply per API key. Responses include X-RateLimit-Limit, Remaining, and Reset headers.',
     usage: 'Usage',
     usageDescription: 'Your current resource usage for this billing period.',
     features: 'Plan Features',
@@ -2590,6 +2640,7 @@ export const en: TranslationKeys = {
     storageGb: 'Storage',
     bandwidthGb: 'Bandwidth',
     buildMinutes: 'Build minutes/month',
+    apiRequestsPerMinuteShort: 'API requests (per key)',
     paymentSuccess: 'Payment Successful!',
     planUpgraded: 'Your plan has been upgraded successfully.',
     redirecting: 'Redirecting to billing in',
@@ -2812,6 +2863,9 @@ export const en: TranslationKeys = {
   marketplace: {
     title: 'Marketplace',
     description: 'Deploy popular open-source applications with one click',
+    siteStudioBanner:
+      'Building a business site, store, or blog? Site Studio offers guided templates with domain and SSL.',
+    siteStudioBannerCta: 'Open Site Studio',
     searchPlaceholder: 'Search applications...',
     deploy: 'Deploy',
     deployTitle: 'Deploy Application',
@@ -2860,13 +2914,18 @@ export const en: TranslationKeys = {
     navTitle: 'Site Studio',
     title: 'Launch your website in minutes',
     badge: 'Site Studio',
+    marketplaceBanner:
+      'Need dev tools, monitoring, or databases? The Marketplace has one-click apps like Grafana, n8n, and more.',
+    marketplaceBannerCta: 'Browse Marketplace',
+    paymentRegionGlobal: 'Global',
+    paymentRegionRegional: 'Regional',
     heroDescription:
-      'Professional templates for e-commerce, business, blogs, and more. Deploy on your own server with SSL — connect iyzico, PayTR, and global payments after launch.',
+      'Professional templates for e-commerce, business, blogs, and more. Deploy on your own server with SSL — connect Stripe, PayPal, or regional payment plugins after launch.',
     heroPoint1: 'Live in ~10 minutes',
     heroPoint2: 'Your domain & SSL',
     heroPoint3: 'Your data, your server',
     comingSoonTitle: 'On the roadmap',
-    comingSoonDesc: 'Visual drag-and-drop editor and more Turkish payment connectors built into the dashboard.',
+    comingSoonDesc: 'Visual drag-and-drop editor and more payment connectors built into the dashboard.',
     roadmap: 'Phase 2 · Visual editor',
     searchPlaceholder: 'Search templates…',
     launch: 'Configure',
@@ -2922,7 +2981,7 @@ export const en: TranslationKeys = {
     devCtaDesc: 'Deploy from GitHub with framework auto-detection.',
     devCtaLink: 'New project',
     dashboardCtaTitle: 'Launch a website without code',
-    dashboardCtaDesc: 'E-commerce, corporate sites, blogs — templates with Turkish payment setup guides.',
+    dashboardCtaDesc: 'E-commerce, corporate sites, blogs — guided templates with SSL on your own VPS worldwide.',
     dashboardCtaButton: 'Open Site Studio',
     projectDeployBannerTitle: 'Pushify is installing your site automatically',
     projectDeployBannerDesc:

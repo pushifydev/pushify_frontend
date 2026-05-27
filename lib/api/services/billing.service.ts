@@ -31,11 +31,14 @@ export interface BillingInfo {
   planName: string;
   price: number;
   billingEmail: string | null;
+  /** Per API key, per minute (-1 = unlimited) */
+  apiRequestsPerMinute: number;
   usage: UsageStats;
   features: BillingFeatures;
 }
 
 export interface PlanLimits {
+  apiRequestsPerMinute: number;
   servers: number;
   databases: number;
   projects: number;

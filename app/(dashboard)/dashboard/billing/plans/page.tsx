@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft, Check, X, Star, Zap,
-  Server, Folder, Rocket, Users, Globe,
+  Server, Folder, Rocket, Users, Globe, Key,
   HardDrive, Wifi, Clock, Activity, HeartPulse, Headphones,
   Loader2,
 } from 'lucide-react';
@@ -44,6 +44,7 @@ interface LimitRow {
 }
 
 const LIMIT_ROWS: LimitRow[] = [
+  { key: 'apiRequestsPerMinute', labelKey: 'apiRequestsPerMinuteShort', icon: Key, type: 'number', unit: '/min' },
   { key: 'servers', labelKey: 'servers', icon: Server, type: 'number' },
   { key: 'projects', labelKey: 'projects', icon: Folder, type: 'number' },
   { key: 'deploymentsPerMonth', labelKey: 'deploymentsPerMonthShort', icon: Rocket, type: 'number' },

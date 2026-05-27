@@ -223,7 +223,7 @@ export default function DeployFrameworkPage() {
 
   return (
     <MarketingShell noPad>
-      <header className="lp-container pt-12 md:pt-16 pb-12 text-center max-w-3xl mx-auto">
+      <header className="lp-container pt-20 md:pt-24 pb-12 text-center max-w-3xl mx-auto">
         <div
           className="inline-flex items-center justify-center w-14 h-14 rounded-xl text-xl font-bold mb-6 border mx-auto"
           style={{ borderColor: 'var(--lp-border)', backgroundColor: `${fw.color}12`, color: fw.color }}

@@ -86,16 +86,20 @@ export const metadata: Metadata = {
 
 // Runs before React hydration to prevent flash of wrong theme (FOUC)
 const themeScript = `(function(){
+  function resolveTheme(pref) {
+    if (pref === 'system' || !pref) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return pref === 'light' ? 'light' : 'dark';
+  }
   try {
     var s = localStorage.getItem('pushify-theme');
     var p = s ? JSON.parse(s) : null;
-    var t = p && p.state ? p.state.theme : 'dark';
-    if (t === 'system') {
-      t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    document.documentElement.classList.add(t === 'light' ? 'light' : 'dark');
+    var pref = p && p.state ? p.state.theme : 'system';
+    var resolved = resolveTheme(pref);
+    document.documentElement.classList.add(resolved);
   } catch(e) {
-    document.documentElement.classList.add('dark');
+    document.documentElement.classList.add(resolveTheme('system'));
   }
 })();`;
 
