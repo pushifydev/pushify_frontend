@@ -52,12 +52,12 @@ export function ApiKeysTab() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      <div className="flex items-start justify-between">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
           <h2 className="text-xl font-semibold mb-1">{t('apiKeys', 'title')}</h2>
           <p className="text-[var(--text-secondary)]">{t('apiKeys', 'description')}</p>
         </div>
-        <button onClick={() => setShowCreateModal(true)} className="btn btn-primary">
+        <button onClick={() => setShowCreateModal(true)} className="btn btn-primary justify-center w-full sm:w-auto shrink-0">
           <Plus className="w-4 h-4" />
           {t('apiKeys', 'createKey')}
         </button>

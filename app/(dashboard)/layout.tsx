@@ -51,7 +51,7 @@ export default function DashboardLayout({
         <div className={`transition-all duration-300 ${collapsed ? 'md:pl-17' : 'md:pl-60'}`}>
           <Header />
           {user && user.emailVerified === false && <EmailVerificationBanner />}
-          <main className="p-4 md:p-6">
+          <main className="p-4 md:p-6 min-w-0 overflow-x-hidden">
             {children}
           </main>
         </div>

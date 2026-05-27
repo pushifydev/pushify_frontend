@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
@@ -14,8 +14,9 @@ import {
   AuthDivider,
   AuthPageHeader,
 } from '@/components/auth';
+import { saveAuthRedirect } from '@/lib/auth-redirect';
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const {
@@ -34,9 +35,16 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState('');
 
+  useEffect(() => {
+    const redirect = searchParams.get('redirect');
+    if (redirect) saveAuthRedirect(redirect);
+  }, [searchParams]);
+
   const getPostLoginRedirect = () => {
     const redirect = searchParams.get('redirect');
     if (redirect) return redirect;
+    const stored = typeof window !== 'undefined' ? sessionStorage.getItem('auth_post_login_redirect') : null;
+    if (stored?.startsWith('/')) return stored;
     const pendingToken = sessionStorage.getItem('pending_invitation_token');
     if (pendingToken) {
       sessionStorage.removeItem('pending_invitation_token');
@@ -196,5 +204,17 @@ export default function LoginPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full h-64 animate-pulse rounded-lg bg-neutral-100 dark:bg-neutral-900" />
+      }
+    >
+      <LoginPageContent />
+    </Suspense>
   );
 }

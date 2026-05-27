@@ -231,14 +231,14 @@ export function SessionsTab() {
 
       {/* Other Sessions */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">
             {t('sessions', 'otherSessions')}
           </h3>
           {otherSessions.length > 0 && (
             <button
               onClick={() => setShowTerminateAllConfirm(true)}
-              className="text-sm text-red-400 hover:text-red-300 transition-colors"
+              className="text-sm text-red-400 hover:text-red-300 transition-colors self-start sm:self-center shrink-0"
             >
               {t('sessions', 'terminateOthers')}
             </button>

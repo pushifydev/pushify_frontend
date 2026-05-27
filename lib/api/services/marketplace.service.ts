@@ -45,15 +45,28 @@ export interface DeployMarketplaceInput {
   domain?: string;
 }
 
+export interface MarketplaceDeploymentProject {
+  id: string;
+  name: string;
+  slug: string;
+  status: string;
+  serverId: string | null;
+  productionUrl: string | null;
+}
+
 export interface MarketplaceDeployment {
   id: string;
   projectId: string;
   templateId: string;
+  templateName?: string;
+  templateIcon?: string;
+  templateCategory?: string | null;
   templateVersion: string;
   appVersion: string;
   configuration: Record<string, string>;
   createdAt: string;
   updatedAt: string;
+  project?: MarketplaceDeploymentProject;
 }
 
 // ============ API Functions ============

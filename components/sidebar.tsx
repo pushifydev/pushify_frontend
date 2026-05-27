@@ -14,6 +14,7 @@ import {
   Plus,
   Activity,
   BarChart3,
+  Bell,
   Users,
   CreditCard,
   Server,
@@ -50,6 +51,7 @@ export function Sidebar() {
 
   const insightNavItems = [
     { href: '/dashboard/monitoring', icon: BarChart3, label: t('navigation', 'monitoring') },
+    { href: '/dashboard/alerts', icon: Bell, label: t('navigation', 'alerts') },
     { href: '/dashboard/activity', icon: Activity, label: t('navigation', 'activity') },
     { href: '/dashboard/team', icon: Users, label: t('navigation', 'team') },
     { href: '/dashboard/billing', icon: CreditCard, label: t('billing', 'title') },

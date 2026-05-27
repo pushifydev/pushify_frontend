@@ -107,7 +107,7 @@ function AcceptInvitationContent() {
                 <RoleIcon className="w-4 h-4 text-[var(--accent-cyan)]" />
               </div>
               <div>
-                <p className="text-xs text-neutral-500">Your role</p>
+                <p className="text-xs text-neutral-500">{t('team', 'yourRole')}</p>
                 <p className="font-medium capitalize text-neutral-900 dark:text-white">{invitation.role}</p>
               </div>
             </div>
@@ -129,18 +129,19 @@ function AcceptInvitationContent() {
                   </button>
                 ) : (
                   <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-sm text-amber-800 dark:text-amber-200">
-                    This invitation was sent to <strong>{invitation.email}</strong> but you are
-                    logged in as <strong>{user.email}</strong>.
+                    {t('team', 'invitationEmailMismatch')
+                      .replace('{invited}', invitation.email)
+                      .replace('{current}', user.email)}
                   </div>
                 )}
               </div>
             ) : (
               <div className="space-y-3">
                 <p className="text-sm text-center text-neutral-500">
-                  Log in or create an account to join{' '}
-                  <strong className="text-neutral-700 dark:text-neutral-300">
-                    {invitation.organization.name}
-                  </strong>
+                  {t('team', 'loginOrRegisterToJoin').replace(
+                    '{org}',
+                    invitation.organization.name
+                  )}
                 </p>
                 <button
                   type="button"
@@ -175,7 +176,7 @@ function AcceptInvitationContent() {
               <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-1">
                 {t('team', 'invitationAccepted')}
               </h2>
-              <p className="text-sm text-neutral-500">Redirecting to dashboard...</p>
+              <p className="text-sm text-neutral-500">{t('team', 'redirectingToDashboard')}</p>
             </div>
           </div>
         )}

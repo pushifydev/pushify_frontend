@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { Search, Store, PackageOpen } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useMarketplaceTemplates } from '@/hooks/useMarketplace';
+import { InstalledAppsPanel } from '@/components/marketplace/InstalledAppsPanel';
 import type { MarketplaceCategory } from '@/lib/api';
 import TemplateCard from './components/TemplateCard';
 import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
@@ -35,6 +36,7 @@ export default function MarketplacePage() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<MarketplaceCategory | 'all'>('all');
+  const [pageTab, setPageTab] = useState<'catalog' | 'installed'>('catalog');
 
   const { data: templates, isLoading } = useMarketplaceTemplates(
     activeCategory !== 'all' ? { category: activeCategory } : undefined
@@ -89,6 +91,31 @@ export default function MarketplacePage() {
         href="/dashboard/sites"
       />
 
+      <div
+        className="flex gap-1 p-1 rounded-lg w-fit"
+        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+      >
+        {(['catalog', 'installed'] as const).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setPageTab(tab)}
+            className="px-3.5 py-1.5 rounded-md text-sm transition-colors"
+            style={{
+              background: pageTab === tab ? 'var(--bg-tertiary)' : 'transparent',
+              color: pageTab === tab ? 'var(--text-primary)' : 'var(--text-muted)',
+              fontWeight: pageTab === tab ? 500 : 400,
+            }}
+          >
+            {t('marketplace', tab === 'catalog' ? 'tabCatalog' : 'tabInstalled')}
+          </button>
+        ))}
+      </div>
+
+      {pageTab === 'installed' ? (
+        <InstalledAppsPanel />
+      ) : (
+        <>
       {/* Search + Filters */}
       <div className="space-y-4">
         {/* Search */}
@@ -203,6 +230,8 @@ export default function MarketplacePage() {
             ))}
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

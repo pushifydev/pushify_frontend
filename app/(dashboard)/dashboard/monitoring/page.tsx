@@ -30,8 +30,10 @@ import {
 import {
   useMetricsOverview,
   useMetricsTimeSeries,
+  useProjects,
   useTranslation,
 } from '@/hooks';
+import { MonitoringEmptyState } from '@/components/monitoring/MonitoringEmptyState';
 import { formatStorage } from '@/lib/formatters';
 import { STATUS_COLORS } from '@/lib/constants';
 import { SkeletonMonitoringGaugeCard, SkeletonMonitoringChartBlock } from '@/components/Skeleton';
@@ -132,7 +134,7 @@ function TimeRangeSelector({
           onClick={() => onChange(opt.value)}
           className={`px-3 py-1 text-xs font-mono font-medium rounded-md transition-colors ${
             selected === opt.value
-              ? 'bg-[var(--accent-cyan)] text-white'
+              ? 'dash-accent-fill'
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
@@ -148,6 +150,7 @@ function TimeRangeSelector({
 export default function MonitoringPage() {
   const { t } = useTranslation();
   const { data: overview, isLoading, dataUpdatedAt } = useMetricsOverview();
+  const { data: projectsList = [] } = useProjects();
   const [selectedHours, setSelectedHours] = useState(1);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
@@ -197,11 +200,7 @@ export default function MonitoringPage() {
           <h1 className="text-2xl font-bold">{t('monitoring', 'title')}</h1>
           <p className="text-[var(--text-secondary)] text-sm mt-1">{t('monitoring', 'description')}</p>
         </div>
-        <div className="flex flex-col items-center justify-center py-20 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-          <Activity className="w-12 h-12 text-[var(--text-muted)] mb-4" />
-          <h3 className="text-lg font-semibold mb-2">{t('monitoring', 'noData')}</h3>
-          <p className="text-sm text-[var(--text-muted)] max-w-md text-center">{t('monitoring', 'noDataDesc')}</p>
-        </div>
+        <MonitoringEmptyState projectCount={projectsList.length} />
       </div>
     );
   }

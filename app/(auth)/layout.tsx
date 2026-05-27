@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useTranslation } from '@/hooks';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { LogoMark } from '@/components/logo';
+import { AuthThemeToggle } from '@/components/auth';
 import { Check } from 'lucide-react';
 
 export default function AuthLayout({
@@ -55,7 +56,10 @@ export default function AuthLayout({
             <LogoMark size={28} />
             <span className="text-xl font-semibold tracking-tight">Pushify</span>
           </Link>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-1">
+            <AuthThemeToggle />
+            <LanguageSwitcher />
+          </div>
         </div>
 
         <div className="space-y-8 max-w-md">
@@ -99,7 +103,8 @@ export default function AuthLayout({
       </div>
 
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
-        <div className="lg:hidden absolute top-4 right-4">
+        <div className="lg:hidden absolute top-4 right-4 flex items-center gap-1">
+          <AuthThemeToggle />
           <LanguageSwitcher />
         </div>
         <div className="w-full max-w-md">{children}</div>

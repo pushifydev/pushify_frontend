@@ -9,6 +9,14 @@ export type ServerSetupStatus = 'pending' | 'installing' | 'completed' | 'failed
 export type ServerProvider = 'hetzner' | 'digitalocean' | 'aws' | 'gcp' | 'self_hosted';
 export type ServerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'custom';
 
+export interface ServerLocation {
+  city: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+  datacenter?: string;
+}
+
 export interface Server {
   id: string;
   name: string;
@@ -28,6 +36,9 @@ export interface Server {
   setupStatus: ServerSetupStatus;
   statusMessage: string | null;
   labels: Record<string, unknown>;
+  location: ServerLocation | null;
+  projectCount: number;
+  databaseCount: number;
   isManaged: boolean;
   createdAt: string;
   updatedAt: string;

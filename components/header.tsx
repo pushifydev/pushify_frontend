@@ -112,8 +112,7 @@ export function Header() {
 
           <Link
             href="/dashboard/projects/new"
-            className="hidden sm:flex items-center gap-1.5 h-8 px-3 rounded-lg text-[12.5px] font-semibold bg-[var(--accent-cyan)] transition-opacity hover:opacity-90"
-            style={{ color: isDark ? "#0a0a0a" : "#ffffff" }}
+            className="hidden sm:flex items-center gap-1.5 h-8 px-3 rounded-lg text-[12.5px] font-semibold dash-accent-fill transition-opacity hover:opacity-90"
           >
             <Plus className="w-3.5 h-3.5" />
             {t("header", "deploy")}

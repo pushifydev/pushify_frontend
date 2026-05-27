@@ -30,7 +30,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)]">
+    <div className="min-h-[calc(100vh-4rem)] min-w-0 overflow-x-hidden">
       {/* Header */}
       <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">

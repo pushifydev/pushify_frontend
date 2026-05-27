@@ -213,6 +213,29 @@ export {
   type SubscriptionStatus,
 } from './services/billing.service';
 
+// Dashboard Functions
+export {
+  getDashboardOverview,
+  dashboardService,
+  type DashboardOverview,
+  type DeploymentCounts,
+  type RecentFailedDeployment,
+  type DashboardActionItem,
+  type UsageWarning,
+  type ActionSeverity,
+} from './services/dashboard.service';
+
+// Alerts Functions
+export {
+  getAlertsOverview,
+  alertsService,
+  type AlertsOverview,
+  type AlertsSummary,
+  type OrgNotificationChannel,
+  type OrgNotificationLog,
+  type OrgHealthCheckRow,
+} from './services/alerts.service';
+
 // Servers Functions
 export {
   listServers,

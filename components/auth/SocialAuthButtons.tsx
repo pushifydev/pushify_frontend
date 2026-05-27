@@ -1,6 +1,8 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { getGithubLoginUrl, getGoogleLoginUrl } from '@/lib/api';
+import { saveAuthRedirect } from '@/lib/auth-redirect';
 
 function GithubIcon() {
   return (
@@ -37,7 +39,15 @@ function GoogleIcon() {
 }
 
 export function SocialAuthButtons() {
+  const searchParams = useSearchParams();
+
+  const persistRedirect = () => {
+    const redirect = searchParams.get('redirect');
+    if (redirect) saveAuthRedirect(redirect);
+  };
+
   const handleGithubLogin = async () => {
+    persistRedirect();
     const result = await getGithubLoginUrl();
     if (result.error || !result.data) return;
 
@@ -51,6 +61,7 @@ export function SocialAuthButtons() {
   };
 
   const handleGoogleLogin = async () => {
+    persistRedirect();
     const result = await getGoogleLoginUrl();
     if (result.error || !result.data) return;
 
