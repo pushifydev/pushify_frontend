@@ -58,7 +58,7 @@ export default function MarketplacePage() {
   const rest = filtered.filter((t) => !t.featured);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-slide-in">
+    <div className="dash-page max-w-6xl space-y-8 animate-slide-in">
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-2">
@@ -91,10 +91,7 @@ export default function MarketplacePage() {
         href="/dashboard/sites"
       />
 
-      <div
-        className="flex gap-1 p-1 rounded-lg w-fit"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-      >
+      <div className="flex gap-1 p-1 rounded-lg w-fit border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
         {(['catalog', 'installed'] as const).map((tab) => (
           <button
             key={tab}
@@ -146,7 +143,7 @@ export default function MarketplacePage() {
                 style={{
                   background: isActive ? `${color}18` : 'var(--hover-overlay)',
                   color: isActive ? color : 'var(--text-secondary)',
-                  border: `1px solid ${isActive ? `${color}35` : 'var(--glass-border)'}`,
+                  border: `1px solid ${isActive ? `${color}35` : 'var(--border-subtle)'}`,
                 }}
               >
                 {t('marketplace', CATEGORY_I18N[key] as any)}

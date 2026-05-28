@@ -147,7 +147,7 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
                           border: `1px solid ${
                             selectedServerId === server.id
                               ? 'var(--dash-accent-border-strong)'
-                              : 'var(--glass-border)'
+                              : 'var(--border-subtle)'
                           }`,
                         }}
                       >
@@ -245,7 +245,7 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
                 className="rounded-xl p-4 space-y-3"
                 style={{
                   background: 'var(--hover-overlay)',
-                  border: '1px solid var(--glass-border)',
+                  border: '1px solid var(--border-subtle)',
                 }}
               >
                 <div className="flex justify-between text-sm">
@@ -290,7 +290,7 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
             style={{
               color: 'var(--text-secondary)',
               background: 'var(--hover-overlay)',
-              border: '1px solid var(--glass-border)',
+              border: '1px solid var(--border-subtle)',
             }}
           >
             <ChevronLeft className="w-3.5 h-3.5" />

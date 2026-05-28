@@ -21,10 +21,7 @@ export function BillingSection({
   children,
 }: BillingSectionProps) {
   return (
-    <div
-      className="rounded-xl p-6 space-y-5"
-      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-    >
+    <div className="dash-panel p-4 sm:p-6 space-y-5">
       <div className={`flex gap-3 ${description ? 'items-start' : 'items-center'}`}>
         <div
           className="w-10 h-10 rounded-lg dash-section-icon"

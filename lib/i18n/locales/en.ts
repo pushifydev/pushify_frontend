@@ -1,3 +1,5 @@
+import { toastsEn, type ToastsKeys } from './toasts';
+
 export interface TranslationKeys {
   common: {
     loading: string;
@@ -99,6 +101,7 @@ export interface TranslationKeys {
     servers: string;
     newProject: string;
     settings: string;
+    settingsDescription: string;
     helpDocs: string;
     usage: string;
     deployments: string;
@@ -225,6 +228,15 @@ export interface TranslationKeys {
     searchPlaceholder: string;
     aiHelp: string;
     deploy: string;
+    alertsMenu: string;
+    alertsAllClear: string;
+    alertsViewAll: string;
+    alertsFailedDeliveries: string;
+    alertsUnhealthyApps: string;
+    alertsRecentFailures: string;
+    alertsNoChannels: string;
+    alertsSetupChannel: string;
+    alertsLoading: string;
   };
   ai: {
     title: string;
@@ -587,7 +599,13 @@ export interface TranslationKeys {
     somethingWentWrong: string;
     somethingWentWrongDesc: string;
     tryAgain: string;
+    requestFailed: string;
+    requestTimeout: string;
+    networkUnavailable: string;
+    rateLimited: string;
+    payloadTooLarge: string;
   };
+  toasts: ToastsKeys;
   projectDetail: {
     // Tabs
     overview: string;
@@ -615,6 +633,10 @@ export interface TranslationKeys {
     viewLogs: string;
     containerLogs: string;
     historicalLogs: string;
+    logsHelpTitle: string;
+    logsHelpBuild: string;
+    logsHelpContainer: string;
+    logsHelpHistorical: string;
     // Environment tab
     envVarsDesc: string;
     addVariable: string;
@@ -768,6 +790,9 @@ export interface TranslationKeys {
     connecting: string;
     connectGithubBtn: string;
     connectedAs: string;
+    changeGithubAccount: string;
+    disconnectGithub: string;
+    githubDisconnected: string;
     searchRepos: string;
     loadingRepos: string;
     noReposFound: string;
@@ -1273,6 +1298,7 @@ export interface TranslationKeys {
     infraRunningServers: string;
     infraTopUp: string;
     infraTopUpHint: string;
+    infraTopUpRedirecting: string;
     infraTransactions: string;
     infraPerMonth: string;
     infraPerHour: string;
@@ -1365,6 +1391,13 @@ export interface TranslationKeys {
     network: string;
     detailBack: string;
     statusInfraCreditsStopped: string;
+    statusInfraCreditsStoppedHint: string;
+    infraBillingTitle: string;
+    infraWalletBalance: string;
+    infraMonthlyCost: string;
+    infraStartRequires: string;
+    infraInsufficientForStart: string;
+    infraReadyToStart: string;
     statusBillingSuspended: string;
     openTerminal: string;
     setupBannerTitle: string;
@@ -1399,8 +1432,58 @@ export interface TranslationKeys {
     createdAtLabel: string;
     updatedAtLabel: string;
     fieldOs: string;
+    hubNextStepsTitle: string;
+    hubStepTopUp: string;
+    hubStepStart: string;
+    hubStepFixSetup: string;
+    hubStepWaitSetup: string;
+    hubStepDeployFirst: string;
+    hubStepRunningReady: string;
+    hubStepTerminal: string;
+    hubProjectsTitle: string;
+    hubProjectsEmpty: string;
+    hubNewProject: string;
+    hubDatabasesTitle: string;
+    hubDatabasesEmpty: string;
+    hubAddDatabase: string;
+    hubRunwayDays: string;
+    editServer: string;
+    editServerTitle: string;
+    resizeButton: string;
+    resizeTitle: string;
+    resizeDesc: string;
+    resizeNoOptions: string;
+    resizeWarning: string;
+    resizeConfirm: string;
+    perMonthShort: string;
+    sshPanelTitle: string;
+    sshConnectCommand: string;
+    sshDownloadKey: string;
+    firewallTitle: string;
+    firewallDesc: string;
+    firewallPort22: string;
+    firewallPort80: string;
+    firewallPort443: string;
+    firewallHetznerHint: string;
+    snapshotsTitle: string;
+    snapshotsDesc: string;
+    snapshotsEmpty: string;
+    snapshotCreate: string;
+    timelineTitle: string;
+    timelineEmpty: string;
+    timelineCreated: string;
+    timelineSynced: string;
+    timelineResizing: string;
+    timelineInfraStopped: string;
     // BYOS
     cloudProvider: string;
+    managedProviderActive: string;
+    managedProvidersComingSoon: string;
+    comingSoonBadge: string;
+    loadingSizes: string;
+    sshKeyOptionalNote: string;
+    sizeExceedsPlan: string;
+    managedNotAllowedOnPlan: string;
     existingServer: string;
     byosTitle: string;
     byosDescription: string;
@@ -1765,6 +1848,7 @@ export const en: TranslationKeys = {
     servers: 'Servers',
     newProject: 'New Project',
     settings: 'Settings',
+    settingsDescription: 'Manage your account settings and preferences',
     helpDocs: 'Help & Docs',
     usage: 'Usage',
     deployments: 'Deployments',
@@ -1890,6 +1974,15 @@ export const en: TranslationKeys = {
     searchPlaceholder: 'Search projects, deployments...',
     aiHelp: 'AI Help',
     deploy: 'Deploy',
+    alertsMenu: 'Alerts & notifications',
+    alertsAllClear: 'No failed deliveries or unhealthy apps in the last 24 hours.',
+    alertsViewAll: 'Open alerts center',
+    alertsFailedDeliveries: '{count} failed deliveries (24h)',
+    alertsUnhealthyApps: '{count} unhealthy apps',
+    alertsRecentFailures: 'Recent failures',
+    alertsNoChannels: 'No notification channels configured yet.',
+    alertsSetupChannel: 'Add alerts on a project',
+    alertsLoading: 'Loading alerts…',
   },
   ai: {
     title: 'AI Assistant',
@@ -2269,7 +2362,13 @@ export const en: TranslationKeys = {
     somethingWentWrong: 'Something went wrong',
     somethingWentWrongDesc: 'An unexpected error occurred. Please try again or contact support if the problem persists.',
     tryAgain: 'Try again',
+    requestFailed: 'Request failed.',
+    requestTimeout: 'Request timed out.',
+    networkUnavailable: 'Unable to reach the server. Check your connection and API URL.',
+    rateLimited: 'Too many requests. Please wait a moment and try again.',
+    payloadTooLarge: 'Request payload is too large.',
   },
+  toasts: toastsEn,
   projectDetail: {
     // Tabs
     overview: 'Overview',
@@ -2297,6 +2396,10 @@ export const en: TranslationKeys = {
     viewLogs: 'View Logs',
     containerLogs: 'Container Logs',
     historicalLogs: 'History',
+    logsHelpTitle: 'Log types',
+    logsHelpBuild: 'View Logs — build and deploy output for this deployment run.',
+    logsHelpContainer: 'Container Logs — recent output from the running app container (live snapshot).',
+    logsHelpHistorical: 'History — logs saved periodically on the server (retained ~7 days).',
     // Environment tab
     envVarsDesc: 'Environment variables are encrypted and available during build and runtime.',
     addVariable: 'Add Variable',
@@ -2450,6 +2553,9 @@ export const en: TranslationKeys = {
     connecting: 'Connecting...',
     connectGithubBtn: 'Connect to GitHub',
     connectedAs: 'Connected as',
+    changeGithubAccount: 'Use another account',
+    disconnectGithub: 'Disconnect',
+    githubDisconnected: 'GitHub disconnected',
     searchRepos: 'Search repositories...',
     loadingRepos: 'Loading repositories...',
     noReposFound: 'No repositories found',
@@ -2960,6 +3066,7 @@ export const en: TranslationKeys = {
     infraRunningServers: '{count} running managed server(s)',
     infraTopUp: 'Add credits',
     infraTopUpHint: 'Secure one-time payment via Stripe. Minimum balance ≈ one month of server cost before provisioning.',
+    infraTopUpRedirecting: 'Opening Stripe checkout…',
     infraTransactions: 'Recent transactions',
     infraPerMonth: '/mo',
     infraPerHour: '/hr',
@@ -3055,7 +3162,16 @@ export const en: TranslationKeys = {
     network: 'Network',
     detailBack: 'Servers',
     statusInfraCreditsStopped:
-      'Stopped: insufficient infrastructure credits. Add credits in Billing to start again.',
+      'This server was stopped because infrastructure credits ran out.',
+    statusInfraCreditsStoppedHint:
+      'After topping up in Billing, press Start above (you need roughly one month of server cost in your wallet).',
+    infraBillingTitle: 'Infrastructure credits',
+    infraWalletBalance: 'Wallet balance',
+    infraMonthlyCost: 'Est. monthly cost',
+    infraStartRequires: 'Min. to start',
+    infraInsufficientForStart:
+      'Your wallet balance is below the minimum needed to start this server. Add credits in Billing.',
+    infraReadyToStart: 'Wallet balance is sufficient. Press Start to turn the server back on.',
     statusBillingSuspended:
       'Stopped: platform subscription ended. Renew your plan in Billing to start again.',
     openTerminal: 'Terminal',
@@ -3091,8 +3207,61 @@ export const en: TranslationKeys = {
     createdAtLabel: 'Created',
     updatedAtLabel: 'Last updated',
     fieldOs: 'Operating system',
+    hubNextStepsTitle: 'Suggested next steps',
+    hubStepTopUp: 'Add infrastructure credits in Billing, then start this server.',
+    hubStepStart: 'Press Start above to turn this server back on.',
+    hubStepFixSetup: 'Server setup failed. Check status details or contact support.',
+    hubStepWaitSetup: 'Setup is in progress (Docker, Nginx, Certbot). Refresh in a minute.',
+    hubStepDeployFirst: 'Deploy your first project to this server.',
+    hubStepRunningReady: 'Server is ready — open a project to deploy or redeploy.',
+    hubStepTerminal: 'Open the web terminal for SSH-style access.',
+    hubProjectsTitle: 'Projects on this server',
+    hubProjectsEmpty: 'No projects on this server yet.',
+    hubNewProject: 'New project',
+    hubDatabasesTitle: 'Databases on this server',
+    hubDatabasesEmpty: 'No databases on this server yet.',
+    hubAddDatabase: 'Add database',
+    hubRunwayDays: 'At current wallet balance, estimated runway is about {days} days for this server size.',
+    editServer: 'Edit',
+    editServerTitle: 'Edit server',
+    resizeButton: 'Upgrade size',
+    resizeTitle: 'Upgrade server size',
+    resizeDesc: 'Choose a larger plan tier. The server may reboot briefly. Downgrades are not supported.',
+    resizeNoOptions: 'No larger sizes are available for your plan in this region.',
+    resizeWarning: 'Billing updates to the new monthly rate. Ensure your infrastructure wallet has enough balance.',
+    resizeConfirm: 'Upgrade',
+    perMonthShort: 'mo',
+    sshPanelTitle: 'SSH access',
+    sshConnectCommand: 'Connect',
+    sshDownloadKey: 'Download private key',
+    firewallTitle: 'Firewall checklist',
+    firewallDesc: 'Pushify setup opens these ports on the server (UFW). Your cloud provider firewall must allow them too.',
+    firewallPort22: 'SSH administration',
+    firewallPort80: 'HTTP (redirects & ACME)',
+    firewallPort443: 'HTTPS for deployed apps',
+    firewallHetznerHint: 'On Hetzner Cloud, also open these ports in the server firewall in the Hetzner console if traffic does not reach your apps.',
+    snapshotsTitle: 'Snapshots',
+    snapshotsDesc: 'Provider snapshots for disaster recovery. Creating a snapshot may take several minutes.',
+    snapshotsEmpty: 'No snapshots yet.',
+    snapshotCreate: 'Create snapshot',
+    timelineTitle: 'Recent activity',
+    timelineEmpty: 'No activity yet.',
+    timelineCreated: 'Server created',
+    timelineSynced: 'Synced with provider',
+    timelineResizing: 'Resize in progress',
+    timelineInfraStopped: 'Stopped (infrastructure credits)',
     // BYOS
     cloudProvider: 'Cloud Provider',
+    managedProviderActive: 'Managed servers are provisioned on Hetzner Cloud.',
+    managedProvidersComingSoon: 'DigitalOcean, AWS, and Google Cloud — coming soon.',
+    comingSoonBadge: 'Soon',
+    loadingSizes: 'Loading sizes…',
+    sshKeyOptionalNote:
+      'If empty, Pushify will generate a key pair and add it to your server. Root SSH access required.',
+    sizeExceedsPlan:
+      'This server size exceeds your plan limit. Choose a smaller size or upgrade your plan.',
+    managedNotAllowedOnPlan:
+      'Managed cloud servers require a paid plan. Upgrade your platform plan or connect your own server (BYOS).',
     existingServer: 'Existing Server',
     byosTitle: 'Connect Your Server',
     byosDescription: 'Connect an existing server to Pushify for deployments.',

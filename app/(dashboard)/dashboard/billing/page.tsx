@@ -68,7 +68,9 @@ export default function BillingPage() {
         if (sessionId) {
           const result = await confirmInfraTopUp(sessionId);
           if (result.error) {
-            toast.error(result.error.message);
+            toast.error(t('errors', 'somethingWentWrong'), {
+              description: result.error.message,
+            });
             clearTopUpParams();
             return;
           }
@@ -109,7 +111,7 @@ export default function BillingPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
+      <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
         <SkeletonPageHeader />
         {[1, 2, 3].map((i) => (
           <SkeletonBillingSummaryCard key={i} />
@@ -126,7 +128,7 @@ export default function BillingPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
+    <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
 
       <div>
         <h1 className="text-xl font-semibold tracking-tight">{t('billing', 'title')}</h1>
@@ -136,13 +138,7 @@ export default function BillingPage() {
       </div>
 
       {billingInfo?.billingStatus === 'past_due' && (
-        <div
-          className="rounded-xl p-4 flex gap-3 items-start"
-          style={{
-            background: `${STATUS_COLORS.orange}14`,
-            border: `1px solid ${STATUS_COLORS.orange}44`,
-          }}
-        >
+        <div className="dash-panel dash-callout-attention p-4 flex gap-3 items-start">
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: STATUS_COLORS.orange }} />
           <div className="space-y-1 min-w-0">
             <p className="font-medium text-sm">{t('billing', 'billingStatusPastDueTitle')}</p>
@@ -180,14 +176,7 @@ export default function BillingPage() {
       <InfraWalletSection />
 
       {/* Current Plan */}
-      <div
-        className="rounded-xl p-6 space-y-0"
-        style={{
-          background: 'var(--bg-secondary)',
-          border: '1px solid var(--glass-border)',
-          boxShadow: `inset 0 2px 0 0 ${planAccent}55`,
-        }}
-      >
+      <div className="dash-card p-4 sm:p-6 space-y-0">
         <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
           <div className="flex items-start gap-3">
             <div

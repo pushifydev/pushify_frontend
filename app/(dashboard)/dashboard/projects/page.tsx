@@ -16,29 +16,38 @@ import {
   Pause,
   Clock,
 } from 'lucide-react';
-import { useProjects, useDeleteProject, useTranslation } from '@/hooks';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  useProjects,
+  useDeleteProject,
+  useTranslation,
+  projectKeys,
+} from '@/hooks';
+import { updateProjectStatus } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
 import { PROJECT_STATUS_COLORS } from '@/lib/constants';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { SkeletonProjectCard } from '@/components/Skeleton';
-import type { Project, ProjectStatus } from '@/lib/api';
+import type { Project } from '@/lib/api';
 
-type FilterStatus = 'all' | ProjectStatus;
+type ListableStatus = 'active' | 'paused';
+type FilterStatus = 'all' | ListableStatus;
 
 export default function ProjectsPage() {
   const { data: projects = [], isLoading } = useProjects();
   const deleteProject = useDeleteProject();
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
 
-  const handleStatusChange = async (projectId: string, status: ProjectStatus) => {
-    const { projectsService } = await import('@/lib/api');
-    await projectsService.updateStatus(projectId, status);
+  const handleStatusChange = async (projectId: string, status: ListableStatus) => {
+    const result = await updateProjectStatus(projectId, status);
+    if (result.error) throw new Error(result.error.message);
     setOpenDropdown(null);
-    window.location.reload();
+    await queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
   };
 
   const handleDeleteClick = (project: Project) => {
@@ -60,7 +69,7 @@ export default function ProjectsPage() {
 
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-slide-in">
+    <div className="dash-page max-w-5xl space-y-6 animate-slide-in">
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -93,7 +102,7 @@ export default function ProjectsPage() {
         </div>
 
         <div className="flex gap-1.5">
-          {(['all', 'active', 'paused', 'inactive'] as const).map((s) => (
+          {(['all', 'active', 'paused'] as const).map((s) => (
             <button
               key={s}
               onClick={() => setFilterStatus(s)}
@@ -104,7 +113,7 @@ export default function ProjectsPage() {
                 border: filterStatus === s ? '1px solid var(--dash-accent-border-strong)' : '1px solid var(--glass-border)',
               }}
             >
-              {s === 'all' ? t('projects', 'allStatus') : t('projects', s as 'active' | 'paused' | 'inactive')}
+              {s === 'all' ? t('projects', 'allStatus') : t('projects', s)}
             </button>
           ))}
         </div>
@@ -118,10 +127,7 @@ export default function ProjectsPage() {
           ))}
         </div>
       ) : filteredProjects.length === 0 ? (
-        <div
-          className="rounded-xl p-12 text-center"
-          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-        >
+        <div className="dash-panel p-8 sm:p-12 text-center">
           <Rocket className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <h3 className="font-medium mb-1">
             {searchQuery || filterStatus !== 'all' ? t('projects', 'noProjectsFound') : t('projects', 'noProjectsYet')}
@@ -139,26 +145,11 @@ export default function ProjectsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredProjects.map((project) => {
-            const accent = PROJECT_STATUS_COLORS[project.status] ?? '#52525e';
+            const accent = PROJECT_STATUS_COLORS[project.status] ?? 'var(--text-muted)';
             return (
               <div
                 key={project.id}
-                className="relative rounded-xl p-5 group transition-all"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  borderWidth: '2px 1px 1px 1px',
-                  borderStyle: 'solid',
-                  borderColor: `${accent}50 var(--glass-border) var(--glass-border) var(--glass-border)`,
-                  borderRadius: 12,
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    `${accent}70 var(--glass-border-strong) var(--glass-border-strong) var(--glass-border-strong)`;
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    `${accent}50 var(--glass-border) var(--glass-border) var(--glass-border)`;
-                }}
+                className="relative dash-panel p-5 group transition-colors hover:border-[var(--border-default)]"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3">

@@ -126,10 +126,11 @@ export function useGitHubConnect() {
       return result.data;
     },
     onSuccess: (data) => {
-      // Store state in sessionStorage for callback verification
+      // Must match auth/github/callback (localStorage; login flow uses same keys)
       if (data) {
-        sessionStorage.setItem('github_oauth_state', data.state);
-        // Redirect to GitHub OAuth
+        localStorage.setItem('github_oauth_state', data.state);
+        localStorage.removeItem('github_oauth_intent');
+        sessionStorage.removeItem('github_oauth_state');
         window.location.href = data.url;
       }
     },

@@ -1,10 +1,13 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '@/hooks';
+import { serverKeys } from '@/hooks/useServers';
 import { Globe } from 'lucide-react';
 
 export function LanguageSwitcher() {
   const { locale, toggleLocale, isHydrated } = useTranslation();
+  const queryClient = useQueryClient();
 
   if (!isHydrated) {
     return (
@@ -17,7 +20,10 @@ export function LanguageSwitcher() {
 
   return (
     <button
-      onClick={toggleLocale}
+      onClick={() => {
+        void queryClient.invalidateQueries({ queryKey: serverKeys.providers });
+        toggleLocale();
+      }}
       className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-[var(--bg-tertiary)] hover:bg-[var(--bg-elevated)] border border-[var(--border-subtle)] hover:border-[var(--border-default)] transition-colors"
       title={locale === 'en' ? 'Türkçe\'ye geç' : 'Switch to English'}
     >

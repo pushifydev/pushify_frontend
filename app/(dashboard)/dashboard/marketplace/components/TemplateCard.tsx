@@ -57,7 +57,7 @@ export default function TemplateCard({ template, index, deployLabel }: TemplateC
           background: 'var(--bg-secondary)',
           borderWidth: '2px 1px 1px 1px',
           borderStyle: 'solid',
-          borderColor: `${accent} var(--glass-border) var(--glass-border) var(--glass-border)`,
+          borderColor: `${accent} var(--border-subtle) var(--border-subtle) var(--border-subtle)`,
           borderRadius: 12,
         }}
       >

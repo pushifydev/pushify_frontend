@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { showSuccessToast } from '@/lib/toast-i18n';
 import {
   getProjects,
   getProject,
@@ -68,9 +68,7 @@ export function useCreateProject() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
-      toast.success('Project created', {
-        description: `${data?.name} has been created`,
-      });
+      showSuccessToast('projectCreatedTitle', 'projectCreatedDesc', { name: data?.name ?? '' });
     },
   });
 }
@@ -87,9 +85,7 @@ export function useUpdateProject(id: string) {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
       queryClient.setQueryData(projectKeys.detail(id), data);
-      toast.success('Project updated', {
-        description: 'Project settings have been saved',
-      });
+      showSuccessToast('projectUpdatedTitle', 'projectUpdatedDesc');
     },
   });
 }
@@ -106,9 +102,7 @@ export function useDeleteProject() {
     onSuccess: (id) => {
       queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
       queryClient.removeQueries({ queryKey: projectKeys.detail(id) });
-      toast.success('Project deleted', {
-        description: 'Project has been deleted',
-      });
+      showSuccessToast('projectDeletedTitle', 'projectDeletedDesc');
     },
   });
 }
@@ -125,10 +119,11 @@ export function useUpdateProjectStatus(id: string) {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
       queryClient.setQueryData(projectKeys.detail(id), data);
-      const statusMessage = data?.status === 'active' ? 'resumed' : 'paused';
-      toast.success(`Project ${statusMessage}`, {
-        description: `Project has been ${statusMessage}`,
-      });
+      if (data?.status === 'active') {
+        showSuccessToast('projectResumedTitle', 'projectResumedDesc');
+      } else if (data?.status === 'paused') {
+        showSuccessToast('projectPausedTitle', 'projectPausedDesc');
+      }
     },
   });
 }
@@ -158,9 +153,7 @@ export function useRegenerateWebhookSecret(projectId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: projectKeys.webhook(projectId) });
-      toast.success('Webhook secret regenerated', {
-        description: 'Remember to update your webhook configuration',
-      });
+      showSuccessToast('webhookRegeneratedTitle', 'webhookRegeneratedDesc');
     },
   });
 }
@@ -179,9 +172,7 @@ export function useUpdateProjectSettings(projectId: string) {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
       queryClient.setQueryData(projectKeys.detail(projectId), data);
-      toast.success('Settings saved', {
-        description: 'Project settings have been updated',
-      });
+      showSuccessToast('projectSettingsSavedTitle', 'projectSettingsSavedDesc');
     },
   });
 }

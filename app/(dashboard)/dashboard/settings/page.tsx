@@ -41,7 +41,7 @@ export default function SettingsPage() {
             <div>
               <h1 className="text-2xl font-bold">{t('navigation', 'settings')}</h1>
               <p className="text-sm text-[var(--text-secondary)]">
-                Manage your account settings and preferences
+                {t('navigation', 'settingsDescription')}
               </p>
             </div>
           </div>

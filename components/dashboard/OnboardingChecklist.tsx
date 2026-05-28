@@ -64,10 +64,10 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
 
   return (
     <section
-      className="dash-panel mb-6 overflow-hidden"
+      className="dash-panel !p-0 mb-5 sm:mb-6 overflow-hidden min-w-0"
       aria-label={t('dashboard', 'onboardingTitle')}
     >
-      <div className="flex items-start justify-between gap-4 px-5 py-4 border-b border-[var(--border-subtle)]">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 px-4 sm:px-5 py-4 border-b border-[var(--border-subtle)]">
         <div>
           <p className="text-sm font-semibold">{t('dashboard', 'onboardingTitle')}</p>
           <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
@@ -113,7 +113,7 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
           return (
             <li key={step.id} className="flex items-stretch">
               <div
-                className="flex flex-1 items-center gap-4 px-5 py-4 min-w-0"
+                className="flex flex-1 flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-4 min-w-0"
                 style={{ opacity: prevDone || done ? 1 : 0.55 }}
               >
                 <div
@@ -138,7 +138,7 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
                 {!done && prevDone && (
                   <Link
                     href={step.href}
-                    className="btn btn-primary text-xs shrink-0"
+                    className="btn btn-primary text-xs shrink-0 w-full sm:w-auto justify-center"
                   >
                     {t('dashboard', 'onboardingContinue')}
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -155,7 +155,7 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
         })}
       </ol>
 
-      <div className="px-5 py-3 flex flex-wrap gap-3 text-xs" style={{ background: 'var(--bg-tertiary)' }}>
+      <div className="px-4 sm:px-5 py-3 flex flex-wrap gap-x-4 gap-y-2 text-xs" style={{ background: 'var(--bg-tertiary)' }}>
         <Link href="/docs" className="dash-link hover:underline">
           {t('dashboard', 'onboardingDocs')}
         </Link>

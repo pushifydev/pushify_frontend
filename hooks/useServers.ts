@@ -1,7 +1,8 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { showSuccessToast } from '@/lib/toast-i18n';
+import { useLocaleStore } from '@/stores/locale';
 import {
   listServers,
   getServer,
@@ -11,7 +12,17 @@ import {
   stopServer,
   rebootServer,
   syncServer,
+  updateServer,
+  getServerResizeOptions,
+  resizeServer,
+  listServerSnapshots,
+  createServerSnapshot,
+  deleteServerSnapshot,
+  getServerTimeline,
+  getServerSshInfo,
+  getServerSshKey,
   getProviderRegions,
+  type ServerSize,
   getProviderImages,
   getProviderSizes,
   getProviderServerTypes,
@@ -24,6 +35,10 @@ export const serverKeys = {
   all: ['servers'] as const,
   list: () => [...serverKeys.all, 'list'] as const,
   detail: (id: string) => [...serverKeys.all, 'detail', id] as const,
+  resizeOptions: (id: string) => [...serverKeys.all, 'resizeOptions', id] as const,
+  snapshots: (id: string) => [...serverKeys.all, 'snapshots', id] as const,
+  timeline: (id: string) => [...serverKeys.all, 'timeline', id] as const,
+  sshInfo: (id: string) => [...serverKeys.all, 'sshInfo', id] as const,
   providers: ['providers'] as const,
   regions: (provider: ServerProvider) => [...serverKeys.providers, provider, 'regions'] as const,
   images: (provider: ServerProvider) => [...serverKeys.providers, provider, 'images'] as const,
@@ -50,6 +65,7 @@ export function useServers() {
         (server) =>
           server.status === 'provisioning' ||
           server.status === 'rebooting' ||
+          server.statusMessage === 'resizing' ||
           server.setupStatus === 'pending' ||
           server.setupStatus === 'installing'
       );
@@ -74,6 +90,7 @@ export function useServer(serverId: string) {
       const needsPolling =
         data.status === 'provisioning' ||
         data.status === 'rebooting' ||
+        data.statusMessage === 'resizing' ||
         data.setupStatus === 'pending' ||
         data.setupStatus === 'installing';
       return needsPolling ? 5000 : false;
@@ -108,8 +125,9 @@ export function useProviderImages(provider: ServerProvider) {
 }
 
 export function useProviderSizes(provider: ServerProvider, region?: string) {
+  const locale = useLocaleStore((s) => s.locale);
   return useQuery({
-    queryKey: [...serverKeys.sizes(provider), region || 'default'],
+    queryKey: [...serverKeys.sizes(provider), region || 'default', locale],
     queryFn: async () => {
       const result = await getProviderSizes(provider, region);
       if (result.error) throw new Error(result.error.message);
@@ -147,9 +165,7 @@ export function useCreateServer() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
-      toast.success('Server created', {
-        description: `${data.name} is being provisioned`,
-      });
+      showSuccessToast('serverCreatedTitle', 'serverCreatedDesc', { name: data.name });
     },
   });
 }
@@ -165,9 +181,7 @@ export function useDeleteServer() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
-      toast.success('Server deleted', {
-        description: 'Server has been deleted successfully',
-      });
+      showSuccessToast('serverDeletedTitle', 'serverDeletedDesc');
     },
   });
 }
@@ -184,9 +198,7 @@ export function useStartServer() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
       queryClient.setQueryData(serverKeys.detail(data.id), data);
-      toast.success('Server starting', {
-        description: `${data.name} is starting up`,
-      });
+      showSuccessToast('serverStartingTitle', 'serverStartingDesc', { name: data.name });
     },
   });
 }
@@ -203,9 +215,7 @@ export function useStopServer() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
       queryClient.setQueryData(serverKeys.detail(data.id), data);
-      toast.success('Server stopping', {
-        description: `${data.name} is shutting down`,
-      });
+      showSuccessToast('serverStoppingTitle', 'serverStoppingDesc', { name: data.name });
     },
   });
 }
@@ -222,9 +232,7 @@ export function useRebootServer() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
       queryClient.setQueryData(serverKeys.detail(data.id), data);
-      toast.success('Server rebooting', {
-        description: `${data.name} is rebooting`,
-      });
+      showSuccessToast('serverRebootingTitle', 'serverRebootingDesc', { name: data.name });
     },
   });
 }
@@ -241,9 +249,152 @@ export function useSyncServer() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
       queryClient.setQueryData(serverKeys.detail(data.id), data);
-      toast.success('Server synced', {
-        description: `${data.name} has been synced with provider`,
-      });
+      showSuccessToast('serverSyncedTitle', 'serverSyncedDesc', { name: data.name });
+    },
+  });
+}
+
+export function useServerResizeOptions(serverId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: serverKeys.resizeOptions(serverId),
+    queryFn: async () => {
+      const result = await getServerResizeOptions(serverId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!serverId && enabled,
+  });
+}
+
+export function useResizeServer() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ serverId, size }: { serverId: string; size: ServerSize }) => {
+      const result = await resizeServer(serverId, size);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: serverKeys.list() });
+      queryClient.invalidateQueries({ queryKey: serverKeys.resizeOptions(data.id) });
+      queryClient.setQueryData(serverKeys.detail(data.id), data);
+      showSuccessToast('serverResizedTitle', 'serverResizedDesc', { name: data.name });
+    },
+  });
+}
+
+export function useUpdateServer() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      serverId,
+      input,
+    }: {
+      serverId: string;
+      input: { name?: string; description?: string | null };
+    }) => {
+      const result = await updateServer(serverId, input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: serverKeys.list() });
+      queryClient.setQueryData(serverKeys.detail(data.id), data);
+      showSuccessToast('serverUpdatedTitle', 'serverUpdatedDesc', { name: data.name });
+    },
+  });
+}
+
+export function useServerSnapshots(serverId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: serverKeys.snapshots(serverId),
+    queryFn: async () => {
+      const result = await listServerSnapshots(serverId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!serverId && enabled,
+    refetchInterval: 15000,
+  });
+}
+
+export function useCreateServerSnapshot() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      serverId,
+      input,
+    }: {
+      serverId: string;
+      input?: { name?: string; description?: string };
+    }) => {
+      const result = await createServerSnapshot(serverId, input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (_, { serverId }) => {
+      queryClient.invalidateQueries({ queryKey: serverKeys.snapshots(serverId) });
+      showSuccessToast('serverSnapshotCreatedTitle', 'serverSnapshotCreatedDesc');
+    },
+  });
+}
+
+export function useDeleteServerSnapshot() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      serverId,
+      snapshotId,
+    }: {
+      serverId: string;
+      snapshotId: string;
+    }) => {
+      const result = await deleteServerSnapshot(serverId, snapshotId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: (_, { serverId }) => {
+      queryClient.invalidateQueries({ queryKey: serverKeys.snapshots(serverId) });
+      showSuccessToast('serverSnapshotDeletedTitle', 'serverSnapshotDeletedDesc');
+    },
+  });
+}
+
+export function useServerTimeline(serverId: string) {
+  return useQuery({
+    queryKey: serverKeys.timeline(serverId),
+    queryFn: async () => {
+      const result = await getServerTimeline(serverId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!serverId,
+    staleTime: 30_000,
+  });
+}
+
+export function useServerSshInfo(serverId: string) {
+  return useQuery({
+    queryKey: serverKeys.sshInfo(serverId),
+    queryFn: async () => {
+      const result = await getServerSshInfo(serverId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!serverId,
+  });
+}
+
+export function useDownloadServerSshKey() {
+  return useMutation({
+    mutationFn: async (serverId: string) => {
+      const result = await getServerSshKey(serverId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
     },
   });
 }

@@ -27,7 +27,7 @@ export function ServerDetailSection({
   return (
     <section
       className={`rounded-xl p-6 space-y-5 ${className}`}
-      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
     >
       <div className={`flex gap-3 ${description ? 'items-start' : 'items-center'}`}>
         <div
@@ -113,7 +113,7 @@ export function CopyField({
         className="dash-icon-btn p-2 rounded-md shrink-0 inline-flex items-center justify-center transition-colors"
         style={{
           background: 'var(--bg-secondary)',
-          border: '1px solid var(--glass-border)',
+          border: '1px solid var(--border-subtle)',
           color: copied ? 'var(--status-success)' : 'var(--text-muted)',
         }}
         aria-label={label}
