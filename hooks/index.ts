@@ -130,6 +130,8 @@ export {
   useCreatePortalSession,
   useCancelSubscription,
   useResumeSubscription,
+  useInfraBilling,
+  useInfraTopUp,
 } from './useBilling';
 
 // Dashboard overview

@@ -21,18 +21,12 @@ import {
   Database,
 } from 'lucide-react';
 import { ServerMapView } from '@/components/servers/ServerMapView';
+import { ProviderIcon } from '@/components/servers/ProviderIcon';
 import { useTranslation, useServers, useStartServer, useStopServer, useRebootServer, useSyncServer } from '@/hooks';
 import { DeleteServerModal } from './components';
 import { SkeletonServerCard } from '@/components/Skeleton';
 import { SERVER_STATUS_COLORS } from '@/lib/constants';
 import type { Server as ServerType, ServerStatus, ServerSetupStatus } from '@/lib/api';
-
-const providerLogos: Record<string, string> = {
-  hetzner:      '/providers/hetzner.svg',
-  digitalocean: '/providers/digitalocean.svg',
-  aws:          '/providers/aws.svg',
-  gcp:          '/providers/gcp.svg',
-};
 
 export default function ServersPage() {
   const { t } = useTranslation();
@@ -167,26 +161,7 @@ export default function ServersPage() {
                 {/* Provider + name */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: 'var(--bg-tertiary)' }}
-                    >
-                      {providerLogos[server.provider] ? (
-                        <img
-                          src={providerLogos[server.provider]}
-                          alt={server.provider}
-                          className="w-5 h-5"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            (e.currentTarget.nextElementSibling as HTMLElement)?.classList.remove('hidden');
-                          }}
-                        />
-                      ) : null}
-                      <Server
-                        className={`w-4 h-4 ${providerLogos[server.provider] ? 'hidden' : ''}`}
-                        style={{ color: 'var(--text-muted)' }}
-                      />
-                    </div>
+                    <ProviderIcon provider={server.provider} size="sm" status={server.status} />
                     <div>
                       <h3 className="font-medium text-sm">{server.name}</h3>
                       <p className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>

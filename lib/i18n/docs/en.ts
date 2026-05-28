@@ -72,6 +72,9 @@ export const docsEn: DocsContent = {
     lead: 'Deploy, manage, and monitor your applications programmatically. Perfect for CI/CD pipelines, automation scripts, and custom integrations.',
     idNote:
       'Resource IDs in paths and responses are UUIDs (e.g. 550e8400-e29b-41d4-a716-446655440000). Use the id returned by list or create endpoints — placeholder values like proj_abc123 are not valid.',
+    infraNoteTitle: 'Managed server billing',
+    infraNote:
+      'Managed Hetzner servers are billed via prepaid infrastructure credits, separate from your platform subscription. Top up in Dashboard → Billing.',
     features: [
       { title: 'RESTful API', desc: 'Simple REST endpoints with JSON responses' },
       { title: 'Secure', desc: 'Scope-based API key permissions' },
