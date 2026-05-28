@@ -1284,6 +1284,13 @@ export const tr: TranslationKeys = {
     comparePlans: 'Planları Karşılaştır',
     currentPlanBadge: 'Mevcut',
     perMonth: '/ay',
+    billingCycleMonthly: 'Aylık',
+    billingCycleYearly: 'Yıllık',
+    billingCycleYearlySave: '−%20',
+    billedMonthly: 'aylık faturalandırılır',
+    billedAnnually: 'yıllık faturalandırılır',
+    plansPaidSection: 'Ücretli planlar',
+    plansScrollHint: 'Tüm planları görmek için kaydırın',
     // Plan details
     planDetails: 'Plan Detayları',
     storageGb: 'Depolama',
@@ -1299,6 +1306,8 @@ export const tr: TranslationKeys = {
       'Dağıtım ihtiyaçlarınıza uygun planı seçin. İstediğiniz zaman yükseltin veya düşürün.',
     plansFooterLead:
       'Platform planları SSL, GitHub ve dağıtım içerir. Yönetilen sunucular için ayrı ön ödemeli altyapı kredileri kullanılır.',
+    plansPricingNote:
+      'Abonelik = platform limitleri (proje, dağıtım, ekip). Yönetilen Hetzner sunucuları aylık plana dahil değildir; saatlik olarak altyapı cüzdanından (sağlayıcı + marj) tahsil edilir.',
     plansFooterNeedCustom: 'Özel limitler mi gerekiyor?',
     plansContactUs: 'Bize ulaşın',
     planMostPopular: 'En Popüler',

@@ -1265,6 +1265,13 @@ export interface TranslationKeys {
     comparePlans: string;
     currentPlanBadge: string;
     perMonth: string;
+    billingCycleMonthly: string;
+    billingCycleYearly: string;
+    billingCycleYearlySave: string;
+    billedMonthly: string;
+    billedAnnually: string;
+    plansPaidSection: string;
+    plansScrollHint: string;
     // Plan details
     planDetails: string;
     storageGb: string;
@@ -1279,6 +1286,7 @@ export interface TranslationKeys {
     stripeNotConfigured: string;
     comparePlansSubtitle: string;
     plansFooterLead: string;
+    plansPricingNote: string;
     plansFooterNeedCustom: string;
     plansContactUs: string;
     planMostPopular: string;
@@ -3031,6 +3039,13 @@ export const en: TranslationKeys = {
     comparePlans: 'Compare Plans',
     currentPlanBadge: 'Current',
     perMonth: '/month',
+    billingCycleMonthly: 'Monthly',
+    billingCycleYearly: 'Yearly',
+    billingCycleYearlySave: '−20%',
+    billedMonthly: 'billed monthly',
+    billedAnnually: 'billed annually',
+    plansPaidSection: 'Paid plans',
+    plansScrollHint: 'Scroll to compare tiers',
     // Plan details
     planDetails: 'Plan Details',
     storageGb: 'Storage',
@@ -3046,6 +3061,8 @@ export const en: TranslationKeys = {
       'Choose the plan that fits your deployment needs. Upgrade or downgrade anytime.',
     plansFooterLead:
       'Platform plans include SSL, GitHub integration, and deployments. Managed servers use separate prepaid infrastructure credits.',
+    plansPricingNote:
+      'Subscription = platform limits (projects, deploys, team). Managed Hetzner servers are billed hourly from your infrastructure wallet (provider cost + margin), not included in the monthly plan price.',
     plansFooterNeedCustom: 'Need custom limits?',
     plansContactUs: 'Contact us',
     planMostPopular: 'Most Popular',
