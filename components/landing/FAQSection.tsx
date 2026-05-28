@@ -16,6 +16,9 @@ export function FAQSection() {
     { q: t('homepage', 'faq4Q'), a: t('homepage', 'faq4A') },
     { q: t('homepage', 'faq5Q'), a: t('homepage', 'faq5A') },
     { q: t('homepage', 'faq6Q'), a: t('homepage', 'faq6A') },
+    { q: t('homepage', 'faq7Q'), a: t('homepage', 'faq7A') },
+    { q: t('homepage', 'faq8Q'), a: t('homepage', 'faq8A') },
+    { q: t('homepage', 'faq9Q'), a: t('homepage', 'faq9A') },
   ];
 
   return (

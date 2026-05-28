@@ -41,6 +41,15 @@ function RefundEN() {
         <li>Repeat purchases on previously refunded accounts</li>
       </ul>
 
+      <h3>3.3. Infrastructure credits (managed Hetzner)</h3>
+      <p>
+        Managed cloud servers are billed from a <strong>prepaid infrastructure credits</strong>{' '}
+        wallet, separate from your platform subscription. Credits are consumed hourly while servers
+        run. One-time top-ups through Stripe are generally <strong>non-refundable</strong> once
+        credited, including if a server stops because the balance reached zero. Contact support if
+        you believe a top-up was charged in error.
+      </p>
+
       <h2>4. How to Request a Refund</h2>
       <ol style={{ listStyle: 'decimal', paddingLeft: '1.5rem', marginBottom: '1rem' }}>
         <li>Email <a href="mailto:support@pushify.dev">support@pushify.dev</a></li>
@@ -67,6 +76,7 @@ function RefundEN() {
         <li>Pushify dashboard &rarr; <strong>Billing</strong> &rarr; <strong>Manage subscription</strong></li>
         <li>After cancellation, you can use the service until the end of the current billing period</li>
         <li>Auto-renewal stops; no further charges will occur</li>
+        <li>When the subscription ends, your plan becomes Free: managed Hetzner servers are stopped and active projects are paused until you resubscribe</li>
         <li>Your data is retained for <strong>30 days</strong>, allowing you to resubscribe within that window</li>
       </ul>
 
@@ -139,6 +149,15 @@ function RefundTR() {
         <li>Önceden iade alınmış hesaplara yapılan tekrar satın almalar</li>
       </ul>
 
+      <h3>3.3. Altyapı kredileri (yönetilen Hetzner)</h3>
+      <p>
+        Yönetilen bulut sunucuları, platform aboneliğinden ayrı{' '}
+        <strong>ön ödemeli altyapı kredileri</strong> cüzdanından faturalandırılır. Sunucu
+        çalışırken krediler saatlik düşer. Stripe ile yapılan tek seferlik yüklemeler genelde
+        cüzdana aktarıldıktan sonra <strong>iade edilmez</strong>; bakiye sıfırlanınca sunucunun
+        durması da buna dahildir. Hatalı tahsilat olduğunu düşünüyorsanız destek ile iletişime geçin.
+      </p>
+
       <h2>4. İade Talebi Nasıl Yapılır?</h2>
       <ol style={{ listStyle: 'decimal', paddingLeft: '1.5rem', marginBottom: '1rem' }}>
         <li><a href="mailto:support@pushify.dev">support@pushify.dev</a> adresine e-posta gönderin</li>
@@ -165,6 +184,7 @@ function RefundTR() {
         <li>Pushify dashboard &rarr; <strong>Billing</strong> &rarr; <strong>Manage subscription</strong></li>
         <li>İptal sonrası mevcut faturalama dönemi sonuna kadar hizmet kullanılabilir</li>
         <li>Otomatik yenileme durur, sonraki dönemde ücret alınmaz</li>
+        <li>Abonelik bittiğinde plan Ücretsiz olur: yönetilen Hetzner sunucuları durur, aktif projeler duraklatılır</li>
         <li>Verileriniz <strong>30 gün</strong> boyunca saklanır, bu sürede yeniden abone olabilirsiniz</li>
       </ul>
 
