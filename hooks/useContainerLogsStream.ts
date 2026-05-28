@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { API_BASE_URL, getAccessToken } from '@/lib/api/client';
 
 interface ContainerLogMessage {
-  type: 'connected' | 'log' | 'error';
+  type: 'connected' | 'log' | 'error' | 'end';
   message?: string;
   containerName?: string;
 }
@@ -29,6 +29,18 @@ export function useContainerLogsStream(
   const [containerName, setContainerName] = useState<string | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const closeStream = useCallback(() => {
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
+    }
+    setIsConnected(false);
+  }, []);
 
   const connect = useCallback(() => {
     if (!projectId || !deploymentId || !enabled) return;
@@ -79,6 +91,11 @@ export function useContainerLogsStream(
             break;
           case 'error':
             setError(data.message || 'Unknown error');
+            closeStream();
+            break;
+          case 'end':
+            // Snapshot stream finished — do not auto-reconnect (avoids duplicate logs)
+            closeStream();
             break;
         }
       } catch {
@@ -88,17 +105,11 @@ export function useContainerLogsStream(
     };
 
     eventSource.onerror = () => {
-      setIsConnected(false);
-      eventSource.close();
-
-      // Attempt reconnect after 3 seconds
-      reconnectTimeoutRef.current = setTimeout(() => {
-        if (enabled) {
-          connect();
-        }
-      }, 3000);
+      // Ignore close after normal end; only surface unexpected disconnects
+      if (eventSourceRef.current !== eventSource) return;
+      closeStream();
     };
-  }, [projectId, deploymentId, enabled]);
+  }, [projectId, deploymentId, enabled, closeStream]);
 
   const reconnect = useCallback(() => {
     setLogs([]);
@@ -116,14 +127,9 @@ export function useContainerLogsStream(
     }
 
     return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
+      closeStream();
     };
-  }, [connect, enabled]);
+  }, [connect, enabled, closeStream]);
 
   return {
     logs,

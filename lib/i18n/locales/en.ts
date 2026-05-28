@@ -786,6 +786,9 @@ export interface TranslationKeys {
     connecting: string;
     connectGithubBtn: string;
     connectedAs: string;
+    changeGithubAccount: string;
+    disconnectGithub: string;
+    githubDisconnected: string;
     searchRepos: string;
     loadingRepos: string;
     noReposFound: string;
@@ -2499,6 +2502,9 @@ export const en: TranslationKeys = {
     connecting: 'Connecting...',
     connectGithubBtn: 'Connect to GitHub',
     connectedAs: 'Connected as',
+    changeGithubAccount: 'Use another account',
+    disconnectGithub: 'Disconnect',
+    githubDisconnected: 'GitHub disconnected',
     searchRepos: 'Search repositories...',
     loadingRepos: 'Loading repositories...',
     noReposFound: 'No repositories found',

@@ -31,17 +31,23 @@ export function useDeploymentLogsStream(
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const reconnectAttempts = useRef<number>(0);
+  const isCompleteRef = useRef(false);
   const maxReconnectAttempts = 3;
+
+  const closeStream = useCallback(() => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    setIsConnected(false);
+  }, []);
 
   const connect = useCallback(() => {
     if (!projectId || !deploymentId) return;
 
-    // Close existing connection
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-    }
+    closeStream();
 
     const token = getAccessToken();
     if (!token) {
@@ -54,6 +60,7 @@ export function useDeploymentLogsStream(
 
     // Use fetch with SSE parsing since EventSource doesn't support custom headers
     const controller = new AbortController();
+    abortRef.current = controller;
 
     const fetchStream = async () => {
       try {
@@ -79,9 +86,10 @@ export function useDeploymentLogsStream(
             setLogs(data.data.logs || '');
             setStatus(data.data.status);
             setErrorMessage(data.data.errorMessage || null);
-            setIsComplete(data.data.isComplete);
+            isCompleteRef.current = !!data.data.isComplete;
+            setIsComplete(!!data.data.isComplete);
           }
-          setIsConnected(false);
+          closeStream();
           return;
         }
 
@@ -98,7 +106,7 @@ export function useDeploymentLogsStream(
           const { done, value } = await reader.read();
 
           if (done) {
-            setIsConnected(false);
+            closeStream();
             break;
           }
 
@@ -124,8 +132,9 @@ export function useDeploymentLogsStream(
                   setErrorMessage(data.errorMessage);
                 }
                 if (data.isComplete) {
+                  isCompleteRef.current = true;
                   setIsComplete(true);
-                  setIsConnected(false);
+                  closeStream();
                 }
               } catch (e) {
                 console.error('Failed to parse SSE data:', e);
@@ -139,10 +148,9 @@ export function useDeploymentLogsStream(
         }
 
         setError(err instanceof Error ? err.message : 'Connection failed');
-        setIsConnected(false);
+        closeStream();
 
-        // Auto-reconnect if not complete and under max attempts
-        if (!isComplete && reconnectAttempts.current < maxReconnectAttempts) {
+        if (!isCompleteRef.current && reconnectAttempts.current < maxReconnectAttempts) {
           reconnectAttempts.current++;
           setTimeout(() => {
             connect();
@@ -152,13 +160,11 @@ export function useDeploymentLogsStream(
     };
 
     fetchStream();
-
-    // Store abort controller for cleanup
-    eventSourceRef.current = { close: () => controller.abort() } as EventSource;
-  }, [projectId, deploymentId, isComplete]);
+  }, [projectId, deploymentId, closeStream]);
 
   const reconnect = useCallback(() => {
     reconnectAttempts.current = 0;
+    isCompleteRef.current = false;
     setLogs('');
     setIsComplete(false);
     setError(null);
@@ -166,14 +172,13 @@ export function useDeploymentLogsStream(
   }, [connect]);
 
   useEffect(() => {
+    isCompleteRef.current = false;
     connect();
 
     return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
+      closeStream();
     };
-  }, [connect]);
+  }, [connect, closeStream]);
 
   return {
     logs,
