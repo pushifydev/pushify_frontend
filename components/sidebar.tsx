@@ -73,24 +73,11 @@ export function Sidebar() {
       <Link
         href={href}
         title={collapsed ? label : undefined}
-        className={`group relative flex items-center gap-3 h-9 rounded-lg text-[13px] transition-colors duration-200
-          ${collapsed ? 'md:justify-center md:px-0 px-3' : 'px-2.5'}
-          ${active ? 'font-medium' : 'font-normal'}
-        `}
-        style={{
-          color: active ? 'var(--text-primary)' : 'var(--text-muted)',
-          background: active ? 'var(--hover-overlay-lg)' : 'transparent',
-        }}
+        className={`dash-nav-item ${active ? 'is-active' : ''} ${
+          collapsed ? 'md:justify-center md:px-0 md:min-w-0 px-3' : ''
+        }`}
       >
-        <span
-          className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full transition-all duration-200"
-          style={{
-            width: active ? 2 : 0,
-            height: active ? 14 : 0,
-            background: 'var(--accent-cyan)',
-          }}
-        />
-        <Icon className="w-[17px] h-[17px] shrink-0" strokeWidth={active ? 2 : 1.7} />
+        <Icon className="w-4 h-4 shrink-0" strokeWidth={active ? 2 : 1.75} />
         {!collapsed && <span className="truncate">{label}</span>}
         {collapsed && <span className="md:hidden truncate">{label}</span>}
       </Link>
@@ -98,12 +85,10 @@ export function Sidebar() {
   };
 
   const SectionLabel = ({ label }: { label: string }) => {
-    if (collapsed) return <div className="hidden md:block my-1.5 mx-3 h-px bg-[var(--glass-divider)]" />;
+    if (collapsed) return <div className="hidden md:block my-2 mx-2 h-px bg-[var(--border-subtle)]" />;
     return (
-      <div className="px-3 pt-4 pb-1.5">
-        <span className="text-[10px] font-medium uppercase tracking-widest text-[var(--text-muted)] opacity-70">
-          {label}
-        </span>
+      <div className="px-2 pt-4 pb-1">
+        <span className="dash-section-label px-1">{label}</span>
       </div>
     );
   };
@@ -117,7 +102,7 @@ export function Sidebar() {
     return (
       <Link
         href="/dashboard/billing"
-        className="block rounded-lg p-3 mx-1 mb-1.5 border border-[var(--border-subtle)] bg-[var(--hover-overlay)] hover:border-[var(--border-default)] transition-colors"
+        className="block rounded-lg p-3 mx-1 mb-1.5 border border-[var(--border-subtle)] bg-[var(--bg-tertiary)] hover:border-[var(--border-default)] transition-colors"
       >
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wide text-[var(--text-muted)]">
@@ -132,12 +117,12 @@ export function Sidebar() {
             {!usage.unlimited && `/${usage.limit}`}
           </span>
         </div>
-        <div className="h-1 rounded-full overflow-hidden bg-[var(--glass-border)]">
+        <div className="h-1 rounded-full overflow-hidden bg-[var(--border-subtle)]">
           <div
-            className="h-full rounded-full transition-all duration-500"
+            className="h-full rounded-full transition-all duration-500 bg-[var(--text-primary)]"
             style={{
               width: `${pct}%`,
-              background: isHigh ? 'var(--accent-amber)' : 'var(--accent-cyan)',
+              opacity: isHigh ? 1 : 0.35,
             }}
           />
         </div>
@@ -151,8 +136,7 @@ export function Sidebar() {
         ${collapsed ? 'md:justify-center md:px-0' : ''}`}
     >
       <div
-        className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0"
-        style={{ background: 'var(--accent-cyan)', color: 'var(--bg-primary)' }}
+        className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0 border border-[var(--border-default)] bg-[var(--bg-tertiary)] text-[var(--text-primary)]"
       >
         {user?.name?.charAt(0).toUpperCase() || 'U'}
       </div>
@@ -235,7 +219,7 @@ export function Sidebar() {
       <div className="px-2.5 pt-3 pb-0.5">
         <Link
           href="/dashboard/projects/new"
-          className={`flex items-center gap-2 h-9 rounded-lg text-[13px] font-semibold border border-[var(--border-default)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:bg-[var(--hover-overlay-lg)] transition-colors
+          className={`dash-accent-fill flex items-center gap-2 h-9 rounded-md text-[13px] font-medium transition-opacity hover:opacity-90
             ${collapsed ? 'md:justify-center md:px-0 px-3' : 'px-3'}`}
         >
           <Plus className="w-4 h-4 shrink-0" />
@@ -265,7 +249,7 @@ export function Sidebar() {
         {bottomNavItems.map((item) => (
           <NavItem key={item.href} {...item} />
         ))}
-        <div className="my-1.5 mx-2 h-px bg-[var(--glass-divider)]" />
+        <div className="my-1.5 mx-2 h-px bg-[var(--border-subtle)]" />
         {!collapsed && process.env.NEXT_PUBLIC_APP_VERSION && (
           <div className="px-3 pb-0.5">
             <span className="text-[10px] text-[var(--text-muted)] opacity-40">

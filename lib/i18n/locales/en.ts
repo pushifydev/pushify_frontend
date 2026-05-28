@@ -150,7 +150,11 @@ export interface TranslationKeys {
     opsAllClear: string;
     opsRecentFailures: string;
     opsNoErrorMessage: string;
+    opsViewAllActivity: string;
+    attentionZoneTitle: string;
     usageAlertsTitle: string;
+    usageAlertsDesc: string;
+    usageAlertsUpgrade: string;
     usageResourceServers: string;
     usageResourceDatabases: string;
     usageResourceProjects: string;
@@ -1812,7 +1816,11 @@ export const en: TranslationKeys = {
     opsAllClear: 'No critical issues — deployments and servers look healthy.',
     opsRecentFailures: 'Recent failed deploys',
     opsNoErrorMessage: 'Deployment failed — see logs',
-    usageAlertsTitle: 'Plan usage warnings',
+    opsViewAllActivity: 'View all activity',
+    attentionZoneTitle: 'Needs attention',
+    usageAlertsTitle: 'Plan usage',
+    usageAlertsDesc: 'You are approaching limits on your current plan. Upgrade before deploys or invites are blocked.',
+    usageAlertsUpgrade: 'Upgrade plan',
     usageResourceServers: 'Servers',
     usageResourceDatabases: 'Databases',
     usageResourceProjects: 'Projects',

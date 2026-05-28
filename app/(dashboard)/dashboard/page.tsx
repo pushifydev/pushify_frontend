@@ -17,12 +17,17 @@ import {
 } from 'lucide-react';
 import { useProjects, useServers, useTranslation, useMetricsOverview } from '@/hooks';
 import { OnboardingChecklist } from '@/components/dashboard/OnboardingChecklist';
-import { OperationsPanel } from '@/components/dashboard/OperationsPanel';
-import { UsageAlerts } from '@/components/dashboard/UsageAlerts';
+import { DashboardAttentionZone } from '@/components/dashboard/DashboardAttentionZone';
 import { useAuthStore } from '@/stores/auth';
 import { formatTimeAgo, formatStorage } from '@/lib/formatters';
-import { PROJECT_STATUS_COLORS, getStatusColor, STATUS_COLORS } from '@/lib/constants';
+import { getStatusColor } from '@/lib/constants';
 import { Skeleton, SkeletonDashboardProjectRow } from '@/components/Skeleton';
+
+function metricFillLevel(percent: number): 'is-critical' | 'is-warning' | 'is-low' {
+  if (percent > 85) return 'is-critical';
+  if (percent > 60) return 'is-warning';
+  return 'is-low';
+}
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -38,44 +43,67 @@ export default function DashboardPage() {
     return t('dashboard', 'greetingEvening');
   };
 
-  const activeProjects = projects.filter(p => p.status === 'active').length;
+  const activeProjects = projects.filter((p) => p.status === 'active').length;
   const hasMetrics = !!metricsOverview && metricsOverview.runningContainers > 0;
 
-  return (
-    <div className="max-w-6xl mx-auto pb-10 stagger-children">
+  const statCards = [
+    {
+      label: t('dashboard', 'totalProjects'),
+      value: String(projects.length),
+      icon: <GitBranch className="w-4 h-4" />,
+    },
+    {
+      label: t('dashboard', 'activeProjects'),
+      value: String(activeProjects),
+      icon: <Activity className="w-4 h-4" />,
+    },
+    {
+      label: t('dashboard', 'runningContainers'),
+      value: hasMetrics ? String(metricsOverview!.runningContainers) : '0',
+      icon: <Server className="w-4 h-4" />,
+    },
+    {
+      label: t('dashboard', 'avgCpu'),
+      value: hasMetrics ? `${metricsOverview!.aggregate.avgCpuPercent.toFixed(1)}%` : '—',
+      icon: <Cpu className="w-4 h-4" />,
+    },
+  ];
 
-      {/* ── Hero ─────────────────────────────────────── */}
-      <div className="dash-card relative px-7 py-6 mb-6">
-        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+  const quickActions = [
+    {
+      title: t('dashboard', 'connectRepo'),
+      desc: t('dashboard', 'connectRepoDesc'),
+      icon: <GitBranch className="w-4 h-4" />,
+      href: '/dashboard/projects/new',
+    },
+    {
+      title: t('dashboard', 'addDomain'),
+      desc: t('dashboard', 'addDomainDesc'),
+      icon: <Globe className="w-4 h-4" />,
+      href: '/dashboard/projects',
+    },
+    {
+      title: t('dashboard', 'viewLogs'),
+      desc: t('dashboard', 'viewLogsDesc'),
+      icon: <Activity className="w-4 h-4" />,
+      href: '/dashboard/projects',
+    },
+  ];
+
+  return (
+    <div className="dash-page pb-10 stagger-children">
+      <section className="dash-card px-6 py-5 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
           <div>
-            <p
-              style={{
-                fontSize: 11,
-                fontFamily: 'var(--font-mono)',
-                color: 'var(--text-muted)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.12em',
-                marginBottom: 8,
-              }}
-            >
-              {getGreeting()}
-            </p>
-            <h1
-              className="stat-number"
-              style={{
-                fontSize: 32,
-                fontWeight: 800,
-                letterSpacing: '-0.04em',
-                lineHeight: 1,
-                color: 'var(--text-primary)',
-              }}
-            >
+            <p className="dash-eyebrow mb-2">{getGreeting()}</p>
+            <h1 className="dash-page-title stat-number">
               {user?.name?.split(' ')[0] || t('common', 'fallbackDisplayName')}.
             </h1>
-            <p style={{ marginTop: 10, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            <p className="mt-2.5 text-sm leading-relaxed text-[var(--text-secondary)]">
               {t('dashboard', 'whatsHappening')}
               {activeProjects > 0 && (
-                <span style={{ color: 'var(--accent-cyan)', marginLeft: 8 }}>
+                <span className="text-[var(--text-muted)]">
+                  {' '}
                   · {activeProjects} {t('dashboard', 'activeProjects').toLowerCase()}
                 </span>
               )}
@@ -86,7 +114,7 @@ export default function DashboardPage() {
             {t('navigation', 'newProject')}
           </Link>
         </div>
-      </div>
+      </section>
 
       {!projectsLoading && !serversLoading && (
         <OnboardingChecklist
@@ -98,96 +126,28 @@ export default function DashboardPage() {
         />
       )}
 
-      {(projects.length > 0 || servers.length > 0) && (
-        <>
-          <OperationsPanel />
-          <UsageAlerts />
-        </>
-      )}
+      <DashboardAttentionZone active={projects.length > 0 || servers.length > 0} />
 
-      {/* ── Site Studio CTA ──────────────────────────── */}
-      <Link
-        href="/dashboard/sites"
-        className="group block mb-5 rounded-lg px-6 py-5 transition-colors"
-        style={{
-          background: 'var(--bg-secondary)',
-          border: '1px solid var(--border-subtle)',
-        }}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <p
-              className="text-[0.9375rem] font-semibold mb-1 tracking-tight"
-              style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}
-            >
-              {t('siteStudio', 'dashboardCtaTitle')}
-            </p>
-            <p className="text-sm leading-relaxed max-w-lg" style={{ color: 'var(--text-muted)' }}>
-              {t('siteStudio', 'dashboardCtaDesc')}
-            </p>
-          </div>
-          <span
-            className="flex items-center gap-1 text-sm font-medium shrink-0 underline underline-offset-4 decoration-[var(--border-default)] group-hover:decoration-[var(--text-primary)]"
-            style={{ color: 'var(--text-primary)' }}
-          >
-            {t('siteStudio', 'dashboardCtaButton')}
-            <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2} />
-          </span>
-        </div>
-      </Link>
-
-      {/* ── Stat cards ───────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-        {[
-          {
-            label: t('dashboard', 'totalProjects'),
-            value: String(projects.length),
-            icon: <GitBranch className="w-4 h-4" />,
-            accent: STATUS_COLORS.cyan,
-          },
-          {
-            label: t('dashboard', 'activeProjects'),
-            value: String(activeProjects),
-            icon: <Activity className="w-4 h-4" />,
-            accent: STATUS_COLORS.success,
-          },
-          {
-            label: t('dashboard', 'runningContainers'),
-            value: hasMetrics ? String(metricsOverview!.runningContainers) : '0',
-            icon: <Server className="w-4 h-4" />,
-            accent: STATUS_COLORS.cyan,
-          },
-          {
-            label: t('dashboard', 'avgCpu'),
-            value: hasMetrics ? `${metricsOverview!.aggregate.avgCpuPercent.toFixed(1)}%` : '—',
-            icon: <Cpu className="w-4 h-4" />,
-            accent: STATUS_COLORS.purple,
-          },
-        ].map((card, idx) => (
+        {statCards.map((card, idx) => (
           <StatCard
             key={card.label}
-            {...card}
+            label={card.label}
+            value={card.value}
+            icon={card.icon}
             loading={(idx < 2 && projectsLoading) || (idx >= 2 && metricsLoading)}
           />
         ))}
       </div>
 
-      {/* ── System health ─────────────────────────────── */}
       {hasMetrics && (
-        <div
-          className="rounded-xl p-5 mb-5"
-          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-        >
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" style={{ color: 'var(--accent-cyan)' }} />
-              <span className="text-sm font-semibold">{t('dashboard', 'systemHealth')}</span>
+        <section className="dash-panel p-5 mb-5">
+          <div className="dash-panel-header">
+            <div className="dash-panel-title">
+              <BarChart3 className="w-4 h-4 text-[var(--text-secondary)]" />
+              {t('dashboard', 'systemHealth')}
             </div>
-            <Link
-              href="/dashboard/monitoring"
-              className="flex items-center gap-1 text-xs transition-colors"
-              style={{ color: 'var(--accent-cyan)' }}
-            >
+            <Link href="/dashboard/monitoring" className="dash-link flex items-center gap-1">
               {t('navigation', 'monitoring')}
               <ArrowUpRight className="w-3 h-3" />
             </Link>
@@ -197,45 +157,32 @@ export default function DashboardPage() {
               label="CPU"
               value={`${metricsOverview!.aggregate.avgCpuPercent.toFixed(1)}%`}
               percent={metricsOverview!.aggregate.avgCpuPercent}
-              color={
-                metricsOverview!.aggregate.avgCpuPercent > 85 ? STATUS_COLORS.error
-                  : metricsOverview!.aggregate.avgCpuPercent > 60 ? '#f59e0b'
-                  : STATUS_COLORS.cyan
-              }
+              stressed
             />
             <MetricBar
               label={t('dashboard', 'totalMemory')}
               value={formatStorage(metricsOverview!.aggregate.totalMemoryUsageMB)}
               percent={metricsOverview!.aggregate.avgMemoryPercent}
-              color={
-                metricsOverview!.aggregate.avgMemoryPercent > 85 ? STATUS_COLORS.error
-                  : metricsOverview!.aggregate.avgMemoryPercent > 60 ? '#f59e0b'
-                  : STATUS_COLORS.purple
-              }
+              stressed
             />
             <MetricBar
               label="↓ Net In"
               value={formatStorage(metricsOverview!.aggregate.totalNetworkRxMB)}
               percent={Math.min((metricsOverview!.aggregate.totalNetworkRxMB / 1024) * 100, 100)}
-              color="#34d399"
             />
             <MetricBar
               label="↑ Net Out"
               value={formatStorage(metricsOverview!.aggregate.totalNetworkTxMB)}
               percent={Math.min((metricsOverview!.aggregate.totalNetworkTxMB / 1024) * 100, 100)}
-              color="#60a5fa"
             />
           </div>
-        </div>
+        </section>
       )}
 
-      {/* ── Main grid ────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
-
-        {/* Projects — 2/3 */}
         <div className="lg:col-span-2 space-y-2">
           <SectionLabel label={t('dashboard', 'yourProjects')}>
-            <Link href="/dashboard/projects" className="flex items-center gap-1 text-xs transition-colors" style={{ color: 'var(--accent-cyan)' }}>
+            <Link href="/dashboard/projects" className="dash-link flex items-center gap-1">
               {t('common', 'viewAll')} <ArrowUpRight className="w-3 h-3" />
             </Link>
           </SectionLabel>
@@ -247,13 +194,12 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : projects.length === 0 ? (
-            <div
-              className="rounded-xl p-10 text-center"
-              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-            >
-              <Zap className="w-6 h-6 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
-              <p className="font-semibold mb-1">{t('dashboard', 'noProjectsYet')}</p>
-              <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
+            <div className="dash-panel p-10 text-center">
+              <Zap className="dash-empty-icon mb-3" />
+              <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">
+                {t('dashboard', 'noProjectsYet')}
+              </p>
+              <p className="text-sm mb-4 text-[var(--text-secondary)]">
                 {t('dashboard', 'createFirstProject')}
               </p>
               <Link href="/dashboard/projects/new" className="btn btn-primary">
@@ -263,75 +209,55 @@ export default function DashboardPage() {
             </div>
           ) : (
             projects.slice(0, 7).map((project) => {
-              const m = metricsOverview?.projects.find(p => p.projectId === project.id);
-              const accent = getStatusColor(project.status);
+              const m = metricsOverview?.projects.find((p) => p.projectId === project.id);
+              const isActive = project.status === 'active';
+
               return (
                 <Link
                   key={project.id}
                   href={`/dashboard/projects/${project.id}`}
-                  className="group flex items-stretch rounded-xl overflow-hidden transition-all"
-                  style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--glass-border-strong)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--glass-border)';
-                  }}
+                  className="group dash-list-row"
                 >
-                  {/* Left status bar */}
-                  <div
-                    className="w-[3px] shrink-0"
-                    style={{ background: accent, boxShadow: `0 0 6px ${accent}80` }}
+                  <span
+                    className={`dash-status-dot ${isActive ? 'is-active' : ''}`}
+                    style={!isActive ? { background: getStatusColor(project.status) } : undefined}
                   />
-                  <div className="flex items-center gap-3 flex-1 min-w-0 px-4 py-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="flex-1 min-w-0">
-                      <p
-                        className="text-sm font-medium truncate group-hover:text-[var(--accent-cyan)] transition-colors"
-                        style={{ color: 'var(--text-primary)' }}
-                      >
+                      <p className="text-sm font-medium truncate text-[var(--text-primary)] group-hover:underline underline-offset-2">
                         {project.name}
                       </p>
-                      <div className="flex items-center gap-2 mt-0.5">
+                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                         {project.framework && (
-                          <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                            {project.framework}
-                          </span>
+                          <span className="dash-mono-caption">{project.framework}</span>
                         )}
-                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                          · {formatTimeAgo(project.updatedAt, t)}
+                        <span className="dash-caption">
+                          {project.framework ? '· ' : ''}
+                          {formatTimeAgo(project.updatedAt, t)}
                         </span>
                       </div>
                     </div>
 
                     {m && (
-                      <div
-                        className="hidden sm:flex items-center gap-3"
-                        style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}
-                      >
+                      <div className="hidden sm:flex items-center gap-3 dash-mono-caption">
                         <span className="flex items-center gap-1">
-                          <Cpu className="w-3 h-3" style={{ color: STATUS_COLORS.cyan }} />
+                          <Cpu className="w-3 h-3" />
                           {m.cpuPercent.toFixed(1)}%
                         </span>
                         <span className="flex items-center gap-1">
-                          <HardDrive className="w-3 h-3" style={{ color: STATUS_COLORS.purple }} />
+                          <HardDrive className="w-3 h-3" />
                           {formatStorage(m.memoryUsageMB)}
                         </span>
                       </div>
                     )}
 
                     {project.productionUrl && (
-                      <span
-                        className="hidden md:block text-xs truncate max-w-28"
-                        style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: 11 }}
-                      >
+                      <span className="hidden md:block dash-mono-caption truncate max-w-28">
                         {project.productionUrl.replace('https://', '')}
                       </span>
                     )}
 
-                    <ExternalLink
-                      className="w-3.5 h-3.5 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity"
-                      style={{ color: 'var(--text-secondary)' }}
-                    />
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)] opacity-0 group-hover:opacity-60 transition-opacity" />
                   </div>
                 </Link>
               );
@@ -339,7 +265,6 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Activity — 1/3 */}
         <div className="space-y-2">
           <SectionLabel label={t('dashboard', 'recentActivity')} />
 
@@ -348,99 +273,68 @@ export default function DashboardPage() {
               <Link
                 key={pm.projectId}
                 href={`/dashboard/projects/${pm.projectId}`}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all"
-                style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--glass-border-strong)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--glass-border)';
-                }}
+                className="group dash-list-row"
               >
-                <div
-                  className="w-1.5 h-1.5 rounded-full shrink-0"
-                  style={{
-                    background: pm.containerStatus === 'running' ? STATUS_COLORS.success : STATUS_COLORS.error,
-                    boxShadow: `0 0 5px ${pm.containerStatus === 'running' ? `${STATUS_COLORS.success}80` : `${STATUS_COLORS.error}80`}`,
-                  }}
+                <span
+                  className={`dash-status-dot ${
+                    pm.containerStatus === 'running' ? 'is-success' : 'is-error'
+                  }`}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{pm.projectName}</p>
-                  <p style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', marginTop: 1 }}>
+                  <p className="text-sm font-medium truncate text-[var(--text-primary)] group-hover:underline underline-offset-2">
+                    {pm.projectName}
+                  </p>
+                  <p className="dash-mono-caption mt-0.5">
                     CPU {pm.cpuPercent.toFixed(1)}% · RAM {pm.memoryPercent.toFixed(0)}%
                   </p>
                 </div>
-                <div className="w-10 h-1 rounded-full overflow-hidden shrink-0" style={{ background: 'var(--bg-tertiary)' }}>
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${Math.min(pm.cpuPercent, 100)}%`,
-                      background: pm.cpuPercent > 85 ? STATUS_COLORS.error : pm.cpuPercent > 60 ? '#f59e0b' : STATUS_COLORS.cyan,
-                    }}
-                  />
-                </div>
+                <MetricBar
+                  compact
+                  label=""
+                  value=""
+                  percent={pm.cpuPercent}
+                  stressed
+                />
               </Link>
             ))
           ) : (
-            <div
-              className="rounded-xl p-6 text-center"
-              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-            >
-              <TrendingUp className="w-6 h-6 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                {t('dashboard', 'activityWillAppear')}
-              </p>
+            <div className="dash-panel p-6 text-center">
+              <TrendingUp className="dash-empty-icon mb-2" />
+              <p className="text-sm text-[var(--text-secondary)]">{t('dashboard', 'activityWillAppear')}</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* ── Quick actions ─────────────────────────────── */}
+      <Link
+        href="/dashboard/sites"
+        className="group dash-panel block mb-5 px-6 py-5 transition-colors hover:border-[var(--border-default)]"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold tracking-tight text-[var(--text-primary)] mb-1">
+              {t('siteStudio', 'dashboardCtaTitle')}
+            </p>
+            <p className="text-sm leading-relaxed max-w-lg text-[var(--text-muted)]">
+              {t('siteStudio', 'dashboardCtaDesc')}
+            </p>
+          </div>
+          <span className="dash-link flex items-center gap-1 shrink-0">
+            {t('siteStudio', 'dashboardCtaButton')}
+            <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2} />
+          </span>
+        </div>
+      </Link>
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {[
-          {
-            title: t('dashboard', 'connectRepo'),
-            desc: t('dashboard', 'connectRepoDesc'),
-            icon: <GitBranch className="w-4 h-4" />,
-            href: '/dashboard/projects/new',
-            accent: STATUS_COLORS.cyan,
-          },
-          {
-            title: t('dashboard', 'addDomain'),
-            desc: t('dashboard', 'addDomainDesc'),
-            icon: <Globe className="w-4 h-4" />,
-            href: '/dashboard/projects',
-            accent: STATUS_COLORS.purple,
-          },
-          {
-            title: t('dashboard', 'viewLogs'),
-            desc: t('dashboard', 'viewLogsDesc'),
-            icon: <Activity className="w-4 h-4" />,
-            href: '/dashboard/projects',
-            accent: '#34d399',
-          },
-        ].map((a) => (
-          <Link
-            key={a.title}
-            href={a.href}
-            className="group flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all"
-            style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.borderColor = `${a.accent}30`;
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.borderColor = 'var(--glass-border)';
-            }}
-          >
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: `${a.accent}14`, color: a.accent }}
-            >
-              {a.icon}
+        {quickActions.map((action) => (
+          <Link key={action.title} href={action.href} className="group dash-list-row">
+            <div className="dash-icon-box shrink-0 group-hover:border-[var(--border-default)]">
+              {action.icon}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{a.title}</p>
-              <p className="text-xs mt-0.5 leading-relaxed" style={{ color: 'var(--text-muted)' }}>{a.desc}</p>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">{action.title}</p>
+              <p className="text-xs mt-0.5 leading-relaxed text-[var(--text-muted)]">{action.desc}</p>
             </div>
           </Link>
         ))}
@@ -448,8 +342,6 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-/* ── Sub-components ───────────────────────────────── */
 
 function SectionLabel({
   label,
@@ -459,18 +351,8 @@ function SectionLabel({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between mb-1">
-      <span
-        style={{
-          fontSize: 10.5,
-          fontFamily: 'var(--font-mono)',
-          color: 'var(--text-muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-        }}
-      >
-        {label}
-      </span>
+    <div className="flex items-center justify-between mb-2">
+      <span className="dash-section-label">{label}</span>
       {children}
     </div>
   );
@@ -480,62 +362,24 @@ function StatCard({
   label,
   value,
   icon,
-  accent,
   loading,
 }: {
   label: string;
   value: string;
   icon: React.ReactNode;
-  accent: string;
   loading?: boolean;
 }) {
   return (
-    <div
-      className="relative overflow-hidden rounded-xl p-5"
-      style={{
-        background: 'var(--bg-secondary)',
-        borderWidth: '2px 1px 1px 1px',
-        borderStyle: 'solid',
-        borderColor: `${accent} var(--glass-border) var(--glass-border) var(--glass-border)`,
-        borderRadius: 12,
-      }}
-    >
-      {/* Corner ambient glow */}
-      <div
-        className="absolute top-0 right-0 w-24 h-24 pointer-events-none"
-        style={{ background: `radial-gradient(circle at top right, ${accent}18 0%, transparent 70%)` }}
-      />
-
-      <div style={{ color: accent, opacity: 0.75, marginBottom: 14 }}>{icon}</div>
-
-      <p
-        className="stat-number"
-        style={{
-          fontSize: 40,
-          fontWeight: 800,
-          lineHeight: 1,
-          letterSpacing: '-0.04em',
-          color: 'var(--text-primary)',
-          marginBottom: 6,
-        }}
-      >
+    <div className="dash-stat-card p-5">
+      <div className="dash-icon-box mb-4">{icon}</div>
+      <p className="dash-stat-value stat-number">
         {loading ? (
-          <Skeleton className="inline-block align-middle h-10 w-[3.5ch] max-w-[100px] rounded-md" />
+          <Skeleton className="inline-block align-middle h-7 w-[3ch] max-w-[80px] rounded" />
         ) : (
           value
         )}
       </p>
-      <p
-        style={{
-          fontSize: 10.5,
-          color: 'var(--text-muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          fontFamily: 'var(--font-mono)',
-        }}
-      >
-        {label}
-      </p>
+      <p className="dash-stat-label">{label}</p>
     </div>
   );
 }
@@ -544,26 +388,37 @@ function MetricBar({
   label,
   value,
   percent,
-  color,
+  stressed = false,
+  compact = false,
 }: {
   label: string;
   value: string;
   percent: number;
-  color: string;
+  stressed?: boolean;
+  compact?: boolean;
 }) {
+  const fillClass = stressed ? metricFillLevel(percent) : 'is-low';
+  const width = `${Math.min(percent, 100)}%`;
+  const fillStyle = stressed ? { width } : { width, opacity: Math.max(0.2, percent / 100) };
+
+  if (compact) {
+    return (
+      <div className="w-10 shrink-0">
+        <div className="dash-metric-track">
+          <div className={`dash-metric-fill bar-grow ${fillClass}`} style={fillStyle} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{label}</span>
-        <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-          {value}
-        </span>
+      <div className="flex items-center justify-between gap-2">
+        <span className="dash-caption">{label}</span>
+        <span className="dash-mono-caption text-[var(--text-secondary)]">{value}</span>
       </div>
-      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-tertiary)' }}>
-        <div
-          className="h-full rounded-full bar-grow"
-          style={{ width: `${Math.min(percent, 100)}%`, background: color }}
-        />
+      <div className="dash-metric-track">
+        <div className={`dash-metric-fill bar-grow ${fillClass}`} style={fillStyle} />
       </div>
     </div>
   );
