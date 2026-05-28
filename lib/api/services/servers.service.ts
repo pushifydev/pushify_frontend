@@ -83,8 +83,16 @@ export interface ServerSizeOption {
     vcpus: number;
     memoryMb: number;
     diskGb: number;
-    priceMonthly: number;
+    providerCostMonthlyCents: number;
+    providerCostHourlyCents: number;
+    customerPriceMonthlyCents: number;
+    customerPriceHourlyCents: number;
+    marginPercent: number;
+    /** @deprecated use customerPriceMonthlyCents — kept for backward compat */
+    priceMonthly?: number;
   };
+  allowedByPlan: boolean;
+  disallowReason?: string;
 }
 
 export interface ProviderServerType {
@@ -210,11 +218,13 @@ export const getProviderImages = async (
 };
 
 export const getProviderSizes = async (
-  provider: ServerProvider
+  provider: ServerProvider,
+  region?: string,
 ): Promise<ApiResponse<ServerSizeOption[]>> => {
   try {
     const response = await api.get<{ data: ServerSizeOption[] }>(
-      `/servers/providers/${provider}/sizes`
+      `/servers/providers/${provider}/sizes`,
+      { params: region ? { region } : undefined },
     );
     return { data: response.data.data };
   } catch (error) {

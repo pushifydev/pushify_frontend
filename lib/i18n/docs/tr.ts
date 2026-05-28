@@ -72,6 +72,9 @@ export const docsTr: DocsContent = {
     lead: 'Uygulamalarınızı programatik olarak dağıtın, yönetin ve izleyin. CI/CD hatları, otomasyon betikleri ve özel entegrasyonlar için idealdir.',
     idNote:
       'Yol ve yanıtlardaki kaynak kimlikleri UUID biçimindedir (örn. 550e8400-e29b-41d4-a716-446655440000). Listeleme veya oluşturma uç noktalarının döndürdüğü id değerini kullanın — proj_abc123 gibi örnek değerler geçerli değildir.',
+    infraNoteTitle: 'Yönetilen sunucu faturalandırması',
+    infraNote:
+      'Yönetilen Hetzner sunucuları, platform aboneliğinden ayrı ön ödemeli altyapı kredileri ile faturalandırılır. Panel → Faturalandırma üzerinden kredi yükleyin.',
     features: [
       { title: 'RESTful API', desc: 'JSON yanıtlı basit REST uç noktaları' },
       { title: 'Güvenli', desc: 'Kapsam tabanlı API anahtarı izinleri' },

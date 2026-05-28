@@ -26,7 +26,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
   const [byosData, setByosData] = useState({ name: '', ipv4: '', sshPrivateKey: '' });
 
   const { data: regions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
-  const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner');
+  const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner', formData.region);
   const { data: images = [], isLoading: imagesLoading } = useProviderImages('hetzner');
 
   // Auto-select first region
@@ -288,12 +288,16 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {providerSizes.map((sizeOption) => (
+                  {providerSizes.map((sizeOption) => {
+                    const disabled = !sizeOption.allowedByPlan;
+                    const monthlyUsd = (sizeOption.specs.customerPriceMonthlyCents / 100).toFixed(2);
+                    return (
                     <button
                       key={sizeOption.size}
                       type="button"
-                      onClick={() => setFormData({ ...formData, size: sizeOption.size })}
-                      className={`p-5 rounded-xl border text-left transition-all ${
+                      disabled={disabled}
+                      onClick={() => !disabled && setFormData({ ...formData, size: sizeOption.size })}
+                      className={`p-5 rounded-xl border text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                         formData.size === sizeOption.size
                           ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 ring-1 ring-[var(--accent-cyan)]/30'
                           : 'border-[var(--border-subtle)] hover:border-[var(--border-default)] hover:bg-[var(--bg-tertiary)]/50'
@@ -302,7 +306,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-lg font-bold uppercase tracking-wide">{sizeOption.size}</span>
                         <span className={`text-sm font-semibold ${formData.size === sizeOption.size ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-secondary)]'}`}>
-                          €{sizeOption.specs.priceMonthly}/mo
+                          ${monthlyUsd}/mo
                         </span>
                       </div>
                       <div className="space-y-2">
@@ -320,7 +324,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                         </div>
                       </div>
                     </button>
-                  ))}
+                  );})}
                 </div>
               )}
             </div>

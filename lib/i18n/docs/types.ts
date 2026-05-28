@@ -61,6 +61,8 @@ export interface DocsContent {
     title: string;
     lead: string;
     idNote: string;
+    infraNoteTitle: string;
+    infraNote: string;
     features: { title: string; desc: string }[];
     steps: { title: string; desc: string; linkText?: string; descBefore?: string; descAfter?: string }[];
     exploreLinks: { label: string; desc: string }[];

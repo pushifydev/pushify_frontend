@@ -480,6 +480,34 @@ html.light .dash-app .input:focus {
   border-radius: 0.75rem;
 }
 
+/* Icon + label rows (dashboard) */
+.dash-app .dash-icon-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dash-app .dash-icon-row svg {
+  flex-shrink: 0;
+}
+
+.dash-app .btn svg,
+.dash-app .dash-icon-btn svg {
+  flex-shrink: 0;
+}
+
+.dash-app .dash-section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dash-app .dash-section-icon svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .dash-app .dash-stat-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);

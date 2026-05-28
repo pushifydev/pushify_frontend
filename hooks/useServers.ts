@@ -107,16 +107,16 @@ export function useProviderImages(provider: ServerProvider) {
   });
 }
 
-export function useProviderSizes(provider: ServerProvider) {
+export function useProviderSizes(provider: ServerProvider, region?: string) {
   return useQuery({
-    queryKey: serverKeys.sizes(provider),
+    queryKey: [...serverKeys.sizes(provider), region || 'default'],
     queryFn: async () => {
-      const result = await getProviderSizes(provider);
+      const result = await getProviderSizes(provider, region);
       if (result.error) throw new Error(result.error.message);
       return result.data!;
     },
     enabled: !!provider,
-    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+    staleTime: 1000 * 60 * 5,
   });
 }
 

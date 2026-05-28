@@ -7,7 +7,7 @@ import {
   ArrowLeft, Server, Loader2, Cpu, HardDrive, MemoryStick,
   Globe, Key, Lock, Eye, EyeOff, Info, CheckCircle,
 } from 'lucide-react';
-import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages } from '@/hooks';
+import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages, useInfraBilling } from '@/hooks';
 import type { CreateServerInput } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -40,7 +40,8 @@ export default function NewServerPage() {
   });
 
   const { data: regions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
-  const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner');
+  const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner', managedData.region);
+  const { data: infraBilling } = useInfraBilling();
   const { data: images = [], isLoading: imagesLoading } = useProviderImages('hetzner');
 
   useEffect(() => {
@@ -56,9 +57,19 @@ export default function NewServerPage() {
     }
   }, [images, managedData.image]);
 
+  const selectedSize = providerSizes.find((s) => s.size === managedData.size);
+  const walletBalance = infraBilling?.wallet.balanceCents ?? 0;
+  const requiredCents = selectedSize?.specs.customerPriceMonthlyCents ?? 0;
+  const hasEnoughCredits = walletBalance >= requiredCents || requiredCents === 0;
+
   const isValid = mode === 'byos'
     ? byosData.name.trim() && byosData.ipv4.trim() && (authMethod === 'ssh_key' ? byosData.sshPrivateKey.trim() : byosData.rootPassword.trim())
-    : managedData.name.trim() && managedData.region && managedData.size && managedData.image;
+    : managedData.name.trim() &&
+      managedData.region &&
+      managedData.size &&
+      managedData.image &&
+      (selectedSize?.allowedByPlan ?? false) &&
+      hasEnoughCredits;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,6 +147,18 @@ export default function NewServerPage() {
           </button>
         ))}
       </div>
+
+      {mode === 'managed' && infraBilling && walletBalance < requiredCents && requiredCents > 0 && (
+        <div
+          className="rounded-xl px-4 py-3 text-sm flex items-center justify-between gap-3"
+          style={{ background: 'var(--dash-warning-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
+        >
+          <span>{t('servers', 'infraWalletBanner')}</span>
+          <Link href="/dashboard/billing" className="font-medium shrink-0" style={{ color: 'var(--accent-cyan)' }}>
+            {t('billing', 'infraTopUp')}
+          </Link>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {mode === 'managed' ? (
@@ -228,12 +251,15 @@ export default function NewServerPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {providerSizes.map((sizeOption) => {
                     const isSelected = managedData.size === sizeOption.size;
+                    const disabled = !sizeOption.allowedByPlan;
+                    const monthlyUsd = (sizeOption.specs.customerPriceMonthlyCents / 100).toFixed(2);
                     return (
                       <button
                         key={sizeOption.size}
                         type="button"
-                        onClick={() => setManagedData({ ...managedData, size: sizeOption.size })}
-                        className="p-4 rounded-xl text-left transition-all duration-200"
+                        disabled={disabled}
+                        onClick={() => !disabled && setManagedData({ ...managedData, size: sizeOption.size })}
+                        className="p-4 rounded-xl text-left transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
                           background: 'var(--bg-secondary)',
                           border: `1.5px solid ${isSelected ? 'var(--accent-cyan)' : 'var(--glass-border)'}`,
@@ -248,9 +274,14 @@ export default function NewServerPage() {
                             {sizeOption.size}
                           </span>
                           <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
-                            €{sizeOption.specs.priceMonthly}/mo
+                            ${monthlyUsd}{t('billing', 'infraPerMonth')}
                           </span>
                         </div>
+                        {disabled && sizeOption.disallowReason && (
+                          <p className="text-xs mb-2" style={{ color: 'var(--dash-warning)' }}>
+                            {sizeOption.disallowReason}
+                          </p>
+                        )}
                         <div className="space-y-1.5">
                           <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                             <Cpu className="w-3 h-3" /> {sizeOption.specs.vcpus} vCPU

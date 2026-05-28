@@ -1175,6 +1175,8 @@ export interface TranslationKeys {
     featuresDescription: string;
     billingEmail: string;
     billingEmailDesc: string;
+    billingEmailCurrent: string;
+    billingEmailNew: string;
     billingEmailPlaceholder: string;
     updateEmail: string;
     updating: string;
@@ -1232,6 +1234,25 @@ export interface TranslationKeys {
     deploymentsPerMonthShort: string;
     emailUpdateFailed: string;
     personalOrganization: string;
+    infraWalletTitle: string;
+    infraWalletDesc: string;
+    infraBalance: string;
+    infraMarginNote: string;
+    infraEstimatedBurn: string;
+    infraRunningServers: string;
+    infraTopUp: string;
+    infraTopUpHint: string;
+    infraTransactions: string;
+    infraPerMonth: string;
+    infraPerHour: string;
+    infraCredits: string;
+    infraTopUpSuccess: string;
+    infraTopUpPending: string;
+    infraTopUpCancelled: string;
+    billingStatusPastDueTitle: string;
+    billingStatusPastDueDesc: string;
+    billingStatusSuspendedTitle: string;
+    billingStatusSuspendedDesc: string;
   };
   servers: {
     title: string;
@@ -1260,6 +1281,9 @@ export interface TranslationKeys {
     sizeMd: string;
     sizeLg: string;
     sizeXl: string;
+    infraCustomerPrice: string;
+    infraPlanBlocked: string;
+    infraWalletBanner: string;
     // Status
     provisioning: string;
     running: string;
@@ -1308,6 +1332,42 @@ export interface TranslationKeys {
     // Detail page
     overview: string;
     network: string;
+    detailBack: string;
+    statusInfraCreditsStopped: string;
+    statusBillingSuspended: string;
+    openTerminal: string;
+    setupBannerTitle: string;
+    setupBannerDesc: string;
+    setupFailedTitle: string;
+    setupReadyTitle: string;
+    setupReadyDesc: string;
+    sshAccess: string;
+    traffic: string;
+    trafficIngoing: string;
+    trafficOutgoing: string;
+    trafficIncluded: string;
+    serverType: string;
+    fieldType: string;
+    fieldDescription: string;
+    cpuType: string;
+    architecture: string;
+    storageType: string;
+    location: string;
+    city: string;
+    country: string;
+    datacenter: string;
+    networkZone: string;
+    protection: string;
+    deleteProtection: string;
+    rebuildProtection: string;
+    detailEnabled: string;
+    detailDisabled: string;
+    timestamps: string;
+    lastSeen: string;
+    managedBadge: string;
+    createdAtLabel: string;
+    updatedAtLabel: string;
+    fieldOs: string;
     // BYOS
     cloudProvider: string;
     existingServer: string;
@@ -1927,7 +1987,8 @@ export const en: TranslationKeys = {
     pricingBadge: 'Pricing',
     simpleTransparent: 'Simple,',
     transparentGradient: 'transparent',
-    pricingSubtitle: 'Start free, scale as you grow. All plans include SSL, CI/CD, and monitoring.',
+    pricingSubtitle:
+      'Platform plans cover deploy, API, and team limits. Managed cloud servers are billed separately via prepaid infrastructure credits.',
     monthly: 'Monthly',
     yearly: 'Yearly',
     mostPopular: 'Most Popular',
@@ -2747,6 +2808,8 @@ export const en: TranslationKeys = {
     featuresDescription: 'Features included in your current plan.',
     billingEmail: 'Billing Email',
     billingEmailDesc: 'Invoices and billing notifications will be sent to this address.',
+    billingEmailCurrent: 'Current address',
+    billingEmailNew: 'New address',
     billingEmailPlaceholder: 'billing@example.com',
     updateEmail: 'Update Email',
     updating: 'Updating...',
@@ -2793,7 +2856,7 @@ export const en: TranslationKeys = {
     comparePlansSubtitle:
       'Choose the plan that fits your deployment needs. Upgrade or downgrade anytime.',
     plansFooterLead:
-      'All plans include SSL certificates, GitHub integration, and automatic deployments.',
+      'Platform plans include SSL, GitHub integration, and deployments. Managed servers use separate prepaid infrastructure credits.',
     plansFooterNeedCustom: 'Need custom limits?',
     plansContactUs: 'Contact us',
     planMostPopular: 'Most Popular',
@@ -2805,6 +2868,29 @@ export const en: TranslationKeys = {
     deploymentsPerMonthShort: 'Deploys / mo',
     emailUpdateFailed: 'Failed to update email',
     personalOrganization: 'Personal',
+    infraWalletTitle: 'Infrastructure credits',
+    infraWalletDesc:
+      'Managed cloud servers (Hetzner) are billed separately from your platform plan. Prepaid credits are used while your servers are running.',
+    infraBalance: 'Available balance',
+    infraMarginNote: 'Prices shown are all-in rates for managed server usage.',
+    infraEstimatedBurn: 'Estimated monthly burn (running servers)',
+    infraRunningServers: '{count} running managed server(s)',
+    infraTopUp: 'Add credits',
+    infraTopUpHint: 'Secure one-time payment via Stripe. Minimum balance ≈ one month of server cost before provisioning.',
+    infraTransactions: 'Recent transactions',
+    infraPerMonth: '/mo',
+    infraPerHour: '/hr',
+    infraCredits: 'credits',
+    infraTopUpSuccess: 'Infrastructure credits added to your wallet.',
+    infraTopUpPending:
+      'Payment received. Credits will appear once Stripe confirms the payment (refresh in a moment).',
+    infraTopUpCancelled: 'Credit top-up was cancelled.',
+    billingStatusPastDueTitle: 'Platform payment past due',
+    billingStatusPastDueDesc:
+      'Stripe could not charge your subscription. Update your payment method to create servers, projects, and deployments.',
+    billingStatusSuspendedTitle: 'Platform subscription ended',
+    billingStatusSuspendedDesc:
+      'Your plan was downgraded and active projects were paused. Managed servers were stopped. Renew your plan to resume.',
   },
   servers: {
     title: 'Servers',
@@ -2833,6 +2919,9 @@ export const en: TranslationKeys = {
     sizeMd: 'Medium',
     sizeLg: 'Large',
     sizeXl: 'Extra Large',
+    infraCustomerPrice: '≈ ${amount}/mo',
+    infraPlanBlocked: 'Not available on your plan',
+    infraWalletBanner: 'Add infrastructure credits in Billing before creating a managed server.',
     // Status
     provisioning: 'Provisioning',
     running: 'Running',
@@ -2881,6 +2970,44 @@ export const en: TranslationKeys = {
     // Detail page
     overview: 'Overview',
     network: 'Network',
+    detailBack: 'Servers',
+    statusInfraCreditsStopped:
+      'Stopped: insufficient infrastructure credits. Add credits in Billing to start again.',
+    statusBillingSuspended:
+      'Stopped: platform subscription ended. Renew your plan in Billing to start again.',
+    openTerminal: 'Terminal',
+    setupBannerTitle: 'Setting up your server…',
+    setupBannerDesc: 'Installing Docker, Nginx, and Certbot. This may take a few minutes.',
+    setupFailedTitle: 'Setup failed',
+    setupReadyTitle: 'Server ready',
+    setupReadyDesc: 'Docker, Nginx, and Certbot are installed. You can deploy projects to this server.',
+    sshAccess: 'SSH access',
+    traffic: 'Traffic',
+    trafficIngoing: 'Ingoing',
+    trafficOutgoing: 'Outgoing',
+    trafficIncluded: 'Included',
+    serverType: 'Server type',
+    fieldType: 'Type',
+    fieldDescription: 'Description',
+    cpuType: 'CPU type',
+    architecture: 'Architecture',
+    storageType: 'Storage',
+    location: 'Location',
+    city: 'City',
+    country: 'Country',
+    datacenter: 'Datacenter',
+    networkZone: 'Network zone',
+    protection: 'Protection',
+    deleteProtection: 'Delete protection',
+    rebuildProtection: 'Rebuild protection',
+    detailEnabled: 'Enabled',
+    detailDisabled: 'Disabled',
+    timestamps: 'Timestamps',
+    lastSeen: 'Last seen',
+    managedBadge: 'Managed',
+    createdAtLabel: 'Created',
+    updatedAtLabel: 'Last updated',
+    fieldOs: 'Operating system',
     // BYOS
     cloudProvider: 'Cloud Provider',
     existingServer: 'Existing Server',
