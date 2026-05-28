@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { getRequestLocale } from '@/lib/get-request-locale';
 import type { ApiError } from './types';
 
 // ============ Constants ============
@@ -50,7 +51,7 @@ api.interceptors.request.use(
     }
 
     if (typeof window !== 'undefined') {
-      config.headers['Accept-Language'] = navigator.language.split('-')[0];
+      config.headers['Accept-Language'] = getRequestLocale();
     }
 
     return config;

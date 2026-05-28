@@ -61,7 +61,7 @@ export function OperationsPanel({ data, className }: OperationsPanelProps) {
   ];
 
   return (
-    <div className={cn('dash-panel p-5', className)} aria-labelledby="dash-ops-title">
+    <div className={cn('dash-panel p-4 sm:p-5 min-w-0', className)} aria-labelledby="dash-ops-title">
       <div className="dash-panel-header">
         <div className="dash-panel-title" id="dash-ops-title">
           <ListChecks className="w-4 h-4 text-[var(--text-secondary)]" />
@@ -73,7 +73,7 @@ export function OperationsPanel({ data, className }: OperationsPanelProps) {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-4 min-w-0">
         {deployStats.map((stat) => (
           <div key={stat.key} className="dash-stat-mini">
             <p
@@ -126,18 +126,18 @@ export function OperationsPanel({ data, className }: OperationsPanelProps) {
               <li key={f.id}>
                 <Link
                   href={`/dashboard/projects/${f.projectId}?tab=deployments`}
-                  className="group dash-list-row !py-2.5"
+                  className="group dash-list-row dash-list-row--failure !py-2.5"
                 >
-                  <span className="dash-status-dot is-error mt-0.5" />
+                  <span className="dash-status-dot is-error mt-1 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate text-[var(--text-primary)] group-hover:underline underline-offset-2">
                       {f.projectName}
                     </p>
-                    <p className="text-xs mt-0.5 truncate text-[var(--text-muted)]">
+                    <p className="text-xs mt-0.5 line-clamp-2 sm:truncate text-[var(--text-muted)]">
                       {f.errorMessage || t('dashboard', 'opsNoErrorMessage')}
                     </p>
                   </div>
-                  <span className="dash-caption shrink-0 whitespace-nowrap">
+                  <span className="dash-caption dash-failure-time shrink-0">
                     {formatTimeAgo(f.createdAt, t)}
                   </span>
                 </Link>

@@ -64,10 +64,7 @@ export function ApiKeysTab() {
       </div>
 
       {billingInfo && (
-        <div
-          className="rounded-xl px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-        >
+        <div className="dash-panel px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
             <Shield className="w-4 h-4 inline-block mr-2 -mt-0.5 opacity-70" />
             {billingInfo.apiRequestsPerMinute === -1

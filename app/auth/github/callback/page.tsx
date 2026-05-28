@@ -36,18 +36,20 @@ function GitHubCallbackContent() {
         return;
       }
 
-      // Verify state matches what we stored
-      const storedState = localStorage.getItem('github_oauth_state');
-      if (storedState !== state) {
+      // Verify state (connect flow used sessionStorage briefly; login uses localStorage)
+      const storedState =
+        localStorage.getItem('github_oauth_state') ??
+        sessionStorage.getItem('github_oauth_state');
+      if (!storedState || storedState !== state) {
         setStatus('error');
         setErrorMessage('Invalid state parameter');
         return;
       }
 
-      // Clear stored state immediately
       const intent = localStorage.getItem('github_oauth_intent');
       localStorage.removeItem('github_oauth_state');
       localStorage.removeItem('github_oauth_intent');
+      sessionStorage.removeItem('github_oauth_state');
 
       // Handle login intent
       if (intent === 'login') {

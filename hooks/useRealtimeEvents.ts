@@ -2,6 +2,9 @@
 
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { appT } from '@/lib/i18n/app-translate';
+import { formatMessage } from '@/lib/i18n/format-message';
+import { showErrorToast, showSuccessToast } from '@/lib/toast-i18n';
 import { useWebSocketEvent } from '@/providers/WebSocketProvider';
 import { deploymentKeys } from './useDeployments';
 import { metricsKeys } from './useMetrics';
@@ -38,13 +41,13 @@ export function useDeploymentStatusEvents(projectId: string | undefined) {
 
       // Show toast for terminal states
       if (data.status === 'running') {
-        toast.success('Deployment successful', {
-          description: `Deployment is now running`,
-        });
+        showSuccessToast('deploymentSuccessTitle', 'deploymentRunningDesc');
       } else if (data.status === 'failed') {
-        toast.error('Deployment failed', {
-          description: data.message || 'Check logs for details',
-        });
+        if (data.message) {
+          toast.error(appT('toasts', 'deploymentFailedTitle'), { description: data.message });
+        } else {
+          showErrorToast('deploymentFailedTitle', 'deploymentFailedDescFallback');
+        }
       }
     },
     { channel: projectId ? `project:${projectId}` : undefined }
@@ -109,9 +112,13 @@ export function useServerStatusEvents(serverId: string | undefined) {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
 
       if (data.status === 'running') {
-        toast.success('Server is running', {
-          description: data.ipv4 ? `IP: ${data.ipv4}` : undefined,
-        });
+        if (data.ipv4) {
+          toast.success(appT('toasts', 'serverRunningTitle'), {
+            description: formatMessage(appT('toasts', 'serverRunningDescIp'), { ip: data.ipv4 }),
+          });
+        } else {
+          showSuccessToast('serverRunningTitle');
+        }
       }
     },
     { channel: serverId ? `server:${serverId}` : undefined }
@@ -126,13 +133,15 @@ export function useServerStatusEvents(serverId: string | undefined) {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
 
       if (data.setupStatus === 'completed') {
-        toast.success('Server setup completed', {
-          description: 'Docker and Nginx are ready',
-        });
+        showSuccessToast('serverSetupCompleteTitle', 'serverSetupCompleteDescShort');
       } else if (data.setupStatus === 'failed') {
-        toast.error('Server setup failed', {
-          description: data.statusMessage || 'Check server logs',
-        });
+        if (data.statusMessage) {
+          toast.error(appT('toasts', 'serverSetupFailedTitle'), {
+            description: data.statusMessage,
+          });
+        } else {
+          showErrorToast('serverSetupFailedTitle', 'serverSetupFailedDescFallback');
+        }
       }
     },
     { channel: serverId ? `server:${serverId}` : undefined }
@@ -194,17 +203,23 @@ export function useBackupStatusEvents(databaseId: string | undefined) {
 
       // Show toast for terminal states
       if (data.status === 'completed') {
-        toast.success('Backup completed', {
-          description: data.sizeMb ? `Size: ${data.sizeMb} MB` : undefined,
-        });
+        if (data.sizeMb != null) {
+          toast.success(appT('toasts', 'backupCompleteTitle'), {
+            description: formatMessage(appT('toasts', 'backupCompleteDescSize'), {
+              size: data.sizeMb,
+            }),
+          });
+        } else {
+          showSuccessToast('backupCompleteTitle', 'backupCompleteDesc');
+        }
       } else if (data.status === 'failed') {
-        toast.error('Backup failed', {
-          description: data.errorMessage || 'Check logs for details',
-        });
+        if (data.errorMessage) {
+          toast.error(appT('toasts', 'backupFailedTitle'), { description: data.errorMessage });
+        } else {
+          showErrorToast('backupFailedTitle', 'backupFailedDescFallback');
+        }
       } else if (data.status === 'restored') {
-        toast.success('Database restored', {
-          description: 'Database has been restored from backup',
-        });
+        showSuccessToast('databaseRestoredTitle', 'databaseRestoredDesc');
       }
     },
     { channel: databaseId ? `database:${databaseId}` : undefined }

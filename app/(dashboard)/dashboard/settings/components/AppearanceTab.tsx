@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { serverKeys } from '@/hooks/useServers';
 import { Palette, Globe, Sun, Moon, Monitor, Check } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useThemeStore, type Theme } from '@/stores/theme';
@@ -23,6 +25,7 @@ export function AppearanceTab() {
   const { t } = useTranslation();
   const { theme, setTheme } = useThemeStore();
   const { locale, setLocale } = useLocaleStore();
+  const queryClient = useQueryClient();
   const [saved, setSaved] = useState(false);
 
   const handleThemeChange = (newTheme: Theme) => {
@@ -32,6 +35,7 @@ export function AppearanceTab() {
 
   const handleLanguageChange = (newLocale: SupportedLocale) => {
     setLocale(newLocale);
+    void queryClient.invalidateQueries({ queryKey: serverKeys.providers });
     showSaved();
   };
 

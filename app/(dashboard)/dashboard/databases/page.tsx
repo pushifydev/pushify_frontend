@@ -61,7 +61,7 @@ export default function DatabasesPage() {
   const readyServers = servers.filter(s => s.status === 'running' && s.setupStatus === 'completed');
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-slide-in">
+    <div className="dash-page max-w-5xl space-y-6 animate-slide-in">
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -116,10 +116,7 @@ export default function DatabasesPage() {
           ))}
         </div>
       ) : databases.length === 0 ? (
-        <div
-          className="rounded-xl p-12 text-center"
-          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-        >
+        <div className="dash-panel p-12 text-center">
           <div
             className="w-14 h-14 rounded-xl mx-auto mb-4 flex items-center justify-center"
             style={{ background: 'var(--dash-accent-bg)' }}
@@ -202,24 +199,7 @@ function DatabaseCard({
   const isShowingCreds = showCredentials === database.id;
 
   return (
-    <div
-      className="rounded-xl p-5 transition-all"
-      style={{
-        background: 'var(--bg-secondary)',
-        borderWidth: '2px 1px 1px 1px',
-        borderStyle: 'solid',
-        borderColor: `${accent}45 var(--glass-border) var(--glass-border) var(--glass-border)`,
-        borderRadius: 12,
-      }}
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLElement).style.borderColor =
-          `${accent}70 var(--glass-border-strong) var(--glass-border-strong) var(--glass-border-strong)`;
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLElement).style.borderColor =
-          `${accent}45 var(--glass-border) var(--glass-border) var(--glass-border)`;
-      }}
-    >
+    <div className="dash-card p-5 transition-all hover:border-[var(--border-default)]">
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <Link href={`/dashboard/databases/${database.id}`} className="flex items-center gap-3 min-w-0">

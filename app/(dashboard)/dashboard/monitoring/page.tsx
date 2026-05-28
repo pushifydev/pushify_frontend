@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   Activity,
@@ -40,13 +40,101 @@ import { SkeletonMonitoringGaugeCard, SkeletonMonitoringChartBlock } from '@/com
 
 // ============ Chart Tooltip ============
 
-function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number; name: string; color: string }>; label?: string }) {
+type MetricsChartPoint = {
+  timestamp: string;
+  axisTime: string;
+  cpuPercent?: number;
+  memoryPercent?: number;
+  memoryUsageMB?: number;
+  networkRxMB?: number;
+  networkTxMB?: number;
+};
+
+const MAX_X_AXIS_TICKS = 6;
+
+function formatChartAxisTime(ts: string, hours: number): string {
+  const d = new Date(ts);
+  if (Number.isNaN(d.getTime())) return '';
+  if (hours >= 24) {
+    return d.toLocaleString([], {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+  if (hours >= 6) {
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+/** Evenly spaced axis labels — avoids hundreds of ticks when metrics poll every ~15s. */
+function pickXAxisTickLabels(data: MetricsChartPoint[], maxTicks = MAX_X_AXIS_TICKS): string[] {
+  if (data.length === 0) return [];
+  if (data.length <= maxTicks) {
+    return data.map((p) => p.axisTime);
+  }
+  const last = data.length - 1;
+  const indices = Array.from({ length: maxTicks }, (_, i) =>
+    i === maxTicks - 1 ? last : Math.round((i * last) / (maxTicks - 1))
+  );
+  const unique = [...new Set(indices)].sort((a, b) => a - b);
+  return unique.map((i) => data[i].axisTime);
+}
+
+function MetricsXAxis({ ticks, angled }: { ticks: string[]; angled?: boolean }) {
+  return (
+    <XAxis
+      dataKey="axisTime"
+      ticks={ticks}
+      interval={0}
+      tick={{
+        fill: 'var(--text-muted)',
+        fontSize: 10,
+        fontFamily: 'JetBrains Mono',
+        ...(angled ? { angle: -32, textAnchor: 'end' as const, dy: 4 } : {}),
+      }}
+      axisLine={{ stroke: 'var(--border-subtle)' }}
+      tickLine={false}
+      height={angled ? 48 : 28}
+    />
+  );
+}
+
+function formatMetricTooltipTime(ts: string | undefined, hours: number): string {
+  if (!ts) return '';
+  const d = new Date(ts);
+  if (Number.isNaN(d.getTime())) return '';
+  if (hours >= 24) {
+    return d.toLocaleString([], {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function ChartTooltip({
+  active,
+  payload,
+  hours = 1,
+}: {
+  active?: boolean;
+  payload?: Array<{ value: number; name: string; color: string; payload?: MetricsChartPoint }>;
+  hours?: number;
+}) {
   if (!active || !payload?.length) return null;
+
+  const point = payload[0]?.payload;
+  const timeLabel = formatMetricTooltipTime(point?.timestamp, hours);
 
   return (
     <div className="rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-default)] px-3 py-2 shadow-xl">
       <p className="text-xs text-[var(--text-muted)] mb-1 font-mono">
-        {label ? new Date(label).toLocaleTimeString() : ''}
+        {timeLabel}
       </p>
       {payload.map((entry, i) => (
         <div key={i} className="flex items-center gap-2 text-sm">
@@ -158,13 +246,20 @@ export default function MonitoringPage() {
   const timeSeriesProjectId = selectedProjectId || overview?.projects?.[0]?.projectId || '';
   const { data: timeSeries = [] } = useMetricsTimeSeries(timeSeriesProjectId, selectedHours);
 
-  // Format chart data
-  const chartData = [...timeSeries]
-    .reverse()
-    .map((point) => ({
-      ...point,
-      time: new Date(point.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    }));
+  const chartData = useMemo<MetricsChartPoint[]>(
+    () =>
+      [...timeSeries]
+        .reverse()
+        .map((point) => ({
+          ...point,
+          axisTime: formatChartAxisTime(point.timestamp, selectedHours),
+        })),
+    [timeSeries, selectedHours]
+  );
+
+  const xAxisTicks = useMemo(() => pickXAxisTickLabels(chartData), [chartData]);
+  const xAxisAngled = selectedHours >= 24;
+  const chartMargin = { top: 4, right: 8, left: 0, bottom: xAxisAngled ? 4 : 0 };
 
   const lastUpdated = dataUpdatedAt
     ? new Date(dataUpdatedAt).toLocaleTimeString()
@@ -313,7 +408,7 @@ export default function MonitoringPage() {
           <div className="h-56">
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData}>
+                <AreaChart data={chartData} margin={chartMargin}>
                   <defs>
                     <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="var(--accent-cyan)" stopOpacity={0.3} />
@@ -321,13 +416,7 @@ export default function MonitoringPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="time"
-                    tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                    axisLine={{ stroke: 'var(--border-subtle)' }}
-                    tickLine={false}
-                    interval="preserveStartEnd"
-                  />
+                  <MetricsXAxis ticks={xAxisTicks} angled={xAxisAngled} />
                   <YAxis
                     tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
                     axisLine={false}
@@ -336,7 +425,7 @@ export default function MonitoringPage() {
                     tickFormatter={(v) => `${v}%`}
                     width={45}
                   />
-                  <Tooltip content={<ChartTooltip />} />
+                  <Tooltip content={<ChartTooltip hours={selectedHours} />} />
                   <Area
                     type="monotone"
                     dataKey="cpuPercent"
@@ -368,7 +457,7 @@ export default function MonitoringPage() {
           <div className="h-56">
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData}>
+                <AreaChart data={chartData} margin={chartMargin}>
                   <defs>
                     <linearGradient id="memGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#a78bfa" stopOpacity={0.3} />
@@ -376,13 +465,7 @@ export default function MonitoringPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="time"
-                    tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                    axisLine={{ stroke: 'var(--border-subtle)' }}
-                    tickLine={false}
-                    interval="preserveStartEnd"
-                  />
+                  <MetricsXAxis ticks={xAxisTicks} angled={xAxisAngled} />
                   <YAxis
                     tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
                     axisLine={false}
@@ -391,7 +474,7 @@ export default function MonitoringPage() {
                     tickFormatter={(v) => `${v}%`}
                     width={45}
                   />
-                  <Tooltip content={<ChartTooltip />} />
+                  <Tooltip content={<ChartTooltip hours={selectedHours} />} />
                   <Area
                     type="monotone"
                     dataKey="memoryPercent"
@@ -436,15 +519,9 @@ export default function MonitoringPage() {
         <div className="h-56">
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
+              <LineChart data={chartData} margin={chartMargin}>
                 <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                  dataKey="time"
-                  tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                  axisLine={{ stroke: 'var(--border-subtle)' }}
-                  tickLine={false}
-                  interval="preserveStartEnd"
-                />
+                <MetricsXAxis ticks={xAxisTicks} angled={xAxisAngled} />
                 <YAxis
                   tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
                   axisLine={false}
@@ -452,7 +529,7 @@ export default function MonitoringPage() {
                   tickFormatter={(v) => `${v} MB`}
                   width={55}
                 />
-                <Tooltip content={<ChartTooltip />} />
+                <Tooltip content={<ChartTooltip hours={selectedHours} />} />
                 <Line
                   type="monotone"
                   dataKey="networkRxMB"

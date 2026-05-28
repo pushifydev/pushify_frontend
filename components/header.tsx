@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Search,
-  Bell,
   Plus,
   Sparkles,
   Menu,
@@ -17,6 +16,7 @@ import { useTranslation } from "@/hooks";
 import { useSidebarStore } from "@/stores/sidebar";
 import { useThemeStore } from "@/stores/theme";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { HeaderAlertsMenu } from "./header/HeaderAlertsMenu";
 
 const PAGE_LABELS: Record<string, string> = {
   "/dashboard": "Overview",
@@ -26,6 +26,7 @@ const PAGE_LABELS: Record<string, string> = {
   "/dashboard/sites": "Site Studio",
   "/dashboard/marketplace": "Marketplace",
   "/dashboard/monitoring": "Monitoring",
+  "/dashboard/alerts": "Alerts",
   "/dashboard/team": "Team",
   "/dashboard/activity": "Activity",
   "/dashboard/billing": "Billing",
@@ -118,13 +119,7 @@ export function Header() {
             {t("header", "deploy")}
           </Link>
 
-          <button
-            type="button"
-            className="relative w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
-          >
-            <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]" />
-          </button>
+          <HeaderAlertsMenu />
         </div>
       </div>
     </header>

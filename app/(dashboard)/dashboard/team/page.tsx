@@ -55,7 +55,7 @@ export default function TeamPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
+      <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <SkeletonPageHeader />
           <Skeleton className="h-10 w-36 rounded-lg shrink-0 hidden sm:block" />
@@ -66,7 +66,7 @@ export default function TeamPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
+    <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

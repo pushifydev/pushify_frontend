@@ -2,6 +2,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/lib/api/get-error-message';
+import { appT } from '@/lib/i18n/app-translate';
 import {
   getSiteStudioTemplates,
   getSiteStudioTemplate,
@@ -71,7 +73,9 @@ export function useLaunchSite() {
       queryClient.invalidateQueries({ queryKey: ['marketplace'] });
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      toast.error(appT('errors', 'somethingWentWrong'), {
+        description: getApiErrorMessage(error),
+      });
     },
   });
 }

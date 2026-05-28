@@ -14,10 +14,17 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: {
-    command: 'npm run start',
-    url: baseURL,
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  webServer: process.env.CI
+    ? {
+        command: 'npm run start',
+        url: baseURL,
+        reuseExistingServer: false,
+        timeout: 120_000,
+      }
+    : {
+        command: 'npm run dev',
+        url: baseURL,
+        reuseExistingServer: true,
+        timeout: 120_000,
+      },
 });

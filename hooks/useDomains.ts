@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { showSuccessToast } from '@/lib/toast-i18n';
 import {
   getDomains,
   addDomain,
@@ -66,9 +66,7 @@ export function useAddDomain(projectId: string) {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: domainKeys.list(projectId) });
       queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
-      toast.success('Domain added', {
-        description: `${data?.domain} has been added to your project`,
-      });
+      showSuccessToast('domainAddedTitle', 'domainAddedDesc');
     },
   });
 }
@@ -85,9 +83,7 @@ export function useDeleteDomain(projectId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: domainKeys.list(projectId) });
       queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
-      toast.success('Domain removed', {
-        description: 'Domain has been removed from your project',
-      });
+      showSuccessToast('domainRemovedTitle', 'domainRemovedDesc');
     },
   });
 }
@@ -104,9 +100,7 @@ export function useSetPrimaryDomain(projectId: string) {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: domainKeys.list(projectId) });
       queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
-      toast.success('Primary domain updated', {
-        description: `${data?.domain} is now the primary domain`,
-      });
+      showSuccessToast('domainPrimaryTitle', 'domainPrimaryDesc');
     },
   });
 }
@@ -123,9 +117,7 @@ export function useVerifyDomain(projectId: string) {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: domainKeys.list(projectId) });
       queryClient.invalidateQueries({ queryKey: domainKeys.dnsSetup(projectId, data?.id || '') });
-      toast.success('Domain verified', {
-        description: `${data?.domain} has been verified and SSL certificate configured`,
-      });
+      showSuccessToast('domainVerifiedTitle', 'domainVerifiedDesc');
     },
   });
 }
@@ -155,9 +147,7 @@ export function useUpdateNginxSettings(projectId: string, domainId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: domainKeys.nginxSettings(projectId, domainId) });
-      toast.success('Nginx settings updated', {
-        description: 'Configuration has been applied to the server',
-      });
+      showSuccessToast('nginxUpdatedTitle', 'nginxUpdatedDesc');
     },
   });
 }

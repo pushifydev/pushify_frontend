@@ -21,7 +21,7 @@ export const STATUS_COLORS = {
 export const PROJECT_STATUS_COLORS: Record<string, string> = {
   active:   STATUS_COLORS.success,
   paused:   STATUS_COLORS.warning,
-  inactive: STATUS_COLORS.neutral,
+  deleted:  STATUS_COLORS.neutral,
 };
 
 // ─── Server Status ───

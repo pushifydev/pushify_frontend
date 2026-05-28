@@ -13,6 +13,8 @@ import { useAvailablePlans, useBillingInfo, useCreateCheckoutSession, useCreateP
 import type { PlanType, PlanLimits } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
 import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/lib/api/get-error-message';
+import { appT } from '@/lib/i18n/app-translate';
 import { Skeleton, SkeletonPlanCompareCard } from '@/components/Skeleton';
 
 const PLAN_ORDER: PlanType[] = ['free', 'hobby', 'pro', 'business', 'enterprise'];
@@ -89,7 +91,10 @@ export default function PlansPage() {
     if (planKey === 'free') {
       // Downgrade to free — open portal to cancel
       portal.mutate(undefined, {
-        onError: (err) => { toast.error(err.message); setPendingPlan(null); },
+        onError: (err) => {
+          toast.error(appT('errors', 'somethingWentWrong'), { description: getApiErrorMessage(err) });
+          setPendingPlan(null);
+        },
       });
       return;
     }
@@ -99,13 +104,18 @@ export default function PlansPage() {
     }
     checkout.mutate(
       { planType: planKey, billingCycle: 'monthly' },
-      { onError: (err) => { toast.error(err.message); setPendingPlan(null); } },
+      {
+        onError: (err) => {
+          toast.error(appT('errors', 'somethingWentWrong'), { description: getApiErrorMessage(err) });
+          setPendingPlan(null);
+        },
+      },
     );
   };
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto space-y-8 animate-slide-in">
+      <div className="dash-page max-w-7xl space-y-8 animate-slide-in">
         <Skeleton className="h-4 w-36" />
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <Skeleton className="h-10 w-80 max-w-full mx-auto rounded-lg" />
@@ -123,7 +133,7 @@ export default function PlansPage() {
   if (!plans) return null;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-slide-in">
+    <div className="dash-page max-w-7xl space-y-8 animate-slide-in">
       {/* Back */}
       <Link
         href="/dashboard/billing"
@@ -178,7 +188,7 @@ export default function PlansPage() {
                 background: 'var(--bg-secondary)',
                 borderWidth: '2px 1px 1px 1px',
                 borderStyle: 'solid',
-                borderColor: `${accent} var(--glass-border) var(--glass-border) var(--glass-border)`,
+                borderColor: `${accent} var(--border-subtle) var(--border-subtle) var(--border-subtle)`,
                 borderRadius: 12,
                 ...(isPopular ? { transform: 'scale(1.03)', zIndex: 10 } : {}),
               }}
@@ -204,7 +214,7 @@ export default function PlansPage() {
                   style={{
                     background: 'var(--bg-tertiary)',
                     color: 'var(--text-primary)',
-                    border: '1px solid var(--glass-border-md)',
+                    border: '1px solid var(--border-default)',
                   }}
                 >
                   {t('billing', 'currentPlanBadge')}
@@ -261,7 +271,7 @@ export default function PlansPage() {
                 </div>
 
                 {/* Divider */}
-                <div className="mb-4" style={{ borderTop: '1px solid var(--glass-divider)' }} />
+                <div className="mb-4" style={{ borderTop: '1px solid var(--border-subtle)' }} />
 
                 {/* Limits */}
                 <div className="space-y-2.5 flex-1 mb-5">
@@ -319,12 +329,12 @@ export default function PlansPage() {
                       ? {
                           background: 'var(--hover-overlay)',
                           color: 'var(--text-muted)',
-                          border: '1px solid var(--glass-border)',
+                          border: '1px solid var(--border-subtle)',
                         }
                       : {
                           background: 'transparent',
                           color: 'var(--text-secondary)',
-                          border: '1px solid var(--glass-border)',
+                          border: '1px solid var(--border-subtle)',
                         }
                   }
                 >

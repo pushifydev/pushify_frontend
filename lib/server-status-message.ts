@@ -13,6 +13,12 @@ const LEGACY_ENGLISH: Record<string, ServersKey> = {
     'statusInfraCreditsStopped',
 };
 
+export function isInfraCreditsStoppedMessage(message: string | null | undefined): boolean {
+  if (!message?.trim()) return false;
+  if (message === 'infra_credits_stopped') return true;
+  return LEGACY_ENGLISH[message] === 'statusInfraCreditsStopped';
+}
+
 export function resolveServerStatusMessage(
   message: string | null | undefined,
   t: (namespace: 'servers', key: ServersKey) => string,

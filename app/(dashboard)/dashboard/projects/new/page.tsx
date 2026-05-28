@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -15,8 +15,10 @@ import {
   ClipboardCopy,
   Plus,
   Rocket,
+  RefreshCw,
   Settings,
   Trash2,
+  Unlink,
   Zap,
   Eye,
   EyeOff,
@@ -32,6 +34,7 @@ import {
   useTranslation,
   useGitHubStatus,
   useGitHubConnect,
+  useGitHubDisconnect,
   useGitHubRepos,
   useGitHubBranches,
   useFrameworkDetection,
@@ -55,6 +58,7 @@ interface EnvVariable {
 
 export default function NewProjectPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
   const createProject = useCreateProject();
 
@@ -87,6 +91,11 @@ export default function NewProjectPage() {
     (s) => s.status === 'running' && s.setupStatus === 'completed'
   );
 
+  useEffect(() => {
+    const fromQuery = searchParams.get('serverId');
+    if (fromQuery) setSelectedServerId(fromQuery);
+  }, [searchParams]);
+
   // GitHub-related state
   const [selectedRepo, setSelectedRepo] = useState<GitHubRepo | null>(null);
   const [repoSearchQuery, setRepoSearchQuery] = useState('');
@@ -94,6 +103,34 @@ export default function NewProjectPage() {
   // GitHub hooks
   const { data: githubStatus, isLoading: isLoadingGitHubStatus } = useGitHubStatus();
   const githubConnect = useGitHubConnect();
+  const githubDisconnect = useGitHubDisconnect();
+  const githubBusy = githubConnect.isPending || githubDisconnect.isPending;
+
+  const resetGithubSelection = () => {
+    setSelectedRepo(null);
+    setRepoSearchQuery('');
+  };
+
+  const handleDisconnectGithub = async () => {
+    try {
+      await githubDisconnect.mutateAsync();
+      resetGithubSelection();
+      toast.success(t('newProject', 'githubDisconnected'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err));
+    }
+  };
+
+  const handleChangeGithubAccount = async () => {
+    try {
+      await githubDisconnect.mutateAsync();
+      resetGithubSelection();
+      githubConnect.mutate();
+    } catch (err) {
+      toast.error(getApiErrorMessage(err));
+    }
+  };
+
   const { data: githubRepos, isLoading: isLoadingRepos, hasMore, loadMore, isLoadingMore } = useGitHubRepos({
     enabled: githubStatus?.connected ?? false,
     sort: 'pushed',
@@ -488,10 +525,38 @@ export default function NewProjectPage() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {/* Connected status */}
-                    <div className="flex items-center gap-2 text-sm text-[var(--status-success)]">
-                      <Check className="w-4 h-4" />
-                      {t('newProject', 'connectedAs')} <span className="font-medium">@{githubStatus.username}</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+                      <div className="flex items-center gap-2 text-sm text-[var(--status-success)] min-w-0">
+                        <Check className="w-4 h-4 shrink-0" />
+                        <span className="truncate">
+                          {t('newProject', 'connectedAs')}{' '}
+                          <span className="font-medium">@{githubStatus.username}</span>
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={handleChangeGithubAccount}
+                          disabled={githubBusy}
+                          className="btn btn-secondary text-xs py-1.5 px-3"
+                        >
+                          {githubBusy ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <RefreshCw className="w-3.5 h-3.5" />
+                          )}
+                          {t('newProject', 'changeGithubAccount')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleDisconnectGithub}
+                          disabled={githubBusy}
+                          className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]"
+                        >
+                          <Unlink className="w-3.5 h-3.5" />
+                          {t('newProject', 'disconnectGithub')}
+                        </button>
+                      </div>
                     </div>
 
                     {/* Search repos */}

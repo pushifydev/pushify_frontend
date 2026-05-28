@@ -41,4 +41,9 @@ test.describe('Public smoke', () => {
     await page.goto('/docs');
     await expect(page.locator('h1, h2').first()).toBeVisible();
   });
+
+  test('dashboard redirects to login when unauthenticated', async ({ page }) => {
+    await page.goto('/dashboard');
+    await expect(page).toHaveURL(/\/login/, { timeout: 15_000 });
+  });
 });

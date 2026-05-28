@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { showSuccessToast } from '@/lib/toast-i18n';
 import {
   getDeployments,
   getDeployment,
@@ -91,9 +91,7 @@ export function useCreateDeployment(projectId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: deploymentKeys.list(projectId) });
       queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
-      toast.success('Deployment started', {
-        description: 'Your deployment is now in progress',
-      });
+      showSuccessToast('deploymentStartedTitle', 'deploymentStartedDesc');
     },
   });
 }
@@ -110,9 +108,7 @@ export function useCancelDeployment(projectId: string) {
     onSuccess: (data, deploymentId) => {
       queryClient.invalidateQueries({ queryKey: deploymentKeys.list(projectId) });
       queryClient.setQueryData(deploymentKeys.detail(projectId, deploymentId), data);
-      toast.success('Deployment cancelled', {
-        description: 'The deployment has been cancelled',
-      });
+      showSuccessToast('deploymentCancelledTitle', 'deploymentCancelledDesc');
     },
   });
 }
@@ -129,9 +125,7 @@ export function useRedeployDeployment(projectId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: deploymentKeys.list(projectId) });
       queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
-      toast.success('Redeployment started', {
-        description: 'Your redeployment is now in progress',
-      });
+      showSuccessToast('redeploymentStartedTitle', 'redeploymentStartedDesc');
     },
   });
 }
@@ -148,9 +142,7 @@ export function useRollbackDeployment(projectId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: deploymentKeys.list(projectId) });
       queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
-      toast.success('Rollback started', {
-        description: 'Rolling back to previous deployment',
-      });
+      showSuccessToast('rollbackStartedTitle', 'rollbackStartedDesc');
     },
   });
 }
