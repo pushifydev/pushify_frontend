@@ -74,7 +74,7 @@ export const docsEn: DocsContent = {
       'Resource IDs in paths and responses are UUIDs (e.g. 550e8400-e29b-41d4-a716-446655440000). Use the id returned by list or create endpoints — placeholder values like proj_abc123 are not valid.',
     infraNoteTitle: 'Managed server billing',
     infraNote:
-      'Managed Hetzner servers are billed via prepaid infrastructure credits, separate from your platform subscription. Top up in Dashboard → Billing.',
+      'Pushify has two charges: (1) platform subscription — deploy/API/team limits; (2) infrastructure credits — prepaid USD wallet debited hourly while managed Hetzner servers run. BYOS (SSH) servers do not use the wallet. Top up and view balance in Dashboard → Billing. If credits run out, managed servers stop until you add more. Failed platform payments block new resources until your card is updated.',
     features: [
       { title: 'RESTful API', desc: 'Simple REST endpoints with JSON responses' },
       { title: 'Secure', desc: 'Scope-based API key permissions' },

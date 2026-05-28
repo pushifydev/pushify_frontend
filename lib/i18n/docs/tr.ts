@@ -74,7 +74,7 @@ export const docsTr: DocsContent = {
       'Yol ve yanıtlardaki kaynak kimlikleri UUID biçimindedir (örn. 550e8400-e29b-41d4-a716-446655440000). Listeleme veya oluşturma uç noktalarının döndürdüğü id değerini kullanın — proj_abc123 gibi örnek değerler geçerli değildir.',
     infraNoteTitle: 'Yönetilen sunucu faturalandırması',
     infraNote:
-      'Yönetilen Hetzner sunucuları, platform aboneliğinden ayrı ön ödemeli altyapı kredileri ile faturalandırılır. Panel → Faturalandırma üzerinden kredi yükleyin.',
+      'Pushify\'da iki ücret vardır: (1) platform aboneliği — dağıtım/API/ekip limitleri; (2) altyapı kredileri — yönetilen Hetzner çalışırken saatlik düşen ön ödemeli USD cüzdan. BYOS (SSH) sunucuları cüzdanı kullanmaz. Bakiye ve yükleme: Panel → Faturalandırma. Kredi biterse sunucu durur. Platform ödemesi başarısızsa kart güncellenene kadar yeni kaynak oluşturulamaz.',
     features: [
       { title: 'RESTful API', desc: 'JSON yanıtlı basit REST uç noktaları' },
       { title: 'Güvenli', desc: 'Kapsam tabanlı API anahtarı izinleri' },

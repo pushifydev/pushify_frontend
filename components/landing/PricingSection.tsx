@@ -18,6 +18,7 @@ import NumberFlow from '@number-flow/react';
 import { useTranslation } from '@/hooks';
 import { useAvailablePlans } from '@/hooks/useBilling';
 import { LandingSectionHeader } from './LandingSectionHeader';
+import { BillingHowItWorksSection } from './BillingHowItWorksSection';
 import type { PlanType, PlanLimits } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
 
@@ -507,6 +508,8 @@ export function PricingSection({ pageLayout }: PricingSectionProps) {
             />
           )}
         </div>
+
+        <BillingHowItWorksSection embedded className="mt-16 lg:mt-20" />
 
         <div
           className="max-w-5xl mx-auto mt-16 lg:mt-20 lp-reveal"
