@@ -70,6 +70,8 @@ export const docsEn: DocsContent = {
     badge: 'REST API',
     title: 'Pushify API Documentation',
     lead: 'Deploy, manage, and monitor your applications programmatically. Perfect for CI/CD pipelines, automation scripts, and custom integrations.',
+    idNote:
+      'Resource IDs in paths and responses are UUIDs (e.g. 550e8400-e29b-41d4-a716-446655440000). Use the id returned by list or create endpoints — placeholder values like proj_abc123 are not valid.',
     features: [
       { title: 'RESTful API', desc: 'Simple REST endpoints with JSON responses' },
       { title: 'Secure', desc: 'Scope-based API key permissions' },
@@ -104,11 +106,16 @@ export const docsEn: DocsContent = {
     description: 'All API requests require an API key. Include it in the Authorization header as a Bearer token.',
     securityTitle: 'Security',
     securityText: 'Never expose API keys in client-side code or public repositories. Store them in environment variables.',
+    sessionOnlyTitle: 'Dashboard session only',
+    sessionOnlyText:
+      'Some routes require a logged-in dashboard session (JWT), not an API key — for example GET /servers/:id/ssh-key and POST /servers/:id/terminal. API keys return 403 on these endpoints.',
     scopes: [
       { scope: 'projects:read', desc: 'List and view projects' },
       { scope: 'projects:write', desc: 'Create, update, delete projects' },
       { scope: 'deployments:read', desc: 'View deployments and logs' },
-      { scope: 'deployments:write', desc: 'Trigger, cancel, rollback deploys' },
+      { scope: 'deployments:write', desc: 'Trigger, redeploy, rollback deploys' },
+      { scope: 'deployments:cancel', desc: 'Cancel pending or running deployments' },
+      { scope: 'logs:read', desc: 'Read deployment build and deploy logs' },
       { scope: 'envvars:read', desc: 'View environment variables' },
       { scope: 'envvars:write', desc: 'Manage environment variables' },
       { scope: 'servers:read', desc: 'View servers' },
@@ -130,10 +137,10 @@ export const docsEn: DocsContent = {
         description: 'Get detailed information about a specific project including build config and domains.',
       },
       create: {
-        description: 'Create a new project with Git repository configuration.',
+        description: 'Create a new project. Git repository fields are optional if you deploy without Git.',
         params: {
           name: 'Project name',
-          gitRepoUrl: 'Git repository URL',
+          gitRepoUrl: 'Git repository URL (optional)',
           gitBranch: 'Branch to deploy (default: main)',
           buildCommand: 'Build command (e.g. npm run build)',
           startCommand: 'Start command (e.g. npm start)',
@@ -148,6 +155,10 @@ export const docsEn: DocsContent = {
       remove: {
         description: 'Delete a project and all associated resources.',
         responseMsg: 'Project deleted successfully',
+      },
+      webhook: {
+        description: 'Get the GitHub webhook URL and whether a signing secret is configured for this project.',
+        responseMsg: 'Webhook info retrieved',
       },
     },
   },
@@ -172,7 +183,7 @@ export const docsEn: DocsContent = {
         responseMsg: 'Deployment created successfully',
       },
       cancel: {
-        description: 'Cancel a pending or building deployment.',
+        description: 'Cancel a pending or building deployment. Requires deployments:write or deployments:cancel scope.',
         responseMsg: 'Deployment cancelled',
       },
       redeploy: {
@@ -184,9 +195,9 @@ export const docsEn: DocsContent = {
         responseMsg: 'Rollback started',
       },
       logs: {
-        description: 'Get build or runtime logs for a deployment.',
+        description: 'Get build or runtime logs for a deployment. Requires deployments:read or logs:read scope.',
         params: {
-          type: '"build" or "deploy"',
+          type: 'Log stream: "build" or "deploy" (optional, defaults to build)',
         },
       },
     },
@@ -199,6 +210,9 @@ export const docsEn: DocsContent = {
     endpoints: {
       list: {
         description: 'List all environment variables for a project. Values are masked for security.',
+        params: {
+          environment: 'Filter by environment: production or preview (optional)',
+        },
       },
       create: {
         description: 'Create a new environment variable.',
@@ -206,6 +220,7 @@ export const docsEn: DocsContent = {
           key: 'Variable name (e.g. DATABASE_URL)',
           value: 'Variable value',
           isSecret: 'Mark as secret (default: true)',
+          environment: 'Target environment: production or preview (optional, default: production)',
         },
         responseMsg: 'Environment variable created',
       },
@@ -257,6 +272,9 @@ export const docsEn: DocsContent = {
   servers: {
     title: 'Servers',
     description: 'Provision and manage servers. Create cloud servers, control their state, and monitor status.',
+    sessionOnlyTitle: 'Not available via API key',
+    sessionOnlyText:
+      'SSH private keys (GET /servers/:id/ssh-key) and the browser web terminal (POST /servers/:id/terminal) are only available through the dashboard with an active session.',
     endpoints: {
       list: {
         description: 'List all servers in your organization.',
@@ -390,6 +408,7 @@ export const docsEn: DocsContent = {
       { plan: 'Hobby', limit: '120 requests/min' },
       { plan: 'Pro', limit: '300 requests/min' },
       { plan: 'Business', limit: '600 requests/min' },
+      { plan: 'Enterprise', limit: 'Unlimited' },
     ],
     rateLimitFooter:
       'Rate limit headers are included in every response: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset',

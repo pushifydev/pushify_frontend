@@ -60,6 +60,7 @@ export interface DocsContent {
     badge: string;
     title: string;
     lead: string;
+    idNote: string;
     features: { title: string; desc: string }[];
     steps: { title: string; desc: string; linkText?: string; descBefore?: string; descAfter?: string }[];
     exploreLinks: { label: string; desc: string }[];
@@ -69,6 +70,8 @@ export interface DocsContent {
     description: string;
     securityTitle: string;
     securityText: string;
+    sessionOnlyTitle: string;
+    sessionOnlyText: string;
     scopes: DocsScopeItem[];
   };
   projects: {
@@ -80,6 +83,7 @@ export interface DocsContent {
       create: DocsEndpointCopy;
       update: DocsEndpointCopy;
       remove: DocsEndpointCopy;
+      webhook: DocsEndpointCopy;
     };
   };
   deployments: {
@@ -121,6 +125,8 @@ export interface DocsContent {
   servers: {
     title: string;
     description: string;
+    sessionOnlyTitle: string;
+    sessionOnlyText: string;
     endpoints: {
       list: DocsEndpointCopy;
       create: DocsEndpointCopy;

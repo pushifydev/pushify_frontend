@@ -79,7 +79,7 @@ function buildParams(
 
 const PROJECT_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
   name: { type: 'string', required: true },
-  gitRepoUrl: { type: 'string', required: true },
+  gitRepoUrl: { type: 'string' },
   gitBranch: { type: 'string' },
   buildCommand: { type: 'string' },
   startCommand: { type: 'string' },
@@ -98,13 +98,18 @@ const DEPLOYMENT_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
 };
 
 const DEPLOYMENT_LOGS_PARAM_DEFS: Record<string, ParamDef> = {
-  type: { type: 'string', required: true },
+  type: { type: 'string' },
+};
+
+const ENVVAR_LIST_PARAM_DEFS: Record<string, ParamDef> = {
+  environment: { type: 'string' },
 };
 
 const ENVVAR_CREATE_PARAM_DEFS: Record<string, ParamDef> = {
   key: { type: 'string', required: true },
   value: { type: 'string', required: true },
   isSecret: { type: 'boolean' },
+  environment: { type: 'string' },
 };
 
 const ENVVAR_BULK_PARAM_DEFS: Record<string, ParamDef> = {
@@ -349,6 +354,11 @@ function IntroSection({
         <p className="text-lg docs-lead leading-relaxed max-w-2xl">
           {c.intro.lead}
         </p>
+        <div className="mt-4 max-w-2xl">
+          <Callout type="info" title={c.labels.description}>
+            {c.intro.idNote}
+          </Callout>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -471,6 +481,10 @@ function AuthSection({ c, apiBase }: SectionProps) {
       <Callout type="warning" title={c.auth.securityTitle}>
         {c.auth.securityText}
       </Callout>
+
+      <Callout type="info" title={c.auth.sessionOnlyTitle}>
+        {c.auth.sessionOnlyText}
+      </Callout>
     </div>
   );
 }
@@ -494,7 +508,7 @@ function ProjectsSection({ c, apiBase }: SectionProps) {
           response={`{
   "data": [
     {
-      "id": "proj_abc123",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
       "name": "My App",
       "slug": "my-app",
       "status": "active",
@@ -512,11 +526,11 @@ function ProjectsSection({ c, apiBase }: SectionProps) {
           description={ep.get.description}
           scope="projects:read"
           labels={c.labels}
-          request={`curl "${apiBase}/projects/proj_abc123" \\
+          request={`curl "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": {
-    "id": "proj_abc123",
+    "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "My App",
     "slug": "my-app",
     "status": "active",
@@ -527,7 +541,7 @@ function ProjectsSection({ c, apiBase }: SectionProps) {
     "port": 3000,
     "autoDeploy": true,
     "domains": [
-      { "id": "dom_1", "domain": "my-app.pushify.dev", "isPrimary": true }
+      { "id": "b1b2b3b4-c5c6-4789-b012-345678901001", "domain": "my-app.pushify.dev", "isPrimary": true }
     ]
   }
 }`}
@@ -552,7 +566,7 @@ function ProjectsSection({ c, apiBase }: SectionProps) {
     "port": 3000
   }'`}
           response={`{
-  "data": { "id": "proj_new123", "name": "My New App", ... },
+  "data": { "id": "550e8400-e29b-41d4-a716-446655440001", "name": "My New App", ... },
   "message": "Project created successfully"
 }`}
         />
@@ -563,12 +577,12 @@ function ProjectsSection({ c, apiBase }: SectionProps) {
           description={ep.update.description}
           scope="projects:write"
           labels={c.labels}
-          request={`curl -X PATCH "${apiBase}/projects/proj_abc123" \\
+          request={`curl -X PATCH "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "buildCommand": "npm run build:prod" }'`}
           response={`{
-  "data": { "id": "proj_abc123", "buildCommand": "npm run build:prod", ... },
+  "data": { "id": "550e8400-e29b-41d4-a716-446655440000", "buildCommand": "npm run build:prod", ... },
   "message": "Project updated successfully"
 }`}
         />
@@ -579,9 +593,25 @@ function ProjectsSection({ c, apiBase }: SectionProps) {
           description={ep.remove.description}
           scope="projects:write"
           labels={c.labels}
-          request={`curl -X DELETE "${apiBase}/projects/proj_abc123" \\
+          request={`curl -X DELETE "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Project deleted successfully" }`}
+        />
+
+        <EndpointCard
+          method="GET"
+          path="/projects/:projectId/webhook"
+          description={ep.webhook.description}
+          scope="projects:read"
+          labels={c.labels}
+          request={`curl "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/webhook" \\
+  -H "Authorization: Bearer YOUR_KEY"`}
+          response={`{
+  "data": {
+    "webhookUrl": "https://api.pushify.dev/api/v1/webhooks/github/550e8400-e29b-41d4-a716-446655440000",
+    "hasSecret": true
+  }
+}`}
         />
       </div>
     </div>
@@ -603,12 +633,12 @@ function DeploymentsSection({ c, apiBase }: SectionProps) {
           scope="deployments:read"
           labels={c.labels}
           params={buildParams(DEPLOYMENT_LIST_PARAM_DEFS, ep.list.params)}
-          request={`curl "${apiBase}/projects/proj_abc123/deployments?limit=10" \\
+          request={`curl "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/deployments?limit=10" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
     {
-      "id": "dep_xyz789",
+      "id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
       "status": "running",
       "trigger": "manual",
       "commitHash": "abc123",
@@ -627,12 +657,12 @@ function DeploymentsSection({ c, apiBase }: SectionProps) {
           scope="deployments:write"
           labels={c.labels}
           params={buildParams(DEPLOYMENT_CREATE_PARAM_DEFS, ep.create.params)}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/deployments" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/deployments" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "branch": "main" }'`}
           response={`{
-  "data": { "id": "dep_new001", "status": "pending", "trigger": "manual", ... },
+  "data": { "id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8", "status": "pending", "trigger": "manual", ... },
   "message": "Deployment created successfully"
 }`}
         />
@@ -641,12 +671,12 @@ function DeploymentsSection({ c, apiBase }: SectionProps) {
           method="POST"
           path="/projects/:projectId/deployments/:deploymentId/cancel"
           description={ep.cancel.description}
-          scope="deployments:write"
+          scope="deployments:cancel"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/deployments/dep_xyz789/cancel" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/deployments/6ba7b810-9dad-11d1-80b4-00c04fd430c8/cancel" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
-  "data": { "id": "dep_xyz789", "status": "cancelled", ... },
+  "data": { "id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8", "status": "cancelled", ... },
   "message": "Deployment cancelled"
 }`}
         />
@@ -657,10 +687,10 @@ function DeploymentsSection({ c, apiBase }: SectionProps) {
           description={ep.redeploy.description}
           scope="deployments:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/deployments/dep_xyz789/redeploy" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/deployments/6ba7b810-9dad-11d1-80b4-00c04fd430c8/redeploy" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
-  "data": { "id": "dep_new002", "status": "pending", "trigger": "redeploy", ... },
+  "data": { "id": "6ba7b812-9dad-11d1-80b4-00c04fd430c8", "status": "pending", "trigger": "redeploy", ... },
   "message": "Redeploy started"
 }`}
         />
@@ -671,10 +701,10 @@ function DeploymentsSection({ c, apiBase }: SectionProps) {
           description={ep.rollback.description}
           scope="deployments:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/deployments/dep_xyz789/rollback" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/deployments/6ba7b810-9dad-11d1-80b4-00c04fd430c8/rollback" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
-  "data": { "id": "dep_new003", "status": "pending", "trigger": "rollback", ... },
+  "data": { "id": "6ba7b813-9dad-11d1-80b4-00c04fd430c8", "status": "pending", "trigger": "rollback", ... },
   "message": "Rollback started"
 }`}
         />
@@ -686,7 +716,7 @@ function DeploymentsSection({ c, apiBase }: SectionProps) {
           scope="deployments:read"
           labels={c.labels}
           params={buildParams(DEPLOYMENT_LOGS_PARAM_DEFS, ep.logs.params)}
-          request={`curl "${apiBase}/projects/proj_abc123/deployments/dep_xyz789/logs?type=build" \\
+          request={`curl "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/deployments/6ba7b810-9dad-11d1-80b4-00c04fd430c8/logs?type=build" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": {
@@ -718,12 +748,13 @@ function EnvVarsSection({ c, apiBase }: SectionProps) {
           description={ep.list.description}
           scope="envvars:read"
           labels={c.labels}
-          request={`curl "${apiBase}/projects/proj_abc123/env" \\
+          params={buildParams(ENVVAR_LIST_PARAM_DEFS, ep.list.params)}
+          request={`curl "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/env" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
     {
-      "id": "env_001",
+      "id": "a1a2a3a4-b5b6-4789-a012-345678901001",
       "key": "DATABASE_URL",
       "value": "p****l",
       "isSecret": true,
@@ -740,12 +771,12 @@ function EnvVarsSection({ c, apiBase }: SectionProps) {
           scope="envvars:write"
           labels={c.labels}
           params={buildParams(ENVVAR_CREATE_PARAM_DEFS, ep.create.params)}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/env" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/env" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "key": "API_SECRET", "value": "s3cret", "isSecret": true }'`}
           response={`{
-  "data": { "id": "env_002", "key": "API_SECRET", "value": "s****t", ... },
+  "data": { "id": "a1a2a3a4-b5b6-4789-a012-345678901002", "key": "API_SECRET", "value": "s****t", ... },
   "message": "Environment variable created"
 }`}
         />
@@ -757,7 +788,7 @@ function EnvVarsSection({ c, apiBase }: SectionProps) {
           scope="envvars:write"
           labels={c.labels}
           params={buildParams(ENVVAR_BULK_PARAM_DEFS, ep.bulk.params)}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/env/bulk" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/env/bulk" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -778,12 +809,12 @@ function EnvVarsSection({ c, apiBase }: SectionProps) {
           description={ep.update.description}
           scope="envvars:write"
           labels={c.labels}
-          request={`curl -X PATCH "${apiBase}/projects/proj_abc123/env/env_001" \\
+          request={`curl -X PATCH "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/env/a1a2a3a4-b5b6-4789-a012-345678901001" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "value": "new_value" }'`}
           response={`{
-  "data": { "id": "env_001", "key": "DATABASE_URL", ... },
+  "data": { "id": "a1a2a3a4-b5b6-4789-a012-345678901001", "key": "DATABASE_URL", ... },
   "message": "Environment variable updated"
 }`}
         />
@@ -794,7 +825,7 @@ function EnvVarsSection({ c, apiBase }: SectionProps) {
           description={ep.remove.description}
           scope="envvars:write"
           labels={c.labels}
-          request={`curl -X DELETE "${apiBase}/projects/proj_abc123/env/env_001" \\
+          request={`curl -X DELETE "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/env/a1a2a3a4-b5b6-4789-a012-345678901001" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Environment variable deleted" }`}
         />
@@ -817,12 +848,12 @@ function DomainsSection({ c, apiBase }: SectionProps) {
           description={ep.list.description}
           scope="domains:read"
           labels={c.labels}
-          request={`curl "${apiBase}/projects/proj_abc123/domains" \\
+          request={`curl "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/domains" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": [
     {
-      "id": "dom_001",
+      "id": "b1b2b3b4-c5c6-4789-b012-345678901001",
       "domain": "myapp.com",
       "isPrimary": true,
       "verified": true,
@@ -830,7 +861,7 @@ function DomainsSection({ c, apiBase }: SectionProps) {
       "createdAt": "2024-01-15T10:30:00Z"
     },
     {
-      "id": "dom_002",
+      "id": "b1b2b3b4-c5c6-4789-b012-345678901002",
       "domain": "www.myapp.com",
       "isPrimary": false,
       "verified": true,
@@ -847,13 +878,13 @@ function DomainsSection({ c, apiBase }: SectionProps) {
           scope="domains:write"
           labels={c.labels}
           params={buildParams(DOMAIN_CREATE_PARAM_DEFS, ep.create.params)}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/domains" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/domains" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{ "domain": "myapp.com" }'`}
           response={`{
   "data": {
-    "id": "dom_003",
+    "id": "b1b2b3b4-c5c6-4789-b012-345678901003",
     "domain": "myapp.com",
     "verified": false,
     "dnsRecords": [
@@ -871,10 +902,10 @@ function DomainsSection({ c, apiBase }: SectionProps) {
           description={ep.verify.description}
           scope="domains:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/domains/dom_003/verify" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/domains/b1b2b3b4-c5c6-4789-b012-345678901003/verify" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
-  "data": { "id": "dom_003", "verified": true, "sslStatus": "provisioning" },
+  "data": { "id": "b1b2b3b4-c5c6-4789-b012-345678901003", "verified": true, "sslStatus": "provisioning" },
   "message": "Domain verified successfully"
 }`}
         />
@@ -885,10 +916,10 @@ function DomainsSection({ c, apiBase }: SectionProps) {
           description={ep.primary.description}
           scope="domains:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/projects/proj_abc123/domains/dom_003/primary" \\
+          request={`curl -X POST "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/domains/b1b2b3b4-c5c6-4789-b012-345678901003/primary" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
-  "data": { "id": "dom_003", "isPrimary": true },
+  "data": { "id": "b1b2b3b4-c5c6-4789-b012-345678901003", "isPrimary": true },
   "message": "Primary domain updated"
 }`}
         />
@@ -899,7 +930,7 @@ function DomainsSection({ c, apiBase }: SectionProps) {
           description={ep.remove.description}
           scope="domains:write"
           labels={c.labels}
-          request={`curl -X DELETE "${apiBase}/projects/proj_abc123/domains/dom_003" \\
+          request={`curl -X DELETE "${apiBase}/projects/550e8400-e29b-41d4-a716-446655440000/domains/b1b2b3b4-c5c6-4789-b012-345678901003" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Domain removed" }`}
         />
@@ -915,6 +946,10 @@ function ServersSection({ c, apiBase }: SectionProps) {
     <div className="space-y-6">
       <SectionHeading title={c.servers.title} description={c.servers.description} />
 
+      <Callout type="info" title={c.servers.sessionOnlyTitle}>
+        {c.servers.sessionOnlyText}
+      </Callout>
+
       <div className="space-y-3">
         <EndpointCard
           method="GET"
@@ -927,7 +962,7 @@ function ServersSection({ c, apiBase }: SectionProps) {
           response={`{
   "data": [
     {
-      "id": "srv_001",
+      "id": "c1c2c3c4-d5d6-4789-c012-345678901001",
       "name": "production-1",
       "provider": "hetzner",
       "region": "eu-central",
@@ -958,7 +993,7 @@ function ServersSection({ c, apiBase }: SectionProps) {
     "size": "cx21"
   }'`}
           response={`{
-  "data": { "id": "srv_002", "name": "production-2", "status": "provisioning", ... },
+  "data": { "id": "c1c2c3c4-d5d6-4789-c012-345678901002", "name": "production-2", "status": "provisioning", ... },
   "message": "Server is being provisioned"
 }`}
         />
@@ -969,11 +1004,11 @@ function ServersSection({ c, apiBase }: SectionProps) {
           description={ep.get.description}
           scope="servers:read"
           labels={c.labels}
-          request={`curl "${apiBase}/servers/srv_001" \\
+          request={`curl "${apiBase}/servers/c1c2c3c4-d5d6-4789-c012-345678901001" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": {
-    "id": "srv_001",
+    "id": "c1c2c3c4-d5d6-4789-c012-345678901001",
     "name": "production-1",
     "provider": "hetzner",
     "region": "eu-central",
@@ -991,7 +1026,7 @@ function ServersSection({ c, apiBase }: SectionProps) {
           description={ep.start.description}
           scope="servers:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/servers/srv_001/start" \\
+          request={`curl -X POST "${apiBase}/servers/c1c2c3c4-d5d6-4789-c012-345678901001/start" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Server is starting" }`}
         />
@@ -1002,7 +1037,7 @@ function ServersSection({ c, apiBase }: SectionProps) {
           description={ep.stop.description}
           scope="servers:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/servers/srv_001/stop" \\
+          request={`curl -X POST "${apiBase}/servers/c1c2c3c4-d5d6-4789-c012-345678901001/stop" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Server is stopping" }`}
         />
@@ -1013,7 +1048,7 @@ function ServersSection({ c, apiBase }: SectionProps) {
           description={ep.reboot.description}
           scope="servers:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/servers/srv_001/reboot" \\
+          request={`curl -X POST "${apiBase}/servers/c1c2c3c4-d5d6-4789-c012-345678901001/reboot" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Server is rebooting" }`}
         />
@@ -1024,7 +1059,7 @@ function ServersSection({ c, apiBase }: SectionProps) {
           description={ep.remove.description}
           scope="servers:write"
           labels={c.labels}
-          request={`curl -X DELETE "${apiBase}/servers/srv_001" \\
+          request={`curl -X DELETE "${apiBase}/servers/c1c2c3c4-d5d6-4789-c012-345678901001" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Server deleted" }`}
         />
@@ -1052,7 +1087,7 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
           response={`{
   "data": [
     {
-      "id": "db_001",
+      "id": "d1d2d3d4-e5e6-4789-d012-345678901001",
       "name": "main-postgres",
       "type": "postgresql",
       "version": "16",
@@ -1060,7 +1095,7 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
       "host": "1.2.3.4",
       "port": 5432,
       "databaseName": "app_db",
-      "server": { "id": "srv_001", "name": "production-1" }
+      "server": { "id": "c1c2c3c4-d5d6-4789-c012-345678901001", "name": "production-1" }
     }
   ]
 }`}
@@ -1079,10 +1114,10 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
   -d '{
     "name": "my-database",
     "type": "postgresql",
-    "serverId": "srv_001"
+    "serverId": "c1c2c3c4-d5d6-4789-c012-345678901001"
   }'`}
           response={`{
-  "data": { "id": "db_002", "name": "my-database", "status": "provisioning", ... },
+  "data": { "id": "d1d2d3d4-e5e6-4789-d012-345678901002", "name": "my-database", "status": "provisioning", ... },
   "message": "Database is being created"
 }`}
         />
@@ -1093,7 +1128,7 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
           description={ep.credentials.description}
           scope="databases:read"
           labels={c.labels}
-          request={`curl "${apiBase}/databases/db_001/credentials" \\
+          request={`curl "${apiBase}/databases/d1d2d3d4-e5e6-4789-d012-345678901001/credentials" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
   "data": {
@@ -1114,10 +1149,10 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
           scope="databases:write"
           labels={c.labels}
           params={buildParams(DATABASE_CONNECT_PARAM_DEFS, ep.connect.params)}
-          request={`curl -X POST "${apiBase}/databases/db_001/connect" \\
+          request={`curl -X POST "${apiBase}/databases/d1d2d3d4-e5e6-4789-d012-345678901001/connect" \\
   -H "Authorization: Bearer YOUR_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{ "projectId": "proj_abc123", "envPrefix": "DATABASE" }'`}
+  -d '{ "projectId": "550e8400-e29b-41d4-a716-446655440000", "envPrefix": "DATABASE" }'`}
           response={`{
   "data": { "connectionId": "conn_001" },
   "message": "Database connected to project"
@@ -1130,7 +1165,7 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
           description={ep.start.description}
           scope="databases:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/databases/db_001/start" \\
+          request={`curl -X POST "${apiBase}/databases/d1d2d3d4-e5e6-4789-d012-345678901001/start" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Database is starting" }`}
         />
@@ -1141,7 +1176,7 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
           description={ep.stop.description}
           scope="databases:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/databases/db_001/stop" \\
+          request={`curl -X POST "${apiBase}/databases/d1d2d3d4-e5e6-4789-d012-345678901001/stop" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Database is stopping" }`}
         />
@@ -1152,10 +1187,10 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
           description={ep.backup.description}
           scope="databases:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/databases/db_001/backups" \\
+          request={`curl -X POST "${apiBase}/databases/d1d2d3d4-e5e6-4789-d012-345678901001/backups" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
-  "data": { "id": "bak_001", "status": "creating", "type": "manual", ... },
+  "data": { "id": "e1e2e3e4-f5f6-4789-e012-345678901001", "status": "creating", "type": "manual", ... },
   "message": "Backup started"
 }`}
         />
@@ -1166,10 +1201,10 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
           description={ep.restore.description}
           scope="databases:write"
           labels={c.labels}
-          request={`curl -X POST "${apiBase}/databases/db_001/backups/bak_001/restore" \\
+          request={`curl -X POST "${apiBase}/databases/d1d2d3d4-e5e6-4789-d012-345678901001/backups/e1e2e3e4-f5f6-4789-e012-345678901001/restore" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{
-  "data": { "id": "bak_001", "status": "restoring", ... },
+  "data": { "id": "e1e2e3e4-f5f6-4789-e012-345678901001", "status": "restoring", ... },
   "message": "Restore started"
 }`}
         />
@@ -1180,7 +1215,7 @@ function DatabasesSection({ c, apiBase }: SectionProps) {
           description={ep.remove.description}
           scope="databases:write"
           labels={c.labels}
-          request={`curl -X DELETE "${apiBase}/databases/db_001" \\
+          request={`curl -X DELETE "${apiBase}/databases/d1d2d3d4-e5e6-4789-d012-345678901001" \\
   -H "Authorization: Bearer YOUR_KEY"`}
           response={`{ "message": "Database deleted" }`}
         />
