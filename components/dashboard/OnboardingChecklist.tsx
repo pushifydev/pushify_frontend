@@ -64,17 +64,10 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
 
   return (
     <section
-      className="mb-6 rounded-xl overflow-hidden"
-      style={{
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--glass-border)',
-      }}
+      className="dash-panel mb-6 overflow-hidden"
       aria-label={t('dashboard', 'onboardingTitle')}
     >
-      <div
-        className="flex items-start justify-between gap-4 px-5 py-4"
-        style={{ borderBottom: '1px solid var(--glass-divider)' }}
-      >
+      <div className="flex items-start justify-between gap-4 px-5 py-4 border-b border-[var(--border-subtle)]">
         <div>
           <p className="text-sm font-semibold">{t('dashboard', 'onboardingTitle')}</p>
           <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
@@ -99,7 +92,7 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
         </div>
       </div>
 
-      <ol className="divide-y divide-[var(--glass-divider)]">
+      <ol className="divide-y divide-[var(--border-subtle)]">
         {STEPS.map((step, index) => {
           const done = stepDone(step.id, progress);
           const prevDone = index === 0 || stepDone(STEPS[index - 1].id, progress);
@@ -124,11 +117,11 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
                 style={{ opacity: prevDone || done ? 1 : 0.55 }}
               >
                 <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                  style={{
-                    background: done ? 'rgba(34,197,94,0.12)' : 'var(--bg-tertiary)',
-                    border: `1px solid ${done ? 'rgba(34,197,94,0.35)' : 'var(--glass-border)'}`,
-                  }}
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border ${
+                    done
+                      ? 'border-emerald-500/30 bg-emerald-500/10'
+                      : 'border-[var(--border-subtle)] bg-[var(--bg-tertiary)]'
+                  }`}
                 >
                   {done ? (
                     <Check className="w-4 h-4 text-emerald-500" strokeWidth={2.5} />
@@ -163,7 +156,7 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
       </ol>
 
       <div className="px-5 py-3 flex flex-wrap gap-3 text-xs" style={{ background: 'var(--bg-tertiary)' }}>
-        <Link href="/docs" className="hover:underline" style={{ color: 'var(--accent-cyan)' }}>
+        <Link href="/docs" className="dash-link hover:underline">
           {t('dashboard', 'onboardingDocs')}
         </Link>
         <Link href="/dashboard/marketplace" className="hover:underline" style={{ color: 'var(--text-secondary)' }}>

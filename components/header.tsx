@@ -53,7 +53,7 @@ export function Header() {
       window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   return (
-    <header className="h-14 sticky top-0 z-40 flex items-center border-b border-[var(--border-subtle)] bg-[var(--bg-header-glass)] backdrop-blur-md">
+    <header className="h-14 sticky top-0 z-40 flex items-center border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
       <div className="flex items-center w-full px-4 md:px-5 gap-3">
         <button
           type="button"
@@ -63,10 +63,10 @@ export function Header() {
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="hidden md:flex items-center gap-1.5 shrink-0 select-none text-[var(--text-muted)]">
-          <span className="text-xs">pushify</span>
-          <ChevronRight className="w-3 h-3 shrink-0" />
-          <span className="text-[13px] font-medium text-[var(--text-secondary)]">{pageLabel}</span>
+        <div className="hidden md:flex items-center gap-1.5 shrink-0 select-none">
+          <span className="text-xs text-[var(--text-muted)]">pushify</span>
+          <ChevronRight className="w-3 h-3 shrink-0 text-[var(--text-muted)]" />
+          <span className="text-sm font-medium text-[var(--text-primary)]">{pageLabel}</span>
         </div>
 
         <button
@@ -123,7 +123,7 @@ export function Header() {
             className="relative w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
           >
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]" />
+            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]" />
           </button>
         </div>
       </div>
