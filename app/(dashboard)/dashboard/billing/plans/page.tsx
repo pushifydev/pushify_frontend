@@ -13,6 +13,8 @@ import { useAvailablePlans, useBillingInfo, useCreateCheckoutSession, useCreateP
 import type { PlanType, PlanLimits } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
 import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/lib/api/get-error-message';
+import { appT } from '@/lib/i18n/app-translate';
 import { Skeleton, SkeletonPlanCompareCard } from '@/components/Skeleton';
 
 const PLAN_ORDER: PlanType[] = ['free', 'hobby', 'pro', 'business', 'enterprise'];
@@ -89,7 +91,10 @@ export default function PlansPage() {
     if (planKey === 'free') {
       // Downgrade to free — open portal to cancel
       portal.mutate(undefined, {
-        onError: (err) => { toast.error(err.message); setPendingPlan(null); },
+        onError: (err) => {
+          toast.error(appT('errors', 'somethingWentWrong'), { description: getApiErrorMessage(err) });
+          setPendingPlan(null);
+        },
       });
       return;
     }
@@ -99,13 +104,18 @@ export default function PlansPage() {
     }
     checkout.mutate(
       { planType: planKey, billingCycle: 'monthly' },
-      { onError: (err) => { toast.error(err.message); setPendingPlan(null); } },
+      {
+        onError: (err) => {
+          toast.error(appT('errors', 'somethingWentWrong'), { description: getApiErrorMessage(err) });
+          setPendingPlan(null);
+        },
+      },
     );
   };
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto space-y-8 animate-slide-in">
+      <div className="dash-page max-w-7xl space-y-8 animate-slide-in">
         <Skeleton className="h-4 w-36" />
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <Skeleton className="h-10 w-80 max-w-full mx-auto rounded-lg" />
@@ -123,7 +133,7 @@ export default function PlansPage() {
   if (!plans) return null;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-slide-in">
+    <div className="dash-page max-w-7xl space-y-8 animate-slide-in">
       {/* Back */}
       <Link
         href="/dashboard/billing"

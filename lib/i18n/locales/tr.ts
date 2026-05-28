@@ -1,4 +1,5 @@
 import type { TranslationKeys } from './en';
+import { toastsTr } from './toasts';
 
 export const tr: TranslationKeys = {
   common: {
@@ -99,6 +100,7 @@ export const tr: TranslationKeys = {
     servers: 'Sunucular',
     newProject: 'Yeni Proje',
     settings: 'Ayarlar',
+    settingsDescription: 'Hesap ayarlarınızı ve tercihlerinizi yönetin',
     helpDocs: 'Yardım & Dökümanlar',
     usage: 'Kullanım',
     deployments: 'Dağıtımlar',
@@ -225,6 +227,15 @@ export const tr: TranslationKeys = {
     searchPlaceholder: 'Proje, dağıtım ara...',
     aiHelp: 'AI Yardım',
     deploy: 'Dağıt',
+    alertsMenu: 'Uyarılar ve bildirimler',
+    alertsAllClear: 'Son 24 saatte başarısız teslimat veya sağlıksız uygulama yok.',
+    alertsViewAll: 'Uyarı merkezini aç',
+    alertsFailedDeliveries: '{count} başarısız teslimat (24s)',
+    alertsUnhealthyApps: '{count} sağlıksız uygulama',
+    alertsRecentFailures: 'Son başarısızlıklar',
+    alertsNoChannels: 'Henüz bildirim kanalı yapılandırılmadı.',
+    alertsSetupChannel: 'Projede uyarı ekle',
+    alertsLoading: 'Uyarılar yükleniyor…',
   },
   ai: {
     title: 'AI Asistan',
@@ -604,7 +615,13 @@ export const tr: TranslationKeys = {
     somethingWentWrong: 'Bir şeyler ters gitti',
     somethingWentWrongDesc: 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin veya sorun devam ederse destek ile iletişime geçin.',
     tryAgain: 'Tekrar dene',
+    requestFailed: 'İstek başarısız.',
+    requestTimeout: 'İstek zaman aşımına uğradı.',
+    networkUnavailable: 'Sunucuya ulaşılamıyor. Bağlantınızı ve API adresini kontrol edin.',
+    rateLimited: 'Çok fazla istek. Lütfen kısa bir süre bekleyip tekrar deneyin.',
+    payloadTooLarge: 'İstek gövdesi çok büyük.',
   },
+  toasts: toastsTr,
   projectDetail: {
     // Tabs
     overview: 'Genel Bakış',
@@ -1295,6 +1312,7 @@ export const tr: TranslationKeys = {
     infraRunningServers: '{count} çalışan yönetilen sunucu',
     infraTopUp: 'Kredi ekle',
     infraTopUpHint: 'Stripe ile tek seferlik ödeme. Sunucu oluşturmadan önce bakiye ≈ bir aylık maliyet olmalıdır.',
+    infraTopUpRedirecting: 'Stripe ödeme sayfasına yönlendiriliyor…',
     infraTransactions: 'Son işlemler',
     infraPerMonth: '/ay',
     infraPerHour: '/saat',
@@ -1390,7 +1408,16 @@ export const tr: TranslationKeys = {
     network: 'Ağ',
     detailBack: 'Sunucular',
     statusInfraCreditsStopped:
-      'Durduruldu: yetersiz altyapı kredisi. Tekrar başlatmak için Faturalandırma sayfasından kredi ekleyin.',
+      'Bu sunucu altyapı kredisi bittiği için durduruldu.',
+    statusInfraCreditsStoppedHint:
+      'Faturalandırma\'dan kredi yükledikten sonra yukarıdaki Başlat\'a basın (cüzdanda yaklaşık bir aylık sunucu ücreti olmalı).',
+    infraBillingTitle: 'Altyapı kredileri',
+    infraWalletBalance: 'Cüzdan bakiyesi',
+    infraMonthlyCost: 'Tahmini aylık maliyet',
+    infraStartRequires: 'Başlatmak için min.',
+    infraInsufficientForStart:
+      'Cüzdan bakiyeniz bu sunucuyu başlatmak için yeterli değil. Faturalandırma\'dan kredi ekleyin.',
+    infraReadyToStart: 'Bakiye yeterli. Sunucuyu tekrar açmak için Başlat\'a basın.',
     statusBillingSuspended:
       'Durduruldu: platform aboneliği sona erdi. Tekrar başlatmak için Faturalandırma sayfasından planınızı yenileyin.',
     openTerminal: 'Terminal',
@@ -1428,6 +1455,16 @@ export const tr: TranslationKeys = {
     fieldOs: 'İşletim sistemi',
     // BYOS
     cloudProvider: 'Bulut Sağlayıcı',
+    managedProviderActive: 'Yönetilen sunucular Hetzner Cloud üzerinde oluşturulur.',
+    managedProvidersComingSoon: 'DigitalOcean, AWS ve Google Cloud — yakında.',
+    comingSoonBadge: 'Yakında',
+    loadingSizes: 'Boyutlar yükleniyor…',
+    sshKeyOptionalNote:
+      'Boş bırakılırsa Pushify bir anahtar çifti oluşturur ve sunucunuza ekler. Root SSH erişimi gerekir.',
+    sizeExceedsPlan:
+      'Bu sunucu boyutu plan limitinizi aşıyor. Daha küçük bir boyut seçin veya planınızı yükseltin.',
+    managedNotAllowedOnPlan:
+      'Yönetilen bulut sunucuları ücretli bir plan gerektirir. Platform planınızı yükseltin veya kendi sunucunuzu (BYOS) bağlayın.',
     existingServer: 'Mevcut Sunucu',
     byosTitle: 'Sunucunuzu Bağlayın',
     byosDescription: 'Mevcut sunucunuzu Pushify ile deploy için bağlayın.',

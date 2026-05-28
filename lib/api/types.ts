@@ -96,7 +96,8 @@ export interface Project {
   webhookSecret?: string;
 }
 
-export type ProjectStatus = 'active' | 'paused' | 'inactive';
+/** Matches DB enum `project_status` (deleted projects are excluded from list API). */
+export type ProjectStatus = 'active' | 'paused' | 'deleted';
 
 export interface CreateProjectInput {
   name: string;

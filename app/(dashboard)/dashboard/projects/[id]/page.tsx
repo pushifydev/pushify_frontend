@@ -224,7 +224,7 @@ export default function ProjectDetailPage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[var(--text-muted)] min-w-0">
         <Link

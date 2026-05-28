@@ -21,11 +21,11 @@ export function DashboardAttentionZone({ active }: DashboardAttentionZoneProps) 
 
   if (isLoading) {
     return (
-      <section className="mb-6" aria-labelledby="dash-attention-heading">
+      <section className="mb-5 sm:mb-6 min-w-0" aria-labelledby="dash-attention-heading">
         <h2 id="dash-attention-heading" className="dash-section-label mb-3">
           {t('dashboard', 'attentionZoneTitle')}
         </h2>
-        <Skeleton className="h-48 w-full rounded-xl" />
+        <Skeleton className="h-40 sm:h-48 w-full rounded-xl" />
       </section>
     );
   }
@@ -33,22 +33,22 @@ export function DashboardAttentionZone({ active }: DashboardAttentionZoneProps) 
   if (!data) return null;
 
   return (
-    <section className="mb-6" aria-labelledby="dash-attention-heading">
+    <section className="mb-5 sm:mb-6 min-w-0" aria-labelledby="dash-attention-heading">
       <h2 id="dash-attention-heading" className="dash-section-label mb-3">
         {t('dashboard', 'attentionZoneTitle')}
       </h2>
       <div
         className={cn(
-          'grid gap-4 items-start',
-          hasUsage ? 'lg:grid-cols-12' : 'grid-cols-1',
+          'grid gap-4 items-start min-w-0',
+          hasUsage ? 'grid-cols-1 lg:grid-cols-12' : 'grid-cols-1',
         )}
       >
         {hasUsage && (
-          <UsageAlerts warnings={data.usageWarnings} className="lg:col-span-4" />
+          <UsageAlerts warnings={data.usageWarnings} className="min-w-0 lg:col-span-4" />
         )}
         <OperationsPanel
           data={data}
-          className={cn(hasUsage ? 'lg:col-span-8' : 'w-full')}
+          className={cn('min-w-0', hasUsage ? 'lg:col-span-8' : 'w-full')}
         />
       </div>
     </section>

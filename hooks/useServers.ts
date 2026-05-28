@@ -1,7 +1,8 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { showSuccessToast } from '@/lib/toast-i18n';
+import { useLocaleStore } from '@/stores/locale';
 import {
   listServers,
   getServer,
@@ -108,8 +109,9 @@ export function useProviderImages(provider: ServerProvider) {
 }
 
 export function useProviderSizes(provider: ServerProvider, region?: string) {
+  const locale = useLocaleStore((s) => s.locale);
   return useQuery({
-    queryKey: [...serverKeys.sizes(provider), region || 'default'],
+    queryKey: [...serverKeys.sizes(provider), region || 'default', locale],
     queryFn: async () => {
       const result = await getProviderSizes(provider, region);
       if (result.error) throw new Error(result.error.message);
@@ -147,9 +149,7 @@ export function useCreateServer() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
-      toast.success('Server created', {
-        description: `${data.name} is being provisioned`,
-      });
+      showSuccessToast('serverCreatedTitle', 'serverCreatedDesc', { name: data.name });
     },
   });
 }
@@ -165,9 +165,7 @@ export function useDeleteServer() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
-      toast.success('Server deleted', {
-        description: 'Server has been deleted successfully',
-      });
+      showSuccessToast('serverDeletedTitle', 'serverDeletedDesc');
     },
   });
 }
@@ -184,9 +182,7 @@ export function useStartServer() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
       queryClient.setQueryData(serverKeys.detail(data.id), data);
-      toast.success('Server starting', {
-        description: `${data.name} is starting up`,
-      });
+      showSuccessToast('serverStartingTitle', 'serverStartingDesc', { name: data.name });
     },
   });
 }
@@ -203,9 +199,7 @@ export function useStopServer() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
       queryClient.setQueryData(serverKeys.detail(data.id), data);
-      toast.success('Server stopping', {
-        description: `${data.name} is shutting down`,
-      });
+      showSuccessToast('serverStoppingTitle', 'serverStoppingDesc', { name: data.name });
     },
   });
 }
@@ -222,9 +216,7 @@ export function useRebootServer() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
       queryClient.setQueryData(serverKeys.detail(data.id), data);
-      toast.success('Server rebooting', {
-        description: `${data.name} is rebooting`,
-      });
+      showSuccessToast('serverRebootingTitle', 'serverRebootingDesc', { name: data.name });
     },
   });
 }
@@ -241,9 +233,7 @@ export function useSyncServer() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.list() });
       queryClient.setQueryData(serverKeys.detail(data.id), data);
-      toast.success('Server synced', {
-        description: `${data.name} has been synced with provider`,
-      });
+      showSuccessToast('serverSyncedTitle', 'serverSyncedDesc', { name: data.name });
     },
   });
 }

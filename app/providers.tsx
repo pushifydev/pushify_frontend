@@ -6,6 +6,7 @@ import { Toaster, toast } from 'sonner';
 import { useThemeStore, type Theme } from '@/stores/theme';
 import { ConfirmProvider } from '@/hooks/useConfirm';
 import { getApiErrorMessage } from '@/lib/api/get-error-message';
+import { appT } from '@/lib/i18n/app-translate';
 import { LocaleHtmlLang } from '@/components/LocaleHtmlLang';
 
 function resolveThemeMode(theme: Theme): 'light' | 'dark' {
@@ -62,7 +63,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         mutationCache: new MutationCache({
           onError: (error: unknown) => {
             const description = getApiErrorMessage(error);
-            toast.error('Something went wrong', {
+            toast.error(appT('errors', 'somethingWentWrong'), {
               description,
             });
           },

@@ -21,6 +21,7 @@ import { DashboardAttentionZone } from '@/components/dashboard/DashboardAttentio
 import { useAuthStore } from '@/stores/auth';
 import { formatTimeAgo, formatStorage } from '@/lib/formatters';
 import { getStatusColor } from '@/lib/constants';
+import { cn } from '@/lib/utils';
 import { Skeleton, SkeletonDashboardProjectRow } from '@/components/Skeleton';
 
 function metricFillLevel(percent: number): 'is-critical' | 'is-warning' | 'is-low' {
@@ -92,11 +93,11 @@ export default function DashboardPage() {
 
   return (
     <div className="dash-page pb-10 stagger-children">
-      <section className="dash-card px-6 py-5 mb-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-          <div>
+      <section className="dash-card px-4 sm:px-6 py-4 sm:py-5 mb-5 sm:mb-6">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-5">
+          <div className="min-w-0">
             <p className="dash-eyebrow mb-2">{getGreeting()}</p>
-            <h1 className="dash-page-title stat-number">
+            <h1 className="dash-page-title stat-number break-words">
               {user?.name?.split(' ')[0] || t('common', 'fallbackDisplayName')}.
             </h1>
             <p className="mt-2.5 text-sm leading-relaxed text-[var(--text-secondary)]">
@@ -109,7 +110,10 @@ export default function DashboardPage() {
               )}
             </p>
           </div>
-          <Link href="/dashboard/projects/new" className="btn btn-primary shrink-0">
+          <Link
+            href="/dashboard/projects/new"
+            className="btn btn-primary w-full sm:w-auto shrink-0 justify-center"
+          >
             <Rocket className="w-4 h-4" />
             {t('navigation', 'newProject')}
           </Link>
@@ -128,7 +132,7 @@ export default function DashboardPage() {
 
       <DashboardAttentionZone active={projects.length > 0 || servers.length > 0} />
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+      <div className="grid grid-cols-2 max-[400px]:grid-cols-1 lg:grid-cols-4 gap-2 sm:gap-3 mb-5 min-w-0">
         {statCards.map((card, idx) => (
           <StatCard
             key={card.label}
@@ -141,18 +145,18 @@ export default function DashboardPage() {
       </div>
 
       {hasMetrics && (
-        <section className="dash-panel p-5 mb-5">
+        <section className="dash-panel p-4 sm:p-5 mb-5 min-w-0">
           <div className="dash-panel-header">
-            <div className="dash-panel-title">
-              <BarChart3 className="w-4 h-4 text-[var(--text-secondary)]" />
-              {t('dashboard', 'systemHealth')}
+            <div className="dash-panel-title min-w-0">
+              <BarChart3 className="w-4 h-4 shrink-0 text-[var(--text-secondary)]" />
+              <span className="truncate">{t('dashboard', 'systemHealth')}</span>
             </div>
-            <Link href="/dashboard/monitoring" className="dash-link flex items-center gap-1">
+            <Link href="/dashboard/monitoring" className="dash-link flex items-center gap-1 shrink-0">
               {t('navigation', 'monitoring')}
               <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             <MetricBar
               label="CPU"
               value={`${metricsOverview!.aggregate.avgCpuPercent.toFixed(1)}%`}
@@ -179,7 +183,7 @@ export default function DashboardPage() {
         </section>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 mb-5 min-w-0">
         <div className="lg:col-span-2 space-y-2">
           <SectionLabel label={t('dashboard', 'yourProjects')}>
             <Link href="/dashboard/projects" className="dash-link flex items-center gap-1">
@@ -194,7 +198,7 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : projects.length === 0 ? (
-            <div className="dash-panel p-10 text-center">
+            <div className="dash-panel p-6 sm:p-10 text-center">
               <Zap className="dash-empty-icon mb-3" />
               <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">
                 {t('dashboard', 'noProjectsYet')}
@@ -216,13 +220,13 @@ export default function DashboardPage() {
                 <Link
                   key={project.id}
                   href={`/dashboard/projects/${project.id}`}
-                  className="group dash-list-row"
+                  className="group dash-list-row dash-list-row--project"
                 >
                   <span
-                    className={`dash-status-dot ${isActive ? 'is-active' : ''}`}
+                    className={`dash-status-dot mt-1 shrink-0 ${isActive ? 'is-active' : ''}`}
                     style={!isActive ? { background: getStatusColor(project.status) } : undefined}
                   />
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="dash-list-row-inner min-w-0">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate text-[var(--text-primary)] group-hover:underline underline-offset-2">
                         {project.name}
@@ -236,28 +240,47 @@ export default function DashboardPage() {
                           {formatTimeAgo(project.updatedAt, t)}
                         </span>
                       </div>
+                      {m && (
+                        <div className="flex sm:hidden items-center gap-3 dash-mono-caption mt-2">
+                          <span className="flex items-center gap-1">
+                            <Cpu className="w-3 h-3" />
+                            {m.cpuPercent.toFixed(1)}%
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <HardDrive className="w-3 h-3" />
+                            {formatStorage(m.memoryUsageMB)}
+                          </span>
+                        </div>
+                      )}
+                      {project.productionUrl && (
+                        <p className="md:hidden dash-mono-caption truncate mt-1 max-w-full">
+                          {project.productionUrl.replace('https://', '')}
+                        </p>
+                      )}
                     </div>
 
-                    {m && (
-                      <div className="hidden sm:flex items-center gap-3 dash-mono-caption">
-                        <span className="flex items-center gap-1">
-                          <Cpu className="w-3 h-3" />
-                          {m.cpuPercent.toFixed(1)}%
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <HardDrive className="w-3 h-3" />
-                          {formatStorage(m.memoryUsageMB)}
-                        </span>
-                      </div>
-                    )}
+                    <div className="dash-list-row-meta">
+                      {m && (
+                        <div className="hidden sm:flex items-center gap-3 dash-mono-caption">
+                          <span className="flex items-center gap-1">
+                            <Cpu className="w-3 h-3" />
+                            {m.cpuPercent.toFixed(1)}%
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <HardDrive className="w-3 h-3" />
+                            {formatStorage(m.memoryUsageMB)}
+                          </span>
+                        </div>
+                      )}
 
-                    {project.productionUrl && (
-                      <span className="hidden md:block dash-mono-caption truncate max-w-28">
-                        {project.productionUrl.replace('https://', '')}
-                      </span>
-                    )}
+                      {project.productionUrl && (
+                        <span className="hidden md:block dash-mono-caption truncate max-w-[7rem] lg:max-w-28">
+                          {project.productionUrl.replace('https://', '')}
+                        </span>
+                      )}
 
-                    <ExternalLink className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)] opacity-0 group-hover:opacity-60 transition-opacity" />
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)] opacity-60 sm:opacity-0 sm:group-hover:opacity-60 transition-opacity" />
+                    </div>
                   </div>
                 </Link>
               );
@@ -273,10 +296,10 @@ export default function DashboardPage() {
               <Link
                 key={pm.projectId}
                 href={`/dashboard/projects/${pm.projectId}`}
-                className="group dash-list-row"
+                className="group dash-list-row dash-list-row--activity"
               >
                 <span
-                  className={`dash-status-dot ${
+                  className={`dash-status-dot mt-1 shrink-0 ${
                     pm.containerStatus === 'running' ? 'is-success' : 'is-error'
                   }`}
                 />
@@ -290,6 +313,16 @@ export default function DashboardPage() {
                 </div>
                 <MetricBar
                   compact
+                  className="dash-activity-metric hidden sm:block"
+                  label=""
+                  value=""
+                  percent={pm.cpuPercent}
+                  stressed
+                />
+                <MetricBar
+                  compact
+                  fullWidth
+                  className="dash-activity-metric sm:hidden"
                   label=""
                   value=""
                   percent={pm.cpuPercent}
@@ -308,7 +341,7 @@ export default function DashboardPage() {
 
       <Link
         href="/dashboard/sites"
-        className="group dash-panel block mb-5 px-6 py-5 transition-colors hover:border-[var(--border-default)]"
+        className="group dash-panel block mb-5 px-4 sm:px-6 py-4 sm:py-5 transition-colors hover:border-[var(--border-default)]"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -326,7 +359,7 @@ export default function DashboardPage() {
         </div>
       </Link>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 min-w-0">
         {quickActions.map((action) => (
           <Link key={action.title} href={action.href} className="group dash-list-row">
             <div className="dash-icon-box shrink-0 group-hover:border-[var(--border-default)]">
@@ -351,7 +384,7 @@ function SectionLabel({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between mb-2">
+    <div className="dash-section-header">
       <span className="dash-section-label">{label}</span>
       {children}
     </div>
@@ -370,8 +403,8 @@ function StatCard({
   loading?: boolean;
 }) {
   return (
-    <div className="dash-stat-card p-5">
-      <div className="dash-icon-box mb-4">{icon}</div>
+    <div className="dash-stat-card p-4 sm:p-5 min-w-0">
+      <div className="dash-icon-box mb-3 sm:mb-4">{icon}</div>
       <p className="dash-stat-value stat-number">
         {loading ? (
           <Skeleton className="inline-block align-middle h-7 w-[3ch] max-w-[80px] rounded" />
@@ -390,12 +423,16 @@ function MetricBar({
   percent,
   stressed = false,
   compact = false,
+  fullWidth = false,
+  className,
 }: {
   label: string;
   value: string;
   percent: number;
   stressed?: boolean;
   compact?: boolean;
+  fullWidth?: boolean;
+  className?: string;
 }) {
   const fillClass = stressed ? metricFillLevel(percent) : 'is-low';
   const width = `${Math.min(percent, 100)}%`;
@@ -403,7 +440,12 @@ function MetricBar({
 
   if (compact) {
     return (
-      <div className="w-10 shrink-0">
+      <div
+        className={cn(
+          fullWidth ? 'dash-activity-metric--full w-full' : 'w-10 shrink-0',
+          className,
+        )}
+      >
         <div className="dash-metric-track">
           <div className={`dash-metric-fill bar-grow ${fillClass}`} style={fillStyle} />
         </div>

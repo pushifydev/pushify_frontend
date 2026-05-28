@@ -10,6 +10,8 @@ import {
 import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages, useInfraBilling } from '@/hooks';
 import type { CreateServerInput } from '@/lib/api';
 import { toast } from 'sonner';
+import { ManagedCloudProviderBar } from '@/components/servers/ManagedCloudProviderBar';
+import { getSizeDisallowLabel } from '@/lib/servers/size-disallow';
 
 type Mode = 'managed' | 'byos';
 type AuthMethod = 'ssh_key' | 'password';
@@ -103,7 +105,7 @@ export default function NewServerPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
+    <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
       {/* Back + Header */}
       <div>
         <Link
@@ -160,15 +162,14 @@ export default function NewServerPage() {
         </div>
       )}
 
+      {mode === 'managed' && <ManagedCloudProviderBar />}
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {mode === 'managed' ? (
           /* ─── Cloud Provider Form ─── */
           <>
             {/* Server Name */}
-            <div
-              className="rounded-xl p-6"
-              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-            >
+            <div className="dash-panel">
               <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                 {t('servers', 'serverName')}
               </label>
@@ -184,10 +185,7 @@ export default function NewServerPage() {
 
             {/* Region & Image */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div
-                className="rounded-xl p-6"
-                style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-              >
+              <div className="dash-panel">
                 <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                   {t('servers', 'region')}
                 </label>
@@ -209,10 +207,7 @@ export default function NewServerPage() {
                 )}
               </div>
 
-              <div
-                className="rounded-xl p-6"
-                style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-              >
+              <div className="dash-panel">
                 <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                   {t('servers', 'image')}
                 </label>
@@ -277,9 +272,9 @@ export default function NewServerPage() {
                             ${monthlyUsd}{t('billing', 'infraPerMonth')}
                           </span>
                         </div>
-                        {disabled && sizeOption.disallowReason && (
+                        {disabled && (
                           <p className="text-xs mb-2" style={{ color: 'var(--dash-warning)' }}>
-                            {sizeOption.disallowReason}
+                            {getSizeDisallowLabel(t, sizeOption)}
                           </p>
                         )}
                         <div className="space-y-1.5">
@@ -305,10 +300,7 @@ export default function NewServerPage() {
           <>
             {/* Name + IP */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div
-                className="rounded-xl p-6"
-                style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-              >
+              <div className="dash-panel">
                 <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                   {t('servers', 'serverName')}
                 </label>
@@ -322,10 +314,7 @@ export default function NewServerPage() {
                 />
               </div>
 
-              <div
-                className="rounded-xl p-6"
-                style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-              >
+              <div className="dash-panel">
                 <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                   {t('servers', 'ipAddressLabel')}
                 </label>

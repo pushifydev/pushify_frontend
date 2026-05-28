@@ -3,6 +3,7 @@
 import { Wallet, Loader2, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation, useInfraBilling, useInfraTopUp } from '@/hooks';
+import { cn } from '@/lib/utils';
 import type { InfraWalletTransaction } from '@/lib/api';
 
 function formatUsd(cents: number): string {
@@ -16,10 +17,7 @@ export function InfraWalletSection() {
 
   if (isLoading) {
     return (
-      <div
-        className="rounded-xl p-6 flex items-center justify-center"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-      >
+      <div className="dash-panel p-6 flex items-center justify-center">
         <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} />
       </div>
     );
@@ -30,10 +28,7 @@ export function InfraWalletSection() {
   const { wallet, transactions } = data;
 
   return (
-    <div
-      className="rounded-xl p-6 space-y-5"
-      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-    >
+    <div className="dash-panel p-4 sm:p-6 space-y-5">
       <div className="flex items-start gap-3">
         <div
           className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
@@ -72,28 +67,62 @@ export function InfraWalletSection() {
             {t('billing', 'infraRunningServers').replace('{count}', String(wallet.runningManagedServers))}
           </p>
         </div>
-        <div className="rounded-lg p-4 flex flex-col justify-between" style={{ background: 'var(--bg-tertiary)' }}>
+        <div
+          className={cn(
+            'rounded-lg p-4 flex flex-col justify-between relative',
+            topUp.isPending && 'pointer-events-none',
+          )}
+          style={{ background: 'var(--bg-tertiary)' }}
+        >
+          {topUp.isPending && (
+            <div
+              className="absolute inset-0 rounded-lg flex items-center justify-center z-10"
+              style={{ background: 'color-mix(in srgb, var(--bg-tertiary) 88%, transparent)' }}
+              aria-hidden
+            />
+          )}
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             {t('billing', 'infraTopUpHint')}
           </p>
-          <div className="flex flex-wrap gap-2 mt-3">
-            {wallet.topUpAmountsCents.map((amount: number) => (
-              <button
-                key={amount}
-                type="button"
-                disabled={topUp.isPending}
-                onClick={() => topUp.mutate(amount)}
-                className="px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  border: '1px solid var(--glass-border)',
-                  color: 'var(--text-primary)',
-                }}
-              >
-                +{formatUsd(amount)}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-2 mt-3 relative z-[1]">
+            {wallet.topUpAmountsCents.map((amount: number) => {
+              const isLoading = topUp.isPending && topUp.variables === amount;
+              return (
+                <button
+                  key={amount}
+                  type="button"
+                  disabled={topUp.isPending}
+                  aria-busy={isLoading}
+                  onClick={() => topUp.mutate(amount)}
+                  className={cn(
+                    'inline-flex items-center justify-center gap-1.5 min-w-[4.5rem] px-3 py-1.5 rounded-md text-sm font-medium transition-opacity',
+                    topUp.isPending && !isLoading && 'opacity-50',
+                  )}
+                  style={{
+                    background: 'var(--bg-secondary)',
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-primary)',
+                  }}
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
+                  ) : (
+                    <>+{formatUsd(amount)}</>
+                  )}
+                </button>
+              );
+            })}
           </div>
+          {topUp.isPending && (
+            <p
+              className="text-xs mt-3 flex items-center gap-2 relative z-[1]"
+              style={{ color: 'var(--text-secondary)' }}
+              role="status"
+            >
+              <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" aria-hidden />
+              {t('billing', 'infraTopUpRedirecting')}
+            </p>
+          )}
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { showSuccessToast } from '@/lib/toast-i18n';
 import {
   getEnvVars,
   createEnvVar,
@@ -51,9 +51,7 @@ export function useCreateEnvVar(projectId: string) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: envVarKeys.list(projectId) });
-      toast.success('Variable added', {
-        description: `${data?.key} has been added`,
-      });
+      showSuccessToast('envVarAddedTitle', 'envVarAddedDesc');
     },
   });
 }
@@ -69,9 +67,7 @@ export function useUpdateEnvVar(projectId: string) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: envVarKeys.list(projectId) });
-      toast.success('Variable updated', {
-        description: `${data?.key} has been updated`,
-      });
+      showSuccessToast('envVarUpdatedTitle', 'envVarUpdatedDesc');
     },
   });
 }
@@ -87,9 +83,7 @@ export function useDeleteEnvVar(projectId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: envVarKeys.list(projectId) });
-      toast.success('Variable deleted', {
-        description: 'Environment variable has been deleted',
-      });
+      showSuccessToast('envVarDeletedTitle', 'envVarDeletedDesc');
     },
   });
 }
@@ -105,9 +99,7 @@ export function useBulkCreateEnvVars(projectId: string) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: envVarKeys.list(projectId) });
-      toast.success('Variables added', {
-        description: `${data?.length || 0} variables have been added`,
-      });
+      showSuccessToast('envVarsBulkAddedTitle', 'envVarsBulkAddedDesc');
     },
   });
 }
@@ -123,8 +115,10 @@ export function useCloneEnvVars(projectId: string) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: envVarKeys.list(projectId) });
-      toast.success('Environment cloned', {
-        description: `${data?.copied} copied, ${data?.skipped} skipped, ${data?.overwritten} overwritten`,
+      showSuccessToast('envClonedTitle', 'envClonedDetail', {
+        copied: data?.copied ?? 0,
+        skipped: data?.skipped ?? 0,
+        overwritten: data?.overwritten ?? 0,
       });
     },
   });

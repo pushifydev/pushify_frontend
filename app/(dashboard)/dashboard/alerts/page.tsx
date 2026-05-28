@@ -57,7 +57,7 @@ export default function AlertsPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-5xl mx-auto space-y-6 pb-10">
+      <div className="dash-page max-w-5xl space-y-6 pb-10">
         <Skeleton className="h-8 w-48 rounded" />
         <Skeleton className="h-4 w-72 rounded" />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -75,7 +75,7 @@ export default function AlertsPage() {
     (summary?.failedDeliveries24h ?? 0) > 0 || (summary?.unhealthyProjects ?? 0) > 0;
 
   return (
-    <div className="max-w-5xl mx-auto pb-10 stagger-children min-w-0 overflow-x-hidden">
+    <div className="dash-page max-w-5xl pb-10 stagger-children min-w-0 overflow-x-hidden">
       <div className="mb-6">
         <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
           <Bell className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />

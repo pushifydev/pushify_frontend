@@ -58,7 +58,7 @@ export default function MarketplacePage() {
   const rest = filtered.filter((t) => !t.featured);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-slide-in">
+    <div className="dash-page max-w-6xl space-y-8 animate-slide-in">
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-2">

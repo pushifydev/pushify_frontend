@@ -43,7 +43,7 @@ export function UsageAlerts({ warnings, className }: UsageAlertsProps) {
 
   return (
     <aside
-      className={cn('dash-panel dash-callout-attention p-4 h-full', className)}
+      className={cn('dash-panel dash-callout-attention p-4 sm:p-5 h-full min-w-0', className)}
       aria-labelledby="dash-usage-alerts-title"
     >
       <div className="dash-panel-header !mb-3">

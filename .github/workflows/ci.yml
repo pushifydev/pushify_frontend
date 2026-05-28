@@ -61,7 +61,32 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+      - run: npm run test:e2e:smoke
         env:
           CI: true
           NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+
+  e2e-dashboard:
+    name: E2E Dashboard (staging credentials)
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ secrets.E2E_EMAIL != '' && secrets.E2E_PASSWORD != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.E2E_API_URL || 'https://api.pushify.dev/api/v1' }}
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test e2e/dashboard-billing.spec.ts e2e/dashboard-server.spec.ts
+        env:
+          CI: true
+          PLAYWRIGHT_BASE_URL: ${{ vars.E2E_BASE_URL || 'https://pushify.dev' }}
+          NEXT_PUBLIC_API_URL: ${{ vars.E2E_API_URL || 'https://api.pushify.dev/api/v1' }}
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          E2E_SERVER_ID: ${{ secrets.E2E_SERVER_ID }}

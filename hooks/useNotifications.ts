@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { showSuccessToast } from '@/lib/toast-i18n';
 import {
   getNotificationChannels,
   createNotificationChannel,
@@ -61,9 +61,7 @@ export function useCreateNotificationChannel(projectId: string) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: notificationKeys.channels(projectId) });
-      toast.success('Channel created', {
-        description: `${data?.name} notification channel has been created`,
-      });
+      showSuccessToast('channelCreatedTitle', 'channelCreatedDesc');
     },
   });
 }
@@ -85,9 +83,7 @@ export function useUpdateNotificationChannel(projectId: string) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: notificationKeys.channels(projectId) });
-      toast.success('Channel updated', {
-        description: `${data?.name} has been updated`,
-      });
+      showSuccessToast('channelUpdatedTitle', 'channelUpdatedDesc');
     },
   });
 }
@@ -103,9 +99,7 @@ export function useDeleteNotificationChannel(projectId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: notificationKeys.channels(projectId) });
-      toast.success('Channel deleted', {
-        description: 'Notification channel has been deleted',
-      });
+      showSuccessToast('channelDeletedTitle', 'channelDeletedDesc');
     },
   });
 }
@@ -118,9 +112,7 @@ export function useTestNotificationChannel(projectId: string) {
       return true;
     },
     onSuccess: () => {
-      toast.success('Test sent', {
-        description: 'Test notification has been sent',
-      });
+      showSuccessToast('testSentTitle', 'testSentDesc');
     },
   });
 }

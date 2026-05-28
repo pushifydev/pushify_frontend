@@ -17,6 +17,13 @@ export interface ServerLocation {
   datacenter?: string;
 }
 
+export interface ServerInfraBilling {
+  walletBalanceCents: number;
+  requiredStartCents: number;
+  estimatedMonthlyCents: number;
+  canStart: boolean;
+}
+
 export interface Server {
   id: string;
   name: string;
@@ -40,6 +47,7 @@ export interface Server {
   projectCount: number;
   databaseCount: number;
   isManaged: boolean;
+  infraBilling?: ServerInfraBilling;
   createdAt: string;
   updatedAt: string;
   lastSeenAt: string | null;
@@ -92,6 +100,7 @@ export interface ServerSizeOption {
     priceMonthly?: number;
   };
   allowedByPlan: boolean;
+  disallowCode?: 'managedNotAllowed' | 'serverTierExceeded';
   disallowReason?: string;
 }
 

@@ -29,7 +29,11 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { formatBytes, formatShortDate } from '@/lib/formatters';
-import { resolveServerStatusMessage } from '@/lib/server-status-message';
+import {
+  isInfraCreditsStoppedMessage,
+  resolveServerStatusMessage,
+} from '@/lib/server-status-message';
+import { ServerInfraBillingCard } from '../components/ServerInfraBillingCard';
 import {
   useServer,
   useStartServer,
@@ -231,9 +235,15 @@ export default function ServerDetailPage({ params }: PageProps) {
     startServer.isPending || stopServer.isPending || rebootServer.isPending || syncServer.isPending;
 
   const statusMessageText = resolveServerStatusMessage(server.statusMessage, t);
+  const infraCreditsStopped = isInfraCreditsStoppedMessage(server.statusMessage);
+  const showStatusBanner =
+    !!statusMessageText &&
+    server.setupStatus !== 'failed' &&
+    server.status !== 'running' &&
+    server.status !== 'rebooting';
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 min-w-0 overflow-x-hidden pb-8 animate-slide-in">
+    <div className="dash-page max-w-5xl space-y-6 min-w-0 overflow-x-hidden pb-8 animate-slide-in">
       {/* Back */}
       <Link
         href="/dashboard/servers"
@@ -245,14 +255,7 @@ export default function ServerDetailPage({ params }: PageProps) {
       </Link>
 
       {/* Header */}
-      <div
-        className="rounded-xl p-6"
-        style={{
-          background: 'var(--bg-secondary)',
-          border: '1px solid var(--glass-border)',
-          boxShadow: `inset 0 2px 0 0 ${statusAccent}55`,
-        }}
-      >
+      <div className="dash-card p-4 sm:p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex items-center gap-4 min-w-0 flex-1">
             <ProviderIcon provider={server.provider} size="md" status={server.status} />
@@ -380,12 +383,24 @@ export default function ServerDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {statusMessageText && server.setupStatus !== 'failed' && (
+      {server.infraBilling && <ServerInfraBillingCard server={server} />}
+
+      {showStatusBanner && (
         <SetupBanner
-          variant="error"
-          title={statusLabel}
-          description={statusMessageText}
-          icon={<AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-error)' }} strokeWidth={2} />}
+          variant={infraCreditsStopped ? 'info' : 'error'}
+          title={infraCreditsStopped ? t('servers', 'statusInfraCreditsStopped') : statusLabel}
+          description={
+            infraCreditsStopped
+              ? `${statusMessageText} ${t('servers', 'statusInfraCreditsStoppedHint')}`
+              : statusMessageText!
+          }
+          icon={
+            infraCreditsStopped ? (
+              <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--accent-cyan)' }} strokeWidth={2} />
+            ) : (
+              <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-error)' }} strokeWidth={2} />
+            )
+          }
         />
       )}
 

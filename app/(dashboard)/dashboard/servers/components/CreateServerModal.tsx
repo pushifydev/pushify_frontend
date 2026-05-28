@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { X, Server, Loader2, Cpu, HardDrive, MemoryStick, Globe, Key } from 'lucide-react';
 import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages } from '@/hooks';
 import type { ServerSize, CreateServerInput } from '@/lib/api';
+import { ManagedCloudProviderBar } from '@/components/servers/ManagedCloudProviderBar';
 
 interface CreateServerModalProps {
   isOpen: boolean;
@@ -106,7 +107,9 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
             </div>
             <div>
               <h2 className="text-lg font-semibold">{t('servers', 'createServer')}</h2>
-              <p className="text-sm text-[var(--text-muted)]">{mode === 'managed' ? 'Hetzner Cloud' : 'Bring Your Own Server'}</p>
+              <p className="text-sm text-[var(--text-muted)]">
+                {mode === 'managed' ? t('servers', 'hetzner') : t('servers', 'byosTitle')}
+              </p>
             </div>
           </div>
           <button
@@ -131,7 +134,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
               }`}
             >
               <Globe className="w-3.5 h-3.5" />
-              Cloud Provider
+              {t('servers', 'cloudProvider')}
             </button>
             <button
               type="button"
@@ -143,53 +146,62 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
               }`}
             >
               <Key className="w-3.5 h-3.5" />
-              Existing Server
+              {t('servers', 'existingServer')}
             </button>
           </div>
+
+          {mode === 'managed' && (
+            <div className="px-6 pb-2">
+              <ManagedCloudProviderBar />
+            </div>
+          )}
 
           {mode === 'byos' ? (
             /* BYOS Form */
             <div className="p-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Server Name</label>
+                <label className="block text-sm font-medium mb-2">{t('servers', 'serverName')}</label>
                 <input
                   type="text"
                   value={byosData.name}
                   onChange={(e) => setByosData({ ...byosData, name: e.target.value })}
-                  placeholder="my-production-server"
+                  placeholder={t('servers', 'serverNamePlaceholder')}
                   className="input w-full h-12"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">IP Address</label>
+                <label className="block text-sm font-medium mb-2">{t('servers', 'ipAddressLabel')}</label>
                 <input
                   type="text"
                   value={byosData.ipv4}
                   onChange={(e) => setByosData({ ...byosData, ipv4: e.target.value })}
-                  placeholder="192.168.1.100"
+                  placeholder={t('servers', 'ipAddressPlaceholder')}
                   className="input w-full h-12"
                 />
                 <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
-                  Public IPv4 address of your server
+                  {t('servers', 'ipAddressHint')}
                 </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  SSH Private Key <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>(optional)</span>
+                  {t('servers', 'sshKey')}{' '}
+                  <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>
+                    ({t('common', 'optional')})
+                  </span>
                 </label>
                 <textarea
                   value={byosData.sshPrivateKey}
                   onChange={(e) => setByosData({ ...byosData, sshPrivateKey: e.target.value })}
-                  placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;...&#10;-----END RSA PRIVATE KEY-----"
+                  placeholder={t('servers', 'sshKeyPlaceholder')}
                   className="input w-full font-mono text-xs"
                   rows={6}
                   style={{ resize: 'none', fontFamily: 'var(--font-mono)' }}
                 />
                 <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
-                  If empty, Pushify will generate a key pair and add it to your server. Root SSH access required.
+                  {t('servers', 'sshKeyOptionalNote')}
                 </p>
               </div>
 
@@ -197,12 +209,14 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                 className="p-4 rounded-lg text-sm"
                 style={{ background: 'var(--hover-overlay-lg)', border: '1px solid var(--glass-border)' }}
               >
-                <p className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>What happens next:</p>
+                <p className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                  {t('servers', 'byosInfoTitle')}
+                </p>
                 <ul className="space-y-1.5" style={{ color: 'var(--text-secondary)' }}>
-                  <li>• Pushify connects to your server via SSH</li>
-                  <li>• Installs Docker and Nginx if not present</li>
-                  <li>• Configures the server for deployments</li>
-                  <li>• Your server is ready to deploy projects</li>
+                  <li>• {t('servers', 'byosStep1')}</li>
+                  <li>• {t('servers', 'byosStep2')}</li>
+                  <li>• {t('servers', 'byosStep3')}</li>
+                  <li>• {t('servers', 'byosStep4')}</li>
                 </ul>
               </div>
             </div>
@@ -284,7 +298,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
               {sizesLoading ? (
                 <div className="flex items-center justify-center h-48 text-[var(--text-muted)] border border-[var(--border-subtle)] rounded-xl">
                   <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                  Loading sizes...
+                  {t('servers', 'loadingSizes')}
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -340,7 +354,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
             }}
           >
             <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              {isValid ? 'Ready to create' : 'Fill all fields to continue'}
+              {isValid ? t('servers', 'readyToCreate') : t('servers', 'fillRequiredFields')}
             </p>
             <div className="flex items-center gap-3">
               <button

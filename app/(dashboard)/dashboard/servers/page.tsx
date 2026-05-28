@@ -55,7 +55,7 @@ export default function ServersPage() {
   const formatMemory = (mb: number) => mb >= 1024 ? `${(mb / 1024).toFixed(0)} GB` : `${mb} MB`;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-slide-in">
+    <div className="dash-page max-w-5xl space-y-6 animate-slide-in">
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -141,22 +141,7 @@ export default function ServersPage() {
               <Link
                 href={`/dashboard/servers/${server.id}`}
                 key={server.id}
-                className="block rounded-xl p-5 relative group transition-all"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  borderWidth: '2px 1px 1px 1px',
-                  borderStyle: 'solid',
-                  borderColor: `${accent}45 var(--glass-border) var(--glass-border) var(--glass-border)`,
-                  borderRadius: 12,
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    `${accent}70 var(--glass-border-strong) var(--glass-border-strong) var(--glass-border-strong)`;
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor =
-                    `${accent}45 var(--glass-border) var(--glass-border) var(--glass-border)`;
-                }}
+                className="block dash-panel p-5 relative group transition-colors hover:border-[var(--border-default)]"
               >
                 {/* Provider + name */}
                 <div className="flex items-start justify-between mb-4">

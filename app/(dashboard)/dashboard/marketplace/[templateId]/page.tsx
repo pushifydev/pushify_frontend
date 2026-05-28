@@ -57,7 +57,7 @@ export default function TemplateDetailPage() {
   const IconComponent = ICON_MAP[template.icon] || Package;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-slide-in min-w-0 overflow-x-hidden pb-8">
+    <div className="dash-page max-w-4xl space-y-8 animate-slide-in min-w-0 overflow-x-hidden pb-8">
       {/* Back */}
       <Link
         href="/dashboard/marketplace"
