@@ -26,10 +26,13 @@ export interface BillingFeatures {
   prioritySupport: boolean;
 }
 
+export type BillingStatus = 'active' | 'past_due' | 'suspended';
+
 export interface BillingInfo {
   plan: PlanType;
   planName: string;
   price: number;
+  billingStatus: BillingStatus;
   billingEmail: string | null;
   /** Per API key, per minute (-1 = unlimited) */
   apiRequestsPerMinute: number;
@@ -172,6 +175,75 @@ export const resumeSubscription = async (): Promise<ApiResponse<void>> => {
   }
 };
 
+// ============ Infrastructure wallet ============
+
+export interface InfraWalletSummary {
+  balanceCents: number;
+  balanceUsd: string;
+  marginPercent: number;
+  estimatedMonthlyBurnCents: number;
+  runningManagedServers: number;
+  topUpAmountsCents: readonly number[];
+}
+
+export interface InfraWalletTransaction {
+  id: string;
+  type: string;
+  amountCents: number;
+  balanceAfterCents: number;
+  description: string | null;
+  serverId: string | null;
+  createdAt: string;
+}
+
+export interface InfraBillingData {
+  wallet: InfraWalletSummary;
+  transactions: InfraWalletTransaction[];
+}
+
+export const getInfraBilling = async (): Promise<ApiResponse<InfraBillingData>> => {
+  try {
+    const response = await api.get<{ data: InfraBillingData }>('/billing/infra');
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const createInfraTopUpSession = async (
+  amountCents: number,
+): Promise<ApiResponse<{ url: string }>> => {
+  try {
+    const response = await api.post<{ data: { url: string } }>('/billing/infra/topup', {
+      amountCents,
+    });
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export type InfraTopUpConfirmResult = {
+  credited: boolean;
+  alreadyCredited?: boolean;
+  paymentStatus: string | null;
+  balanceCents: number;
+  amountCents: number;
+};
+
+export const confirmInfraTopUp = async (
+  sessionId: string,
+): Promise<ApiResponse<InfraTopUpConfirmResult>> => {
+  try {
+    const response = await api.post<{ data: InfraTopUpConfirmResult }>('/billing/infra/confirm', {
+      sessionId,
+    });
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 // ============ Export as namespace ============
 
 export const billingService = {
@@ -183,4 +255,7 @@ export const billingService = {
   getSubscriptionStatus,
   cancelSubscription,
   resumeSubscription,
+  getInfraBilling,
+  createInfraTopUpSession,
+  confirmInfraTopUp,
 };

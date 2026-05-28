@@ -1,11 +1,10 @@
 'use client';
 
-import { use } from 'react';
+import { use, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft,
-  Server,
   Globe,
   Cpu,
   MemoryStick,
@@ -18,16 +17,19 @@ import {
   RotateCcw,
   Trash2,
   RefreshCw,
-  Copy,
-  Check,
   Terminal,
   Shield,
   Network,
   Box,
+  AlertTriangle,
+  Check,
+  Loader2,
+  Folder,
+  Database,
 } from 'lucide-react';
-import { useState } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { formatBytes, formatShortDate } from '@/lib/formatters';
+import { resolveServerStatusMessage } from '@/lib/server-status-message';
 import {
   useServer,
   useStartServer,
@@ -35,10 +37,142 @@ import {
   useRebootServer,
   useSyncServer,
 } from '@/hooks';
+import { SERVER_STATUS_COLORS } from '@/lib/constants';
+import type { ServerStatus } from '@/lib/api';
+import { ProviderIcon } from '@/components/servers/ProviderIcon';
 import { DeleteServerModal } from '../components/DeleteServerModal';
+import {
+  ServerDetailSection,
+  StatTile,
+  CopyField,
+  InfoRow,
+} from '../components/ServerDetailSection';
+
+const ICON_SM = 'w-4 h-4 shrink-0';
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+type ProviderLabels = {
+  hetznerServerId?: number;
+  datacenter?: string;
+  datacenterDescription?: string;
+  location?: {
+    name: string;
+    city: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+    network_zone: string;
+  };
+  serverType?: {
+    id: number;
+    name: string;
+    description: string;
+    cpuType: string;
+    architecture: string;
+    storageType: string;
+  };
+  image?: {
+    id: number;
+    name: string;
+    description: string;
+    osFamily: string;
+    osVersion: string;
+    architecture: string;
+  };
+  traffic?: {
+    outgoing: number | null;
+    ingoing: number | null;
+    included: number;
+  };
+  protection?: {
+    delete: boolean;
+    rebuild: boolean;
+  };
+};
+
+function StatusBadge({
+  status,
+  label,
+}: {
+  status: ServerStatus;
+  label: string;
+}) {
+  const accent = SERVER_STATUS_COLORS[status] ?? 'var(--text-muted)';
+
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+      style={{
+        background: `${accent}18`,
+        border: `1px solid ${accent}35`,
+        color: accent,
+      }}
+    >
+      <span
+        className="w-1.5 h-1.5 rounded-full shrink-0"
+        style={{ background: accent }}
+      />
+      {label}
+    </span>
+  );
+}
+
+function SetupBanner({
+  variant,
+  title,
+  description,
+  icon,
+}: {
+  variant: 'info' | 'error' | 'success';
+  title: string;
+  description: string;
+  icon: ReactNode;
+}) {
+  const styles = {
+    info: {
+      border: 'var(--accent-cyan)',
+      bg: 'rgba(34,211,238,0.06)',
+      title: 'var(--accent-cyan)',
+    },
+    error: {
+      border: 'var(--status-error)',
+      bg: 'rgba(239,68,68,0.06)',
+      title: 'var(--status-error)',
+    },
+    success: {
+      border: 'var(--status-success)',
+      bg: 'rgba(34,197,94,0.06)',
+      title: 'var(--status-success)',
+    },
+  }[variant];
+
+  return (
+    <div
+      className="rounded-xl p-5 flex items-start gap-4"
+      style={{
+        background: styles.bg,
+        border: `1px solid color-mix(in srgb, ${styles.border} 35%, transparent)`,
+      }}
+    >
+      <div
+        className="w-10 h-10 rounded-lg dash-section-icon"
+        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <h3 className="text-sm font-semibold" style={{ color: styles.title }}>
+          {title}
+        </h3>
+        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+          {description}
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default function ServerDetailPage({ params }: PageProps) {
@@ -48,7 +182,7 @@ export default function ServerDetailPage({ params }: PageProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const { data: server, isLoading, error, refetch } = useServer(id);
+  const { data: server, isLoading, error } = useServer(id);
   const startServer = useStartServer();
   const stopServer = useStopServer();
   const rebootServer = useRebootServer();
@@ -60,541 +194,394 @@ export default function ServerDetailPage({ params }: PageProps) {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'running':
-        return 'bg-green-500';
-      case 'stopped':
-        return 'bg-gray-500';
-      case 'provisioning':
-        return 'bg-blue-500';
-      case 'rebooting':
-        return 'bg-yellow-500';
-      case 'error':
-        return 'bg-red-500';
-      case 'deleting':
-        return 'bg-orange-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    return t('servers', status as 'running' | 'stopped' | 'provisioning' | 'rebooting' | 'error' | 'deleting');
-  };
-
-
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent-cyan)]" />
+      <div className="max-w-5xl mx-auto flex items-center justify-center min-h-[320px]">
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: 'var(--accent-cyan)' }} />
       </div>
     );
   }
 
   if (error || !server) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-[var(--text-muted)]">{t('servers', 'notFound')}</p>
-        <button
-          onClick={() => router.push('/dashboard/servers')}
-          className="btn btn-secondary"
-        >
+      <div className="max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[320px] gap-4">
+        <p style={{ color: 'var(--text-muted)' }}>{t('servers', 'notFound')}</p>
+        <Link href="/dashboard/servers" className="btn btn-secondary">
           {t('common', 'back')}
-        </button>
+        </Link>
       </div>
     );
   }
 
-  const providerData = server.labels as {
-    hetznerServerId?: number;
-    datacenter?: string;
-    datacenterDescription?: string;
-    location?: {
-      name: string;
-      city: string;
-      country: string;
-      latitude: number;
-      longitude: number;
-      network_zone: string;
-    };
-    serverType?: {
-      id: number;
-      name: string;
-      description: string;
-      cpuType: string;
-      architecture: string;
-      storageType: string;
-    };
-    image?: {
-      id: number;
-      name: string;
-      description: string;
-      osFamily: string;
-      osVersion: string;
-      architecture: string;
-    };
-    traffic?: {
-      outgoing: number | null;
-      ingoing: number | null;
-      included: number;
-    };
-    volumes?: number[];
-    loadBalancers?: number[];
-    protection?: {
-      delete: boolean;
-      rebuild: boolean;
-    };
-  };
+  const statusAccent = SERVER_STATUS_COLORS[server.status] ?? 'var(--text-muted)';
+  const statusLabel = t('servers', server.status);
+  const providerI18nKey =
+    server.provider === 'self_hosted' ? 'selfHosted' : server.provider;
+  const providerLabel =
+    t('servers', providerI18nKey as 'hetzner' | 'digitalocean' | 'aws' | 'gcp' | 'selfHosted') ||
+    server.provider;
+
+  const providerData = server.labels as ProviderLabels;
+  const memoryLabel =
+    server.memoryMb >= 1024
+      ? `${(server.memoryMb / 1024).toFixed(0)} GB`
+      : `${server.memoryMb} MB`;
+
+  const actionPending =
+    startServer.isPending || stopServer.isPending || rebootServer.isPending || syncServer.isPending;
+
+  const statusMessageText = resolveServerStatusMessage(server.statusMessage, t);
 
   return (
-    <div className="space-y-6 min-w-0 overflow-x-hidden pb-8">
+    <div className="max-w-5xl mx-auto space-y-6 min-w-0 overflow-x-hidden pb-8 animate-slide-in">
+      {/* Back */}
+      <Link
+        href="/dashboard/servers"
+        className="dash-icon-row text-sm font-medium transition-opacity hover:opacity-80"
+        style={{ color: 'var(--text-secondary)' }}
+      >
+        <ArrowLeft className={ICON_SM} strokeWidth={2} />
+        {t('servers', 'detailBack')}
+      </Link>
+
       {/* Header */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
-          <button
-            onClick={() => router.push('/dashboard/servers')}
-            className="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-[var(--accent-cyan)]/20 to-[var(--accent-purple)]/20">
-              <Server className="w-6 h-6 text-[var(--accent-cyan)]" />
-            </div>
+      <div
+        className="rounded-xl p-6"
+        style={{
+          background: 'var(--bg-secondary)',
+          border: '1px solid var(--glass-border)',
+          boxShadow: `inset 0 2px 0 0 ${statusAccent}55`,
+        }}
+      >
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex items-center gap-4 min-w-0 flex-1">
+            <ProviderIcon provider={server.provider} size="md" status={server.status} />
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl font-bold truncate">{server.name}</h1>
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--text-muted)]">
-                <span className={`w-2 h-2 rounded-full ${getStatusColor(server.status)}`} />
-                <span>{getStatusText(server.status)}</span>
-                {server.ipv4 && (
-                  <>
-                    <span>•</span>
-                    <span>{server.ipv4}</span>
-                  </>
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <h1 className="text-xl font-semibold tracking-tight truncate">{server.name}</h1>
+                <StatusBadge status={server.status} label={statusLabel} />
+                {server.isManaged && (
+                  <span
+                    className="text-xs px-2 py-0.5 rounded-md font-medium"
+                    style={{
+                      background: 'var(--dash-accent-bg)',
+                      color: 'var(--accent-cyan)',
+                      border: '1px solid var(--dash-accent-border)',
+                    }}
+                  >
+                    {t('servers', 'managedBadge')}
+                  </span>
                 )}
               </div>
+              <p className="text-sm capitalize" style={{ color: 'var(--text-secondary)' }}>
+                {providerLabel}
+                <span style={{ color: 'var(--text-muted)' }}> · </span>
+                {server.region}
+                {server.ipv4 && (
+                  <>
+                    <span style={{ color: 'var(--text-muted)' }}> · </span>
+                    <span className="font-mono text-xs">{server.ipv4}</span>
+                  </>
+                )}
+              </p>
+              {(server.projectCount > 0 || server.databaseCount > 0) && (
+                <p className="text-xs mt-2 flex flex-wrap items-center gap-3" style={{ color: 'var(--text-muted)' }}>
+                  {server.projectCount > 0 && (
+                    <span className="dash-icon-row gap-1.5">
+                      <Folder className="w-3.5 h-3.5" strokeWidth={2} />
+                      {t('servers', 'projectCount').replace('{count}', String(server.projectCount))}
+                    </span>
+                  )}
+                  {server.databaseCount > 0 && (
+                    <span className="dash-icon-row gap-1.5">
+                      <Database className="w-3.5 h-3.5" strokeWidth={2} />
+                      {t('servers', 'databaseCount').replace('{count}', String(server.databaseCount))}
+                    </span>
+                  )}
+                </p>
+              )}
             </div>
           </div>
-        </div>
 
-        {/* Actions */}
-        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto shrink-0">
-          {/* Primary action */}
-          {server.status === 'stopped' && (
-            <button
-              onClick={() => startServer.mutate(id)}
-              disabled={startServer.isPending}
-              className="btn btn-primary flex-1 sm:flex-none justify-center"
-            >
-              <Play className="w-4 h-4" />
-              {t('servers', 'start')}
-            </button>
-          )}
-
-          {server.status === 'running' && (
-            <Link
-              href={`/dashboard/servers/${id}/terminal`}
-              className="btn btn-primary flex-1 sm:flex-none justify-center"
-            >
-              <Terminal className="w-4 h-4" />
-              Terminal
-            </Link>
-          )}
-
-          {/* Secondary actions */}
-          <div className="flex items-center gap-1 rounded-lg" style={{ border: '1px solid var(--glass-border)', padding: 2 }}>
-            <button
-              onClick={() => syncServer.mutate(id)}
-              disabled={syncServer.isPending}
-              className="p-2 rounded-md transition-colors hover:bg-[var(--hover-overlay-lg)]"
-              title={t('servers', 'sync')}
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${syncServer.isPending ? 'animate-spin' : ''}`} />
-            </button>
-
-            {server.status === 'running' && (
-              <>
-                <div style={{ width: 1, height: 16, background: 'var(--glass-divider)' }} />
-                <button
-                  onClick={() => rebootServer.mutate(id)}
-                  disabled={rebootServer.isPending}
-                  className="p-2 rounded-md transition-colors hover:bg-[var(--hover-overlay-lg)]"
-                  title={t('servers', 'reboot')}
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                </button>
-                <div style={{ width: 1, height: 16, background: 'var(--glass-divider)' }} />
-                <button
-                  onClick={() => stopServer.mutate(id)}
-                  disabled={stopServer.isPending}
-                  className="p-2 rounded-md transition-colors hover:bg-[var(--hover-overlay-lg)]"
-                  title={t('servers', 'stop')}
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  <Square className="w-3.5 h-3.5" />
-                </button>
-              </>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {server.status === 'stopped' && (
+              <button
+                type="button"
+                onClick={() => startServer.mutate(id)}
+                disabled={actionPending}
+                className="btn btn-primary dash-icon-row"
+              >
+                <Play className={ICON_SM} strokeWidth={2} />
+                {t('servers', 'start')}
+              </button>
             )}
 
-            <div style={{ width: 1, height: 16, background: 'var(--glass-divider)' }} />
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="p-2 rounded-md transition-colors hover:bg-[rgba(239,68,68,0.1)]"
-              title={t('servers', 'deleteServer')}
-              style={{ color: 'var(--status-error)' }}
+            {server.status === 'running' && (
+              <Link href={`/dashboard/servers/${id}/terminal`} className="btn btn-primary dash-icon-row">
+                <Terminal className={ICON_SM} strokeWidth={2} />
+                {t('servers', 'openTerminal')}
+              </Link>
+            )}
+
+            <div
+              className="inline-flex items-center gap-0.5 rounded-lg p-0.5"
+              style={{ border: '1px solid var(--glass-border)', background: 'var(--bg-tertiary)' }}
             >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
+              <button
+                type="button"
+                onClick={() => syncServer.mutate(id)}
+                disabled={actionPending}
+                className="dash-icon-btn p-2 rounded-md inline-flex items-center justify-center transition-colors hover:opacity-80"
+                title={t('servers', 'sync')}
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                <RefreshCw className={`${ICON_SM} ${syncServer.isPending ? 'animate-spin' : ''}`} strokeWidth={2} />
+              </button>
+
+              {server.status === 'running' && (
+                <>
+                  <span className="w-px h-4 self-center" style={{ background: 'var(--glass-divider)' }} />
+                  <button
+                    type="button"
+                    onClick={() => rebootServer.mutate(id)}
+                    disabled={actionPending}
+                    className="dash-icon-btn p-2 rounded-md inline-flex items-center justify-center transition-colors hover:opacity-80"
+                    title={t('servers', 'reboot')}
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
+                    <RotateCcw className={ICON_SM} strokeWidth={2} />
+                  </button>
+                  <span className="w-px h-4 self-center" style={{ background: 'var(--glass-divider)' }} />
+                  <button
+                    type="button"
+                    onClick={() => stopServer.mutate(id)}
+                    disabled={actionPending}
+                    className="dash-icon-btn p-2 rounded-md inline-flex items-center justify-center transition-colors hover:opacity-80"
+                    title={t('servers', 'stop')}
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
+                    <Square className={ICON_SM} strokeWidth={2} />
+                  </button>
+                </>
+              )}
+
+              <span className="w-px h-4 self-center" style={{ background: 'var(--glass-divider)' }} />
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(true)}
+                className="dash-icon-btn p-2 rounded-md inline-flex items-center justify-center transition-colors"
+                title={t('servers', 'deleteServer')}
+                style={{ color: 'var(--status-error)' }}
+              >
+                <Trash2 className={ICON_SM} strokeWidth={2} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Setup Progress Banner */}
-      {server.status === 'running' && server.setupStatus !== 'completed' && (
-        <div className="rounded-xl border border-[var(--accent-cyan)]/30 bg-[var(--accent-cyan)]/5 p-4">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full border-2 border-[var(--accent-cyan)] border-t-transparent animate-spin" />
-            <div>
-              <h3 className="font-semibold text-[var(--accent-cyan)]">Setting up your server...</h3>
-              <p className="text-sm text-[var(--text-muted)]">
-                Installing Docker, Nginx, and Certbot. This may take a few minutes.
-              </p>
-            </div>
-          </div>
-        </div>
+      {statusMessageText && server.setupStatus !== 'failed' && (
+        <SetupBanner
+          variant="error"
+          title={statusLabel}
+          description={statusMessageText}
+          icon={<AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-error)' }} strokeWidth={2} />}
+        />
+      )}
+
+      {server.status === 'running' && server.setupStatus !== 'completed' && server.setupStatus !== 'failed' && (
+        <SetupBanner
+          variant="info"
+          title={t('servers', 'setupBannerTitle')}
+          description={t('servers', 'setupBannerDesc')}
+          icon={<Loader2 className="w-5 h-5 shrink-0 animate-spin" style={{ color: 'var(--accent-cyan)' }} strokeWidth={2} />}
+        />
       )}
 
       {server.setupStatus === 'failed' && (
-        <div className="rounded-xl border border-[var(--status-error)]/30 bg-[var(--status-error)]/5 p-4">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-[var(--status-error)]/10 flex items-center justify-center">
-              <span className="text-[var(--status-error)] text-xl">!</span>
-            </div>
-            <div>
-              <h3 className="font-semibold text-[var(--status-error)]">Setup Failed</h3>
-              <p className="text-sm text-[var(--text-muted)]">
-                {server.statusMessage || 'Server setup encountered an error. Please try syncing or recreating the server.'}
-              </p>
-            </div>
-          </div>
-        </div>
+        <SetupBanner
+          variant="error"
+          title={t('servers', 'setupFailedTitle')}
+          description={statusMessageText || t('servers', 'setupFailed')}
+          icon={<AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-error)' }} strokeWidth={2} />}
+        />
       )}
 
       {server.status === 'running' && server.setupStatus === 'completed' && (
-        <div className="rounded-xl border border-[var(--status-success)]/30 bg-[var(--status-success)]/5 p-4">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-[var(--status-success)]/10 flex items-center justify-center">
-              <Check className="w-5 h-5 text-[var(--status-success)]" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-[var(--status-success)]">Server Ready</h3>
-              <p className="text-sm text-[var(--text-muted)]">
-                Docker, Nginx, and Certbot are installed. Your server is ready for deployments.
-              </p>
-            </div>
-          </div>
-        </div>
+        <SetupBanner
+          variant="success"
+          title={t('servers', 'setupReadyTitle')}
+          description={t('servers', 'setupReadyDesc')}
+          icon={<Check className="w-5 h-5 shrink-0" style={{ color: 'var(--status-success)' }} strokeWidth={2} />}
+        />
       )}
 
-      {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
-        {/* Left Column - Server Info */}
         <div className="lg:col-span-2 space-y-6 min-w-0">
-          {/* Overview Card */}
-          <div className="card p-6">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-[var(--accent-cyan)]" />
-              {t('servers', 'overview')}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-4 rounded-xl bg-[var(--bg-secondary)]">
-                <div className="flex items-center gap-2 text-[var(--text-muted)] mb-1">
-                  <Cpu className="w-4 h-4" />
-                  <span className="text-sm">vCPU</span>
-                </div>
-                <p className="text-2xl font-bold">{server.vcpus}</p>
-              </div>
-              <div className="p-4 rounded-xl bg-[var(--bg-secondary)]">
-                <div className="flex items-center gap-2 text-[var(--text-muted)] mb-1">
-                  <MemoryStick className="w-4 h-4" />
-                  <span className="text-sm">RAM</span>
-                </div>
-                <p className="text-2xl font-bold">{(server.memoryMb / 1024).toFixed(0)} GB</p>
-              </div>
-              <div className="p-4 rounded-xl bg-[var(--bg-secondary)]">
-                <div className="flex items-center gap-2 text-[var(--text-muted)] mb-1">
-                  <HardDrive className="w-4 h-4" />
-                  <span className="text-sm">Disk</span>
-                </div>
-                <p className="text-2xl font-bold">{server.diskGb} GB</p>
-              </div>
-              <div className="p-4 rounded-xl bg-[var(--bg-secondary)]">
-                <div className="flex items-center gap-2 text-[var(--text-muted)] mb-1">
-                  <MapPin className="w-4 h-4" />
-                  <span className="text-sm">{t('servers', 'region')}</span>
-                </div>
-                <p className="text-2xl font-bold">{server.region}</p>
-              </div>
+          <ServerDetailSection icon={Activity} title={t('servers', 'overview')}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <StatTile icon={Cpu} label={t('servers', 'vcpus')} value={String(server.vcpus)} />
+              <StatTile icon={MemoryStick} label={t('servers', 'memory')} value={memoryLabel} />
+              <StatTile icon={HardDrive} label={t('servers', 'disk')} value={`${server.diskGb} GB`} />
+              <StatTile icon={MapPin} label={t('servers', 'region')} value={server.region} />
             </div>
-          </div>
+          </ServerDetailSection>
 
-          {/* Network Card */}
-          <div className="card p-6">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Network className="w-5 h-5 text-[var(--accent-cyan)]" />
-              {t('servers', 'network')}
-            </h2>
-            <div className="space-y-4">
+          <ServerDetailSection icon={Network} title={t('servers', 'network')}>
+            <div className="space-y-3">
               {server.ipv4 && (
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-[var(--bg-secondary)] min-w-0">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-[var(--text-muted)]">IPv4</p>
-                    <p className="font-mono break-all">{server.ipv4}</p>
-                  </div>
-                  <button
-                    onClick={() => copyToClipboard(server.ipv4!, 'ipv4')}
-                    className="p-2 hover:bg-[var(--bg-primary)] rounded-lg transition-colors"
-                  >
-                    {copiedField === 'ipv4' ? (
-                      <Check className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
+                <CopyField
+                  label="IPv4"
+                  value={server.ipv4}
+                  fieldKey="ipv4"
+                  copiedField={copiedField}
+                  onCopy={copyToClipboard}
+                />
               )}
               {server.ipv6 && (
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-[var(--bg-secondary)] min-w-0">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-[var(--text-muted)]">IPv6</p>
-                    <p className="font-mono text-sm break-all">{server.ipv6}</p>
-                  </div>
-                  <button
-                    onClick={() => copyToClipboard(server.ipv6!, 'ipv6')}
-                    className="p-2 hover:bg-[var(--bg-primary)] rounded-lg transition-colors"
-                  >
-                    {copiedField === 'ipv6' ? (
-                      <Check className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
+                <CopyField
+                  label="IPv6"
+                  value={server.ipv6}
+                  fieldKey="ipv6"
+                  copiedField={copiedField}
+                  onCopy={copyToClipboard}
+                />
               )}
               {server.privateIp && (
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-[var(--bg-secondary)] min-w-0">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-[var(--text-muted)]">Private IP</p>
-                    <p className="font-mono break-all">{server.privateIp}</p>
-                  </div>
-                  <button
-                    onClick={() => copyToClipboard(server.privateIp!, 'privateIp')}
-                    className="p-2 hover:bg-[var(--bg-primary)] rounded-lg transition-colors"
-                  >
-                    {copiedField === 'privateIp' ? (
-                      <Check className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
+                <CopyField
+                  label={t('servers', 'privateIp')}
+                  value={server.privateIp}
+                  fieldKey="privateIp"
+                  copiedField={copiedField}
+                  onCopy={copyToClipboard}
+                />
               )}
             </div>
 
-            {/* Traffic Info */}
             {providerData.traffic && (
-              <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
-                <h3 className="text-sm font-medium text-[var(--text-muted)] mb-3">Traffic</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm text-[var(--text-muted)]">Ingoing</p>
-                    <p className="font-mono">{formatBytes(providerData.traffic.ingoing)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--text-muted)]">Outgoing</p>
-                    <p className="font-mono">{formatBytes(providerData.traffic.outgoing)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--text-muted)]">Included</p>
-                    <p className="font-mono">{formatBytes(providerData.traffic.included)}</p>
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
+                  <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
+                    {t('servers', 'trafficIngoing')}
+                  </p>
+                  <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                    {formatBytes(providerData.traffic.ingoing)}
+                  </p>
+                </div>
+                <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
+                  <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
+                    {t('servers', 'trafficOutgoing')}
+                  </p>
+                  <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                    {formatBytes(providerData.traffic.outgoing)}
+                  </p>
+                </div>
+                <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
+                  <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
+                    {t('servers', 'trafficIncluded')}
+                  </p>
+                  <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                    {formatBytes(providerData.traffic.included)}
+                  </p>
                 </div>
               </div>
             )}
-          </div>
+          </ServerDetailSection>
 
-          {/* SSH Access Card */}
           {server.ipv4 && (
-            <div className="card p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Terminal className="w-5 h-5 text-[var(--accent-cyan)]" />
-                SSH Access
-              </h2>
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-[var(--bg-secondary)] min-w-0">
-                <code className="font-mono text-sm break-all min-w-0 flex-1">ssh root@{server.ipv4}</code>
-                <button
-                  onClick={() => copyToClipboard(`ssh root@${server.ipv4}`, 'ssh')}
-                  className="p-2 hover:bg-[var(--bg-primary)] rounded-lg transition-colors"
-                >
-                  {copiedField === 'ssh' ? (
-                    <Check className="w-4 h-4 text-green-500" />
-                  ) : (
-                    <Copy className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-            </div>
+            <ServerDetailSection icon={Terminal} title={t('servers', 'sshAccess')}>
+              <CopyField
+                label={t('servers', 'sshAccess')}
+                value={`ssh root@${server.ipv4}`}
+                fieldKey="ssh"
+                copiedField={copiedField}
+                onCopy={copyToClipboard}
+              />
+            </ServerDetailSection>
           )}
         </div>
 
-        {/* Right Column - Details */}
-        <div className="space-y-6">
-          {/* Server Type Card */}
+        <div className="space-y-6 min-w-0">
           {providerData.serverType && (
-            <div className="card p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Box className="w-5 h-5 text-[var(--accent-cyan)]" />
-                Server Type
-              </h2>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Type</p>
-                  <p className="font-semibold">{providerData.serverType.name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Description</p>
-                  <p>{providerData.serverType.description}</p>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-sm text-[var(--text-muted)]">CPU Type</p>
-                    <p className="capitalize">{providerData.serverType.cpuType}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--text-muted)]">Architecture</p>
-                    <p>{providerData.serverType.architecture}</p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Storage Type</p>
-                  <p className="uppercase">{providerData.serverType.storageType}</p>
-                </div>
+            <ServerDetailSection icon={Box} title={t('servers', 'serverType')}>
+              <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+                <InfoRow label={t('servers', 'fieldType')} value={providerData.serverType.name} />
+                <InfoRow label={t('servers', 'fieldDescription')} value={providerData.serverType.description} />
+                <InfoRow
+                  label={t('servers', 'cpuType')}
+                  value={<span className="capitalize">{providerData.serverType.cpuType}</span>}
+                />
+                <InfoRow label={t('servers', 'architecture')} value={providerData.serverType.architecture} />
+                <InfoRow
+                  label={t('servers', 'storageType')}
+                  value={<span className="uppercase">{providerData.serverType.storageType}</span>}
+                />
               </div>
-            </div>
+            </ServerDetailSection>
           )}
 
-          {/* Image Card */}
           {providerData.image && (
-            <div className="card p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Globe className="w-5 h-5 text-[var(--accent-cyan)]" />
-                {t('servers', 'image')}
-              </h2>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Name</p>
-                  <p className="font-semibold">{providerData.image.name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Description</p>
-                  <p>{providerData.image.description}</p>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-sm text-[var(--text-muted)]">OS</p>
-                    <p className="capitalize">{providerData.image.osFamily}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[var(--text-muted)]">Version</p>
-                    <p>{providerData.image.osVersion}</p>
-                  </div>
-                </div>
+            <ServerDetailSection icon={Globe} title={t('servers', 'image')}>
+              <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+                <InfoRow label={t('servers', 'fieldType')} value={providerData.image.name} />
+                <InfoRow label={t('servers', 'fieldDescription')} value={providerData.image.description} />
+                <InfoRow
+                  label={t('servers', 'fieldOs')}
+                  value={<span className="capitalize">{providerData.image.osFamily}</span>}
+                />
+                <InfoRow label={t('servers', 'architecture')} value={providerData.image.osVersion} />
               </div>
-            </div>
+            </ServerDetailSection>
           )}
 
-          {/* Location Card */}
           {providerData.location && (
-            <div className="card p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-[var(--accent-cyan)]" />
-                Location
-              </h2>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">City</p>
-                  <p className="font-semibold">{providerData.location.city}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Country</p>
-                  <p>{providerData.location.country}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Datacenter</p>
-                  <p>{providerData.datacenter}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Network Zone</p>
-                  <p>{providerData.location.network_zone}</p>
-                </div>
+            <ServerDetailSection icon={MapPin} title={t('servers', 'location')}>
+              <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+                <InfoRow label={t('servers', 'city')} value={providerData.location.city} />
+                <InfoRow label={t('servers', 'country')} value={providerData.location.country} />
+                {providerData.datacenter && (
+                  <InfoRow label={t('servers', 'datacenter')} value={providerData.datacenter} />
+                )}
+                <InfoRow label={t('servers', 'networkZone')} value={providerData.location.network_zone} />
               </div>
-            </div>
+            </ServerDetailSection>
           )}
 
-          {/* Protection Card */}
           {providerData.protection && (
-            <div className="card p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-[var(--accent-cyan)]" />
-                Protection
-              </h2>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-muted)]">Delete Protection</span>
-                  <span className={providerData.protection.delete ? 'text-green-500' : 'text-[var(--text-muted)]'}>
-                    {providerData.protection.delete ? 'Enabled' : 'Disabled'}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-muted)]">Rebuild Protection</span>
-                  <span className={providerData.protection.rebuild ? 'text-green-500' : 'text-[var(--text-muted)]'}>
-                    {providerData.protection.rebuild ? 'Enabled' : 'Disabled'}
-                  </span>
-                </div>
+            <ServerDetailSection icon={Shield} iconColor="var(--accent-purple)" title={t('servers', 'protection')}>
+              <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+                <InfoRow
+                  label={t('servers', 'deleteProtection')}
+                  value={
+                    providerData.protection.delete
+                      ? t('servers', 'detailEnabled')
+                      : t('servers', 'detailDisabled')
+                  }
+                />
+                <InfoRow
+                  label={t('servers', 'rebuildProtection')}
+                  value={
+                    providerData.protection.rebuild
+                      ? t('servers', 'detailEnabled')
+                      : t('servers', 'detailDisabled')
+                  }
+                />
               </div>
-            </div>
+            </ServerDetailSection>
           )}
 
-          {/* Timestamps Card */}
-          <div className="card p-6">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-[var(--accent-cyan)]" />
-              Timestamps
-            </h2>
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-[var(--text-muted)]">{t('servers', 'created')}</p>
-                <p>{formatShortDate(server.createdAt)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)]">Last Updated</p>
-                <p>{formatShortDate(server.updatedAt)}</p>
-              </div>
+          <ServerDetailSection icon={Clock} title={t('servers', 'timestamps')}>
+            <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+              <InfoRow label={t('servers', 'createdAtLabel')} value={formatShortDate(server.createdAt)} />
+              <InfoRow label={t('servers', 'updatedAtLabel')} value={formatShortDate(server.updatedAt)} />
               {server.lastSeenAt && (
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Last Seen</p>
-                  <p>{formatShortDate(server.lastSeenAt)}</p>
-                </div>
+                <InfoRow label={t('servers', 'lastSeen')} value={formatShortDate(server.lastSeenAt)} />
               )}
             </div>
-          </div>
+          </ServerDetailSection>
         </div>
       </div>
 
-      {/* Delete Modal */}
       <DeleteServerModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

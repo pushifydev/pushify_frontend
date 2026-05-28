@@ -354,9 +354,12 @@ function IntroSection({
         <p className="text-lg docs-lead leading-relaxed max-w-2xl">
           {c.intro.lead}
         </p>
-        <div className="mt-4 max-w-2xl">
+        <div className="mt-4 max-w-2xl space-y-3">
           <Callout type="info" title={c.labels.description}>
             {c.intro.idNote}
+          </Callout>
+          <Callout type="info" title={c.intro.infraNoteTitle}>
+            {c.intro.infraNote}
           </Callout>
         </div>
       </div>

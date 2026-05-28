@@ -10,6 +10,8 @@ import {
   getSubscriptionStatus,
   cancelSubscription,
   resumeSubscription,
+  getInfraBilling,
+  createInfraTopUpSession,
   type UpdateBillingEmailInput,
   type CheckoutInput,
 } from '@/lib/api';
@@ -20,6 +22,7 @@ export const billingKeys = {
   info: () => [...billingKeys.all, 'info'] as const,
   plans: () => [...billingKeys.all, 'plans'] as const,
   subscription: () => [...billingKeys.all, 'subscription'] as const,
+  infra: () => [...billingKeys.all, 'infra'] as const,
 };
 
 // ============ Queries ============
@@ -129,6 +132,30 @@ export function useResumeSubscription() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: billingKeys.all });
+    },
+  });
+}
+
+export function useInfraBilling() {
+  return useQuery({
+    queryKey: billingKeys.infra(),
+    queryFn: async () => {
+      const result = await getInfraBilling();
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+  });
+}
+
+export function useInfraTopUp() {
+  return useMutation({
+    mutationFn: async (amountCents: number) => {
+      const result = await createInfraTopUpSession(amountCents);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (data) => {
+      window.location.href = data.url;
     },
   });
 }

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Transparent plans from Free to Business. Pay for your servers, not per-seat markup. Compare limits for projects, deployments, and API rate limits.',
+    'Platform plans for deploy, API, and team limits. Managed cloud servers billed via prepaid infrastructure credits.',
   alternates: { canonical: '/pricing' },
   openGraph: {
     title: 'Pricing | Pushify',
