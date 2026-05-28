@@ -1494,3 +1494,65 @@ html.dark .lp-page .lp-preview {
 .lp-page .legal-content a:hover {
   opacity: 0.8;
 }
+
+/* Dashboard — billing plans (minimal compare) */
+.dash-app .dash-plans-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-subtle) transparent;
+}
+
+@media (min-width: 900px) {
+  .dash-app .dash-plans-scroll {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+}
+
+.dash-app .dash-plans-col {
+  width: min(16.5rem, 78vw);
+  min-width: min(16.5rem, 78vw);
+  border-right: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+}
+
+.dash-app .dash-plans-col:last-of-type {
+  border-right: none;
+}
+
+@media (min-width: 900px) {
+  .dash-app .dash-plans-col {
+    width: auto;
+    min-width: 0;
+  }
+}
+
+.dash-app .dash-plans-col--focus {
+  background: var(--bg-primary);
+}
+
+.dash-app .dash-plans-col--current:not(.dash-plans-col--focus) {
+  background: color-mix(in srgb, var(--bg-tertiary) 50%, var(--bg-secondary));
+}
+
+.dash-app .dash-plans-th-sticky {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: inherit;
+  box-shadow: 6px 0 8px -6px rgba(0, 0, 0, 0.06);
+}
+
+.dash-app tr.dash-plans-row-alt .dash-plans-th-sticky {
+  background: color-mix(in srgb, var(--bg-tertiary) 40%, var(--bg-secondary));
+}
