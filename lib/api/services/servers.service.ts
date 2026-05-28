@@ -204,6 +204,169 @@ export const syncServer = async (serverId: string): Promise<ApiResponse<Server>>
   }
 };
 
+export const updateServer = async (
+  serverId: string,
+  input: { name?: string; description?: string | null },
+): Promise<ApiResponse<Server>> => {
+  try {
+    const response = await api.patch<{ data: Server }>(`/servers/${serverId}`, input);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getServerResizeOptions = async (
+  serverId: string,
+): Promise<ApiResponse<ServerSizeOption[]>> => {
+  try {
+    const response = await api.get<{ data: ServerSizeOption[] }>(
+      `/servers/${serverId}/resize-options`,
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const resizeServer = async (
+  serverId: string,
+  size: ServerSize,
+): Promise<ApiResponse<Server>> => {
+  try {
+    const response = await api.post<{ data: Server }>(`/servers/${serverId}/resize`, { size });
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export interface ServerSnapshot {
+  id: string;
+  name: string;
+  description?: string;
+  sizeGb: number;
+  status: string;
+  createdAt: string;
+}
+
+export const listServerSnapshots = async (
+  serverId: string,
+): Promise<ApiResponse<ServerSnapshot[]>> => {
+  try {
+    const response = await api.get<{ data: ServerSnapshot[] }>(`/servers/${serverId}/snapshots`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const createServerSnapshot = async (
+  serverId: string,
+  input?: { name?: string; description?: string },
+): Promise<ApiResponse<ServerSnapshot>> => {
+  try {
+    const response = await api.post<{ data: ServerSnapshot }>(
+      `/servers/${serverId}/snapshots`,
+      input ?? {},
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const deleteServerSnapshot = async (
+  serverId: string,
+  snapshotId: string,
+): Promise<ApiResponse<void>> => {
+  try {
+    await api.delete(`/servers/${serverId}/snapshots/${snapshotId}`);
+    return { data: undefined };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export interface ServerTimelineEvent {
+  type: string;
+  at: string;
+  detail?: string;
+}
+
+export interface ServerTimelineDeployment {
+  id: string;
+  status: string;
+  trigger: string;
+  createdAt: string;
+  projectId: string;
+  projectName: string;
+  projectSlug: string;
+}
+
+export interface ServerTimeline {
+  lifecycle: ServerTimelineEvent[];
+  deployments: ServerTimelineDeployment[];
+  projects: { id: string; name: string; slug: string }[];
+}
+
+export const getServerTimeline = async (
+  serverId: string,
+): Promise<ApiResponse<ServerTimeline>> => {
+  try {
+    const response = await api.get<{ data: ServerTimeline }>(`/servers/${serverId}/timeline`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export interface ServerSshInfo {
+  host: string | null;
+  username: string;
+  port: number;
+  publicKey: string | null;
+  hasPrivateKey: boolean;
+}
+
+export const getServerSshInfo = async (
+  serverId: string,
+): Promise<ApiResponse<ServerSshInfo>> => {
+  try {
+    const response = await api.get<{ data: ServerSshInfo }>(`/servers/${serverId}/ssh-info`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getServerSshKey = async (
+  serverId: string,
+): Promise<
+  ApiResponse<{
+    privateKey: string;
+    host: string | null;
+    username: string;
+    port: number;
+    connectCommand: string;
+  }>
+> => {
+  try {
+    const response = await api.get<{
+      data: {
+        privateKey: string;
+        host: string | null;
+        username: string;
+        port: number;
+        connectCommand: string;
+      };
+    }>(`/servers/${serverId}/ssh-key`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const getProviderRegions = async (
   provider: ServerProvider
 ): Promise<ApiResponse<Region[]>> => {
@@ -267,6 +430,15 @@ export const serversService = {
   stopServer,
   rebootServer,
   syncServer,
+  updateServer,
+  getServerResizeOptions,
+  resizeServer,
+  listServerSnapshots,
+  createServerSnapshot,
+  deleteServerSnapshot,
+  getServerTimeline,
+  getServerSshInfo,
+  getServerSshKey,
   getProviderRegions,
   getProviderImages,
   getProviderSizes,

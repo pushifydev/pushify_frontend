@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -58,6 +58,7 @@ interface EnvVariable {
 
 export default function NewProjectPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
   const createProject = useCreateProject();
 
@@ -89,6 +90,11 @@ export default function NewProjectPage() {
   const availableServers = servers.filter(
     (s) => s.status === 'running' && s.setupStatus === 'completed'
   );
+
+  useEffect(() => {
+    const fromQuery = searchParams.get('serverId');
+    if (fromQuery) setSelectedServerId(fromQuery);
+  }, [searchParams]);
 
   // GitHub-related state
   const [selectedRepo, setSelectedRepo] = useState<GitHubRepo | null>(null);

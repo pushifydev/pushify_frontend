@@ -96,7 +96,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
         style={{
           background: 'var(--bg-elevated)',
           border: '1px solid var(--border-default)',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.35), 0 0 0 1px var(--glass-border)',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.35), 0 0 0 1px var(--border-subtle)',
         }}
       >
         {/* Header */}
@@ -130,7 +130,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
                 mode === 'managed'
                   ? 'dash-accent-fill'
-                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--glass-border)]'
+                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-subtle)]'
               }`}
             >
               <Globe className="w-3.5 h-3.5" />
@@ -142,7 +142,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
                 mode === 'byos'
                   ? 'dash-accent-fill'
-                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--glass-border)]'
+                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-subtle)]'
               }`}
             >
               <Key className="w-3.5 h-3.5" />
@@ -207,7 +207,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
 
               <div
                 className="p-4 rounded-lg text-sm"
-                style={{ background: 'var(--hover-overlay-lg)', border: '1px solid var(--glass-border)' }}
+                style={{ background: 'var(--hover-overlay-lg)', border: '1px solid var(--border-subtle)' }}
               >
                 <p className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                   {t('servers', 'byosInfoTitle')}
@@ -349,7 +349,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
           <div
             className="flex items-center justify-between px-6 py-4 shrink-0"
             style={{
-              borderTop: '1px solid var(--glass-border-md)',
+              borderTop: '1px solid var(--border-default)',
               background: 'var(--bg-secondary)',
             }}
           >

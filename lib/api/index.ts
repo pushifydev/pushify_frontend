@@ -252,6 +252,15 @@ export {
   stopServer,
   rebootServer,
   syncServer,
+  updateServer,
+  getServerResizeOptions,
+  resizeServer,
+  listServerSnapshots,
+  createServerSnapshot,
+  deleteServerSnapshot,
+  getServerTimeline,
+  getServerSshInfo,
+  getServerSshKey,
   getProviderRegions,
   getProviderImages,
   getProviderSizes,
@@ -267,6 +276,9 @@ export {
   type Image,
   type ServerSizeOption,
   type ProviderServerType,
+  type ServerSnapshot,
+  type ServerTimeline,
+  type ServerSshInfo,
 } from './services/servers.service';
 
 // Marketplace Functions

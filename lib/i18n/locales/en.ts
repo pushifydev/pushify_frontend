@@ -633,6 +633,10 @@ export interface TranslationKeys {
     viewLogs: string;
     containerLogs: string;
     historicalLogs: string;
+    logsHelpTitle: string;
+    logsHelpBuild: string;
+    logsHelpContainer: string;
+    logsHelpHistorical: string;
     // Environment tab
     envVarsDesc: string;
     addVariable: string;
@@ -1428,6 +1432,49 @@ export interface TranslationKeys {
     createdAtLabel: string;
     updatedAtLabel: string;
     fieldOs: string;
+    hubNextStepsTitle: string;
+    hubStepTopUp: string;
+    hubStepStart: string;
+    hubStepFixSetup: string;
+    hubStepWaitSetup: string;
+    hubStepDeployFirst: string;
+    hubStepRunningReady: string;
+    hubStepTerminal: string;
+    hubProjectsTitle: string;
+    hubProjectsEmpty: string;
+    hubNewProject: string;
+    hubDatabasesTitle: string;
+    hubDatabasesEmpty: string;
+    hubAddDatabase: string;
+    hubRunwayDays: string;
+    editServer: string;
+    editServerTitle: string;
+    resizeButton: string;
+    resizeTitle: string;
+    resizeDesc: string;
+    resizeNoOptions: string;
+    resizeWarning: string;
+    resizeConfirm: string;
+    perMonthShort: string;
+    sshPanelTitle: string;
+    sshConnectCommand: string;
+    sshDownloadKey: string;
+    firewallTitle: string;
+    firewallDesc: string;
+    firewallPort22: string;
+    firewallPort80: string;
+    firewallPort443: string;
+    firewallHetznerHint: string;
+    snapshotsTitle: string;
+    snapshotsDesc: string;
+    snapshotsEmpty: string;
+    snapshotCreate: string;
+    timelineTitle: string;
+    timelineEmpty: string;
+    timelineCreated: string;
+    timelineSynced: string;
+    timelineResizing: string;
+    timelineInfraStopped: string;
     // BYOS
     cloudProvider: string;
     managedProviderActive: string;
@@ -2349,6 +2396,10 @@ export const en: TranslationKeys = {
     viewLogs: 'View Logs',
     containerLogs: 'Container Logs',
     historicalLogs: 'History',
+    logsHelpTitle: 'Log types',
+    logsHelpBuild: 'View Logs — build and deploy output for this deployment run.',
+    logsHelpContainer: 'Container Logs — recent output from the running app container (live snapshot).',
+    logsHelpHistorical: 'History — logs saved periodically on the server (retained ~7 days).',
     // Environment tab
     envVarsDesc: 'Environment variables are encrypted and available during build and runtime.',
     addVariable: 'Add Variable',
@@ -3156,6 +3207,49 @@ export const en: TranslationKeys = {
     createdAtLabel: 'Created',
     updatedAtLabel: 'Last updated',
     fieldOs: 'Operating system',
+    hubNextStepsTitle: 'Suggested next steps',
+    hubStepTopUp: 'Add infrastructure credits in Billing, then start this server.',
+    hubStepStart: 'Press Start above to turn this server back on.',
+    hubStepFixSetup: 'Server setup failed. Check status details or contact support.',
+    hubStepWaitSetup: 'Setup is in progress (Docker, Nginx, Certbot). Refresh in a minute.',
+    hubStepDeployFirst: 'Deploy your first project to this server.',
+    hubStepRunningReady: 'Server is ready — open a project to deploy or redeploy.',
+    hubStepTerminal: 'Open the web terminal for SSH-style access.',
+    hubProjectsTitle: 'Projects on this server',
+    hubProjectsEmpty: 'No projects on this server yet.',
+    hubNewProject: 'New project',
+    hubDatabasesTitle: 'Databases on this server',
+    hubDatabasesEmpty: 'No databases on this server yet.',
+    hubAddDatabase: 'Add database',
+    hubRunwayDays: 'At current wallet balance, estimated runway is about {days} days for this server size.',
+    editServer: 'Edit',
+    editServerTitle: 'Edit server',
+    resizeButton: 'Upgrade size',
+    resizeTitle: 'Upgrade server size',
+    resizeDesc: 'Choose a larger plan tier. The server may reboot briefly. Downgrades are not supported.',
+    resizeNoOptions: 'No larger sizes are available for your plan in this region.',
+    resizeWarning: 'Billing updates to the new monthly rate. Ensure your infrastructure wallet has enough balance.',
+    resizeConfirm: 'Upgrade',
+    perMonthShort: 'mo',
+    sshPanelTitle: 'SSH access',
+    sshConnectCommand: 'Connect',
+    sshDownloadKey: 'Download private key',
+    firewallTitle: 'Firewall checklist',
+    firewallDesc: 'Pushify setup opens these ports on the server (UFW). Your cloud provider firewall must allow them too.',
+    firewallPort22: 'SSH administration',
+    firewallPort80: 'HTTP (redirects & ACME)',
+    firewallPort443: 'HTTPS for deployed apps',
+    firewallHetznerHint: 'On Hetzner Cloud, also open these ports in the server firewall in the Hetzner console if traffic does not reach your apps.',
+    snapshotsTitle: 'Snapshots',
+    snapshotsDesc: 'Provider snapshots for disaster recovery. Creating a snapshot may take several minutes.',
+    snapshotsEmpty: 'No snapshots yet.',
+    snapshotCreate: 'Create snapshot',
+    timelineTitle: 'Recent activity',
+    timelineEmpty: 'No activity yet.',
+    timelineCreated: 'Server created',
+    timelineSynced: 'Synced with provider',
+    timelineResizing: 'Resize in progress',
+    timelineInfraStopped: 'Stopped (infrastructure credits)',
     // BYOS
     cloudProvider: 'Cloud Provider',
     managedProviderActive: 'Managed servers are provisioned on Hetzner Cloud.',

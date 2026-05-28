@@ -40,11 +40,26 @@ import {
   useStopServer,
   useRebootServer,
   useSyncServer,
+  useServerStatusEvents,
 } from '@/hooks';
+import {
+  ServerNextStepsCard,
+  ServerProjectsSection,
+  ServerDatabasesSection,
+} from '@/components/servers/ServerHubSections';
 import { SERVER_STATUS_COLORS } from '@/lib/constants';
 import type { ServerStatus } from '@/lib/api';
 import { ProviderIcon } from '@/components/servers/ProviderIcon';
 import { DeleteServerModal } from '../components/DeleteServerModal';
+import {
+  EditServerModal,
+  ResizeServerModal,
+  ServerDetailActions,
+  ServerSshPanel,
+  ServerFirewallPanel,
+  ServerSnapshotsPanel,
+  ServerTimelinePanel,
+} from '../components/ServerDetailExtras';
 import {
   ServerDetailSection,
   StatTile,
@@ -163,7 +178,7 @@ function SetupBanner({
     >
       <div
         className="w-10 h-10 rounded-lg dash-section-icon"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
       >
         {icon}
       </div>
@@ -185,8 +200,11 @@ export default function ServerDetailPage({ params }: PageProps) {
   const { t } = useTranslation();
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showResizeModal, setShowResizeModal] = useState(false);
 
   const { data: server, isLoading, error } = useServer(id);
+  useServerStatusEvents(id);
   const startServer = useStartServer();
   const stopServer = useStopServer();
   const rebootServer = useRebootServer();
@@ -290,16 +308,16 @@ export default function ServerDetailPage({ params }: PageProps) {
               {(server.projectCount > 0 || server.databaseCount > 0) && (
                 <p className="text-xs mt-2 flex flex-wrap items-center gap-3" style={{ color: 'var(--text-muted)' }}>
                   {server.projectCount > 0 && (
-                    <span className="dash-icon-row gap-1.5">
+                    <a href="#server-hub-projects" className="dash-icon-row gap-1.5 hover:opacity-80 transition-opacity">
                       <Folder className="w-3.5 h-3.5" strokeWidth={2} />
                       {t('servers', 'projectCount').replace('{count}', String(server.projectCount))}
-                    </span>
+                    </a>
                   )}
                   {server.databaseCount > 0 && (
-                    <span className="dash-icon-row gap-1.5">
+                    <a href="#server-hub-databases" className="dash-icon-row gap-1.5 hover:opacity-80 transition-opacity">
                       <Database className="w-3.5 h-3.5" strokeWidth={2} />
                       {t('servers', 'databaseCount').replace('{count}', String(server.databaseCount))}
-                    </span>
+                    </a>
                   )}
                 </p>
               )}
@@ -328,7 +346,7 @@ export default function ServerDetailPage({ params }: PageProps) {
 
             <div
               className="inline-flex items-center gap-0.5 rounded-lg p-0.5"
-              style={{ border: '1px solid var(--glass-border)', background: 'var(--bg-tertiary)' }}
+              style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}
             >
               <button
                 type="button"
@@ -384,6 +402,33 @@ export default function ServerDetailPage({ params }: PageProps) {
       </div>
 
       {server.infraBilling && <ServerInfraBillingCard server={server} />}
+
+      <ServerDetailActions
+        server={server}
+        onEdit={() => setShowEditModal(true)}
+        onResize={() => setShowResizeModal(true)}
+      />
+
+      {server.statusMessage === 'resizing' && (
+        <SetupBanner
+          variant="info"
+          title={t('servers', 'timelineResizing')}
+          description={t('servers', 'resizeWarning')}
+          icon={<Loader2 className="w-5 h-5 shrink-0 animate-spin" style={{ color: 'var(--accent-cyan)' }} strokeWidth={2} />}
+        />
+      )}
+
+      <ServerNextStepsCard server={server} />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-w-0">
+        <ServerProjectsSection serverId={id} />
+        <ServerDatabasesSection
+          server={server}
+          readyServers={
+            server.status === 'running' && server.setupStatus === 'completed' ? [server] : []
+          }
+        />
+      </div>
 
       {showStatusBanner && (
         <SetupBanner
@@ -503,20 +548,13 @@ export default function ServerDetailPage({ params }: PageProps) {
             )}
           </ServerDetailSection>
 
-          {server.ipv4 && (
-            <ServerDetailSection icon={Terminal} title={t('servers', 'sshAccess')}>
-              <CopyField
-                label={t('servers', 'sshAccess')}
-                value={`ssh root@${server.ipv4}`}
-                fieldKey="ssh"
-                copiedField={copiedField}
-                onCopy={copyToClipboard}
-              />
-            </ServerDetailSection>
-          )}
         </div>
 
         <div className="space-y-6 min-w-0">
+          {server.ipv4 && <ServerSshPanel serverId={id} />}
+          <ServerFirewallPanel />
+          <ServerSnapshotsPanel server={server} />
+          <ServerTimelinePanel serverId={id} />
           {providerData.serverType && (
             <ServerDetailSection icon={Box} title={t('servers', 'serverType')}>
               <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
@@ -603,6 +641,8 @@ export default function ServerDetailPage({ params }: PageProps) {
         server={server}
         onSuccess={() => router.push('/dashboard/servers')}
       />
+      <EditServerModal server={server} isOpen={showEditModal} onClose={() => setShowEditModal(false)} />
+      <ResizeServerModal server={server} isOpen={showResizeModal} onClose={() => setShowResizeModal(false)} />
     </div>
   );
 }

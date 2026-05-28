@@ -9,6 +9,13 @@ function formatUsd(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
+function estimateRunwayDays(walletCents: number, monthlyCents: number): number | null {
+  if (monthlyCents <= 0 || walletCents <= 0) return null;
+  const daily = monthlyCents / 30;
+  if (daily <= 0) return null;
+  return Math.floor(walletCents / daily);
+}
+
 interface ServerInfraBillingCardProps {
   server: Server;
 }
@@ -20,6 +27,7 @@ export function ServerInfraBillingCard({ server }: ServerInfraBillingCardProps) 
   if (!infra || !server.isManaged) return null;
 
   const needsTopUp = !infra.canStart && server.status === 'stopped';
+  const runwayDays = estimateRunwayDays(infra.walletBalanceCents, infra.estimatedMonthlyCents);
 
   return (
     <div className="dash-panel p-4 sm:p-5">
@@ -58,6 +66,12 @@ export function ServerInfraBillingCard({ server }: ServerInfraBillingCardProps) 
 
       {server.status === 'stopped' && infra.canStart && (
         <p className="mt-4 text-sm text-[var(--text-secondary)]">{t('servers', 'infraReadyToStart')}</p>
+      )}
+
+      {runwayDays !== null && (
+        <p className="mt-3 text-xs text-[var(--text-muted)]">
+          {t('servers', 'hubRunwayDays').replace('{days}', String(runwayDays))}
+        </p>
       )}
     </div>
   );

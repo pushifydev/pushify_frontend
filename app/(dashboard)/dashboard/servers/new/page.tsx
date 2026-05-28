@@ -127,7 +127,7 @@ export default function NewServerPage() {
       {/* Mode Tabs */}
       <div
         className="inline-flex rounded-lg p-1 gap-1"
-        style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)' }}
+        style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-subtle)' }}
       >
         {[
           { key: 'managed' as Mode, icon: Globe, label: t('servers', 'cloudProvider') },
@@ -153,7 +153,7 @@ export default function NewServerPage() {
       {mode === 'managed' && infraBilling && walletBalance < requiredCents && requiredCents > 0 && (
         <div
           className="rounded-xl px-4 py-3 text-sm flex items-center justify-between gap-3"
-          style={{ background: 'var(--dash-warning-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
+          style={{ background: 'var(--dash-warning-bg)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
         >
           <span>{t('servers', 'infraWalletBanner')}</span>
           <Link href="/dashboard/billing" className="font-medium shrink-0" style={{ color: 'var(--accent-cyan)' }}>
@@ -238,7 +238,7 @@ export default function NewServerPage() {
               {sizesLoading ? (
                 <div
                   className="flex items-center justify-center h-48 rounded-xl"
-                  style={{ border: '1px solid var(--glass-border)', color: 'var(--text-muted)' }}
+                  style={{ border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
                 >
                   <Loader2 className="w-5 h-5 animate-spin mr-2" />
                 </div>
@@ -257,7 +257,7 @@ export default function NewServerPage() {
                         className="p-4 rounded-xl text-left transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
                           background: 'var(--bg-secondary)',
-                          border: `1.5px solid ${isSelected ? 'var(--accent-cyan)' : 'var(--glass-border)'}`,
+                          border: `1.5px solid ${isSelected ? 'var(--accent-cyan)' : 'var(--border-subtle)'}`,
                           boxShadow: isSelected ? '0 0 0 3px var(--dash-accent-bg)' : 'none',
                         }}
                       >
@@ -335,7 +335,7 @@ export default function NewServerPage() {
             {/* Auth Method */}
             <div
               className="rounded-xl p-6"
-              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
             >
               <label className="block text-sm font-medium mb-3" style={{ color: 'var(--text-primary)' }}>
                 {t('servers', 'authMethod')}
@@ -354,7 +354,7 @@ export default function NewServerPage() {
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all border ${
                       authMethod === opt.key
                         ? 'dash-accent-fill'
-                        : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--glass-border)]'
+                        : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-subtle)]'
                     }`}
                   >
                     <opt.icon className="w-3.5 h-3.5" />
@@ -434,7 +434,7 @@ export default function NewServerPage() {
         {/* Submit */}
         <div
           className="flex items-center justify-between rounded-xl p-5"
-          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
         >
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             {isValid ? t('servers', 'readyToCreate') : t('servers', 'fillRequiredFields')}

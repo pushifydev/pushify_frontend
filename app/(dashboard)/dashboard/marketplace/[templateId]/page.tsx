@@ -75,7 +75,7 @@ export default function TemplateDetailPage() {
           background: 'var(--bg-secondary)',
           borderWidth: '2px 1px 1px 1px',
           borderStyle: 'solid',
-          borderColor: `${accent} var(--glass-border) var(--glass-border) var(--glass-border)`,
+          borderColor: `${accent} var(--border-subtle) var(--border-subtle) var(--border-subtle)`,
           borderRadius: 12,
           position: 'relative',
           overflow: 'hidden',
@@ -163,7 +163,7 @@ export default function TemplateDetailPage() {
           className="rounded-xl p-5"
           style={{
             background: 'var(--bg-secondary)',
-            border: '1px solid var(--glass-border)',
+            border: '1px solid var(--border-subtle)',
             borderRadius: 12,
           }}
         >
@@ -211,7 +211,7 @@ export default function TemplateDetailPage() {
           className="rounded-xl p-5"
           style={{
             background: 'var(--bg-secondary)',
-            border: '1px solid var(--glass-border)',
+            border: '1px solid var(--border-subtle)',
             borderRadius: 12,
           }}
         >
@@ -262,7 +262,7 @@ export default function TemplateDetailPage() {
                 style={{
                   background: 'var(--hover-overlay-md)',
                   color: 'var(--text-secondary)',
-                  border: '1px solid var(--glass-border)',
+                  border: '1px solid var(--border-subtle)',
                   fontFamily: 'var(--font-mono)',
                 }}
               >
@@ -279,7 +279,7 @@ export default function TemplateDetailPage() {
           className="rounded-xl p-5"
           style={{
             background: 'var(--bg-secondary)',
-            border: '1px solid var(--glass-border)',
+            border: '1px solid var(--border-subtle)',
             borderRadius: 12,
           }}
         >

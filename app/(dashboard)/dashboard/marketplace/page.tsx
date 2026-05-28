@@ -91,10 +91,7 @@ export default function MarketplacePage() {
         href="/dashboard/sites"
       />
 
-      <div
-        className="flex gap-1 p-1 rounded-lg w-fit"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-      >
+      <div className="flex gap-1 p-1 rounded-lg w-fit border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
         {(['catalog', 'installed'] as const).map((tab) => (
           <button
             key={tab}
@@ -146,7 +143,7 @@ export default function MarketplacePage() {
                 style={{
                   background: isActive ? `${color}18` : 'var(--hover-overlay)',
                   color: isActive ? color : 'var(--text-secondary)',
-                  border: `1px solid ${isActive ? `${color}35` : 'var(--glass-border)'}`,
+                  border: `1px solid ${isActive ? `${color}35` : 'var(--border-subtle)'}`,
                 }}
               >
                 {t('marketplace', CATEGORY_I18N[key] as any)}

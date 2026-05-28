@@ -100,7 +100,7 @@ export function InfraWalletSection() {
                   )}
                   style={{
                     background: 'var(--bg-secondary)',
-                    border: '1px solid var(--glass-border)',
+                    border: '1px solid var(--border-subtle)',
                     color: 'var(--text-primary)',
                   }}
                 >

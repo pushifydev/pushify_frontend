@@ -623,6 +623,17 @@ function DeploymentsTab({
 
   return (
     <div className="space-y-4 min-w-0">
+      <div
+        className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-tertiary)] px-3 py-2.5 sm:px-4 text-xs text-[var(--text-secondary)]"
+        role="note"
+      >
+        <p className="font-medium text-[var(--text-primary)] mb-1.5">{t('projectDetail', 'logsHelpTitle')}</p>
+        <ul className="space-y-1 text-[var(--text-muted)] list-disc list-inside sm:list-outside sm:pl-4">
+          <li>{t('projectDetail', 'logsHelpBuild')}</li>
+          <li>{t('projectDetail', 'logsHelpContainer')}</li>
+          <li>{t('projectDetail', 'logsHelpHistorical')}</li>
+        </ul>
+      </div>
       {deployments.map((deployment) => (
         <div
           key={deployment.id}
@@ -668,6 +679,7 @@ function DeploymentsTab({
               <button
                 onClick={() => onViewLogs(deployment)}
                 className="btn btn-ghost h-8 text-xs inline-flex items-center gap-1"
+                title={t('projectDetail', 'logsHelpBuild')}
               >
                 <FileText className="w-3 h-3 shrink-0" />
                 {t('projectDetail', 'viewLogs')}
@@ -676,6 +688,7 @@ function DeploymentsTab({
                 <button
                   onClick={() => onViewContainerLogs(deployment.id)}
                   className="btn btn-secondary h-8 text-xs inline-flex items-center gap-1"
+                  title={t('projectDetail', 'logsHelpContainer')}
                 >
                   <Terminal className="w-3 h-3 shrink-0" />
                   {t('projectDetail', 'containerLogs')}
@@ -685,7 +698,7 @@ function DeploymentsTab({
                 <button
                   onClick={() => onViewHistoricalLogs(deployment.id)}
                   className="btn btn-ghost h-8 text-xs inline-flex items-center gap-1"
-                  title="View stored container logs"
+                  title={t('projectDetail', 'logsHelpHistorical')}
                 >
                   <History className="w-3 h-3 shrink-0" />
                   {t('projectDetail', 'historicalLogs')}

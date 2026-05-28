@@ -155,6 +155,15 @@ export {
   useStopServer,
   useRebootServer,
   useSyncServer,
+  useServerResizeOptions,
+  useResizeServer,
+  useUpdateServer,
+  useServerSnapshots,
+  useCreateServerSnapshot,
+  useDeleteServerSnapshot,
+  useServerTimeline,
+  useServerSshInfo,
+  useDownloadServerSshKey,
 } from './useServers';
 
 // Databases

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Database, Server, Loader2 } from 'lucide-react';
 import { Modal, ModalActions, AlertBox } from '@/components/Modal';
 import { useTranslation, useCreateDatabase, useDatabaseTypes } from '@/hooks';
@@ -11,9 +11,15 @@ interface CreateDatabaseModalProps {
   isOpen: boolean;
   onClose: () => void;
   servers: ServerType[];
+  initialServerId?: string;
 }
 
-export function CreateDatabaseModal({ isOpen, onClose, servers }: CreateDatabaseModalProps) {
+export function CreateDatabaseModal({
+  isOpen,
+  onClose,
+  servers,
+  initialServerId,
+}: CreateDatabaseModalProps) {
   const { t } = useTranslation();
   const createDatabase = useCreateDatabase();
   const { data: dbTypes = [] } = useDatabaseTypes();
@@ -23,6 +29,15 @@ export function CreateDatabaseModal({ isOpen, onClose, servers }: CreateDatabase
   const [type, setType] = useState<DatabaseType>('postgresql');
   const [serverId, setServerId] = useState(servers[0]?.id || '');
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const preferred =
+      initialServerId && servers.some((s) => s.id === initialServerId)
+        ? initialServerId
+        : servers[0]?.id;
+    if (preferred) setServerId(preferred);
+  }, [isOpen, initialServerId, servers]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
