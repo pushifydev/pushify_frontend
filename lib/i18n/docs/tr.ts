@@ -70,6 +70,8 @@ export const docsTr: DocsContent = {
     badge: 'REST API',
     title: 'Pushify API Dokümantasyonu',
     lead: 'Uygulamalarınızı programatik olarak dağıtın, yönetin ve izleyin. CI/CD hatları, otomasyon betikleri ve özel entegrasyonlar için idealdir.',
+    idNote:
+      'Yol ve yanıtlardaki kaynak kimlikleri UUID biçimindedir (örn. 550e8400-e29b-41d4-a716-446655440000). Listeleme veya oluşturma uç noktalarının döndürdüğü id değerini kullanın — proj_abc123 gibi örnek değerler geçerli değildir.',
     features: [
       { title: 'RESTful API', desc: 'JSON yanıtlı basit REST uç noktaları' },
       { title: 'Güvenli', desc: 'Kapsam tabanlı API anahtarı izinleri' },
@@ -104,11 +106,16 @@ export const docsTr: DocsContent = {
     description: 'Tüm API istekleri bir API anahtarı gerektirir. Bearer token olarak Authorization başlığına ekleyin.',
     securityTitle: 'Güvenlik',
     securityText: 'API anahtarlarını istemci tarafı kodda veya herkese açık depolarda asla paylaşmayın. Ortam değişkenlerinde saklayın.',
+    sessionOnlyTitle: 'Yalnızca panel oturumu',
+    sessionOnlyText:
+      'Bazı uç noktalar API anahtarı yerine giriş yapılmış panel oturumu (JWT) gerektirir — örneğin GET /servers/:id/ssh-key ve POST /servers/:id/terminal. API anahtarları bu uç noktalarda 403 döner.',
     scopes: [
       { scope: 'projects:read', desc: 'Projeleri listele ve görüntüle' },
       { scope: 'projects:write', desc: 'Proje oluştur, güncelle, sil' },
       { scope: 'deployments:read', desc: 'Dağıtımları ve günlükleri görüntüle' },
-      { scope: 'deployments:write', desc: 'Dağıtım tetikle, iptal et, geri al' },
+      { scope: 'deployments:write', desc: 'Dağıtım tetikle, yeniden dağıt, geri al' },
+      { scope: 'deployments:cancel', desc: 'Bekleyen veya çalışan dağıtımları iptal et' },
+      { scope: 'logs:read', desc: 'Dağıtım derleme ve çalışma zamanı günlüklerini oku' },
       { scope: 'envvars:read', desc: 'Ortam değişkenlerini görüntüle' },
       { scope: 'envvars:write', desc: 'Ortam değişkenlerini yönet' },
       { scope: 'servers:read', desc: 'Sunucuları görüntüle' },
@@ -130,10 +137,10 @@ export const docsTr: DocsContent = {
         description: 'Derleme yapılandırması ve alan adları dahil belirli bir proje hakkında ayrıntılı bilgi alır.',
       },
       create: {
-        description: 'Git deposu yapılandırmasıyla yeni bir proje oluşturur.',
+        description: 'Yeni bir proje oluşturur. Git alanları Git olmadan dağıtım için isteğe bağlıdır.',
         params: {
           name: 'Proje adı',
-          gitRepoUrl: 'Git deposu URL\'si',
+          gitRepoUrl: 'Git deposu URL\'si (isteğe bağlı)',
           gitBranch: 'Dağıtılacak dal (varsayılan: main)',
           buildCommand: 'Derleme komutu (örn. npm run build)',
           startCommand: 'Başlatma komutu (örn. npm start)',
@@ -148,6 +155,10 @@ export const docsTr: DocsContent = {
       remove: {
         description: 'Bir projeyi ve ilişkili tüm kaynakları siler.',
         responseMsg: 'Proje başarıyla silindi',
+      },
+      webhook: {
+        description: 'Bu proje için GitHub webhook URL\'sini ve imza gizli anahtarının yapılandırılıp yapılandırılmadığını döndürür.',
+        responseMsg: 'Webhook bilgisi alındı',
       },
     },
   },
@@ -172,7 +183,7 @@ export const docsTr: DocsContent = {
         responseMsg: 'Dağıtım başarıyla oluşturuldu',
       },
       cancel: {
-        description: 'Bekleyen veya derlenmekte olan bir dağıtımı iptal eder.',
+        description: 'Bekleyen veya derlenmekte olan bir dağıtımı iptal eder. deployments:write veya deployments:cancel kapsamı gerekir.',
         responseMsg: 'Dağıtım iptal edildi',
       },
       redeploy: {
@@ -184,9 +195,9 @@ export const docsTr: DocsContent = {
         responseMsg: 'Geri alma başlatıldı',
       },
       logs: {
-        description: 'Bir dağıtım için derleme veya çalışma zamanı günlüklerini alır.',
+        description: 'Bir dağıtım için derleme veya çalışma zamanı günlüklerini alır. deployments:read veya logs:read kapsamı gerekir.',
         params: {
-          type: '"build" veya "deploy"',
+          type: 'Günlük türü: "build" veya "deploy" (isteğe bağlı, varsayılan: build)',
         },
       },
     },
@@ -199,6 +210,9 @@ export const docsTr: DocsContent = {
     endpoints: {
       list: {
         description: 'Bir proje için tüm ortam değişkenlerini listeler. Güvenlik için değerler maskelenir.',
+        params: {
+          environment: 'Ortama göre filtre: production veya preview (isteğe bağlı)',
+        },
       },
       create: {
         description: 'Yeni bir ortam değişkeni oluşturur.',
@@ -206,6 +220,7 @@ export const docsTr: DocsContent = {
           key: 'Değişken adı (örn. DATABASE_URL)',
           value: 'Değişken değeri',
           isSecret: 'Gizli olarak işaretle (varsayılan: true)',
+          environment: 'Hedef ortam: production veya preview (isteğe bağlı, varsayılan: production)',
         },
         responseMsg: 'Ortam değişkeni oluşturuldu',
       },
@@ -257,6 +272,9 @@ export const docsTr: DocsContent = {
   servers: {
     title: 'Sunucular',
     description: 'Sunucuları sağlayın ve yönetin. Bulut sunucuları oluşturun, durumlarını kontrol edin ve izleyin.',
+    sessionOnlyTitle: 'API anahtarı ile kullanılamaz',
+    sessionOnlyText:
+      'SSH özel anahtarları (GET /servers/:id/ssh-key) ve tarayıcı web terminali (POST /servers/:id/terminal) yalnızca aktif panel oturumu ile kullanılabilir.',
     endpoints: {
       list: {
         description: 'Organizasyonunuzdaki tüm sunucuları listeler.',
@@ -390,6 +408,7 @@ export const docsTr: DocsContent = {
       { plan: 'Hobby', limit: '120 istek/dk' },
       { plan: 'Pro', limit: '300 istek/dk' },
       { plan: 'Business', limit: '600 istek/dk' },
+      { plan: 'Enterprise', limit: 'Sınırsız' },
     ],
     rateLimitFooter:
       'Hız limiti başlıkları her yanıtta dahil edilir: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset',
