@@ -33,7 +33,7 @@ export default function DashboardLayout({
   if (isLoading) {
     return (
       <div className="dash-app min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
-        <div className="w-8 h-8 rounded-full border-2 border-[var(--border-default)] border-t-[var(--accent-cyan)] animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-[var(--border-subtle)] border-t-[var(--text-primary)] animate-spin" />
       </div>
     );
   }
@@ -51,7 +51,7 @@ export default function DashboardLayout({
         <div className={`transition-all duration-300 ${collapsed ? 'md:pl-17' : 'md:pl-60'}`}>
           <Header />
           {user && user.emailVerified === false && <EmailVerificationBanner />}
-          <main className="p-4 md:p-6 min-w-0 overflow-x-hidden">
+          <main className="dash-main min-w-0 overflow-x-hidden">
             {children}
           </main>
         </div>
