@@ -366,6 +366,27 @@ export interface TranslationKeys {
     custom: string;
     contactForPricing: string;
     pricingBottomNote: string;
+    billingHowItWorksBadge: string;
+    billingHowItWorksTitle: string;
+    billingHowItWorksSubtitle: string;
+    billingPlatformTitle: string;
+    billingPlatformIntro: string;
+    billingPlatformItem1: string;
+    billingPlatformItem2: string;
+    billingPlatformItem3: string;
+    billingPlatformItem4: string;
+    billingPlatformItem5: string;
+    billingInfraTitle: string;
+    billingInfraIntro: string;
+    billingInfraItem1: string;
+    billingInfraItem2: string;
+    billingInfraItem3: string;
+    billingInfraItem4: string;
+    billingInfraItem5: string;
+    billingByosNote: string;
+    billingPolicyTitle: string;
+    billingPolicyBody: string;
+    billingCtaPricing: string;
     // Plan names
     planFree: string;
     planHobby: string;
@@ -499,6 +520,12 @@ export interface TranslationKeys {
     faq5A: string;
     faq6Q: string;
     faq6A: string;
+    faq7Q: string;
+    faq7A: string;
+    faq8Q: string;
+    faq8A: string;
+    faq9Q: string;
+    faq9A: string;
     // Editorial rail labels
     editorialHeroLabel: string;
     editorialLedeLabel: string;
@@ -1947,7 +1974,8 @@ export const en: TranslationKeys = {
     pushToDeployDesc: 'Connect your GitHub repo and every push triggers an automatic build and deploy pipeline. Framework auto-detection, build caching, zero-downtime deploys, and instant rollbacks — all out of the box.',
     infrastructureLabel: 'Infrastructure',
     serversFullyManagedTitle: 'Your servers, fully managed.',
-    serversFullyManagedDesc: 'Provision and manage VPS instances on Hetzner Cloud. Real-time CPU, memory, disk, and network monitoring with live charts. Scale up or down with a click.',
+    serversFullyManagedDesc:
+      'Provision Hetzner Cloud servers from the dashboard (paid plans). Usage is billed hourly from your prepaid infrastructure credits — separate from your platform subscription. BYOS servers you connect via SSH do not use this wallet.',
     dataLabel: 'Data',
     databasesOneClickTitle: 'Databases in one click.',
     databasesOneClickDesc: 'Spin up PostgreSQL, MySQL, Redis, or MongoDB with automated backups, connection pooling, and secure access. No DevOps degree required.',
@@ -1988,7 +2016,7 @@ export const en: TranslationKeys = {
     simpleTransparent: 'Simple,',
     transparentGradient: 'transparent',
     pricingSubtitle:
-      'Platform plans cover deploy, API, and team limits. Managed cloud servers are billed separately via prepaid infrastructure credits.',
+      'Two clear bills: a monthly platform subscription (deploy, API, team limits) and a prepaid infrastructure wallet for managed Hetzner servers (hourly while running).',
     monthly: 'Monthly',
     yearly: 'Yearly',
     mostPopular: 'Most Popular',
@@ -1999,7 +2027,44 @@ export const en: TranslationKeys = {
     billedAnnually: 'billed annually',
     custom: 'Custom',
     contactForPricing: 'Contact us for pricing',
-    pricingBottomNote: 'All plans include SSL certificates, CI/CD pipelines, real-time monitoring, and community support.',
+    pricingBottomNote:
+      'All platform plans include SSL, CI/CD, and monitoring. Managed Hetzner servers are not included in plan price — they draw from prepaid infrastructure credits billed by the hour while running.',
+    billingHowItWorksBadge: 'Billing',
+    billingHowItWorksTitle: 'How billing works',
+    billingHowItWorksSubtitle:
+      'No hidden bundles. You always know which charge is for the platform and which is for cloud servers.',
+    billingPlatformTitle: 'Platform subscription',
+    billingPlatformIntro:
+      'Billed monthly or yearly through Stripe. Covers your Pushify workspace — not Hetzner server runtime.',
+    billingPlatformItem1:
+      'Deploy limits, API rate limits, team members, projects, custom domains, preview deployments, and health checks depend on your plan.',
+    billingPlatformItem2:
+      'SSL certificates, CI/CD pipelines, GitHub integration, and dashboard access are included on every paid plan.',
+    billingPlatformItem3:
+      'Free plan: deploy on your own servers (BYOS via SSH). Managed Hetzner provisioning from the dashboard requires Hobby or higher.',
+    billingPlatformItem4:
+      'If a subscription payment fails, your account enters past due: you cannot create new servers, projects, or deployments until the card is updated (existing servers may keep running during Stripe retries).',
+    billingPlatformItem5:
+      'When a subscription ends or is canceled, your plan moves to Free, active projects are paused, managed servers are stopped at the provider, and new deploys are blocked until you resubscribe.',
+    billingInfraTitle: 'Infrastructure credits',
+    billingInfraIntro:
+      'Prepaid USD wallet for managed Hetzner Cloud servers only. Billed separately from your platform plan.',
+    billingInfraItem1:
+      'Add credits with a one-time Stripe checkout in Dashboard → Billing. Balance is shown in USD.',
+    billingInfraItem2:
+      'While a managed server is running, credits decrease every hour based on server size (all-in rate shown before you create the server).',
+    billingInfraItem3:
+      'Before provisioning a new managed server, keep at least about one month of estimated server cost in your wallet.',
+    billingInfraItem4:
+      'If credits run out, managed servers are stopped automatically until you top up. Your apps and data remain; you restart the server after adding credits.',
+    billingInfraItem5:
+      'Server size limits (vCPU/RAM) depend on your platform plan. Enterprise may run larger instances.',
+    billingByosNote:
+      'Servers you add via SSH (BYOS) do not use infrastructure credits — you pay your VPS provider directly. Only dashboard-provisioned Hetzner servers use the wallet.',
+    billingPolicyTitle: 'Failed payments & cancellations',
+    billingPolicyBody:
+      'We email the billing address on file when a platform payment fails (at most once per 24 hours). Update your card in Billing → Manage subscription. Infrastructure top-ups are separate one-time charges and are not refunded automatically when a server is stopped for low balance.',
+    billingCtaPricing: 'Compare platform plans →',
     // Plan names
     planFree: 'Free',
     planHobby: 'Hobby',
@@ -2007,7 +2072,7 @@ export const en: TranslationKeys = {
     planBusiness: 'Business',
     planEnterprise: 'Enterprise',
     // Plan descriptions
-    planFreeDesc: 'Perfect for personal projects and experiments',
+    planFreeDesc: 'Personal projects on your own servers (BYOS). No managed Hetzner from the dashboard.',
     planHobbyDesc: 'For hobbyists and side projects',
     planProDesc: 'For growing teams and serious projects',
     planBusinessDesc: 'For teams that need enterprise-grade features',
@@ -2131,7 +2196,17 @@ export const en: TranslationKeys = {
     faq5Q: 'Can I bring my own servers?',
     faq5A: 'Absolutely. Add any Linux VPS via SSH (DigitalOcean, AWS, Hetzner, your home server) and Pushify will install Docker and Nginx, then deploy your apps there. You can also provision Hetzner Cloud servers from the dashboard with one click.',
     faq6Q: 'What payment methods do you accept?',
-    faq6A: 'We accept all major credit and debit cards via our PCI-DSS compliant payment provider. All payments are SSL-encrypted and we never store your card details on our servers.',
+    faq6A:
+      'Platform subscriptions and infrastructure credit top-ups use major credit and debit cards via Stripe. Payments are encrypted; we never store your full card number on our servers.',
+    faq7Q: 'How are managed Hetzner servers billed?',
+    faq7A:
+      'They use a prepaid infrastructure credits wallet (USD), separate from your platform subscription. Credits decrease hourly while the server is running. Top up in Dashboard → Billing before creating a server, and keep roughly one month of estimated cost available. If credits run out, the server stops until you add more. BYOS servers you connect with SSH are not charged through this wallet.',
+    faq8Q: 'What happens if my platform subscription payment fails?',
+    faq8A:
+      'Stripe retries the charge. Your organization is marked past due: you cannot create new projects, servers, databases, or deployments until you update your payment method in Billing. We send a reminder email to your billing address (at most once per day). Existing resources may continue during the retry window.',
+    faq9Q: 'What happens when I cancel my platform subscription?',
+    faq9A:
+      'At the end of the billing period your plan becomes Free. Managed Hetzner servers are powered off, active projects are paused, and new deploys are blocked. Your data is retained so you can resubscribe and resume manually. Infrastructure credits already in your wallet remain until used; they are not automatically refunded.',
     editorialHeroLabel: 'Hero',
     editorialLedeLabel: 'Lede',
     howItWorksH1Before: 'From ',

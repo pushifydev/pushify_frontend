@@ -9,6 +9,7 @@ import {
   FrameworksSection,
   MarketplacePreviewSection,
   ComparisonSection,
+  BillingHowItWorksSection,
   FAQSection,
   CTASection,
   LandingFooter,
@@ -50,6 +51,7 @@ export default function LandingPage() {
       <FrameworksSection />
       <MarketplacePreviewSection />
       <ComparisonSection />
+      <BillingHowItWorksSection />
       <FAQSection />
       <CTASection />
       <LandingFooter />

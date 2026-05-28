@@ -313,7 +313,8 @@ export const tr: TranslationKeys = {
     pushToDeployDesc: 'GitHub reponuzu bağlayın, her push otomatik build ve deploy pipeline\'ını tetiklesin. Framework otomatik algılama, build önbellekleme, sıfır kesinti deploy ve anında geri alma — hepsi hazır.',
     infrastructureLabel: 'Altyapı',
     serversFullyManagedTitle: 'Sunucularınız, tam yönetimli.',
-    serversFullyManagedDesc: 'Hetzner Cloud üzerinde VPS örnekleri oluşturun ve yönetin. Gerçek zamanlı CPU, bellek, disk ve ağ izleme ile canlı grafikler. Tek tıkla ölçeklendirin.',
+    serversFullyManagedDesc:
+      'Panelden Hetzner Cloud sunucusu sağlayın (ücretli planlar). Kullanım, platform aboneliğinden ayrı ön ödemeli altyapı kredilerinden saatlik düşülür. SSH ile bağladığınız BYOS sunucuları bu cüzdanı kullanmaz.',
     dataLabel: 'Veri',
     databasesOneClickTitle: 'Tek tıkla veritabanı.',
     databasesOneClickDesc: 'PostgreSQL, MySQL, Redis veya MongoDB\'yi otomatik yedekleme, bağlantı havuzlama ve güvenli erişim ile başlatın. DevOps uzmanlığı gerekmez.',
@@ -354,7 +355,7 @@ export const tr: TranslationKeys = {
     simpleTransparent: 'Basit,',
     transparentGradient: 'şeffaf',
     pricingSubtitle:
-      'Platform planları dağıtım, API ve ekip limitlerini kapsar. Yönetilen bulut sunucuları ön ödemeli altyapı kredileri ile ayrı faturalandırılır.',
+      'İki net fatura: aylık platform aboneliği (dağıtım, API, ekip limitleri) ve yönetilen Hetzner sunucuları için ön ödemeli altyapı cüzdanı (çalıştığı sürece saatlik).',
     monthly: 'Aylık',
     yearly: 'Yıllık',
     mostPopular: 'En Popüler',
@@ -365,7 +366,44 @@ export const tr: TranslationKeys = {
     billedAnnually: 'yıllık faturalandırılır',
     custom: 'Özel',
     contactForPricing: 'Fiyat için bize ulaşın',
-    pricingBottomNote: 'Tüm planlar SSL sertifikaları, CI/CD pipeline\'ları, gerçek zamanlı izleme ve topluluk desteği içerir.',
+    pricingBottomNote:
+      'Tüm platform planları SSL, CI/CD ve izlemeyi içerir. Yönetilen Hetzner sunucuları plan fiyatına dahil değildir — çalıştığı sürece saatlik olarak ön ödemeli altyapı kredilerinden düşülür.',
+    billingHowItWorksBadge: 'Faturalandırma',
+    billingHowItWorksTitle: 'Faturalandırma nasıl çalışır?',
+    billingHowItWorksSubtitle:
+      'Gizli paket yok. Hangi ücretin platform, hangisinin bulut sunucusu için olduğunu her zaman bilirsiniz.',
+    billingPlatformTitle: 'Platform aboneliği',
+    billingPlatformIntro:
+      'Stripe ile aylık veya yıllık faturalandırılır. Pushify çalışma alanınızı kapsar — Hetzner sunucu çalışma süresini değil.',
+    billingPlatformItem1:
+      'Dağıtım limitleri, API hız limitleri, ekip üyeleri, projeler, özel alan adları, önizleme dağıtımları ve sağlık kontrolleri planınıza bağlıdır.',
+    billingPlatformItem2:
+      'SSL sertifikaları, CI/CD pipeline\'ları, GitHub entegrasyonu ve panel erişimi tüm ücretli planlarda dahildir.',
+    billingPlatformItem3:
+      'Ücretsiz plan: kendi sunucunuzda dağıtım (SSH ile BYOS). Panelden yönetilen Hetzner için Hobby veya üzeri gerekir.',
+    billingPlatformItem4:
+      'Abonelik ödemesi başarısız olursa hesap gecikmiş (past due) olur: kart güncellenene kadar yeni sunucu, proje veya dağıtım oluşturamazsınız (Stripe yeniden denerken mevcut sunucular çalışmaya devam edebilir).',
+    billingPlatformItem5:
+      'Abonelik bittiğinde veya iptal edildiğinde plan Ücretsiz\'e düşer, aktif projeler duraklatılır, yönetilen sunucular sağlayıcıda durdurulur ve yeniden abone olana kadar yeni dağıtım engellenir.',
+    billingInfraTitle: 'Altyapı kredileri',
+    billingInfraIntro:
+      'Yalnızca yönetilen Hetzner Cloud sunucuları için ön ödemeli USD cüzdan. Platform planından ayrı faturalandırılır.',
+    billingInfraItem1:
+      'Panel → Faturalandırma üzerinden Stripe ile tek seferlik ödeme yaparak kredi ekleyin. Bakiye USD olarak gösterilir.',
+    billingInfraItem2:
+      'Yönetilen sunucu çalışırken krediler, sunucu boyutuna göre her saat düşer (oluşturmadan önce gösterilen dahil fiyat).',
+    billingInfraItem3:
+      'Yeni yönetilen sunucu açmadan önce cüzdanda yaklaşık bir aylık tahmini sunucu maliyeti bulundurun.',
+    billingInfraItem4:
+      'Krediler biterse yönetilen sunucular otomatik durur; kredi ekleyene kadar. Uygulama ve verileriniz kalır; kredi ekledikten sonra sunucuyu yeniden başlatırsınız.',
+    billingInfraItem5:
+      'Sunucu boyutu limitleri (vCPU/RAM) platform planınıza bağlıdır. Enterprise daha büyük örnekler çalıştırabilir.',
+    billingByosNote:
+      'SSH ile eklediğiniz sunucular (BYOS) altyapı kredisi kullanmaz — VPS sağlayıcınıza doğrudan ödersiniz. Yalnızca panelden açılan Hetzner sunucuları cüzdanı kullanır.',
+    billingPolicyTitle: 'Başarısız ödemeler ve iptaller',
+    billingPolicyBody:
+      'Platform ödemesi başarısız olunca kayıtlı faturalandırma e-postasına hatırlatma gönderilir (en fazla 24 saatte bir). Kartı Faturalandırma → Aboneliği yönet üzerinden güncelleyin. Altyapı yüklemeleri ayrı tek seferlik ücretlerdir; düşük bakiye nedeniyle duran sunucu için otomatik iade yapılmaz.',
+    billingCtaPricing: 'Platform planlarını karşılaştır →',
     // Plan names
     planFree: 'Ücretsiz',
     planHobby: 'Hobby',
@@ -373,7 +411,7 @@ export const tr: TranslationKeys = {
     planBusiness: 'Business',
     planEnterprise: 'Enterprise',
     // Plan descriptions
-    planFreeDesc: 'Kişisel projeler ve denemeler için ideal',
+    planFreeDesc: 'Kendi sunucunuzda (BYOS) kişisel projeler. Panelden yönetilen Hetzner yok.',
     planHobbyDesc: 'Hobi projeleri ve yan projeler için',
     planProDesc: 'Büyüyen takımlar ve ciddi projeler için',
     planBusinessDesc: 'Kurumsal düzeyde özellik ihtiyacı olan takımlar için',
@@ -497,7 +535,17 @@ export const tr: TranslationKeys = {
     faq5Q: 'Kendi sunucularımı getirebilir miyim?',
     faq5A: 'Kesinlikle. Herhangi bir Linux VPS\'i SSH ile ekleyin (DigitalOcean, AWS, Hetzner, ev sunucunuz) ve Pushify Docker ile Nginx kurulumunu yapıp uygulamalarınızı oraya dağıtsın. Ayrıca panelden tek tıkla Hetzner Cloud sunucusu da sağlayabilirsiniz.',
     faq6Q: 'Hangi ödeme yöntemlerini kabul ediyorsunuz?',
-    faq6A: 'Tüm büyük kredi ve banka kartlarını PCI-DSS uyumlu ödeme sağlayıcımız üzerinden kabul ediyoruz. Tüm ödemeler SSL şifreli olup kart bilgilerinizi sunucularımızda asla saklamıyoruz.',
+    faq6A:
+      'Platform abonelikleri ve altyapı kredi yüklemeleri Stripe üzerinden kredi/banka kartı ile yapılır. Ödemeler şifrelidir; tam kart numaranız sunucularımızda saklanmaz.',
+    faq7Q: 'Yönetilen Hetzner sunucuları nasıl faturalandırılır?',
+    faq7A:
+      'Platform aboneliğinden ayrı, ön ödemeli altyapı kredileri cüzdanı (USD) kullanılır. Sunucu çalışırken krediler saatlik düşer. Sunucu oluşturmadan önce Panel → Faturalandırma\'dan kredi yükleyin ve yaklaşık bir aylık maliyeti cüzdanda tutun. Krediler biterse sunucu durur. SSH ile bağladığınız BYOS sunucuları bu cüzdanı kullanmaz.',
+    faq8Q: 'Platform abonelik ödemem başarısız olursa ne olur?',
+    faq8A:
+      'Stripe ödemeyi yeniden dener. Organizasyonunuz gecikmiş (past due) işaretlenir: ödeme yöntemini Faturalandırma\'da güncelleyene kadar yeni proje, sunucu, veritabanı veya dağıtım oluşturamazsınız. Faturalandırma e-postasına günde en fazla bir hatırlatma gider. Yeniden deneme süresinde mevcut kaynaklar çalışmaya devam edebilir.',
+    faq9Q: 'Platform aboneliğimi iptal edersem ne olur?',
+    faq9A:
+      'Fatura dönemi sonunda plan Ücretsiz olur. Yönetilen Hetzner sunucuları kapatılır, aktif projeler duraklatılır ve yeni dağıtımlar engellenir. Verileriniz saklanır; yeniden abone olup manuel devam edebilirsiniz. Cüzdandaki altyapı kredileri kullanılana kadar kalır; otomatik iade yapılmaz.',
     editorialHeroLabel: 'Hero',
     editorialLedeLabel: 'Giriş',
     howItWorksH1Before: 'Önce ',
