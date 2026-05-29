@@ -14,6 +14,9 @@ const usageLabelKeys: Record<
   | 'usageResourceDeployments'
   | 'usageResourceTeamMembers'
   | 'usageResourceCustomDomains'
+  | 'usageResourceBuildMinutes'
+  | 'usageResourceStorage'
+  | 'usageResourceBandwidth'
 > = {
   servers: 'usageResourceServers',
   databases: 'usageResourceDatabases',
@@ -21,6 +24,9 @@ const usageLabelKeys: Record<
   deploymentsThisMonth: 'usageResourceDeployments',
   teamMembers: 'usageResourceTeamMembers',
   customDomains: 'usageResourceCustomDomains',
+  buildMinutesThisMonth: 'usageResourceBuildMinutes',
+  storageGb: 'usageResourceStorage',
+  bandwidthGb: 'usageResourceBandwidth',
 };
 
 function usageFillLevel(percent: number): 'is-critical' | 'is-warning' | 'is-low' {

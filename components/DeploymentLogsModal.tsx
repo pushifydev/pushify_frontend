@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, RefreshCw, CheckCircle, XCircle, Loader2, AlertCircle, FileText } from 'lucide-react';
 import { useDeploymentLogsStream, useTranslation } from '@/hooks';
+import { DeploymentFailureSummary } from '@/components/DeploymentFailureSummary';
 
 interface DeploymentLogsModalProps {
   projectId: string;
@@ -251,15 +252,8 @@ export function DeploymentLogsModal({
           onScroll={handleScroll}
           className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 bg-[#0d1117] font-mono text-xs sm:text-sm touch-pan-y"
         >
-          {errorMessage && (
-            <div className="mb-4 px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg bg-[var(--status-error)]/10 border border-[var(--status-error)]/20">
-              <p className="text-xs sm:text-sm text-[var(--status-error)] font-medium mb-1">
-                Deployment Error:
-              </p>
-              <p className="text-xs sm:text-sm text-[var(--status-error)] break-all whitespace-pre-wrap">
-                {errorMessage}
-              </p>
-            </div>
+          {(errorMessage || status === 'failed') && (
+            <DeploymentFailureSummary logs={logs} errorMessage={errorMessage} />
           )}
           {logLines.length > 0 ? (
             <div className="text-[#c9d1d9] leading-relaxed">
@@ -286,6 +280,18 @@ export function DeploymentLogsModal({
                     afterTimestamp.includes('warning')
                   ) {
                     lineClass = 'text-[#d29922]';
+                  } else if (
+                    line.includes('[Pushify] queue:') ||
+                    afterTimestamp.includes('Disk warning') ||
+                    afterTimestamp.includes('Disk OK') ||
+                    afterTimestamp.includes('Disk critical')
+                  ) {
+                    lineClass = 'text-[#d29922]';
+                  } else if (
+                    line.includes('failureCategory=') ||
+                    afterTimestamp.includes('💡')
+                  ) {
+                    lineClass = 'text-[#58a6ff]';
                   } else if (line.includes('Status:') || line.includes('📦') || line.includes('🚀')) {
                     lineClass = 'text-[#58a6ff]';
                   } else if (line.includes('📥') || line.includes('🔨') || line.includes('🐳')) {

@@ -38,11 +38,18 @@ import {
   useGitHubRepos,
   useGitHubBranches,
   useFrameworkDetection,
+  useGitLabStatus,
+  useGitLabConnect,
+  useGitLabDisconnect,
+  useGitLabRepos,
+  useGitLabBranches,
+  useGitLabFrameworkDetection,
   useServers,
 } from '@/hooks';
 import { toast } from 'sonner';
 import { createDeployment, getApiErrorMessage } from '@/lib/api';
-import type { CreateProjectInput, GitHubRepo } from '@/lib/api';
+import { buildGitWebhookUrl } from '@/lib/build-webhook-url';
+import type { CreateProjectInput, GitHubRepo, GitLabRepo } from '@/lib/api';
 import { FRAMEWORKS } from '@/lib/frameworks';
 import { Checkbox } from '@/components/Checkbox';
 import { Modal } from '@/components/Modal';
@@ -64,12 +71,14 @@ export default function NewProjectPage() {
 
   const [currentStep, setCurrentStep] = useState<Step>('source');
   const [isCreating, setIsCreating] = useState(false);
-  const [webhookSecretDialog, setWebhookSecretDialog] = useState<{ projectId: string; secret: string } | null>(
-    null
-  );
+  const [webhookSecretDialog, setWebhookSecretDialog] = useState<{
+    projectId: string;
+    secret: string;
+    webhookUrl: string;
+  } | null>(null);
 
   // Form state
-  const [sourceType, setSourceType] = useState<'git' | 'github' | 'template'>('git');
+  const [sourceType, setSourceType] = useState<'git' | 'github' | 'gitlab' | 'template'>('git');
   const [repositoryUrl, setRepositoryUrl] = useState('');
   const [gitBranch, setGitBranch] = useState('main');
   const [projectName, setProjectName] = useState('');
@@ -98,7 +107,9 @@ export default function NewProjectPage() {
 
   // GitHub-related state
   const [selectedRepo, setSelectedRepo] = useState<GitHubRepo | null>(null);
+  const [selectedGitLabRepo, setSelectedGitLabRepo] = useState<GitLabRepo | null>(null);
   const [repoSearchQuery, setRepoSearchQuery] = useState('');
+  const [gitlabRepoSearchQuery, setGitlabRepoSearchQuery] = useState('');
 
   // GitHub hooks
   const { data: githubStatus, isLoading: isLoadingGitHubStatus } = useGitHubStatus();
@@ -131,6 +142,31 @@ export default function NewProjectPage() {
     }
   };
 
+  const resetGitlabSelection = () => {
+    setSelectedGitLabRepo(null);
+    setGitlabRepoSearchQuery('');
+  };
+
+  const handleDisconnectGitlab = async () => {
+    try {
+      await gitlabDisconnect.mutateAsync();
+      resetGitlabSelection();
+      toast.success(t('newProject', 'gitlabDisconnected'));
+    } catch (err) {
+      toast.error(getApiErrorMessage(err));
+    }
+  };
+
+  const handleChangeGitlabAccount = async () => {
+    try {
+      await gitlabDisconnect.mutateAsync();
+      resetGitlabSelection();
+      gitlabConnect.mutate();
+    } catch (err) {
+      toast.error(getApiErrorMessage(err));
+    }
+  };
+
   const { data: githubRepos, isLoading: isLoadingRepos, hasMore, loadMore, isLoadingMore } = useGitHubRepos({
     enabled: githubStatus?.connected ?? false,
     sort: 'pushed',
@@ -141,17 +177,46 @@ export default function NewProjectPage() {
     selectedRepo?.name ?? '',
     !!selectedRepo
   );
-  const { data: frameworkDetection, isLoading: isDetectingFramework } = useFrameworkDetection(
+  const { data: githubFrameworkDetection, isLoading: isDetectingGithubFramework } = useFrameworkDetection(
     selectedRepo?.full_name.split('/')[0] ?? '',
     selectedRepo?.name ?? '',
     gitBranch,
-    !!selectedRepo && !!gitBranch
+    sourceType === 'github' && !!selectedRepo && !!gitBranch,
   );
+
+  const { data: gitlabStatus, isLoading: isLoadingGitLabStatus } = useGitLabStatus();
+  const gitlabConnect = useGitLabConnect();
+  const gitlabDisconnect = useGitLabDisconnect();
+  const gitlabBusy = gitlabConnect.isPending || gitlabDisconnect.isPending;
+
+  const { data: gitlabRepos, isLoading: isLoadingGitLabRepos, hasMore: gitlabHasMore, loadMore: gitlabLoadMore, isLoadingMore: isLoadingMoreGitlab } = useGitLabRepos({
+    enabled: (gitlabStatus?.connected ?? false) && sourceType === 'gitlab',
+    perPage: 30,
+  });
+  const { data: gitlabBranches, isLoading: isLoadingGitLabBranches } = useGitLabBranches(
+    selectedGitLabRepo?.id ?? 0,
+    sourceType === 'gitlab' && !!selectedGitLabRepo,
+  );
+  const { data: gitlabFrameworkDetection, isLoading: isDetectingGitlabFramework } = useGitLabFrameworkDetection(
+    selectedGitLabRepo?.id ?? 0,
+    gitBranch,
+    sourceType === 'gitlab' && !!selectedGitLabRepo && !!gitBranch,
+  );
+
+  const frameworkDetection =
+    sourceType === 'gitlab' ? gitlabFrameworkDetection : githubFrameworkDetection;
+  const isDetectingFramework =
+    sourceType === 'gitlab' ? isDetectingGitlabFramework : isDetectingGithubFramework;
 
   // Filter repos based on search
   const filteredRepos = githubRepos?.filter(repo =>
     repo.name.toLowerCase().includes(repoSearchQuery.toLowerCase()) ||
     repo.full_name.toLowerCase().includes(repoSearchQuery.toLowerCase())
+  ) ?? [];
+
+  const filteredGitlabRepos = gitlabRepos?.filter(repo =>
+    repo.name.toLowerCase().includes(gitlabRepoSearchQuery.toLowerCase()) ||
+    repo.full_name.toLowerCase().includes(gitlabRepoSearchQuery.toLowerCase())
   ) ?? [];
 
   const steps: { id: Step; label: string; icon: React.ReactNode }[] = [
@@ -216,11 +281,22 @@ export default function NewProjectPage() {
     }
   }, [selectedRepo]);
 
+  useEffect(() => {
+    if (selectedGitLabRepo) {
+      setRepositoryUrl(selectedGitLabRepo.clone_url);
+      setGitBranch(selectedGitLabRepo.default_branch);
+      if (!projectName) {
+        setProjectName(selectedGitLabRepo.name.toLowerCase().replace(/[^a-z0-9-]/g, '-'));
+      }
+    }
+  }, [selectedGitLabRepo]);
+
   const canProceed = () => {
     switch (currentStep) {
       case 'source':
         if (sourceType === 'template') return !!selectedFramework;
         if (sourceType === 'github') return !!selectedRepo && !!gitBranch;
+        if (sourceType === 'gitlab') return !!selectedGitLabRepo && !!gitBranch;
         return repositoryUrl.trim().length > 0;
       case 'configure':
         return projectName.trim().length > 0 && selectedFramework !== null;
@@ -280,9 +356,18 @@ export default function NewProjectPage() {
         description: description || undefined,
         gitRepoUrl: repositoryUrl || undefined,
         gitBranch: gitBranch || undefined,
-        gitProvider: repositoryUrl.includes('github.com') ? 'github' :
-                     repositoryUrl.includes('gitlab.com') ? 'gitlab' :
-                     repositoryUrl.includes('bitbucket.org') ? 'bitbucket' : undefined,
+        gitProvider:
+          sourceType === 'github'
+            ? 'github'
+            : sourceType === 'gitlab'
+              ? 'gitlab'
+              : repositoryUrl.includes('github.com')
+                ? 'github'
+                : repositoryUrl.includes('gitlab')
+                  ? 'gitlab'
+                  : repositoryUrl.includes('bitbucket.org')
+                    ? 'bitbucket'
+                    : undefined,
         framework: selectedFramework || undefined,
         buildCommand: buildCommand || undefined,
         installCommand: installCommand || undefined,
@@ -302,7 +387,12 @@ export default function NewProjectPage() {
 
       const secret = result.webhookSecret?.trim();
       if (secret) {
-        setWebhookSecretDialog({ projectId: result.id, secret });
+        const webhookUrl = buildGitWebhookUrl(
+          result.id,
+          input.gitProvider,
+          input.gitRepoUrl
+        );
+        setWebhookSecretDialog({ projectId: result.id, secret, webhookUrl });
         return;
       }
 
@@ -315,6 +405,12 @@ export default function NewProjectPage() {
     } finally {
       setIsCreating(false);
     }
+  };
+
+  const copyWebhookUrl = async () => {
+    if (!webhookSecretDialog) return;
+    await navigator.clipboard.writeText(webhookSecretDialog.webhookUrl);
+    toast.success(t('newProject', 'webhookUrlCopied'));
   };
 
   const copyWebhookSecret = async () => {
@@ -419,7 +515,7 @@ export default function NewProjectPage() {
             </div>
 
             {/* Source Type Selection */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <button
                 onClick={() => setSourceType('git')}
                 className={`p-5 rounded-xl border-2 text-left transition-all duration-200 ${
@@ -450,6 +546,25 @@ export default function NewProjectPage() {
                 <Github className={`w-8 h-8 mb-3 ${sourceType === 'github' ? 'text-[var(--accent-purple)]' : 'text-[var(--text-muted)]'}`} />
                 <h3 className="font-semibold mb-1">{t('newProject', 'connectGithub')}</h3>
                 <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'connectGithubDesc')}</p>
+              </button>
+
+              <button
+                onClick={() => setSourceType('gitlab')}
+                className={`p-5 rounded-xl border-2 text-left transition-all duration-200 relative ${
+                  sourceType === 'gitlab'
+                    ? 'border-orange-500 bg-orange-500/5'
+                    : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
+                }`}
+              >
+                {gitlabStatus?.connected && (
+                  <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-xs bg-[var(--status-success)]/20 text-[var(--status-success)] flex items-center gap-1">
+                    <Check className="w-3 h-3" />
+                    {t('newProject', 'connected')}
+                  </div>
+                )}
+                <Globe className={`w-8 h-8 mb-3 ${sourceType === 'gitlab' ? 'text-orange-500' : 'text-[var(--text-muted)]'}`} />
+                <h3 className="font-semibold mb-1">{t('newProject', 'connectGitlab')}</h3>
+                <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'connectGitlabDesc')}</p>
               </button>
 
               <button
@@ -674,6 +789,179 @@ export default function NewProjectPage() {
                           <div className="flex items-center gap-2 text-[var(--status-success)]">
                             <Zap className="w-4 h-4" />
                             {t('newProject', 'detectedFramework')}: <span className="font-medium">{frameworkDetection.framework}</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2 text-[var(--text-muted)]">
+                            <AlertCircle className="w-4 h-4" />
+                            {t('newProject', 'noFrameworkDetected')}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {sourceType === 'gitlab' && (
+              <div className="pt-4 border-t border-[var(--border-subtle)]">
+                {isLoadingGitLabStatus ? (
+                  <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto mb-3" />
+                    <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'checkingGitLab')}</p>
+                  </div>
+                ) : !gitlabStatus?.connected ? (
+                  <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
+                    <Globe className="w-12 h-12 text-orange-500 mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">{t('newProject', 'gitlabIntegration')}</h3>
+                    <p className="text-sm text-[var(--text-muted)] mb-4">{t('newProject', 'gitlabIntegrationDesc')}</p>
+                    <button
+                      onClick={() => gitlabConnect.mutate()}
+                      disabled={gitlabConnect.isPending}
+                      className="btn btn-primary"
+                    >
+                      {gitlabConnect.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          {t('newProject', 'connecting')}
+                        </>
+                      ) : (
+                        t('newProject', 'connectGitlabBtn')
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+                      <div className="flex items-center gap-2 text-sm text-[var(--status-success)] min-w-0">
+                        <Check className="w-4 h-4 shrink-0" />
+                        <span className="truncate">
+                          {t('newProject', 'connectedAs')}{' '}
+                          <span className="font-medium">@{gitlabStatus.username}</span>
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={handleChangeGitlabAccount}
+                          disabled={gitlabBusy}
+                          className="btn btn-secondary text-xs py-1.5 px-3"
+                        >
+                          {gitlabBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                          {t('newProject', 'changeGitlabAccount')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleDisconnectGitlab}
+                          disabled={gitlabBusy}
+                          className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]"
+                        >
+                          <Unlink className="w-3.5 h-3.5" />
+                          {t('newProject', 'disconnectGitlab')}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={gitlabRepoSearchQuery}
+                        onChange={(e) => setGitlabRepoSearchQuery(e.target.value)}
+                        placeholder={t('newProject', 'searchRepos')}
+                        className="input pl-10!"
+                      />
+                      <Globe className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                    </div>
+
+                    <div className="max-h-64 overflow-y-auto rounded-xl border border-[var(--border-subtle)]">
+                      {isLoadingGitLabRepos ? (
+                        <div className="p-6 text-center">
+                          <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
+                          <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'loadingRepos')}</p>
+                        </div>
+                      ) : filteredGitlabRepos.length === 0 ? (
+                        <div className="p-6 text-center text-[var(--text-muted)]">
+                          {gitlabRepoSearchQuery ? t('newProject', 'noReposFound') : t('newProject', 'noRepos')}
+                        </div>
+                      ) : (
+                        <>
+                          {filteredGitlabRepos.map((repo) => (
+                            <button
+                              key={repo.id}
+                              onClick={() => setSelectedGitLabRepo(repo)}
+                              className={`w-full p-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--bg-tertiary)] transition-colors ${
+                                selectedGitLabRepo?.id === repo.id ? 'bg-orange-500/10' : ''
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium truncate">{repo.full_name}</div>
+                                  <div className="text-xs text-[var(--text-muted)] truncate">
+                                    {repo.description || repo.html_url}
+                                  </div>
+                                </div>
+                                {selectedGitLabRepo?.id === repo.id && (
+                                  <Check className="w-5 h-5 text-orange-500" />
+                                )}
+                              </div>
+                            </button>
+                          ))}
+                          {gitlabHasMore && !gitlabRepoSearchQuery && (
+                            <button
+                              onClick={() => gitlabLoadMore()}
+                              disabled={isLoadingMoreGitlab}
+                              className="w-full p-3 text-center text-sm text-orange-500 hover:bg-[var(--bg-tertiary)] transition-colors border-t border-[var(--border-subtle)]"
+                            >
+                              {isLoadingMoreGitlab ? (
+                                <span className="flex items-center justify-center gap-2">
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  {t('newProject', 'loadingMore')}
+                                </span>
+                              ) : (
+                                t('newProject', 'loadMore')
+                              )}
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {selectedGitLabRepo && (
+                      <div>
+                        <label className="block text-sm font-medium mb-2">{t('newProject', 'branch')}</label>
+                        {isLoadingGitLabBranches ? (
+                          <div className="input flex items-center gap-2 text-[var(--text-muted)]">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            {t('newProject', 'loadingBranches')}
+                          </div>
+                        ) : (
+                          <select
+                            value={gitBranch}
+                            onChange={(e) => setGitBranch(e.target.value)}
+                            className="input"
+                          >
+                            {gitlabBranches?.map((branch) => (
+                              <option key={branch.name} value={branch.name}>
+                                {branch.name} {branch.protected && '🔒'}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
+                    )}
+
+                    {selectedGitLabRepo && gitBranch && (
+                      <div className="p-3 rounded-lg bg-[var(--bg-tertiary)] text-sm">
+                        {isDetectingFramework ? (
+                          <div className="flex items-center gap-2 text-[var(--text-muted)]">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            {t('newProject', 'detectingFramework')}
+                          </div>
+                        ) : frameworkDetection?.framework ? (
+                          <div className="flex items-center gap-2 text-[var(--status-success)]">
+                            <Zap className="w-4 h-4" />
+                            {t('newProject', 'detectedFramework')}:{' '}
+                            <span className="font-medium">{frameworkDetection.framework}</span>
                           </div>
                         ) : (
                           <div className="flex items-center gap-2 text-[var(--text-muted)]">
@@ -1083,22 +1371,54 @@ export default function NewProjectPage() {
     <Modal
       isOpen={!!webhookSecretDialog}
       onClose={closeWebhookDialogAndDeploy}
-      title={t('newProject', 'webhookSecretOnceTitle')}
-      description={t('newProject', 'webhookSecretOnceDesc')}
+      title={t('newProject', 'webhookSetupOnceTitle')}
+      description={t('newProject', 'webhookSetupOnceDesc')}
       maxWidth="lg"
     >
-      <div className="space-y-4">
-        <div
-          className="rounded-xl p-4 font-mono text-sm break-all border border-[var(--border-subtle)] bg-[var(--bg-secondary)]"
-          style={{ wordBreak: 'break-word' }}
-        >
-          {webhookSecretDialog?.secret}
+      <div className="space-y-5">
+        <div>
+          <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
+            {t('newProject', 'webhookUrlLabel')}
+          </p>
+          <p className="text-xs text-[var(--text-muted)] mb-2">{t('newProject', 'webhookUrlOnceHint')}</p>
+          <div
+            className="rounded-xl p-3 font-mono text-xs sm:text-sm break-all border border-[var(--border-subtle)] bg-[var(--bg-secondary)]"
+          >
+            {webhookSecretDialog?.webhookUrl}
+          </div>
+          <button
+            type="button"
+            onClick={copyWebhookUrl}
+            className="btn btn-secondary mt-2 inline-flex items-center gap-2 text-sm"
+          >
+            <ClipboardCopy className="w-4 h-4" />
+            {t('newProject', 'webhookUrlCopy')}
+          </button>
         </div>
-        <div className="flex flex-wrap gap-3 justify-end">
-          <button type="button" onClick={copyWebhookSecret} className="btn btn-secondary inline-flex items-center gap-2">
+
+        <div>
+          <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
+            {t('newProject', 'webhookSecretLabel')}
+          </p>
+          <p className="text-xs text-[var(--text-muted)] mb-2">{t('newProject', 'webhookSecretOnceHint')}</p>
+          <div
+            className="rounded-xl p-3 font-mono text-xs sm:text-sm break-all border border-[var(--border-subtle)] bg-[var(--bg-secondary)]"
+          >
+            {webhookSecretDialog?.secret}
+          </div>
+          <button
+            type="button"
+            onClick={copyWebhookSecret}
+            className="btn btn-secondary mt-2 inline-flex items-center gap-2 text-sm"
+          >
             <ClipboardCopy className="w-4 h-4" />
             {t('newProject', 'webhookSecretCopy')}
           </button>
+        </div>
+
+        <p className="text-xs text-[var(--text-muted)]">{t('newProject', 'webhookSetupFootnote')}</p>
+
+        <div className="flex flex-wrap gap-3 justify-end pt-1">
           <button
             type="button"
             onClick={closeWebhookDialogAndDeploy}

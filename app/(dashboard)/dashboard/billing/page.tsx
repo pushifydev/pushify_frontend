@@ -5,18 +5,11 @@ import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import {
   CreditCard,
-  TrendingUp,
   Sparkles,
   Mail,
   Check,
   X,
   AlertTriangle,
-  Server,
-  Database,
-  Folder,
-  Rocket,
-  Users,
-  Globe,
   Key,
 } from 'lucide-react';
 import { useTranslation, useBillingInfo, useUpdateBillingEmail, billingKeys } from '@/hooks';
@@ -29,6 +22,21 @@ import Link from 'next/link';
 import { SkeletonPageHeader, SkeletonBillingSummaryCard } from '@/components/Skeleton';
 import { InfraWalletSection } from './components/InfraWalletSection';
 import { BillingSection } from './components/BillingSection';
+import { UsageLimitsAlert, UsageLimitsSection } from './components/UsageLimitsSection';
+import { formatMessage } from '@/lib/i18n/format-message';
+import type { UsageLimitKey, UsageStats } from '@/lib/api/services/billing.service';
+
+const USAGE_BOOST_LABEL_KEYS: Record<UsageLimitKey, keyof import('@/lib/i18n/locales/en').TranslationKeys['billing']> = {
+  servers: 'servers',
+  databases: 'databases',
+  projects: 'projects',
+  deploymentsThisMonth: 'deploymentsThisMonth',
+  buildMinutesThisMonth: 'buildMinutesThisMonth',
+  storageGb: 'storageGb',
+  bandwidthGb: 'bandwidthGb',
+  teamMembers: 'teamMembers',
+  customDomains: 'customDomains',
+};
 
 const planAccents: Record<PlanType, string> = {
   free:       STATUS_COLORS.neutral,
@@ -36,15 +44,6 @@ const planAccents: Record<PlanType, string> = {
   pro:        STATUS_COLORS.purple,
   business:   STATUS_COLORS.orange,
   enterprise: STATUS_COLORS.green,
-};
-
-const usageIcons = {
-  servers:             Server,
-  databases:           Database,
-  projects:            Folder,
-  deploymentsThisMonth: Rocket,
-  teamMembers:         Users,
-  customDomains:       Globe,
 };
 
 export default function BillingPage() {
@@ -122,11 +121,6 @@ export default function BillingPage() {
 
   const planAccent = billingInfo ? planAccents[billingInfo.plan] : STATUS_COLORS.neutral;
 
-  const getUsagePercentage = (used: number, limit: number, unlimited: boolean) => {
-    if (unlimited) return Math.min((used / 100) * 100, 30);
-    return Math.min((used / limit) * 100, 100);
-  };
-
   return (
     <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
 
@@ -173,7 +167,39 @@ export default function BillingPage() {
         </div>
       )}
 
+      {billingInfo?.grandfather?.active && billingInfo.grandfather.until && (
+        <div className="dash-panel p-4 flex gap-3 items-start border border-[var(--accent-cyan)]/30 bg-[var(--accent-cyan)]/5">
+          <Sparkles className="w-5 h-5 shrink-0 text-[var(--accent-cyan)] mt-0.5" />
+          <div className="min-w-0 space-y-2">
+            <p className="text-sm text-[var(--text-secondary)]">
+              {formatMessage(t('billing', 'grandfatherBanner'), {
+                date: new Date(billingInfo.grandfather.until).toLocaleDateString(),
+              })}
+            </p>
+            {billingInfo.grandfather.boostedResources.length > 0 && (
+              <ul className="text-xs text-[var(--text-muted)] space-y-1 tabular-nums">
+                {billingInfo.grandfather.boostedResources.map((key) => {
+                  const item = billingInfo.usage[key as keyof UsageStats];
+                  if (!item.planLimit) return null;
+                  return (
+                    <li key={key}>
+                      {formatMessage(t('billing', 'grandfatherBoostItem'), {
+                        label: t('billing', USAGE_BOOST_LABEL_KEYS[key]),
+                        planLimit: String(item.planLimit),
+                        limit: item.unlimited ? t('billing', 'unlimited') : String(item.limit),
+                      })}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
+
       <InfraWalletSection />
+
+      {billingInfo && <UsageLimitsAlert usage={billingInfo.usage} />}
 
       {/* Current Plan */}
       <div className="dash-card p-4 sm:p-6 space-y-0">
@@ -250,57 +276,7 @@ export default function BillingPage() {
         </BillingSection>
       )}
 
-      {billingInfo && (
-        <BillingSection
-          icon={TrendingUp}
-          title={t('billing', 'usage')}
-          description={t('billing', 'usageDescription')}
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {(Object.entries(billingInfo.usage) as [keyof typeof billingInfo.usage, (typeof billingInfo.usage)[keyof typeof billingInfo.usage]][]).map(([key, value]) => {
-              const Icon       = usageIcons[key];
-              const percentage = getUsagePercentage(value.used, value.limit, value.unlimited);
-              const isWarning  = !value.unlimited && percentage >= 80;
-              const isDanger   = !value.unlimited && percentage >= 100;
-              const barColor   = isDanger ? STATUS_COLORS.error : isWarning ? STATUS_COLORS.warning : 'var(--accent-cyan)';
-
-              return (
-                <div
-                  key={key}
-                  className="rounded-lg p-4"
-                  style={{ background: 'var(--bg-tertiary)' }}
-                >
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <Icon className="w-4 h-4 shrink-0" style={{ color: 'var(--accent-cyan)' }} />
-                      <p
-                        className="text-xs uppercase tracking-wide truncate"
-                        style={{ color: 'var(--text-muted)' }}
-                      >
-                        {t('billing', key as keyof typeof usageIcons)}
-                      </p>
-                    </div>
-                    <span
-                      className="text-sm font-semibold tabular-nums shrink-0"
-                      style={{ color: 'var(--text-primary)' }}
-                    >
-                      {value.used}
-                      <span style={{ color: 'var(--text-muted)' }}> / </span>
-                      {value.unlimited ? '∞' : value.limit}
-                    </span>
-                  </div>
-                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--glass-border)' }}>
-                    <div
-                      className="h-full rounded-full bar-grow"
-                      style={{ width: `${percentage}%`, background: barColor }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </BillingSection>
-      )}
+      {billingInfo && <UsageLimitsSection usage={billingInfo.usage} />}
 
       {billingInfo && (
         <BillingSection

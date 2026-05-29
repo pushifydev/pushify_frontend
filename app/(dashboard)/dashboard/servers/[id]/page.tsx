@@ -47,6 +47,7 @@ import {
   ServerProjectsSection,
   ServerDatabasesSection,
 } from '@/components/servers/ServerHubSections';
+import { ServerHealthPanel } from '@/components/servers/ServerHealthPanel';
 import { SERVER_STATUS_COLORS } from '@/lib/constants';
 import type { ServerStatus } from '@/lib/api';
 import { ProviderIcon } from '@/components/servers/ProviderIcon';
@@ -553,6 +554,7 @@ export default function ServerDetailPage({ params }: PageProps) {
         <div className="space-y-6 min-w-0">
           {server.ipv4 && <ServerSshPanel serverId={id} />}
           <ServerFirewallPanel />
+          <ServerHealthPanel server={server} />
           <ServerSnapshotsPanel server={server} />
           <ServerTimelinePanel serverId={id} />
           {providerData.serverType && (

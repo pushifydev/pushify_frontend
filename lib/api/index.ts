@@ -29,6 +29,7 @@ export {
   updateProjectStatus,
   getWebhookInfo,
   regenerateWebhookSecret,
+  installGitHubWebhook,
   updateProjectSettings,
   projectsService,
   type WebhookInfo,
@@ -89,6 +90,22 @@ export {
   type GitHubBranch,
   type FrameworkDetection,
 } from './services/github.service';
+
+// GitLab Functions
+export {
+  getGitLabStatus,
+  getGitLabAuthUrl,
+  connectGitLab,
+  disconnectGitLab,
+  getGitLabRepos,
+  getGitLabBranches,
+  detectGitLabFramework,
+  gitlabService,
+  type GitLabStatus,
+  type GitLabRepo,
+  type GitLabBranch,
+  type GitLabFrameworkDetection,
+} from './services/gitlab.service';
 
 // Notifications Functions
 export {
@@ -246,6 +263,7 @@ export {
 export {
   listServers,
   getServer,
+  getServerHealth,
   createServer,
   deleteServer,
   startServer,
@@ -258,6 +276,7 @@ export {
   listServerSnapshots,
   createServerSnapshot,
   deleteServerSnapshot,
+  restoreServerSnapshot,
   getServerTimeline,
   getServerSshInfo,
   getServerSshKey,

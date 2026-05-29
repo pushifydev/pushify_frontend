@@ -7,6 +7,11 @@ import { formatMessage } from '@/lib/i18n/format-message';
 import { showErrorToast, showSuccessToast } from '@/lib/toast-i18n';
 import { useWebSocketEvent } from '@/providers/WebSocketProvider';
 import { deploymentKeys } from './useDeployments';
+import {
+  getDeployFailureI18nKey,
+  parseDeployFailureCategory,
+} from '@/lib/deployment-utils';
+import { useTranslation } from './useTranslation';
 import { metricsKeys } from './useMetrics';
 import { serverKeys } from './useServers';
 import { healthCheckKeys } from './useHealthCheck';
@@ -27,6 +32,7 @@ interface DeploymentStatusData {
  */
 export function useDeploymentStatusEvents(projectId: string | undefined) {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   useWebSocketEvent<DeploymentStatusData>(
     'deployment:status',
@@ -43,8 +49,12 @@ export function useDeploymentStatusEvents(projectId: string | undefined) {
       if (data.status === 'running') {
         showSuccessToast('deploymentSuccessTitle', 'deploymentRunningDesc');
       } else if (data.status === 'failed') {
-        if (data.message) {
-          toast.error(appT('toasts', 'deploymentFailedTitle'), { description: data.message });
+        const category = parseDeployFailureCategory(data.message);
+        const hintKey = getDeployFailureI18nKey(category);
+        const hint = hintKey ? t('projectDetail', hintKey as never) : null;
+        const description = [data.message, hint].filter(Boolean).join('\n\n');
+        if (description) {
+          toast.error(appT('toasts', 'deploymentFailedTitle'), { description });
         } else {
           showErrorToast('deploymentFailedTitle', 'deploymentFailedDescFallback');
         }

@@ -64,10 +64,12 @@ export const updateProject = async (
   }
 };
 
-export const deleteProject = async (id: string): Promise<ApiResponse<void>> => {
+export const deleteProject = async (
+  id: string
+): Promise<ApiResponse<{ containersCleanedUp?: boolean }>> => {
   try {
-    await api.delete(`/projects/${id}`);
-    return { data: undefined };
+    const response = await api.delete<{ containersCleanedUp?: boolean }>(`/projects/${id}`);
+    return { data: { containersCleanedUp: response.data.containersCleanedUp ?? true } };
   } catch (error) {
     return handleError(error);
   }
@@ -76,12 +78,28 @@ export const deleteProject = async (id: string): Promise<ApiResponse<void>> => {
 export const updateProjectStatus = async (
   id: string,
   status: ProjectStatus
-): Promise<ApiResponse<Project>> => {
+): Promise<ApiResponse<Project & { containersSynced?: boolean }>> => {
   try {
-    const response = await api.patch<{ data: Project; message: string }>(
+    const response = await api.patch<{ data: Project; containersSynced?: boolean }>(
       `/projects/${id}/status`,
       { status }
     );
+    return {
+      data: { ...response.data.data, containersSynced: response.data.containersSynced },
+    };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const installGitHubWebhook = async (
+  projectId: string
+): Promise<ApiResponse<{ webhookUrl: string; hookId: number; created: boolean }>> => {
+  try {
+    const response = await api.post<{
+      data: { webhookUrl: string; hookId: number; created: boolean };
+      message: string;
+    }>(`/projects/${projectId}/webhook/github/install`);
     return { data: response.data.data };
   } catch (error) {
     return handleError(error);
@@ -92,6 +110,7 @@ export const updateProjectStatus = async (
 
 export interface WebhookInfo {
   webhookUrl: string;
+  gitProvider?: 'github' | 'gitlab' | string;
   hasSecret: boolean;
   autoDeploy: boolean;
 }
@@ -153,5 +172,6 @@ export const projectsService = {
   updateStatus: updateProjectStatus,
   getWebhookInfo,
   regenerateWebhookSecret,
+  installGitHubWebhook,
   updateSettings: updateProjectSettings,
 };

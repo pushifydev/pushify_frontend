@@ -6,6 +6,7 @@ import { useLocaleStore } from '@/stores/locale';
 import {
   listServers,
   getServer,
+  getServerHealth,
   createServer,
   deleteServer,
   startServer,
@@ -18,6 +19,7 @@ import {
   listServerSnapshots,
   createServerSnapshot,
   deleteServerSnapshot,
+  restoreServerSnapshot,
   getServerTimeline,
   getServerSshInfo,
   getServerSshKey,
@@ -39,6 +41,7 @@ export const serverKeys = {
   snapshots: (id: string) => [...serverKeys.all, 'snapshots', id] as const,
   timeline: (id: string) => [...serverKeys.all, 'timeline', id] as const,
   sshInfo: (id: string) => [...serverKeys.all, 'sshInfo', id] as const,
+  health: (id: string) => [...serverKeys.all, 'health', id] as const,
   providers: ['providers'] as const,
   regions: (provider: ServerProvider) => [...serverKeys.providers, provider, 'regions'] as const,
   images: (provider: ServerProvider) => [...serverKeys.providers, provider, 'images'] as const,
@@ -71,6 +74,19 @@ export function useServers() {
       );
       return needsPolling ? 5000 : false;
     },
+  });
+}
+
+export function useServerHealth(serverId: string, enabled = true) {
+  return useQuery({
+    queryKey: serverKeys.health(serverId),
+    queryFn: async () => {
+      const result = await getServerHealth(serverId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!serverId && enabled,
+    staleTime: 60_000,
   });
 }
 
@@ -293,7 +309,7 @@ export function useUpdateServer() {
       input,
     }: {
       serverId: string;
-      input: { name?: string; description?: string | null };
+      input: { name?: string; description?: string | null; autoSnapshotEnabled?: boolean };
     }) => {
       const result = await updateServer(serverId, input);
       if (result.error) throw new Error(result.error.message);
@@ -307,6 +323,9 @@ export function useUpdateServer() {
   });
 }
 
+const SNAPSHOT_POLL_MS_IDLE = 30_000;
+const SNAPSHOT_POLL_MS_CREATING = 4_000;
+
 export function useServerSnapshots(serverId: string, enabled: boolean) {
   return useQuery({
     queryKey: serverKeys.snapshots(serverId),
@@ -316,7 +335,10 @@ export function useServerSnapshots(serverId: string, enabled: boolean) {
       return result.data!;
     },
     enabled: !!serverId && enabled,
-    refetchInterval: 15000,
+    refetchInterval: (query) => {
+      const hasCreating = query.state.data?.some((s) => s.status === 'creating');
+      return hasCreating ? SNAPSHOT_POLL_MS_CREATING : SNAPSHOT_POLL_MS_IDLE;
+    },
   });
 }
 
@@ -337,6 +359,7 @@ export function useCreateServerSnapshot() {
     },
     onSuccess: (_, { serverId }) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.snapshots(serverId) });
+      void queryClient.refetchQueries({ queryKey: serverKeys.snapshots(serverId) });
       showSuccessToast('serverSnapshotCreatedTitle', 'serverSnapshotCreatedDesc');
     },
   });
@@ -360,6 +383,31 @@ export function useDeleteServerSnapshot() {
     onSuccess: (_, { serverId }) => {
       queryClient.invalidateQueries({ queryKey: serverKeys.snapshots(serverId) });
       showSuccessToast('serverSnapshotDeletedTitle', 'serverSnapshotDeletedDesc');
+    },
+  });
+}
+
+export function useRestoreServerSnapshot() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      serverId,
+      snapshotId,
+    }: {
+      serverId: string;
+      snapshotId: string;
+    }) => {
+      const result = await restoreServerSnapshot(serverId, snapshotId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (data, { serverId }) => {
+      queryClient.invalidateQueries({ queryKey: serverKeys.snapshots(serverId) });
+      queryClient.invalidateQueries({ queryKey: serverKeys.detail(serverId) });
+      queryClient.invalidateQueries({ queryKey: serverKeys.list() });
+      queryClient.setQueryData(serverKeys.detail(serverId), data);
+      showSuccessToast('serverSnapshotRestoreTitle', 'serverSnapshotRestoreDesc');
     },
   });
 }
