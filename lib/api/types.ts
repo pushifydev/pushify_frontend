@@ -227,6 +227,9 @@ export interface Deployment {
   // For quick rollback support
   dockerImageId?: string | null;
   containerPort?: number | null;
+  inQueue?: boolean;
+  queueMessage?: string | null;
+  queuePosition?: number | null;
 }
 
 export interface CreateDeploymentInput {

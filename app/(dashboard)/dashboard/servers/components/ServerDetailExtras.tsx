@@ -12,6 +12,7 @@ import {
   Check,
   Camera,
   Trash2,
+  RotateCcw,
   Loader2,
   History,
   AlertCircle,
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Modal, ModalActions } from '@/components/Modal';
 import { useTranslation } from '@/hooks/useTranslation';
+import { formatMessage } from '@/lib/i18n/format-message';
 import {
   useServerResizeOptions,
   useResizeServer,
@@ -26,6 +28,7 @@ import {
   useServerSnapshots,
   useCreateServerSnapshot,
   useDeleteServerSnapshot,
+  useRestoreServerSnapshot,
   useServerTimeline,
   useServerSshInfo,
   useDownloadServerSshKey,
@@ -295,9 +298,15 @@ export function ServerFirewallPanel() {
 export function ServerSnapshotsPanel({ server }: { server: Server }) {
   const { t } = useTranslation();
   const enabled = server.isManaged && server.provider === 'hetzner';
+  const updateServer = useUpdateServer();
   const { data: snapshots = [], isLoading } = useServerSnapshots(server.id, enabled);
   const createSnapshot = useCreateServerSnapshot();
   const deleteSnapshot = useDeleteServerSnapshot();
+  const restoreSnapshot = useRestoreServerSnapshot();
+  const [restoreTarget, setRestoreTarget] = useState<{ id: string; name: string } | null>(null);
+
+  const canRestore =
+    server.status !== 'provisioning' && server.status !== 'deleting' && !restoreSnapshot.isPending;
 
   if (!enabled) return null;
 
@@ -324,6 +333,33 @@ export function ServerSnapshotsPanel({ server }: { server: Server }) {
         )}
       </div>
       <p className="text-xs text-[var(--text-muted)] mb-3">{t('servers', 'snapshotsDesc')}</p>
+      <label className="flex items-start gap-3 rounded-lg border border-[var(--border-subtle)] px-3 py-2.5 mb-3 cursor-pointer">
+        <input
+          type="checkbox"
+          className="mt-0.5"
+          checked={server.autoSnapshotEnabled}
+          disabled={updateServer.isPending || server.status !== 'running'}
+          onChange={(e) => {
+            updateServer.mutate({
+              serverId: server.id,
+              input: { autoSnapshotEnabled: e.target.checked },
+            });
+          }}
+        />
+        <span className="min-w-0">
+          <span className="text-sm font-medium block">{t('servers', 'autoSnapshotTitle')}</span>
+          <span className="text-xs text-[var(--text-muted)] block mt-0.5">
+            {t('servers', 'autoSnapshotDesc')}
+          </span>
+          {server.lastAutoSnapshotAt && (
+            <span className="text-xs text-[var(--text-muted)] block mt-1">
+              {formatMessage(t('servers', 'autoSnapshotLastRun'), {
+                date: formatShortDate(server.lastAutoSnapshotAt),
+              })}
+            </span>
+          )}
+        </span>
+      </label>
       {isLoading ? (
         <div className="flex justify-center py-6">
           <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-cyan)]" />
@@ -332,30 +368,116 @@ export function ServerSnapshotsPanel({ server }: { server: Server }) {
         <p className="text-sm text-[var(--text-muted)]">{t('servers', 'snapshotsEmpty')}</p>
       ) : (
         <ul className="space-y-2">
-          {snapshots.map((snap) => (
-            <li
-              key={snap.id}
-              className="flex items-center justify-between gap-2 rounded-lg border border-[var(--border-subtle)] px-3 py-2"
-            >
-              <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{snap.name}</p>
-                <p className="text-xs text-[var(--text-muted)]">
-                  {snap.sizeGb} GB · {snap.status} · {formatShortDate(snap.createdAt)}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => deleteSnapshot.mutate({ serverId: server.id, snapshotId: snap.id })}
-                disabled={deleteSnapshot.isPending}
-                className="p-1.5 text-[var(--status-error)] hover:opacity-80"
-                title={t('common', 'delete')}
+          {snapshots.map((snap) => {
+            const isCreating = snap.status === 'creating';
+            const isAvailable =
+              snap.status === 'available' || snap.status === 'ACTIVE' || snap.status === 'active';
+            const sizeLabel =
+              isCreating && snap.sizeGb <= 0
+                ? t('servers', 'snapshotSizePending')
+                : snap.sizeGb > 0
+                  ? `${snap.sizeGb} GB`
+                  : null;
+            const statusLabel = isCreating
+              ? snap.progress != null && snap.progress > 0
+                ? formatMessage(t('servers', 'snapshotProgress'), {
+                    percent: snap.progress,
+                  })
+                : t('servers', 'snapshotStatusCreating')
+              : isAvailable
+                ? t('servers', 'snapshotStatusAvailable')
+                : snap.status;
+            const metaParts = [sizeLabel, statusLabel, formatShortDate(snap.createdAt)].filter(
+              Boolean
+            );
+
+            return (
+              <li
+                key={snap.id}
+                className="flex items-center justify-between gap-2 rounded-lg border border-[var(--border-subtle)] px-3 py-2"
               >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </li>
-          ))}
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate flex items-center gap-2">
+                    {isCreating && (
+                      <Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin text-[var(--accent-cyan)]" />
+                    )}
+                    {snap.name}
+                  </p>
+                  <p className="text-xs text-[var(--text-muted)]">{metaParts.join(' · ')}</p>
+                  {isCreating && snap.progress != null && snap.progress > 0 && (
+                    <div className="mt-1.5 h-1 rounded-full bg-[var(--bg-tertiary)] overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-[var(--accent-cyan)] transition-all duration-500"
+                        style={{ width: `${Math.min(100, snap.progress)}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  {isAvailable && (
+                    <button
+                      type="button"
+                      onClick={() => setRestoreTarget({ id: snap.id, name: snap.name })}
+                      disabled={!canRestore}
+                      className="p-1.5 text-[var(--accent-cyan)] hover:opacity-80 disabled:opacity-40"
+                      title={t('servers', 'snapshotRestore')}
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => deleteSnapshot.mutate({ serverId: server.id, snapshotId: snap.id })}
+                    disabled={deleteSnapshot.isPending}
+                    className="p-1.5 text-[var(--status-error)] hover:opacity-80"
+                    title={t('common', 'delete')}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
+
+      <Modal
+        isOpen={!!restoreTarget}
+        onClose={() => setRestoreTarget(null)}
+        title={t('servers', 'snapshotRestoreTitle')}
+      >
+        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+          {t('servers', 'snapshotRestoreWarning')}
+        </p>
+        {restoreTarget && (
+          <p className="text-sm font-medium text-[var(--text-primary)] mt-3 truncate">
+            {restoreTarget.name}
+          </p>
+        )}
+        <ModalActions>
+          <button type="button" className="btn btn-secondary" onClick={() => setRestoreTarget(null)}>
+            {t('common', 'cancel')}
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={!restoreTarget || restoreSnapshot.isPending}
+            onClick={() => {
+              if (!restoreTarget) return;
+              restoreSnapshot.mutate(
+                { serverId: server.id, snapshotId: restoreTarget.id },
+                { onSuccess: () => setRestoreTarget(null) },
+              );
+            }}
+          >
+            {restoreSnapshot.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              t('servers', 'snapshotRestoreConfirm')
+            )}
+          </button>
+        </ModalActions>
+      </Modal>
     </div>
   );
 }

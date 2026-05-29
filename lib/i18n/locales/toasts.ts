@@ -26,6 +26,8 @@ export const toastsEn = {
   serverSnapshotCreatedDesc: 'Snapshot creation has been queued at the provider',
   serverSnapshotDeletedTitle: 'Snapshot deleted',
   serverSnapshotDeletedDesc: 'The snapshot was removed',
+  serverSnapshotRestoreTitle: 'Restore started',
+  serverSnapshotRestoreDesc: 'The server is rebuilding from the snapshot. Redeploy projects when it is running again.',
 
   projectCreatedTitle: 'Project created',
   projectCreatedDesc: '{name} has been created',
@@ -37,8 +39,18 @@ export const toastsEn = {
   projectResumedDesc: 'Project has been resumed',
   projectPausedTitle: 'Project paused',
   projectPausedDesc: 'Project has been paused',
+  projectContainerSyncWarnTitle: 'Container may still be running',
+  projectContainerSyncWarnDesc:
+    'Status was saved but the app on the server could not be stopped or started. Check the server or redeploy.',
+  projectDeleteCleanupWarnTitle: 'Server cleanup incomplete',
+  projectDeleteCleanupWarnDesc:
+    'The project was removed from Pushify but containers may still run on the server. Open Server health to find orphans.',
   webhookRegeneratedTitle: 'Webhook secret regenerated',
   webhookRegeneratedDesc: 'Remember to update your webhook configuration',
+  githubWebhookInstalledTitle: 'GitHub webhook installed',
+  githubWebhookInstalledDesc: 'Push events will trigger deploys automatically',
+  githubWebhookUpdatedTitle: 'GitHub webhook updated',
+  githubWebhookUpdatedDesc: 'Existing webhook URL was updated with your current secret',
   projectSettingsSavedTitle: 'Settings saved',
   projectSettingsSavedDesc: 'Project settings have been updated',
 
@@ -137,6 +149,9 @@ export const toastsTr: ToastsKeys = {
   serverSnapshotCreatedDesc: 'Sağlayıcıda anlık görüntü oluşturma kuyruğa alındı',
   serverSnapshotDeletedTitle: 'Anlık görüntü silindi',
   serverSnapshotDeletedDesc: 'Anlık görüntü kaldırıldı',
+  serverSnapshotRestoreTitle: 'Geri yükleme başlatıldı',
+  serverSnapshotRestoreDesc:
+    'Sunucu anlık görüntüden yeniden oluşturuluyor. Çalışır duruma gelince projeleri yeniden dağıtın.',
 
   projectCreatedTitle: 'Proje oluşturuldu',
   projectCreatedDesc: '{name} oluşturuldu',
@@ -148,7 +163,17 @@ export const toastsTr: ToastsKeys = {
   projectResumedDesc: 'Proje yeniden etkin',
   projectPausedTitle: 'Proje duraklatıldı',
   projectPausedDesc: 'Proje duraklatıldı',
+  projectContainerSyncWarnTitle: 'Container hâlâ çalışıyor olabilir',
+  projectContainerSyncWarnDesc:
+    'Durum kaydedildi ancak sunucudaki uygulama durdurulamadı veya başlatılamadı. Sunucuyu kontrol edin veya yeniden dağıtın.',
+  projectDeleteCleanupWarnTitle: 'Sunucu temizliği tamamlanmadı',
+  projectDeleteCleanupWarnDesc:
+    'Proje Pushify\'dan silindi ancak sunucuda container\'lar çalışıyor olabilir. Yetim container\'lar için Sunucu sağlığını açın.',
   webhookRegeneratedTitle: 'Webhook gizli anahtarı yenilendi',
+  githubWebhookInstalledTitle: 'GitHub webhook kuruldu',
+  githubWebhookInstalledDesc: 'Push olayları otomatik dağıtım tetikleyecek',
+  githubWebhookUpdatedTitle: 'GitHub webhook güncellendi',
+  githubWebhookUpdatedDesc: 'Mevcut webhook URL\'si güncel gizli anahtarınızla güncellendi',
   webhookRegeneratedDesc: 'Webhook yapılandırmanızı güncellemeyi unutmayın',
   projectSettingsSavedTitle: 'Ayarlar kaydedildi',
   projectSettingsSavedDesc: 'Proje ayarları güncellendi',

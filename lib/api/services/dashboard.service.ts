@@ -39,7 +39,7 @@ export interface DashboardActionItem {
   href: string;
 }
 
-export type UsageWarningKey = keyof UsageStats | 'databases';
+export type UsageWarningKey = keyof UsageStats;
 
 export interface UsageWarning {
   key: UsageWarningKey;
@@ -48,11 +48,18 @@ export interface UsageWarning {
   percent: number;
 }
 
+export interface DashboardInfraWalletAlert {
+  isLowBalance: boolean;
+  balanceCents: number;
+  runwayDays: number | null;
+}
+
 export interface DashboardOverview {
   deployments: DeploymentCounts;
   recentFailures: RecentFailedDeployment[];
   actionItems: DashboardActionItem[];
   usageWarnings: UsageWarning[];
+  infraWallet: DashboardInfraWalletAlert | null;
 }
 
 export const getDashboardOverview = async (): Promise<ApiResponse<DashboardOverview>> => {

@@ -9,6 +9,7 @@ export {
   useUpdateProjectStatus,
   useWebhookInfo,
   useRegenerateWebhookSecret,
+  useInstallGitHubWebhook,
   useUpdateProjectSettings,
 } from './useProjects';
 
@@ -65,6 +66,18 @@ export {
   useGitHubCallback,
   useGitHubDisconnect,
 } from './useGitHub';
+
+// GitLab
+export {
+  gitlabKeys,
+  useGitLabStatus,
+  useGitLabRepos,
+  useGitLabBranches,
+  useGitLabFrameworkDetection,
+  useGitLabConnect,
+  useGitLabCallback,
+  useGitLabDisconnect,
+} from './useGitLab';
 
 // Notifications
 export {
@@ -161,6 +174,7 @@ export {
   useServerSnapshots,
   useCreateServerSnapshot,
   useDeleteServerSnapshot,
+  useRestoreServerSnapshot,
   useServerTimeline,
   useServerSshInfo,
   useDownloadServerSshKey,

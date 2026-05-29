@@ -364,9 +364,9 @@ export const verifyEmail = async (token: string): Promise<ApiResponse<{ message:
 
 // ============ GitHub OAuth Login ============
 
-export const getGithubLoginUrl = async (): Promise<ApiResponse<{ url: string }>> => {
+export const getGithubLoginUrl = async (): Promise<ApiResponse<{ url: string; state: string }>> => {
   try {
-    const response = await api.get<{ url: string }>('/auth/github/login-url');
+    const response = await api.get<{ url: string; state: string }>('/auth/github/login-url');
     return { data: response.data };
   } catch (error) {
     const axiosError = error as AxiosError<{ error: ApiError }>;
@@ -380,14 +380,15 @@ export const getGithubLoginUrl = async (): Promise<ApiResponse<{ url: string }>>
 };
 
 export const githubLoginCallback = async (
-  code: string
+  code: string,
+  state: string,
 ): Promise<ApiResponse<AuthResponse>> => {
   try {
     const response = await api.post<{
       data: AuthResponse;
       accessToken: string;
       refreshToken: string;
-    }>('/auth/github/login-callback', { code });
+    }>('/auth/github/login-callback', { code, state });
 
     const { data, accessToken, refreshToken } = response.data;
     setTokens(accessToken, refreshToken);
@@ -406,9 +407,9 @@ export const githubLoginCallback = async (
 
 // ============ Google OAuth Login ============
 
-export const getGoogleLoginUrl = async (): Promise<ApiResponse<{ url: string }>> => {
+export const getGoogleLoginUrl = async (): Promise<ApiResponse<{ url: string; state: string }>> => {
   try {
-    const response = await api.get<{ url: string }>('/auth/google/login-url');
+    const response = await api.get<{ url: string; state: string }>('/auth/google/login-url');
     return { data: response.data };
   } catch (error) {
     const axiosError = error as AxiosError<{ error: ApiError }>;
@@ -422,14 +423,15 @@ export const getGoogleLoginUrl = async (): Promise<ApiResponse<{ url: string }>>
 };
 
 export const googleLoginCallback = async (
-  code: string
+  code: string,
+  state: string,
 ): Promise<ApiResponse<AuthResponse>> => {
   try {
     const response = await api.post<{
       data: AuthResponse;
       accessToken: string;
       refreshToken: string;
-    }>('/auth/google/login-callback', { code });
+    }>('/auth/google/login-callback', { code, state });
 
     const { data, accessToken, refreshToken } = response.data;
     setTokens(accessToken, refreshToken);

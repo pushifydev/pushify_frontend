@@ -47,7 +47,7 @@ function GoogleCallbackContent() {
       localStorage.removeItem('google_oauth_state');
 
       try {
-        const result = await googleLoginCallback(code);
+        const result = await googleLoginCallback(code, state);
 
         if (result.error) {
           setStatus('error');

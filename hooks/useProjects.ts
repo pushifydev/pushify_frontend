@@ -1,7 +1,9 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { showSuccessToast } from '@/lib/toast-i18n';
+import { toast } from 'sonner';
+import { appT } from '@/lib/i18n/app-translate';
+import { showSuccessToast, showErrorToast } from '@/lib/toast-i18n';
 import {
   getProjects,
   getProject,
@@ -11,6 +13,7 @@ import {
   updateProjectStatus,
   getWebhookInfo,
   regenerateWebhookSecret,
+  installGitHubWebhook,
   updateProjectSettings,
   type Project,
   type CreateProjectInput,
@@ -97,12 +100,18 @@ export function useDeleteProject() {
     mutationFn: async (id: string) => {
       const result = await deleteProject(id);
       if (result.error) throw new Error(result.error.message);
-      return id;
+      return { id, containersCleanedUp: result.data?.containersCleanedUp ?? true };
     },
-    onSuccess: (id) => {
+    onSuccess: (result) => {
+      const id = result.id;
       queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
       queryClient.removeQueries({ queryKey: projectKeys.detail(id) });
       showSuccessToast('projectDeletedTitle', 'projectDeletedDesc');
+      if (result && typeof result === 'object' && result.containersCleanedUp === false) {
+        toast.warning(appT('toasts', 'projectDeleteCleanupWarnTitle'), {
+          description: appT('toasts', 'projectDeleteCleanupWarnDesc'),
+        });
+      }
     },
   });
 }
@@ -121,8 +130,18 @@ export function useUpdateProjectStatus(id: string) {
       queryClient.setQueryData(projectKeys.detail(id), data);
       if (data?.status === 'active') {
         showSuccessToast('projectResumedTitle', 'projectResumedDesc');
+        if (data.containersSynced === false) {
+          toast.warning(appT('toasts', 'projectContainerSyncWarnTitle'), {
+            description: appT('toasts', 'projectContainerSyncWarnDesc'),
+          });
+        }
       } else if (data?.status === 'paused') {
         showSuccessToast('projectPausedTitle', 'projectPausedDesc');
+        if (data.containersSynced === false) {
+          toast.warning(appT('toasts', 'projectContainerSyncWarnTitle'), {
+            description: appT('toasts', 'projectContainerSyncWarnDesc'),
+          });
+        }
       }
     },
   });
@@ -154,6 +173,22 @@ export function useRegenerateWebhookSecret(projectId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: projectKeys.webhook(projectId) });
       showSuccessToast('webhookRegeneratedTitle', 'webhookRegeneratedDesc');
+    },
+  });
+}
+
+export function useInstallGitHubWebhook(projectId: string) {
+  return useMutation({
+    mutationFn: async () => {
+      const result = await installGitHubWebhook(projectId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: (data) => {
+      showSuccessToast(
+        data?.created ? 'githubWebhookInstalledTitle' : 'githubWebhookUpdatedTitle',
+        data?.created ? 'githubWebhookInstalledDesc' : 'githubWebhookUpdatedDesc'
+      );
     },
   });
 }
