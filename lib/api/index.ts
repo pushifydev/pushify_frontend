@@ -29,6 +29,7 @@ export {
   updateProjectStatus,
   getWebhookInfo,
   regenerateWebhookSecret,
+  installGitHubWebhook,
   updateProjectSettings,
   projectsService,
   type WebhookInfo,
@@ -262,6 +263,7 @@ export {
 export {
   listServers,
   getServer,
+  getServerHealth,
   createServer,
   deleteServer,
   startServer,

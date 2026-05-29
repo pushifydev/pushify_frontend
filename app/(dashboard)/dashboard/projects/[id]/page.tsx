@@ -49,6 +49,8 @@ import { HistoricalLogsModal } from '@/components/HistoricalLogsModal';
 import {
   useProject,
   useDeleteProject,
+  useUpdateProjectStatus,
+  useDeploymentStatusEvents,
   useDeployments,
   useCancelDeployment,
   useRollbackDeployment,
@@ -69,6 +71,7 @@ import {
   useTranslation,
   useWebhookInfo,
   useRegenerateWebhookSecret,
+  useInstallGitHubWebhook,
   useUpdateProjectSettings,
   useUpdateProject,
   useNotificationChannels,
@@ -125,6 +128,8 @@ export default function ProjectDetailPage() {
   const { data: domains = [] } = useDomains(projectId);
 
   const deleteProjectMutation = useDeleteProject();
+  const updateProjectStatus = useUpdateProjectStatus(projectId);
+  useDeploymentStatusEvents(projectId);
   const cancelDeployment = useCancelDeployment(projectId);
   const rollbackDeployment = useRollbackDeployment(projectId);
   const redeployDeployment = useRedeployDeployment(projectId);
@@ -146,8 +151,7 @@ export default function ProjectDetailPage() {
   const [showHistoricalLogs, setShowHistoricalLogs] = useState<string | null>(null);
 
   const handleStatusChange = async (status: ProjectStatus) => {
-    await projectsService.updateStatus(projectId, status);
-    window.location.reload();
+    await updateProjectStatus.mutateAsync(status);
   };
 
   const handleDelete = async () => {
@@ -704,6 +708,15 @@ function DeploymentsTab({
               <span className={`badge shrink-0 ${getStatusBadge(deployment.status)}`}>
                 {deployment.status}
               </span>
+              {deployment.status === 'pending' && deployment.inQueue && (
+                <span className="badge badge-warning shrink-0 text-xs">
+                  {deployment.queuePosition
+                    ? formatMessage(t('projectDetail', 'deployQueuePosition'), {
+                        position: deployment.queuePosition,
+                      })
+                    : t('projectDetail', 'deployQueueWaiting')}
+                </span>
+              )}
               <span className="text-sm terminal-text truncate max-w-[140px] sm:max-w-none">{deployment.branch}</span>
               {deployment.commitHash && (
                 <span className="text-sm text-[var(--text-muted)] shrink-0">
@@ -712,7 +725,7 @@ function DeploymentsTab({
               )}
             </div>
             <div className="flex flex-wrap gap-2">
-              {['queued', 'building', 'deploying'].includes(deployment.status) && (
+              {['pending', 'building', 'deploying'].includes(deployment.status) && (
                 <button onClick={() => onCancel(deployment.id)} className="btn btn-ghost text-[var(--status-error)] h-8 text-xs">
                   {t('projectDetail', 'cancel')}
                 </button>
@@ -1891,6 +1904,7 @@ function SettingsTab({
   const { data: servers = [], isLoading: isLoadingServers } = useServers();
   const { data: webhookInfo } = useWebhookInfo(project.id);
   const regenerateSecret = useRegenerateWebhookSecret(project.id);
+  const installGithubWebhook = useInstallGitHubWebhook(project.id);
   const updateSettings = useUpdateProjectSettings(projectId);
   const updateProject = useUpdateProject(projectId);
 
@@ -2224,6 +2238,24 @@ function SettingsTab({
                 ? t('projectDetail', 'webhookUrlHintGitlab')
                 : t('projectDetail', 'webhookUrlHint')}
             </p>
+            {webhookInfo?.gitProvider !== 'gitlab' && webhookInfo?.hasSecret && (
+              <div className="mt-3">
+                <button
+                  type="button"
+                  onClick={() => installGithubWebhook.mutate()}
+                  disabled={installGithubWebhook.isPending}
+                  className="btn btn-primary text-sm inline-flex items-center gap-2"
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 ${installGithubWebhook.isPending ? 'animate-spin' : ''}`}
+                  />
+                  {t('projectDetail', 'installGithubWebhook')}
+                </button>
+                <p className="text-xs text-[var(--text-muted)] mt-1">
+                  {t('projectDetail', 'installGithubWebhookHint')}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Webhook Secret */}

@@ -752,6 +752,10 @@ export interface TranslationKeys {
     githubStep2: string;
     githubStep3: string;
     githubStep4: string;
+    installGithubWebhook: string;
+    installGithubWebhookHint: string;
+    deployQueuePosition: string;
+    deployQueueWaiting: string;
     gitlabStep1: string;
     gitlabStep2: string;
     gitlabStep3: string;
@@ -1557,6 +1561,14 @@ export interface TranslationKeys {
     autoSnapshotTitle: string;
     autoSnapshotDesc: string;
     autoSnapshotLastRun: string;
+    serverHealthTitle: string;
+    healthScan: string;
+    healthScanFailed: string;
+    diskUsage: string;
+    diskFree: string;
+    orphanContainersTitle: string;
+    orphanContainersDesc: string;
+    noOrphanContainers: string;
     timelineTitle: string;
     timelineEmpty: string;
     timelineCreated: string;
@@ -2604,6 +2616,10 @@ export const en: TranslationKeys = {
     githubStep2: 'Paste the Webhook URL above into the "Payload URL" field',
     githubStep3: 'Set Content type to "application/json"',
     githubStep4: 'Add the secret (if generated) and select "Just the push event"',
+    installGithubWebhook: 'Install webhook on GitHub',
+    installGithubWebhookHint: 'Requires GitHub connected (org owner) and a webhook secret',
+    deployQueuePosition: 'Queue #{position}',
+    deployQueueWaiting: 'In queue',
     gitlabStep1: 'Go to your project Settings → Webhooks → Add new webhook',
     gitlabStep2: 'Paste the Webhook URL above and set the Secret token to your Pushify secret',
     gitlabStep3: 'Enable "Push events" and "Merge request events"',
@@ -3432,6 +3448,15 @@ export const en: TranslationKeys = {
     autoSnapshotDesc:
       'Creates a snapshot every 7 days when the server is running. Oldest snapshots are removed when you exceed your plan limit.',
     autoSnapshotLastRun: 'Last automatic snapshot: {date}',
+    serverHealthTitle: 'Deployment host health',
+    healthScan: 'Scan now',
+    healthScanFailed: 'Could not scan the server. Check SSH access.',
+    diskUsage: 'Disk',
+    diskFree: 'free',
+    orphanContainersTitle: '{count} orphan container(s)',
+    orphanContainersDesc:
+      'These Pushify containers are not linked to an active project in your organization. They may still use ports and disk.',
+    noOrphanContainers: 'No orphan Pushify containers ({count} tracked on this server).',
     timelineTitle: 'Recent activity',
     timelineEmpty: 'No activity yet.',
     timelineCreated: 'Server created',

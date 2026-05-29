@@ -6,6 +6,7 @@ import { useLocaleStore } from '@/stores/locale';
 import {
   listServers,
   getServer,
+  getServerHealth,
   createServer,
   deleteServer,
   startServer,
@@ -40,6 +41,7 @@ export const serverKeys = {
   snapshots: (id: string) => [...serverKeys.all, 'snapshots', id] as const,
   timeline: (id: string) => [...serverKeys.all, 'timeline', id] as const,
   sshInfo: (id: string) => [...serverKeys.all, 'sshInfo', id] as const,
+  health: (id: string) => [...serverKeys.all, 'health', id] as const,
   providers: ['providers'] as const,
   regions: (provider: ServerProvider) => [...serverKeys.providers, provider, 'regions'] as const,
   images: (provider: ServerProvider) => [...serverKeys.providers, provider, 'images'] as const,
@@ -72,6 +74,19 @@ export function useServers() {
       );
       return needsPolling ? 5000 : false;
     },
+  });
+}
+
+export function useServerHealth(serverId: string, enabled = true) {
+  return useQuery({
+    queryKey: serverKeys.health(serverId),
+    queryFn: async () => {
+      const result = await getServerHealth(serverId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!serverId && enabled,
+    staleTime: 60_000,
   });
 }
 

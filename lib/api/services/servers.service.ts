@@ -152,6 +152,36 @@ export const getServer = async (serverId: string): Promise<ApiResponse<Server>> 
   }
 };
 
+export interface ServerHealthReport {
+  disk: {
+    ok: boolean;
+    usedPercent: number;
+    availGb: number;
+    mount: string;
+    warn: boolean;
+    critical: boolean;
+    message: string;
+  };
+  orphans: Array<{
+    name: string;
+    slug: string;
+    status: string;
+    ports: string;
+  }>;
+  pushifyContainerCount: number;
+}
+
+export const getServerHealth = async (
+  serverId: string
+): Promise<ApiResponse<ServerHealthReport>> => {
+  try {
+    const response = await api.get<{ data: ServerHealthReport }>(`/servers/${serverId}/health`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const createServer = async (input: CreateServerInput): Promise<ApiResponse<Server>> => {
   try {
     const response = await api.post<{ data: Server }>('/servers', input);
