@@ -26,6 +26,8 @@ export const toastsEn = {
   serverSnapshotCreatedDesc: 'Snapshot creation has been queued at the provider',
   serverSnapshotDeletedTitle: 'Snapshot deleted',
   serverSnapshotDeletedDesc: 'The snapshot was removed',
+  serverSnapshotRestoreTitle: 'Restore started',
+  serverSnapshotRestoreDesc: 'The server is rebuilding from the snapshot. Redeploy projects when it is running again.',
 
   projectCreatedTitle: 'Project created',
   projectCreatedDesc: '{name} has been created',
@@ -137,6 +139,9 @@ export const toastsTr: ToastsKeys = {
   serverSnapshotCreatedDesc: 'Sağlayıcıda anlık görüntü oluşturma kuyruğa alındı',
   serverSnapshotDeletedTitle: 'Anlık görüntü silindi',
   serverSnapshotDeletedDesc: 'Anlık görüntü kaldırıldı',
+  serverSnapshotRestoreTitle: 'Geri yükleme başlatıldı',
+  serverSnapshotRestoreDesc:
+    'Sunucu anlık görüntüden yeniden oluşturuluyor. Çalışır duruma gelince projeleri yeniden dağıtın.',
 
   projectCreatedTitle: 'Proje oluşturuldu',
   projectCreatedDesc: '{name} oluşturuldu',

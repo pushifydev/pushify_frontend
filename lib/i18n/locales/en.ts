@@ -155,6 +155,7 @@ export interface TranslationKeys {
     opsNoErrorMessage: string;
     opsViewAllActivity: string;
     attentionZoneTitle: string;
+    infraLowBalanceTitle: string;
     usageAlertsTitle: string;
     usageAlertsDesc: string;
     usageAlertsUpgrade: string;
@@ -164,6 +165,9 @@ export interface TranslationKeys {
     usageResourceDeployments: string;
     usageResourceTeamMembers: string;
     usageResourceCustomDomains: string;
+    usageResourceBuildMinutes: string;
+    usageResourceStorage: string;
+    usageResourceBandwidth: string;
   };
   alerts: {
     title: string;
@@ -630,6 +634,30 @@ export interface TranslationKeys {
     pushToTrigger: string;
     cancel: string;
     rollback: string;
+    rollbackToVersion: string;
+    rollbackQuickHint: string;
+    rollbackConfirmTitle: string;
+    rollbackConfirmDesc: string;
+    rollbackToLastGood: string;
+    deploymentFailedBanner: string;
+    deploymentErrorTitle: string;
+    failureOutOfMemory: string;
+    failureDiskSpace: string;
+    failurePlatformNative: string;
+    failureDockerBuild: string;
+    failureApplicationBuild: string;
+    failureContainerStart: string;
+    failureServerCapacity: string;
+    failureProjectConfig: string;
+    failureUnknown: string;
+    failureBlamePushify: string;
+    failureBlameServer: string;
+    failureBlameProject: string;
+    timelineQueued: string;
+    timelineBuild: string;
+    timelineDeploy: string;
+    timelineLive: string;
+    timelineFailed: string;
     viewLogs: string;
     containerLogs: string;
     historicalLogs: string;
@@ -724,6 +752,12 @@ export interface TranslationKeys {
     githubStep2: string;
     githubStep3: string;
     githubStep4: string;
+    gitlabStep1: string;
+    gitlabStep2: string;
+    gitlabStep3: string;
+    gitlabStep4: string;
+    webhooksDescGitlab: string;
+    webhookUrlHintGitlab: string;
     // PR Status Checks
     prStatusChecks: string;
     prStatusChecksDesc: string;
@@ -747,6 +781,15 @@ export interface TranslationKeys {
     gitUrlDesc: string;
     connectGithub: string;
     connectGithubDesc: string;
+    connectGitlab: string;
+    connectGitlabDesc: string;
+    gitlabIntegration: string;
+    gitlabIntegrationDesc: string;
+    connectGitlabBtn: string;
+    checkingGitLab: string;
+    changeGitlabAccount: string;
+    disconnectGitlab: string;
+    gitlabDisconnected: string;
     template: string;
     templateDesc: string;
     comingSoon: string;
@@ -813,6 +856,15 @@ export interface TranslationKeys {
     serverSelectionHint: string;
     webhookSecretOnceTitle: string;
     webhookSecretOnceDesc: string;
+    webhookSetupOnceTitle: string;
+    webhookSetupOnceDesc: string;
+    webhookUrlLabel: string;
+    webhookUrlOnceHint: string;
+    webhookUrlCopy: string;
+    webhookUrlCopied: string;
+    webhookSecretLabel: string;
+    webhookSecretOnceHint: string;
+    webhookSetupFootnote: string;
     webhookSecretCopy: string;
     webhookSecretCopied: string;
     webhookSecretContinue: string;
@@ -912,6 +964,7 @@ export interface TranslationKeys {
     activePreviews: string;
     noPreviews: string;
     noPreviewsDesc: string;
+    planRequired: string;
     previewUrl: string;
     prNumber: string;
     branch: string;
@@ -1227,6 +1280,16 @@ export interface TranslationKeys {
     apiRateLimitHint: string;
     usage: string;
     usageDescription: string;
+    usageStorageHint: string;
+    usageBandwidthHint: string;
+    usageNearLimitTitle: string;
+    usageAtLimitTitle: string;
+    usageNearLimitDesc: string;
+    usageUpgradeCta: string;
+    usageBadgeNear: string;
+    usageBadgeLimit: string;
+    usageNotOnPlan: string;
+    usageMinutesUnit: string;
     features: string;
     featuresDescription: string;
     billingEmail: string;
@@ -1250,6 +1313,7 @@ export interface TranslationKeys {
     deploymentsThisMonth: string;
     teamMembers: string;
     customDomains: string;
+    buildMinutesThisMonth: string;
     // Limits
     unlimited: string;
     of: string;
@@ -1318,6 +1382,11 @@ export interface TranslationKeys {
     billingStatusPastDueDesc: string;
     billingStatusSuspendedTitle: string;
     billingStatusSuspendedDesc: string;
+    grandfatherBanner: string;
+    usagePlanLimitNote: string;
+    grandfatherBoostItem: string;
+    infraLowBalanceWarning: string;
+    infraRunwayDays: string;
   };
   servers: {
     title: string;
@@ -1477,6 +1546,17 @@ export interface TranslationKeys {
     snapshotsDesc: string;
     snapshotsEmpty: string;
     snapshotCreate: string;
+    snapshotRestore: string;
+    snapshotRestoreTitle: string;
+    snapshotRestoreWarning: string;
+    snapshotRestoreConfirm: string;
+    snapshotStatusAvailable: string;
+    snapshotStatusCreating: string;
+    snapshotProgress: string;
+    snapshotSizePending: string;
+    autoSnapshotTitle: string;
+    autoSnapshotDesc: string;
+    autoSnapshotLastRun: string;
     timelineTitle: string;
     timelineEmpty: string;
     timelineCreated: string;
@@ -1910,6 +1990,7 @@ export const en: TranslationKeys = {
     opsNoErrorMessage: 'Deployment failed — see logs',
     opsViewAllActivity: 'View all activity',
     attentionZoneTitle: 'Needs attention',
+    infraLowBalanceTitle: 'Low infrastructure credits',
     usageAlertsTitle: 'Plan usage',
     usageAlertsDesc: 'You are approaching limits on your current plan. Upgrade before deploys or invites are blocked.',
     usageAlertsUpgrade: 'Upgrade plan',
@@ -1919,6 +2000,9 @@ export const en: TranslationKeys = {
     usageResourceDeployments: 'Deployments this month',
     usageResourceTeamMembers: 'Team members',
     usageResourceCustomDomains: 'Custom domains',
+    usageResourceBuildMinutes: 'Build minutes this month',
+    usageResourceStorage: 'Storage this month',
+    usageResourceBandwidth: 'Bandwidth this month',
   },
   alerts: {
     title: 'Alerts',
@@ -2401,6 +2485,31 @@ export const en: TranslationKeys = {
     pushToTrigger: 'Push to your repository to trigger a deployment',
     cancel: 'Cancel',
     rollback: 'Rollback',
+    rollbackToVersion: 'Restore this version',
+    rollbackQuickHint: 'Instant rollback (existing image, no rebuild)',
+    rollbackConfirmTitle: 'Restore this deployment?',
+    rollbackConfirmDesc:
+      'This starts a new deploy from commit {commit} on branch {branch}. Your app will switch to this version.',
+    rollbackToLastGood: 'Rollback to last working deploy',
+    deploymentFailedBanner: 'This deployment failed. You can restore the last successful version.',
+    deploymentErrorTitle: 'Deployment error',
+    timelineQueued: 'Queued',
+    timelineBuild: 'Build',
+    timelineDeploy: 'Deploy',
+    timelineLive: 'Live',
+    timelineFailed: 'Failed',
+    failureOutOfMemory: 'Out of memory — upgrade the server or reduce build size.',
+    failureDiskSpace: 'Server disk is full — free space or prune Docker images.',
+    failurePlatformNative: 'Platform native module issue — redeploy or contact Pushify support.',
+    failureDockerBuild: 'Docker image build failed — check generated Dockerfile or use your own.',
+    failureApplicationBuild: 'Your app failed to build — fix errors locally with the same build command.',
+    failureContainerStart: 'Container did not start — check PORT, start command, and env vars.',
+    failureServerCapacity: 'Server was busy — wait and redeploy or use a dedicated server.',
+    failureProjectConfig: 'Project configuration issue — check root directory, scripts, and framework settings.',
+    failureUnknown: 'Deployment failed — review logs or contact support.',
+    failureBlamePushify: 'Pushify platform',
+    failureBlameServer: 'Server capacity',
+    failureBlameProject: 'Your project',
     viewLogs: 'View Logs',
     containerLogs: 'Container Logs',
     historicalLogs: 'History',
@@ -2495,6 +2604,12 @@ export const en: TranslationKeys = {
     githubStep2: 'Paste the Webhook URL above into the "Payload URL" field',
     githubStep3: 'Set Content type to "application/json"',
     githubStep4: 'Add the secret (if generated) and select "Just the push event"',
+    gitlabStep1: 'Go to your project Settings → Webhooks → Add new webhook',
+    gitlabStep2: 'Paste the Webhook URL above and set the Secret token to your Pushify secret',
+    gitlabStep3: 'Enable "Push events" and "Merge request events"',
+    gitlabStep4: 'Save the webhook',
+    webhooksDescGitlab: 'Configure GitLab webhooks to deploy on push and preview on merge requests.',
+    webhookUrlHintGitlab: 'Use this URL when configuring your GitLab project webhook.',
     // PR Status Checks
     prStatusChecks: 'PR Status Checks',
     prStatusChecksDesc: 'Show deployment status on GitHub commits and pull requests.',
@@ -2518,6 +2633,15 @@ export const en: TranslationKeys = {
     gitUrlDesc: 'Import from any Git repository',
     connectGithub: 'Connect GitHub',
     connectGithubDesc: 'Import from your GitHub account',
+    connectGitlab: 'GitLab',
+    connectGitlabDesc: 'Import from your GitLab account',
+    gitlabIntegration: 'GitLab Integration',
+    gitlabIntegrationDesc: 'Connect your GitLab account to import projects and enable automatic deployments.',
+    connectGitlabBtn: 'Connect GitLab',
+    checkingGitLab: 'Checking GitLab connection...',
+    changeGitlabAccount: 'Change account',
+    disconnectGitlab: 'Disconnect',
+    gitlabDisconnected: 'GitLab disconnected',
     template: 'Start from Template',
     templateDesc: 'Use a pre-configured template',
     comingSoon: 'Coming Soon',
@@ -2585,6 +2709,18 @@ export const en: TranslationKeys = {
     webhookSecretOnceTitle: 'Save your webhook secret',
     webhookSecretOnceDesc:
       'Copy it now — it will not be shown again. Paste it in your Git provider’s webhook settings (GitHub: Repository → Settings → Webhooks) along with the webhook URL from the project page.',
+    webhookSetupOnceTitle: 'Git webhook setup',
+    webhookSetupOnceDesc:
+      'Copy both values into your repository webhook settings (GitHub: Settings → Webhooks → Add webhook). The secret is shown only once.',
+    webhookUrlLabel: '1. Webhook URL (Payload URL)',
+    webhookUrlOnceHint: 'Paste this as the Payload URL in GitHub or GitLab. You can copy it again later in Project → Settings.',
+    webhookUrlCopy: 'Copy URL',
+    webhookUrlCopied: 'Webhook URL copied',
+    webhookSecretLabel: '2. Webhook secret',
+    webhookSecretOnceHint:
+      'Paste this in the Secret field. This is not your project ID — it verifies that pushes are from your repo.',
+    webhookSetupFootnote:
+      'Project ID in the URL identifies which Pushify project to deploy. The secret is a separate password-like key.',
     webhookSecretCopy: 'Copy secret',
     webhookSecretCopied: 'Secret copied to clipboard',
     webhookSecretContinue: 'Continue to deploy',
@@ -2684,6 +2820,7 @@ export const en: TranslationKeys = {
     activePreviews: 'Active Previews',
     noPreviews: 'No preview deployments',
     noPreviewsDesc: 'Preview deployments will appear here when you open pull requests.',
+    planRequired: 'Preview deployments require a Hobby plan or higher.',
     previewUrl: 'Preview URL',
     prNumber: 'PR',
     branch: 'Branch',
@@ -3001,6 +3138,19 @@ export const en: TranslationKeys = {
       'Limits apply per API key. Responses include X-RateLimit-Limit, Remaining, and Reset headers.',
     usage: 'Usage',
     usageDescription: 'Your current resource usage for this billing period.',
+    usageStorageHint:
+      'Peak this month: Docker images, containers, and volumes on your servers (via docker system df), plus deploy artifact totals when disk sync is unavailable.',
+    usageBandwidthHint:
+      'Container egress from live metrics, plus Hetzner managed server outgoing traffic when synced from the provider.',
+    usageNearLimitTitle: 'Approaching plan limits',
+    usageAtLimitTitle: 'Plan limit reached',
+    usageNearLimitDesc:
+      'Some resources are at or near your monthly limits. Upgrade before new deploys, invites, or resources are blocked.',
+    usageUpgradeCta: 'Upgrade plan',
+    usageBadgeNear: 'Near limit',
+    usageBadgeLimit: 'At limit',
+    usageNotOnPlan: 'Not included on your current plan',
+    usageMinutesUnit: 'min',
     features: 'Plan Features',
     featuresDescription: 'Features included in your current plan.',
     billingEmail: 'Billing Email',
@@ -3024,6 +3174,7 @@ export const en: TranslationKeys = {
     deploymentsThisMonth: 'Deployments this month',
     teamMembers: 'Team members',
     customDomains: 'Custom domains',
+    buildMinutesThisMonth: 'Build minutes (month)',
     // Limits
     unlimited: 'Unlimited',
     of: 'of',
@@ -3050,6 +3201,13 @@ export const en: TranslationKeys = {
     planDetails: 'Plan Details',
     storageGb: 'Storage',
     bandwidthGb: 'Bandwidth',
+    grandfatherBanner:
+      'Your organization has legacy (higher) plan limits until {date}. After that, your subscribed plan limits apply.',
+    usagePlanLimitNote: 'Subscribed plan: {planLimit}',
+    grandfatherBoostItem: '{label}: {planLimit} → {limit}',
+    infraLowBalanceWarning:
+      'Infrastructure credits are low ({balance}). Add credits in Billing before managed servers stop.',
+    infraRunwayDays: 'Estimated runway at current burn: about {days} days.',
     buildMinutes: 'Build minutes/month',
     apiRequestsPerMinuteShort: 'API requests (per key)',
     paymentSuccess: 'Payment Successful!',
@@ -3261,6 +3419,19 @@ export const en: TranslationKeys = {
     snapshotsDesc: 'Provider snapshots for disaster recovery. Creating a snapshot may take several minutes.',
     snapshotsEmpty: 'No snapshots yet.',
     snapshotCreate: 'Create snapshot',
+    snapshotRestore: 'Restore',
+    snapshotRestoreTitle: 'Restore from snapshot',
+    snapshotRestoreWarning:
+      'This rebuilds the server disk from the snapshot. All data on the current disk will be replaced. Running containers and apps may be lost until you redeploy.',
+    snapshotRestoreConfirm: 'Restore server',
+    snapshotStatusAvailable: 'available',
+    snapshotStatusCreating: 'Creating…',
+    snapshotProgress: '{percent}% complete',
+    snapshotSizePending: 'size pending',
+    autoSnapshotTitle: 'Weekly automatic snapshots',
+    autoSnapshotDesc:
+      'Creates a snapshot every 7 days when the server is running. Oldest snapshots are removed when you exceed your plan limit.',
+    autoSnapshotLastRun: 'Last automatic snapshot: {date}',
     timelineTitle: 'Recent activity',
     timelineEmpty: 'No activity yet.',
     timelineCreated: 'Server created',

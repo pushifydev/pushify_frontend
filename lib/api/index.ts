@@ -90,6 +90,22 @@ export {
   type FrameworkDetection,
 } from './services/github.service';
 
+// GitLab Functions
+export {
+  getGitLabStatus,
+  getGitLabAuthUrl,
+  connectGitLab,
+  disconnectGitLab,
+  getGitLabRepos,
+  getGitLabBranches,
+  detectGitLabFramework,
+  gitlabService,
+  type GitLabStatus,
+  type GitLabRepo,
+  type GitLabBranch,
+  type GitLabFrameworkDetection,
+} from './services/gitlab.service';
+
 // Notifications Functions
 export {
   getNotificationChannels,
@@ -258,6 +274,7 @@ export {
   listServerSnapshots,
   createServerSnapshot,
   deleteServerSnapshot,
+  restoreServerSnapshot,
   getServerTimeline,
   getServerSshInfo,
   getServerSshKey,

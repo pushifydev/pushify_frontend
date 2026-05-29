@@ -8,16 +8,31 @@ export type PlanType = 'free' | 'hobby' | 'pro' | 'business' | 'enterprise';
 
 export interface UsageItem {
   used: number;
+  /** Enforced limit (may include grandfather bonus) */
   limit: number;
+  /** Subscribed plan limit when different from `limit` */
+  planLimit?: number;
   unlimited: boolean;
 }
 
+export type UsageLimitKey = keyof UsageStats;
+
 export interface UsageStats {
   servers: UsageItem;
+  databases: UsageItem;
   projects: UsageItem;
   deploymentsThisMonth: UsageItem;
   teamMembers: UsageItem;
   customDomains: UsageItem;
+  buildMinutesThisMonth: UsageItem;
+  storageGb: UsageItem;
+  bandwidthGb: UsageItem;
+}
+
+export interface GrandfatherInfo {
+  active: boolean;
+  until: string | null;
+  boostedResources: UsageLimitKey[];
 }
 
 export interface BillingFeatures {
@@ -38,6 +53,7 @@ export interface BillingInfo {
   apiRequestsPerMinute: number;
   usage: UsageStats;
   features: BillingFeatures;
+  grandfather: GrandfatherInfo;
 }
 
 export interface PlanLimits {
@@ -184,6 +200,8 @@ export interface InfraWalletSummary {
   estimatedMonthlyBurnCents: number;
   runningManagedServers: number;
   topUpAmountsCents: readonly number[];
+  isLowBalance: boolean;
+  runwayDays: number | null;
 }
 
 export interface InfraWalletTransaction {

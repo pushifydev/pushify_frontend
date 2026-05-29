@@ -1,6 +1,7 @@
 'use client';
 
-import { Wallet, Loader2, ArrowUpRight } from 'lucide-react';
+import { Wallet, Loader2, ArrowUpRight, AlertTriangle } from 'lucide-react';
+import { formatMessage } from '@/lib/i18n/format-message';
 import Link from 'next/link';
 import { useTranslation, useInfraBilling, useInfraTopUp } from '@/hooks';
 import { cn } from '@/lib/utils';
@@ -29,6 +30,31 @@ export function InfraWalletSection() {
 
   return (
     <div className="dash-panel p-4 sm:p-6 space-y-5">
+      {wallet.isLowBalance && (
+        <div
+          className="rounded-lg p-3 flex gap-2 items-start text-sm"
+          style={{
+            background: 'color-mix(in srgb, var(--status-warning) 12%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--status-warning) 35%, transparent)',
+          }}
+        >
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--status-warning)' }} />
+          <div className="space-y-1">
+            <p style={{ color: 'var(--text-primary)' }}>
+              {formatMessage(t('billing', 'infraLowBalanceWarning'), {
+                balance: wallet.balanceUsd,
+              })}
+            </p>
+            {wallet.runwayDays != null && wallet.runwayDays > 0 && (
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                {formatMessage(t('billing', 'infraRunwayDays'), {
+                  days: String(wallet.runwayDays),
+                })}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
       <div className="flex items-start gap-3">
         <div
           className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"

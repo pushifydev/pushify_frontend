@@ -51,13 +51,9 @@ export function SocialAuthButtons() {
     const result = await getGithubLoginUrl();
     if (result.error || !result.data) return;
 
-    const state = Math.random().toString(36).substring(2);
-    localStorage.setItem('github_oauth_state', state);
+    localStorage.setItem('github_oauth_state', result.data.state);
     localStorage.setItem('github_oauth_intent', 'login');
-
-    const url = new URL(result.data.url);
-    url.searchParams.set('state', state);
-    window.location.href = url.toString();
+    window.location.href = result.data.url;
   };
 
   const handleGoogleLogin = async () => {
@@ -65,12 +61,8 @@ export function SocialAuthButtons() {
     const result = await getGoogleLoginUrl();
     if (result.error || !result.data) return;
 
-    const state = Math.random().toString(36).substring(2);
-    localStorage.setItem('google_oauth_state', state);
-
-    const url = new URL(result.data.url);
-    url.searchParams.set('state', state);
-    window.location.href = url.toString();
+    localStorage.setItem('google_oauth_state', result.data.state);
+    window.location.href = result.data.url;
   };
 
   return (

@@ -92,6 +92,7 @@ export const updateProjectStatus = async (
 
 export interface WebhookInfo {
   webhookUrl: string;
+  gitProvider?: 'github' | 'gitlab' | string;
   hasSecret: boolean;
   autoDeploy: boolean;
 }

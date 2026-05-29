@@ -33,8 +33,17 @@ import {
   ToggleLeft,
   ToggleRight,
   History,
+  RotateCcw,
+  AlertCircle,
 } from 'lucide-react';
 import { DeploymentLogsModal } from '@/components/DeploymentLogsModal';
+import { DeploymentFailureSummary } from '@/components/DeploymentFailureSummary';
+import { DeploymentTimeline } from '@/components/DeploymentTimeline';
+import {
+  canRollbackToDeployment,
+  findLastGoodDeployment,
+} from '@/lib/deployment-utils';
+import { formatMessage } from '@/lib/i18n/format-message';
 import { ContainerLogsModal } from '@/components/ContainerLogsModal';
 import { HistoricalLogsModal } from '@/components/HistoricalLogsModal';
 import {
@@ -68,6 +77,7 @@ import {
   useDeleteNotificationChannel,
   useTestNotificationChannel,
   useServers,
+  useBillingInfo,
 } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
 import {
@@ -404,6 +414,7 @@ export default function ProjectDetailPage() {
             deployments={deployments}
             formatTimeAgo={formatTimeAgo}
             getStatusBadge={getStatusBadge}
+            onRollback={(id) => rollbackDeployment.mutate(id)}
             t={t}
           />
         )}
@@ -501,6 +512,7 @@ function OverviewTab({
   deployments,
   formatTimeAgo,
   getStatusBadge,
+  onRollback,
   t,
 }: {
   project: NonNullable<ReturnType<typeof useProject>['data']>;
@@ -508,9 +520,11 @@ function OverviewTab({
   deployments: ReturnType<typeof useDeployments>['data'];
   formatTimeAgo: (date: string, t?: any) => string;
   getStatusBadge: (status: string) => string;
+  onRollback: (deploymentId: string) => void;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
   const latestDeployment = deployments?.[0];
+  const lastGood = deployments ? findLastGoodDeployment(deployments) : null;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
@@ -553,6 +567,35 @@ function OverviewTab({
                 {latestDeployment.commitMessage}
               </p>
             )}
+            {latestDeployment.status === 'failed' && (
+              <div className="mt-3 pl-7">
+                <DeploymentFailureSummary
+                  logs={latestDeployment.buildLogs}
+                  errorMessage={latestDeployment.errorMessage}
+                />
+              </div>
+            )}
+            {latestDeployment.status === 'failed' && lastGood && (
+              <div className="mt-4 p-3 rounded-lg border border-[var(--status-error)]/25 bg-[var(--status-error)]/5">
+                <p className="text-sm text-[var(--text-secondary)] mb-2">
+                  {t('projectDetail', 'deploymentFailedBanner')}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => onRollback(lastGood.id)}
+                  className="btn btn-secondary h-9 text-sm inline-flex items-center gap-2"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  {t('projectDetail', 'rollbackToLastGood')}
+                  {lastGood.commitHash && (
+                    <span className="terminal-text text-[var(--text-muted)]">
+                      @{lastGood.commitHash.slice(0, 7)}
+                    </span>
+                  )}
+                </button>
+              </div>
+            )}
+            <DeploymentTimeline deployment={latestDeployment} />
           </div>
         ) : (
           <div className="p-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center">
@@ -611,6 +654,23 @@ function DeploymentsTab({
   onViewHistoricalLogs: (deploymentId: string) => void;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
+  const confirm = useConfirm();
+  const lastGood = deployments ? findLastGoodDeployment(deployments) : null;
+
+  const handleRollback = async (deployment: NonNullable<typeof deployments>[number]) => {
+    const commit = deployment.commitHash?.slice(0, 7) ?? deployment.id.slice(0, 8);
+    const ok = await confirm({
+      title: t('projectDetail', 'rollbackConfirmTitle'),
+      description: formatMessage(t('projectDetail', 'rollbackConfirmDesc'), {
+        commit,
+        branch: deployment.branch || '—',
+      }),
+      confirmText: t('projectDetail', 'rollback'),
+      variant: 'warning',
+    });
+    if (ok) onRollback(deployment.id);
+  };
+
   if (!deployments || deployments.length === 0) {
     return (
       <div className="p-12 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center">
@@ -657,12 +717,32 @@ function DeploymentsTab({
                   {t('projectDetail', 'cancel')}
                 </button>
               )}
-              {(deployment.status === 'running' || deployment.status === 'stopped') && (
-                <button onClick={() => onRollback(deployment.id)} className="btn btn-secondary h-8 text-xs flex items-center gap-1">
+              {canRollbackToDeployment(deployment) && (
+                <button
+                  type="button"
+                  onClick={() => handleRollback(deployment)}
+                  className="btn btn-secondary h-8 text-xs flex items-center gap-1"
+                  title={
+                    deployment.dockerImageId
+                      ? t('projectDetail', 'rollbackQuickHint')
+                      : undefined
+                  }
+                >
                   {deployment.dockerImageId && (
-                    <span className="text-[var(--status-success)]" title="Quick rollback - no rebuild needed">⚡</span>
+                    <span className="text-[var(--status-success)]">⚡</span>
                   )}
-                  {t('projectDetail', 'rollback')}
+                  <RotateCcw className="w-3 h-3 shrink-0" />
+                  {t('projectDetail', 'rollbackToVersion')}
+                </button>
+              )}
+              {deployment.status === 'failed' && lastGood && deployment.id === deployments[0]?.id && (
+                <button
+                  type="button"
+                  onClick={() => handleRollback(lastGood)}
+                  className="btn btn-secondary h-8 text-xs flex items-center gap-1 border-[var(--accent-cyan)]/40"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  {t('projectDetail', 'rollbackToLastGood')}
                 </button>
               )}
               {deployment.url && (
@@ -706,10 +786,19 @@ function DeploymentsTab({
               )}
             </div>
           </div>
+          {deployment.status === 'failed' && (
+            <div className="mb-3">
+              <DeploymentFailureSummary
+                logs={deployment.buildLogs}
+                errorMessage={deployment.errorMessage}
+              />
+            </div>
+          )}
           {deployment.commitMessage && (
             <p className="text-sm text-[var(--text-secondary)] mb-3">{deployment.commitMessage}</p>
           )}
-          <div className="flex items-center gap-4 text-xs text-[var(--text-muted)]">
+          <DeploymentTimeline deployment={deployment} />
+          <div className="flex items-center gap-4 text-xs text-[var(--text-muted)] mt-3">
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {formatTimeAgo(deployment.createdAt, t)}
@@ -2104,7 +2193,9 @@ function SettingsTab({
       <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
         <h3 className="text-lg font-semibold mb-2">{t('projectDetail', 'webhooks')}</h3>
         <p className="text-sm text-[var(--text-secondary)] mb-4">
-          {t('projectDetail', 'webhooksDesc')}
+          {webhookInfo?.gitProvider === 'gitlab'
+            ? t('projectDetail', 'webhooksDescGitlab')
+            : t('projectDetail', 'webhooksDesc')}
         </p>
 
         <div className="space-y-4">
@@ -2129,7 +2220,9 @@ function SettingsTab({
               </button>
             </div>
             <p className="text-xs text-[var(--text-muted)] mt-1">
-              {t('projectDetail', 'webhookUrlHint')}
+              {webhookInfo?.gitProvider === 'gitlab'
+                ? t('projectDetail', 'webhookUrlHintGitlab')
+                : t('projectDetail', 'webhookUrlHint')}
             </p>
           </div>
 
@@ -2182,14 +2275,28 @@ function SettingsTab({
             )}
           </div>
 
-          {/* GitHub setup instructions */}
           <div className="p-4 rounded-lg bg-[var(--bg-tertiary)]">
-            <h4 className="text-sm font-medium mb-2">{t('projectDetail', 'githubSetup')}</h4>
+            <h4 className="text-sm font-medium mb-2">
+              {webhookInfo?.gitProvider === 'gitlab'
+                ? 'GitLab'
+                : t('projectDetail', 'githubSetup')}
+            </h4>
             <ol className="text-sm text-[var(--text-secondary)] space-y-1 list-decimal list-inside">
-              <li>{t('projectDetail', 'githubStep1')}</li>
-              <li>{t('projectDetail', 'githubStep2')}</li>
-              <li>{t('projectDetail', 'githubStep3')}</li>
-              <li>{t('projectDetail', 'githubStep4')}</li>
+              {webhookInfo?.gitProvider === 'gitlab' ? (
+                <>
+                  <li>{t('projectDetail', 'gitlabStep1')}</li>
+                  <li>{t('projectDetail', 'gitlabStep2')}</li>
+                  <li>{t('projectDetail', 'gitlabStep3')}</li>
+                  <li>{t('projectDetail', 'gitlabStep4')}</li>
+                </>
+              ) : (
+                <>
+                  <li>{t('projectDetail', 'githubStep1')}</li>
+                  <li>{t('projectDetail', 'githubStep2')}</li>
+                  <li>{t('projectDetail', 'githubStep3')}</li>
+                  <li>{t('projectDetail', 'githubStep4')}</li>
+                </>
+              )}
             </ol>
           </div>
         </div>
@@ -2930,12 +3037,16 @@ function PreviewDeploymentsSection({
   t: ReturnType<typeof useTranslation>['t'];
 }) {
   const { data: previews = [], isLoading } = useActivePreviewDeployments(projectId);
+  const { data: billingInfo } = useBillingInfo();
   const updateSettings = useUpdateProjectSettings(projectId);
 
-  // Get current preview deployments setting from project settings
-  const previewDeploymentsEnabled = (project.settings as Record<string, unknown>)?.previewDeploymentsEnabled === true;
+  const previewAllowed = billingInfo?.features.previewDeployments ?? false;
+  const previewDeploymentsEnabled =
+    previewAllowed &&
+    (project.settings as Record<string, unknown>)?.previewDeploymentsEnabled === true;
 
   const handleToggle = async () => {
+    if (!previewAllowed) return;
     await updateSettings.mutateAsync({ previewDeploymentsEnabled: !previewDeploymentsEnabled });
   };
 
@@ -2960,7 +3071,7 @@ function PreviewDeploymentsSection({
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={handleToggle}
-            disabled={updateSettings.isPending}
+            disabled={updateSettings.isPending || !previewAllowed}
             className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${
               previewDeploymentsEnabled
                 ? 'bg-[var(--accent-cyan)]'
@@ -2981,6 +3092,15 @@ function PreviewDeploymentsSection({
       <p className="text-sm text-[var(--text-secondary)] mb-4">
         {t('previews', 'description')}
       </p>
+
+      {!previewAllowed && (
+        <p className="text-xs text-[var(--text-muted)] mb-4 p-3 rounded-lg bg-[var(--bg-tertiary)]">
+          {t('previews', 'planRequired')}{' '}
+          <Link href="/dashboard/billing/plans" className="dash-link">
+            {t('billing', 'comparePlans')}
+          </Link>
+        </p>
+      )}
 
       {previewDeploymentsEnabled && (
         <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">

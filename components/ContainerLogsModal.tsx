@@ -37,7 +37,7 @@ export function ContainerLogsModal({
     container.scrollTo({ top: container.scrollHeight, behavior });
   };
 
-  const { logs, isConnected, error, containerName, reconnect, clearLogs } =
+  const { logs, isConnected, isLive, error, containerName, reconnect, clearLogs } =
     useContainerLogsStream(projectId, deploymentId, !isPaused);
 
   useEffect(() => {
@@ -170,15 +170,22 @@ export function ContainerLogsModal({
 
           {/* Toolbar */}
           <div className="flex items-center gap-1 sm:gap-2 px-3 pb-3 sm:px-5 sm:pb-4 overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
-            {isConnected ? (
+            {isConnected && isLive ? (
               <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--status-success)] shrink-0 mr-1">
                 <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse" />
                 Live
               </span>
+            ) : isConnected ? (
+              <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--accent-cyan)] shrink-0 mr-1">
+                <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] animate-pulse" />
+                <span className="hidden min-[380px]:inline">Connecting</span>
+              </span>
             ) : (
               <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--text-muted)] shrink-0 mr-1">
                 <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
-                <span className="hidden min-[380px]:inline">Disconnected</span>
+                <span className="hidden min-[380px]:inline">
+                  {isLive === false && logs.length > 0 ? 'Ended' : 'Disconnected'}
+                </span>
               </span>
             )}
 

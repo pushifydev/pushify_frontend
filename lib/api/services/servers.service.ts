@@ -47,6 +47,8 @@ export interface Server {
   projectCount: number;
   databaseCount: number;
   isManaged: boolean;
+  autoSnapshotEnabled: boolean;
+  lastAutoSnapshotAt: string | null;
   infraBilling?: ServerInfraBilling;
   createdAt: string;
   updatedAt: string;
@@ -206,7 +208,7 @@ export const syncServer = async (serverId: string): Promise<ApiResponse<Server>>
 
 export const updateServer = async (
   serverId: string,
-  input: { name?: string; description?: string | null },
+  input: { name?: string; description?: string | null; autoSnapshotEnabled?: boolean },
 ): Promise<ApiResponse<Server>> => {
   try {
     const response = await api.patch<{ data: Server }>(`/servers/${serverId}`, input);
@@ -247,6 +249,7 @@ export interface ServerSnapshot {
   description?: string;
   sizeGb: number;
   status: string;
+  progress?: number | null;
   createdAt: string;
 }
 
@@ -283,6 +286,20 @@ export const deleteServerSnapshot = async (
   try {
     await api.delete(`/servers/${serverId}/snapshots/${snapshotId}`);
     return { data: undefined };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const restoreServerSnapshot = async (
+  serverId: string,
+  snapshotId: string,
+): Promise<ApiResponse<Server>> => {
+  try {
+    const response = await api.post<{ data: Server }>(
+      `/servers/${serverId}/snapshots/${snapshotId}/restore`,
+    );
+    return { data: response.data.data };
   } catch (error) {
     return handleError(error);
   }
@@ -436,6 +453,7 @@ export const serversService = {
   listServerSnapshots,
   createServerSnapshot,
   deleteServerSnapshot,
+  restoreServerSnapshot,
   getServerTimeline,
   getServerSshInfo,
   getServerSshKey,

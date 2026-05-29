@@ -66,6 +66,18 @@ export {
   useGitHubDisconnect,
 } from './useGitHub';
 
+// GitLab
+export {
+  gitlabKeys,
+  useGitLabStatus,
+  useGitLabRepos,
+  useGitLabBranches,
+  useGitLabFrameworkDetection,
+  useGitLabConnect,
+  useGitLabCallback,
+  useGitLabDisconnect,
+} from './useGitLab';
+
 // Notifications
 export {
   notificationKeys,
@@ -161,6 +173,7 @@ export {
   useServerSnapshots,
   useCreateServerSnapshot,
   useDeleteServerSnapshot,
+  useRestoreServerSnapshot,
   useServerTimeline,
   useServerSshInfo,
   useDownloadServerSshKey,
