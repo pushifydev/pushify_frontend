@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0-beta.11] - 2026-05-27
+
+### Added
+- Dashboard attention summary row opens a detail sheet (fix styles via `dash-app` scope).
+
+### Improved
+- Compact “needs attention” strip; clearer storage quota label and peak note.
+
 ## [0.2.0-beta.10] - 2026-05-27
 
 ### Added

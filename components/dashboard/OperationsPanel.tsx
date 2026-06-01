@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { CheckCircle2, ArrowUpRight, ListChecks } from 'lucide-react';
+import { ArrowUpRight, ListChecks } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { formatTimeAgo } from '@/lib/formatters';
@@ -19,16 +19,23 @@ const severityDotClass: Record<ActionSeverity, string> = {
 interface OperationsPanelProps {
   data: DashboardOverview;
   className?: string;
+  variant?: 'default' | 'sheet';
 }
 
-export function OperationsPanel({ data, className }: OperationsPanelProps) {
+export function OperationsPanel({
+  data,
+  className,
+  variant = 'default',
+}: OperationsPanelProps) {
   const { t } = useTranslation();
+  const inSheet = variant === 'sheet';
 
   const { deployments, actionItems, recentFailures } = data;
   const hasFailures = recentFailures.length > 0;
   const hasFailedCount = deployments.failed > 0 || deployments.failedLast24h > 0;
-  const allClear =
-    actionItems.length === 0 && !hasFailedCount && !hasFailures;
+  const showActions = actionItems.length > 0;
+  const showStats =
+    !inSheet && (deployments.running > 0 || deployments.inProgress > 0 || hasFailedCount);
 
   const deployStats: {
     key: string;
@@ -61,50 +68,53 @@ export function OperationsPanel({ data, className }: OperationsPanelProps) {
   ];
 
   return (
-    <div className={cn('dash-panel p-4 sm:p-5 min-w-0', className)} aria-labelledby="dash-ops-title">
+    <div className={cn('min-w-0', inSheet ? '' : 'dash-panel p-4 sm:p-5', className)} aria-labelledby="dash-ops-title">
       <div className="dash-panel-header">
         <div className="dash-panel-title" id="dash-ops-title">
-          <ListChecks className="w-4 h-4 text-[var(--text-secondary)]" />
-          {t('dashboard', 'opsPanelTitle')}
+          {inSheet ? (
+            <span className="dash-section-label !mb-0">{t('dashboard', 'opsPanelTitle')}</span>
+          ) : (
+            <>
+              <ListChecks className="w-4 h-4 text-[var(--text-secondary)]" />
+              {t('dashboard', 'opsPanelTitle')}
+            </>
+          )}
         </div>
-        <Link href="/dashboard/activity" className="dash-link flex items-center gap-1">
+        <Link href="/dashboard/activity" className="dash-link flex items-center gap-1 text-xs shrink-0">
           {t('navigation', 'activity')}
           <ArrowUpRight className="w-3 h-3" />
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-4 min-w-0">
-        {deployStats.map((stat) => (
-          <div key={stat.key} className="dash-stat-mini">
-            <p
-              className={cn(
-                'dash-stat-mini-value stat-number tabular-nums',
-                stat.critical && 'text-[var(--accent-red)]',
-              )}
-            >
-              {stat.value}
-            </p>
-            <p className="dash-stat-label">{stat.label}</p>
-          </div>
-        ))}
-      </div>
-
-      {allClear ? (
-        <div className="dash-callout">
-          <CheckCircle2 className="w-4 h-4 shrink-0 text-[var(--text-secondary)]" />
-          <p className="text-sm text-[var(--text-secondary)]">{t('dashboard', 'opsAllClear')}</p>
+      {showStats && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-4 min-w-0">
+          {deployStats.map((stat) => (
+            <div key={stat.key} className="dash-stat-mini min-w-0">
+              <p
+                className={cn(
+                  'dash-stat-mini-value stat-number tabular-nums',
+                  stat.critical && 'text-[var(--accent-red)]',
+                )}
+              >
+                {stat.value}
+              </p>
+              <p className="dash-stat-label">{stat.label}</p>
+            </div>
+          ))}
         </div>
-      ) : (
-        <ul className="space-y-2">
+      )}
+
+      {showActions && (
+        <ul className="space-y-2 min-w-0">
           {actionItems.map((item) => (
-            <li key={item.id}>
-              <Link href={item.href} className="group dash-alert-row">
-                <span className={cn('dash-status-dot mt-1.5', severityDotClass[item.severity])} />
+            <li key={item.id} className="min-w-0">
+              <Link href={item.href} className="group dash-alert-row min-w-0">
+                <span className={cn('dash-status-dot mt-1.5 shrink-0', severityDotClass[item.severity])} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[var(--text-primary)] group-hover:underline underline-offset-2">
                     {item.title}
                   </p>
-                  <p className="text-xs mt-0.5 leading-relaxed text-[var(--text-muted)]">
+                  <p className="text-xs mt-0.5 leading-relaxed text-[var(--text-muted)] line-clamp-2">
                     {item.description}
                   </p>
                 </div>
@@ -116,41 +126,43 @@ export function OperationsPanel({ data, className }: OperationsPanelProps) {
       )}
 
       {hasFailures && (
-        <div className="dash-subpanel">
+        <div className={cn(showActions && 'mt-4 pt-4 border-t border-[var(--border-subtle)]', 'min-w-0')}>
           <div className="flex items-center justify-between gap-2 mb-3">
-            <p className="dash-section-label">{t('dashboard', 'opsRecentFailures')}</p>
+            <p className="dash-section-label !mb-0">{t('dashboard', 'opsRecentFailures')}</p>
             <span className="dash-mono-caption tabular-nums">{recentFailures.length}</span>
           </div>
-          <ul className="space-y-2">
+          <ul className="space-y-2 min-w-0">
             {recentFailures.map((f) => (
-              <li key={f.id}>
+              <li key={f.id} className="min-w-0">
                 <Link
                   href={`/dashboard/projects/${f.projectId}?tab=deployments`}
-                  className="group dash-list-row dash-list-row--failure !py-2.5"
+                  className="group dash-list-row dash-list-row--failure min-w-0"
                 >
-                  <span className="dash-status-dot is-error mt-1 shrink-0" />
+                  <span className="dash-status-dot is-error shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate text-[var(--text-primary)] group-hover:underline underline-offset-2">
                       {f.projectName}
                     </p>
-                    <p className="text-xs mt-0.5 line-clamp-2 sm:truncate text-[var(--text-muted)]">
+                    <p className="text-xs mt-0.5 line-clamp-2 text-[var(--text-muted)]">
                       {f.errorMessage || t('dashboard', 'opsNoErrorMessage')}
                     </p>
                   </div>
-                  <span className="dash-caption dash-failure-time shrink-0">
+                  <span className="dash-caption dash-failure-time shrink-0 max-w-[5rem] text-right">
                     {formatTimeAgo(f.createdAt, t)}
                   </span>
                 </Link>
               </li>
             ))}
           </ul>
-          <Link
-            href="/dashboard/activity"
-            className="dash-link mt-3 inline-flex items-center gap-1 text-xs"
-          >
-            {t('dashboard', 'opsViewAllActivity')}
-            <ArrowUpRight className="w-3 h-3" />
-          </Link>
+          {!inSheet && (
+            <Link
+              href="/dashboard/activity"
+              className="dash-link mt-3 inline-flex items-center gap-1 text-xs"
+            >
+              {t('dashboard', 'opsViewAllActivity')}
+              <ArrowUpRight className="w-3 h-3" />
+            </Link>
+          )}
         </div>
       )}
     </div>
