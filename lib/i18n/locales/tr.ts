@@ -155,6 +155,10 @@ export const tr: TranslationKeys = {
     opsNoErrorMessage: 'Dağıtım başarısız — loglara bakın',
     opsViewAllActivity: 'Tüm aktiviteyi gör',
     attentionZoneTitle: 'Dikkat gerektiren',
+    attentionOpenSheet: 'Detayları gör',
+    attentionIssueCount: '{count} konu incelenmeli',
+    usageStoragePeakNote:
+      'Aylık dönemde sunucudaki Docker disk kullanımının zirvesi; ay başında mevcut disk anında sayılır.',
     infraLowBalanceTitle: 'Düşük altyapı kredisi',
     usageAlertsTitle: 'Plan kullanımı',
     usageAlertsDesc: 'Mevcut plan limitlerine yaklaşıyorsunuz. Dağıtım veya davet engellenmeden önce yükseltin.',
@@ -166,7 +170,7 @@ export const tr: TranslationKeys = {
     usageResourceTeamMembers: 'Ekip üyeleri',
     usageResourceCustomDomains: 'Özel alan adları',
     usageResourceBuildMinutes: 'Bu ayki build dakikası',
-    usageResourceStorage: 'Bu ayki depolama',
+    usageResourceStorage: 'Depolama kotası',
     usageResourceBandwidth: 'Bu ayki bant genişliği',
   },
   alerts: {

@@ -155,6 +155,9 @@ export interface TranslationKeys {
     opsNoErrorMessage: string;
     opsViewAllActivity: string;
     attentionZoneTitle: string;
+    attentionOpenSheet: string;
+    attentionIssueCount: string;
+    usageStoragePeakNote: string;
     infraLowBalanceTitle: string;
     usageAlertsTitle: string;
     usageAlertsDesc: string;
@@ -2002,6 +2005,10 @@ export const en: TranslationKeys = {
     opsNoErrorMessage: 'Deployment failed — see logs',
     opsViewAllActivity: 'View all activity',
     attentionZoneTitle: 'Needs attention',
+    attentionOpenSheet: 'View details',
+    attentionIssueCount: '{count} items need review',
+    usageStoragePeakNote:
+      'Peak Docker disk usage for the billing month; existing disk on the server counts at the start of the month.',
     infraLowBalanceTitle: 'Low infrastructure credits',
     usageAlertsTitle: 'Plan usage',
     usageAlertsDesc: 'You are approaching limits on your current plan. Upgrade before deploys or invites are blocked.',
@@ -2013,7 +2020,7 @@ export const en: TranslationKeys = {
     usageResourceTeamMembers: 'Team members',
     usageResourceCustomDomains: 'Custom domains',
     usageResourceBuildMinutes: 'Build minutes this month',
-    usageResourceStorage: 'Storage this month',
+    usageResourceStorage: 'Storage quota',
     usageResourceBandwidth: 'Bandwidth this month',
   },
   alerts: {
