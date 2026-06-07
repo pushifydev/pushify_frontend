@@ -1,6 +1,6 @@
 {
   "name": "pushify-frontend",
-  "version": "0.2.0-beta.11",
+  "version": "0.2.0-beta.12",
   "private": true,
   "description": "Pushify cloud deployment platform — frontend dashboard",
   "license": "MIT",
@@ -19,6 +19,9 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@number-flow/react": "^0.6.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
