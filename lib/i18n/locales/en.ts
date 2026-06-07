@@ -1543,6 +1543,7 @@ export interface TranslationKeys {
     sshPanelTitle: string;
     sshConnectCommand: string;
     sshDownloadKey: string;
+    sshKeyChmodHint: string;
     firewallTitle: string;
     firewallDesc: string;
     firewallPort22: string;
@@ -1849,6 +1850,124 @@ export interface TranslationKeys {
     projectDeployOpenSite: string;
     projectDeploySetupCalcom: string;
     launchSuccessDetail: string;
+  };
+  siteEditor: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    tabCms: string;
+    tabBlocks: string;
+    tabHeadless: string;
+    cmsBridgeTitle: string;
+    cmsBridgeDesc: string;
+    openLiveSite: string;
+    cmsDocs: string;
+    seoTitle: string;
+    seoPageTitle: string;
+    seoDescription: string;
+    seoOgImage: string;
+    seoKeywords: string;
+    saveSeo: string;
+    seoSaved: string;
+    tabBlocksPhase: string;
+    blockHero: string;
+    blockFeatures: string;
+    blockText: string;
+    blockCta: string;
+    blockFooter: string;
+    headline: string;
+    subheadline: string;
+    ctaText: string;
+    ctaUrl: string;
+    sectionTitle: string;
+    feature: string;
+    featureDesc: string;
+    body: string;
+    description: string;
+    buttonText: string;
+    buttonUrl: string;
+    copyright: string;
+    saveBlocks: string;
+    blocksSaved: string;
+    headlessTitle: string;
+    headlessDesc: string;
+    cmsMode: string;
+    modeBuiltin: string;
+    modeStrapi: string;
+    modeDirectus: string;
+    apiUrl: string;
+    apiToken: string;
+    tokenSet: string;
+    collection: string;
+    saveCms: string;
+    cmsSaved: string;
+    publish: string;
+    publishSuccess: string;
+    lastPublished: string;
+    preview: string;
+    refreshPreview: string;
+    noPreview: string;
+    livePreviewHint: string;
+    loadError: string;
+    backToProject: string;
+    openEditor: string;
+    openEditorDesc: string;
+    tabDesign: string;
+    addBlock: string;
+    layersTitle: string;
+    duplicate: string;
+    deleteBlock: string;
+    saveDesign: string;
+    themeSaved: string;
+    unsaved: string;
+    livePreview: string;
+    inspectorTab: string;
+    themeTab: string;
+    inspectorTitle: string;
+    selectBlock: string;
+    blockBanner: string;
+    blockStats: string;
+    blockPricing: string;
+    blockFaq: string;
+    themeTitle: string;
+    primaryColor: string;
+    accentColor: string;
+    backgroundColor: string;
+    surfaceColor: string;
+    textColor: string;
+    fontFamily: string;
+    fontSystem: string;
+    fontRounded: string;
+    fontSerif: string;
+    fontMono: string;
+    borderRadius: string;
+    radiusNone: string;
+    radiusSm: string;
+    radiusMd: string;
+    radiusLg: string;
+    maxWidth: string;
+    widthNarrow: string;
+    widthDefault: string;
+    widthWide: string;
+    imageUrl: string;
+    overlayOpacity: string;
+    statValue: string;
+    statLabel: string;
+    plan: string;
+    planName: string;
+    planPrice: string;
+    planPeriod: string;
+    planFeatures: string;
+    planHighlight: string;
+    question: string;
+    answer: string;
+    linkLabel: string;
+    linkUrl: string;
+    clickToEditHint: string;
+    canvasMode: string;
+    fullPreview: string;
+    uploadImage: string;
+    uploading: string;
   };
 }
 
@@ -3432,6 +3551,7 @@ export const en: TranslationKeys = {
     sshPanelTitle: 'SSH access',
     sshConnectCommand: 'Connect',
     sshDownloadKey: 'Download private key',
+    sshKeyChmodHint: 'After download: chmod 600 pushify-IP.pem, then run the command above from the folder where you saved the key.',
     firewallTitle: 'Firewall checklist',
     firewallDesc: 'Pushify setup opens these ports on the server (UFW). Your cloud provider firewall must allow them too.',
     firewallPort22: 'SSH administration',
@@ -3684,7 +3804,7 @@ export const en: TranslationKeys = {
     heroPoint3: 'Your data, your server',
     comingSoonTitle: 'On the roadmap',
     comingSoonDesc: 'Visual drag-and-drop editor and more payment connectors built into the dashboard.',
-    roadmap: 'Phase 2 · Visual editor',
+    roadmap: 'Site Editor · Drag-and-drop blocks, themes & live preview',
     searchPlaceholder: 'Search templates…',
     launch: 'Configure',
     launchNow: 'Launch site',
@@ -3750,5 +3870,123 @@ export const en: TranslationKeys = {
     projectDeploySetupCalcom: 'Complete Cal.com setup',
     launchSuccessDetail:
       'Installation started. Pushify will configure everything on your server — check Deployments for progress.',
+  },
+  siteEditor: {
+    badge: 'Site Editor',
+    title: 'Edit your site',
+    subtitle: 'Manage SEO, page blocks, and CMS sync — then publish to /pushify-site/',
+    tabCms: 'CMS & SEO',
+    tabBlocks: 'Page blocks',
+    tabHeadless: 'Headless CMS',
+    cmsBridgeTitle: 'Open your CMS',
+    cmsBridgeDesc: 'Edit posts, products, and settings in your stack admin. Pushify blocks publish as a static landing page.',
+    openLiveSite: 'Open live site',
+    cmsDocs: 'Documentation',
+    seoTitle: 'Search & social',
+    seoPageTitle: 'Page title',
+    seoDescription: 'Meta description',
+    seoOgImage: 'Social preview image URL',
+    seoKeywords: 'Keywords',
+    saveSeo: 'Save SEO',
+    seoSaved: 'SEO settings saved',
+    tabBlocksPhase: 'Blocks',
+    blockHero: 'Hero',
+    blockFeatures: 'Features',
+    blockText: 'Text',
+    blockCta: 'Call to action',
+    blockFooter: 'Footer',
+    headline: 'Headline',
+    subheadline: 'Subheadline',
+    ctaText: 'Button text',
+    ctaUrl: 'Button URL',
+    sectionTitle: 'Section title',
+    feature: 'Feature',
+    featureDesc: 'Description',
+    body: 'Body text',
+    description: 'Description',
+    buttonText: 'Button text',
+    buttonUrl: 'Button URL',
+    copyright: 'Copyright',
+    saveBlocks: 'Save blocks',
+    blocksSaved: 'Blocks saved',
+    headlessTitle: 'Headless CMS sync',
+    headlessDesc: 'On publish, Pushify can push a summary page to Strapi or Directus. Built-in mode stores content only in Pushify.',
+    cmsMode: 'CMS mode',
+    modeBuiltin: 'Built-in (Pushify only)',
+    modeStrapi: 'Strapi',
+    modeDirectus: 'Directus',
+    apiUrl: 'API base URL',
+    apiToken: 'API token',
+    tokenSet: 'saved',
+    collection: 'Collection / content type',
+    saveCms: 'Save CMS settings',
+    cmsSaved: 'CMS settings saved',
+    publish: 'Publish site',
+    publishSuccess: 'Site published',
+    lastPublished: 'Last published',
+    preview: 'Preview',
+    refreshPreview: 'Refresh preview',
+    noPreview: 'No preview yet',
+    livePreviewHint: 'Published page',
+    loadError: 'Could not load site editor for this project.',
+    backToProject: 'Back to project',
+    openEditor: 'Open Site Editor',
+    openEditorDesc: 'Edit SEO, landing blocks, and publish without SSH.',
+    tabDesign: 'Design',
+    addBlock: 'Add block',
+    layersTitle: 'Layers',
+    duplicate: 'Duplicate',
+    deleteBlock: 'Delete',
+    saveDesign: 'Save design',
+    themeSaved: 'Theme saved',
+    unsaved: 'Unsaved changes',
+    livePreview: 'Live preview',
+    inspectorTab: 'Block',
+    themeTab: 'Theme',
+    inspectorTitle: 'Properties',
+    selectBlock: 'Select a block to edit its properties',
+    blockBanner: 'Banner',
+    blockStats: 'Stats',
+    blockPricing: 'Pricing',
+    blockFaq: 'FAQ',
+    themeTitle: 'Site theme',
+    primaryColor: 'Primary',
+    accentColor: 'Accent',
+    backgroundColor: 'Background',
+    surfaceColor: 'Surface',
+    textColor: 'Text',
+    fontFamily: 'Font',
+    fontSystem: 'System',
+    fontRounded: 'Rounded',
+    fontSerif: 'Serif',
+    fontMono: 'Monospace',
+    borderRadius: 'Corners',
+    radiusNone: 'Sharp',
+    radiusSm: 'Subtle',
+    radiusMd: 'Medium',
+    radiusLg: 'Round',
+    maxWidth: 'Content width',
+    widthNarrow: 'Narrow',
+    widthDefault: 'Default',
+    widthWide: 'Wide',
+    imageUrl: 'Image URL',
+    overlayOpacity: 'Overlay opacity (0–1)',
+    statValue: 'Value',
+    statLabel: 'Label',
+    plan: 'Plan',
+    planName: 'Name',
+    planPrice: 'Price',
+    planPeriod: 'Period',
+    planFeatures: 'Features (one per line)',
+    planHighlight: 'Highlight this plan',
+    question: 'Question',
+    answer: 'Answer',
+    linkLabel: 'Link label',
+    linkUrl: 'Link URL',
+    clickToEditHint: 'Click a block to select · Click text to edit inline · Drag layers to reorder',
+    canvasMode: 'Edit',
+    fullPreview: 'Preview',
+    uploadImage: 'Upload image',
+    uploading: 'Uploading…',
   },
 };

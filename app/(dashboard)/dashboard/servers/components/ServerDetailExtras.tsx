@@ -202,7 +202,10 @@ export function ServerSshPanel({ serverId }: { serverId: string }) {
 
   if (!sshInfo?.host) return null;
 
-  const connect = `ssh ${sshInfo.username}@${sshInfo.host} -p ${sshInfo.port}`;
+  const keyFile = `pushify-${sshInfo.host}.pem`;
+  const connect = sshInfo.hasPrivateKey
+    ? `ssh -i ${keyFile} ${sshInfo.username}@${sshInfo.host} -p ${sshInfo.port}`
+    : `ssh ${sshInfo.username}@${sshInfo.host} -p ${sshInfo.port}`;
 
   const copyConnect = () => {
     navigator.clipboard.writeText(connect);
@@ -212,11 +215,12 @@ export function ServerSshPanel({ serverId }: { serverId: string }) {
 
   const handleDownload = async () => {
     const data = await downloadKey.mutateAsync(serverId);
-    const blob = new Blob([data.privateKey], { type: 'text/plain' });
+    const pem = data.privateKey.endsWith('\n') ? data.privateKey : `${data.privateKey}\n`;
+    const blob = new Blob([pem], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `pushify-${data.host || 'server'}.pem`;
+    a.download = keyFile;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -240,19 +244,22 @@ export function ServerSshPanel({ serverId }: { serverId: string }) {
           </div>
         </div>
         {sshInfo.hasPrivateKey && (
-          <button
-            type="button"
-            onClick={handleDownload}
-            disabled={downloadKey.isPending}
-            className="btn btn-secondary w-full dash-icon-row text-sm"
-          >
-            {downloadKey.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Download className={ICON_SM} />
-            )}
-            {t('servers', 'sshDownloadKey')}
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={downloadKey.isPending}
+              className="btn btn-secondary w-full dash-icon-row text-sm"
+            >
+              {downloadKey.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Download className={ICON_SM} />
+              )}
+              {t('servers', 'sshDownloadKey')}
+            </button>
+            <p className="text-xs text-[var(--text-muted)]">{t('servers', 'sshKeyChmodHint')}</p>
+          </>
         )}
       </div>
     </div>

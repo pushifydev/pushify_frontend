@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0-beta.12] - 2026-06-08
+
+### Added
+- **Site Editor** at `/dashboard/projects/[id]/site-editor`: drag-and-drop blocks (`@dnd-kit`), layers, palette, inspector.
+- Canvas click-to-edit (inline `contentEditable`) and Preview iframe mode.
+- Theme panel (colors, fonts) and image upload field (server assets or base64 fallback).
+- New blocks UI: banner, stats, pricing, FAQ; Design | CMS & SEO | Headless CMS tabs.
+- Server terminal view component (WebSocket shell).
+
+### Improved
+- Project detail: Site Editor entry link; server terminal page refactor; i18n (`en` / `tr`).
+
 ## [0.2.0-beta.11] - 2026-05-27
 
 ### Added

@@ -219,6 +219,7 @@ export default function ProjectDetailPage() {
 
   const fromStudio = searchParams.get('studio') === '1';
   const projectSettings = (project.settings || {}) as Record<string, unknown>;
+  const isSiteStudioProject = typeof projectSettings.siteStudioTemplateId === 'string';
   const isCalcomStack =
     projectSettings.siteStudioStack === 'calcom' ||
     projectSettings.marketplaceTemplateId === 'calcom';
@@ -252,7 +253,7 @@ export default function ProjectDetailPage() {
         <span className="text-[var(--text-primary)] truncate">{project.name}</span>
       </div>
 
-      {fromStudio && (
+      {(fromStudio || isSiteStudioProject) && (
         <div
           className="rounded-xl p-5 border border-[var(--accent-primary)]/30 bg-[var(--accent-primary)]/5"
           role="status"
@@ -261,10 +262,14 @@ export default function ProjectDetailPage() {
             <Sparkles className="w-5 h-5 text-[var(--accent-primary)] shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0 space-y-2">
               <p className="font-semibold text-[var(--text-primary)]">
-                {t('siteStudio', 'projectDeployBannerTitle')}
+                {fromStudio
+                  ? t('siteStudio', 'projectDeployBannerTitle')
+                  : t('siteEditor', 'openEditor')}
               </p>
               <p className="text-sm text-[var(--text-secondary)]">
-                {t('siteStudio', 'projectDeployBannerDesc')}
+                {fromStudio
+                  ? t('siteStudio', 'projectDeployBannerDesc')
+                  : t('siteEditor', 'openEditorDesc')}
               </p>
               {deployInProgress && (
                 <p className="text-sm text-[var(--text-muted)] flex items-center gap-2">
@@ -272,29 +277,40 @@ export default function ProjectDetailPage() {
                   {t('siteStudio', 'projectDeployInProgress')}
                 </p>
               )}
-              {siteUrl && !deployInProgress && (
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <a
-                    href={siteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+              <div className="flex flex-wrap gap-2 pt-1">
+                {!deployInProgress && (
+                  <Link
+                    href={`/dashboard/projects/${project.id}/site-editor`}
                     className="btn btn-primary btn-sm"
                   >
-                    <ExternalLink className="w-4 h-4" />
-                    {t('siteStudio', 'projectDeployOpenSite')}
-                  </a>
-                  {isCalcomStack && (
+                    <Sparkles className="w-4 h-4" />
+                    {t('siteEditor', 'openEditor')}
+                  </Link>
+                )}
+                {siteUrl && !deployInProgress && (
+                  <>
                     <a
-                      href={`${siteUrl.replace(/\/$/, '')}/auth/setup`}
+                      href={siteUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-secondary btn-sm"
                     >
-                      {t('siteStudio', 'projectDeploySetupCalcom')}
+                      <ExternalLink className="w-4 h-4" />
+                      {t('siteStudio', 'projectDeployOpenSite')}
                     </a>
-                  )}
-                </div>
-              )}
+                    {isCalcomStack && (
+                      <a
+                        href={`${siteUrl.replace(/\/$/, '')}/auth/setup`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-secondary btn-sm"
+                      >
+                        {t('siteStudio', 'projectDeploySetupCalcom')}
+                      </a>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
