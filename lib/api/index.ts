@@ -331,6 +331,31 @@ export {
   type SetupGuideStep,
 } from './services/site-studio.service';
 
+// Site Editor
+export {
+  getSiteEditorState,
+  updateSiteSeo,
+  updateSiteBlocks,
+  updateSiteTheme,
+  updateSiteCmsConfig,
+  publishSite,
+  uploadSiteImage,
+  fetchSitePreviewHtml,
+  siteEditorService,
+  type SiteEditorState,
+  type SiteSeo,
+  type SiteBlock,
+  type SiteBlockType,
+  type SiteTheme,
+  type SiteFontFamily,
+  type SiteBorderRadius,
+  type SiteMaxWidth,
+  type CmsMode,
+  type CmsConfig,
+  type PublishResult,
+  type SiteImageUploadResult,
+} from './services/site-editor.service';
+
 // Databases Functions
 export {
   getDatabases,
