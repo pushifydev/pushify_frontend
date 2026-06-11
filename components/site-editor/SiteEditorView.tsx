@@ -143,17 +143,25 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
   const handleAddBlock = (type: SiteBlockType) => {
     const block = createDefaultBlock(type, data?.siteName);
     setBlocks((prev) => {
+      // Footer is unique and always pinned to the very end.
       if (type === 'footer') {
         const withoutFooter = prev.filter((b) => b.type !== 'footer');
         return [...withoutFooter, block];
       }
       const footerIdx = prev.findIndex((b) => b.type === 'footer');
-      if (footerIdx >= 0) {
-        const next = [...prev];
-        next.splice(footerIdx, 0, block);
-        return next;
-      }
-      return [...prev, block];
+      const selIdx = prev.findIndex((b) => b.id === selectedBlockId);
+      // Drop the new block right after the selected one (where the user is looking);
+      // otherwise append before the footer.
+      let insertAt =
+        selIdx >= 0 && prev[selIdx].type !== 'footer'
+          ? selIdx + 1
+          : footerIdx >= 0
+            ? footerIdx
+            : prev.length;
+      if (footerIdx >= 0 && insertAt > footerIdx) insertAt = footerIdx;
+      const next = [...prev];
+      next.splice(insertAt, 0, block);
+      return next;
     });
     setSelectedBlockId(block.id);
     setRightPanel('block');
@@ -313,7 +321,13 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
               selectedBlockId={selectedBlockId}
               onSelectBlock={setSelectedBlockId}
               onBlockChange={updateBlockById}
+              onReorder={(next) => {
+                setBlocks(next);
+                markDirty();
+              }}
               onBannerImagePick={handleBannerImagePick}
+              dragToReorderLabel={t('siteEditor', 'dragToReorder')}
+              labelFor={blockLabel}
               previewLabel={t('siteEditor', 'livePreview')}
               viewport={viewport}
               onViewportChange={setViewport}

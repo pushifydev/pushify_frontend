@@ -17,7 +17,10 @@ interface SitePagePreviewProps {
   selectedBlockId: string | null;
   onSelectBlock: (id: string | null) => void;
   onBlockChange: (id: string, patch: Partial<SiteBlock>) => void;
+  onReorder: (blocks: SiteBlock[]) => void;
   onBannerImagePick?: (blockId: string, file: File) => void;
+  dragToReorderLabel: string;
+  labelFor: (block: SiteBlock) => string;
   previewLabel: string;
   viewport: 'desktop' | 'mobile';
   onViewportChange: (v: 'desktop' | 'mobile') => void;
@@ -36,7 +39,10 @@ export function SitePagePreview({
   selectedBlockId,
   onSelectBlock,
   onBlockChange,
+  onReorder,
   onBannerImagePick,
+  dragToReorderLabel,
+  labelFor,
   previewLabel,
   viewport,
   onViewportChange,
@@ -113,8 +119,11 @@ export function SitePagePreview({
               selectedBlockId={selectedBlockId}
               onSelectBlock={onSelectBlock}
               onBlockChange={onBlockChange}
+              onReorder={onReorder}
               onBannerImagePick={onBannerImagePick}
               clickToEditHint={clickToEditHint}
+              dragToReorderLabel={dragToReorderLabel}
+              labelFor={labelFor}
             />
           ) : (
             <iframe

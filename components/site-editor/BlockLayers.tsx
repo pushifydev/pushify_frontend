@@ -1,12 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import {
   DndContext,
+  DragOverlay,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
+  type DragStartEvent,
   type DragEndEvent,
 } from '@dnd-kit/core';
 import {
@@ -14,6 +17,7 @@ import {
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
+  arrayMove,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Copy, Trash2 } from 'lucide-react';
@@ -124,7 +128,15 @@ export function BlockLayers({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const activeBlock = activeId ? blocks.find((b) => b.id === activeId) ?? null : null;
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(String(event.active.id));
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveId(null);
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -132,10 +144,7 @@ export function BlockLayers({
     const newIndex = blocks.findIndex((b) => b.id === over.id);
     if (oldIndex < 0 || newIndex < 0) return;
 
-    const next = [...blocks];
-    const [moved] = next.splice(oldIndex, 1);
-    next.splice(newIndex, 0, moved);
-    onReorder(next);
+    onReorder(arrayMove(blocks, oldIndex, newIndex));
   };
 
   return (
@@ -143,7 +152,13 @@ export function BlockLayers({
       <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
         {layersTitle}
       </p>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={() => setActiveId(null)}
+      >
         <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-1.5 max-h-[320px] overflow-y-auto pr-1">
             {blocks.map((block) => (
@@ -161,6 +176,14 @@ export function BlockLayers({
             ))}
           </div>
         </SortableContext>
+        <DragOverlay>
+          {activeBlock ? (
+            <div className="flex items-center gap-2 rounded-lg border border-[var(--accent-primary)] bg-[var(--bg-secondary)] px-2 py-2 text-sm font-medium text-[var(--text-primary)] shadow-lg">
+              <GripVertical className="w-4 h-4 text-[var(--accent-primary)]" />
+              {labelFor(activeBlock)}
+            </div>
+          ) : null}
+        </DragOverlay>
       </DndContext>
     </div>
   );

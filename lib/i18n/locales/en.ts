@@ -1964,6 +1964,7 @@ export interface TranslationKeys {
     linkLabel: string;
     linkUrl: string;
     clickToEditHint: string;
+    dragToReorder: string;
     canvasMode: string;
     fullPreview: string;
     uploadImage: string;
@@ -3983,7 +3984,8 @@ export const en: TranslationKeys = {
     answer: 'Answer',
     linkLabel: 'Link label',
     linkUrl: 'Link URL',
-    clickToEditHint: 'Click a block to select · Click text to edit inline · Drag layers to reorder',
+    clickToEditHint: 'Click a block to select · Click text to edit inline · Drag the handle to reorder',
+    dragToReorder: 'Drag to reorder',
     canvasMode: 'Edit',
     fullPreview: 'Preview',
     uploadImage: 'Upload image',
