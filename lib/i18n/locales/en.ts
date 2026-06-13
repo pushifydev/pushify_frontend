@@ -2081,6 +2081,50 @@ export interface TranslationKeys {
     ctaBody: string;
     ctaButton: string;
   };
+  vsVercel: {
+    eyebrow: string;
+    h1: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    tldrTitle: string;
+    tldrBody: string;
+    choosePushifyTitle: string;
+    choosePushify1: string;
+    choosePushify2: string;
+    choosePushify3: string;
+    choosePushify4: string;
+    chooseVercelTitle: string;
+    chooseVercel1: string;
+    chooseVercel2: string;
+    chooseVercel3: string;
+    tableTitle: string;
+    tableNote: string;
+    colVercel: string;
+    rowEdgeNetwork: string;
+    rowServerless: string;
+    rowPredictablePricing: string;
+    rowNoLockIn: string;
+    diffTitle: string;
+    diff1Title: string;
+    diff1Body: string;
+    diff2Title: string;
+    diff2Body: string;
+    diff3Title: string;
+    diff3Body: string;
+    faqTitle: string;
+    faq1Q: string;
+    faq1A: string;
+    faq2Q: string;
+    faq2A: string;
+    faq3Q: string;
+    faq3A: string;
+    faq4Q: string;
+    faq4A: string;
+    ctaTitle: string;
+    ctaBody: string;
+    ctaButton: string;
+  };
 }
 
 export const en: TranslationKeys = {
@@ -4221,6 +4265,60 @@ export const en: TranslationKeys = {
       'In most cases, yes — both deploy standard Docker workloads from a Git repo. Point Pushify at the same repository and server, set your environment variables, and deploy. There is no automated importer yet.',
     ctaTitle: 'Deploy on your own terms',
     ctaBody: 'Start free on your own server, or let Pushify manage the infrastructure for you.',
+    ctaButton: 'Get started free',
+  },
+  vsVercel: {
+    eyebrow: 'Comparison',
+    h1: 'Pushify vs Vercel',
+    subtitle:
+      'Vercel sets the bar for frontend developer experience — but it runs on Vercel’s cloud, priced by usage. Here is how Pushify compares when you want to own your infrastructure.',
+    ctaPrimary: 'Start with Pushify',
+    ctaSecondary: 'See pricing',
+    tldrTitle: 'The short version',
+    tldrBody:
+      'Vercel and Pushify share the same git-push-to-deploy workflow, but they make opposite trade-offs. Vercel is a polished, fully managed cloud with a best-in-class edge network and serverless scaling — you run no servers and pay for usage. Pushify is open source and deploys to servers you own (your VPS, or a Hetzner box it provisions for you), with predictable pricing and no vendor lock-in. If a global edge network and zero-ops serverless matter most, Vercel leads. If owning your infrastructure, running full-stack apps and databases, and predictable cost matter more, Pushify fits.',
+    choosePushifyTitle: 'Choose Pushify if…',
+    choosePushify1: 'You want to own your servers and your data — not rent someone else’s cloud.',
+    choosePushify2: 'You want predictable, flat pricing instead of usage bills that can spike.',
+    choosePushify3: 'You run full-stack apps, backends, and databases — not just frontends.',
+    choosePushify4: 'You value open source and zero vendor lock-in.',
+    chooseVercelTitle: 'Choose Vercel if…',
+    chooseVercel1: 'You want the most polished frontend experience with zero operations.',
+    chooseVercel2: 'A global edge network and instant serverless scaling are decisive for you.',
+    chooseVercel3: 'You are happy to trade infrastructure control for a fully managed platform.',
+    tableTitle: 'Feature comparison',
+    tableNote:
+      'This reflects publicly available information and may change as both products evolve. Spot something out of date? Email support@pushify.dev.',
+    colVercel: 'Vercel',
+    rowEdgeNetwork: 'Global edge network / CDN',
+    rowServerless: 'Serverless auto-scaling',
+    rowPredictablePricing: 'Predictable flat pricing',
+    rowNoLockIn: 'No vendor lock-in',
+    diffTitle: 'Key differences',
+    diff1Title: 'Where your apps run',
+    diff1Body:
+      'Vercel runs your apps on its own managed cloud and edge network — you never touch a server. Pushify deploys to infrastructure you own: connect any VPS over SSH, or let Pushify provision and manage a Hetzner server for you.',
+    diff2Title: 'How you pay',
+    diff2Body:
+      'Vercel bills by usage (bandwidth, function invocations, build minutes), which scales smoothly but can become unpredictable. Pushify separates a flat platform subscription from your own server costs, so the bill is predictable — and self-hosting is free.',
+    diff3Title: 'What you can run',
+    diff3Body:
+      'Vercel is optimized for frontends and serverless functions. Pushify runs anything that ships in a Docker container — frontends, backends, workers, and managed databases — on long-running servers, plus a one-click app marketplace and a no-code site builder.',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Is Pushify a Vercel alternative?',
+    faq1A:
+      'Yes. Pushify offers the same git-push deploy workflow as Vercel, but on servers you own and with open-source, self-hostable software — aimed at developers who want Vercel-style simplicity without the lock-in or usage-based pricing.',
+    faq2Q: 'Can I self-host like Vercel?',
+    faq2A:
+      'Vercel itself is not self-hostable — your apps always run on Vercel’s cloud. Pushify is MIT licensed and fully self-hostable: run the entire platform and your apps on your own infrastructure.',
+    faq3Q: 'Is Pushify cheaper than Vercel?',
+    faq3A:
+      'It depends on your traffic. Vercel’s usage-based pricing is generous at small scale but can rise quickly as bandwidth and function usage grow. With Pushify you pay a flat platform fee plus your own server cost (or nothing if you self-host), which is more predictable at scale.',
+    faq4Q: 'Can I run my Next.js app on Pushify?',
+    faq4A:
+      'Yes. Connect your repository and Pushify auto-detects Next.js, builds it, and deploys with automatic SSL and zero-downtime cutover — on your own server.',
+    ctaTitle: 'Own your stack',
+    ctaBody: 'Get Vercel-style deploys on infrastructure you control — open source and free to self-host.',
     ctaButton: 'Get started free',
   },
 };

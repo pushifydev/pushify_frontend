@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/docs',
     '/about',
     '/vs/coolify',
+    '/vs/vercel',
     '/privacy',
     '/terms',
     '/refund',

@@ -31,6 +31,7 @@ export function LandingFooter() {
         external: true,
       },
       { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },
+      { label: t('vsVercel', 'h1'), href: '/vs/vercel' },
     ],
     [t('landing', 'company')]: [
       { label: t('legal', 'about'), href: '/about' },

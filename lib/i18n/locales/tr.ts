@@ -2144,4 +2144,58 @@ export const tr: TranslationKeys = {
     ctaBody: 'Kendi sunucunda ücretsiz başla ya da altyapıyı Pushify’ın yönetmesine izin ver.',
     ctaButton: 'Ücretsiz başla',
   },
+  vsVercel: {
+    eyebrow: 'Karşılaştırma',
+    h1: 'Pushify vs Vercel',
+    subtitle:
+      'Vercel, frontend geliştirici deneyiminde çıtayı belirliyor — ama Vercel’in bulutunda çalışır ve kullanıma göre fiyatlanır. Altyapına sahip olmak istediğinde Pushify nasıl kıyaslanıyor, işte buna bir bakış.',
+    ctaPrimary: 'Pushify ile başla',
+    ctaSecondary: 'Fiyatları gör',
+    tldrTitle: 'Kısa özet',
+    tldrBody:
+      'Vercel ve Pushify aynı git-push ile dağıtım akışını paylaşır ama zıt tercihler yapar. Vercel, sınıfının en iyisi edge ağı ve serverless ölçeklemeyle cilalı, tamamen yönetilen bir buluttur — hiç sunucu çalıştırmazsın ve kullanım kadar ödersin. Pushify açık kaynaktır ve senin sahip olduğun sunuculara dağıtır (kendi VPS’in ya da senin için kurduğu bir Hetzner sunucusu), öngörülebilir fiyatlandırma ve vendor lock-in olmadan. Küresel edge ağı ve sıfır-operasyon serverless en çok önemliyse Vercel önde. Altyapına sahip olmak, full-stack uygulamalar ve veritabanları çalıştırmak ve öngörülebilir maliyet daha önemliyse Pushify uygundur.',
+    choosePushifyTitle: 'Pushify’ı seç eğer…',
+    choosePushify1: 'Sunucularına ve verine sahip olmak — başkasının bulutunu kiralamamak — istiyorsan.',
+    choosePushify2: 'Aniden yükselebilen kullanım faturaları yerine öngörülebilir, sabit fiyat istiyorsan.',
+    choosePushify3: 'Sadece frontend değil, full-stack uygulamalar, backendler ve veritabanları çalıştırıyorsan.',
+    choosePushify4: 'Açık kaynağa ve sıfır vendor lock-in’e değer veriyorsan.',
+    chooseVercelTitle: 'Vercel’i seç eğer…',
+    chooseVercel1: 'Sıfır operasyonla en cilalı frontend deneyimini istiyorsan.',
+    chooseVercel2: 'Küresel edge ağı ve anlık serverless ölçekleme senin için belirleyiciyse.',
+    chooseVercel3: 'Altyapı kontrolünü tamamen yönetilen bir platform için takas etmeye razıysan.',
+    tableTitle: 'Özellik karşılaştırması',
+    tableNote:
+      'Kamuya açık bilgilere dayanır ve iki ürün geliştikçe değişebilir. Güncel olmayan bir şey mi gördün? support@pushify.dev’e yaz.',
+    colVercel: 'Vercel',
+    rowEdgeNetwork: 'Küresel edge ağı / CDN',
+    rowServerless: 'Serverless otomatik ölçekleme',
+    rowPredictablePricing: 'Öngörülebilir sabit fiyat',
+    rowNoLockIn: 'Vendor lock-in yok',
+    diffTitle: 'Temel farklar',
+    diff1Title: 'Uygulamaların nerede çalışır',
+    diff1Body:
+      'Vercel uygulamalarını kendi yönetilen bulutunda ve edge ağında çalıştırır — bir sunucuya hiç dokunmazsın. Pushify senin sahip olduğun altyapıya dağıtır: herhangi bir VPS’i SSH ile bağla ya da Pushify’ın senin için bir Hetzner sunucusu kurup yönetmesine izin ver.',
+    diff2Title: 'Nasıl ödersin',
+    diff2Body:
+      'Vercel kullanıma göre faturalandırır (bant genişliği, fonksiyon çağrıları, build dakikaları); bu sorunsuz ölçeklenir ama öngörülemez hale gelebilir. Pushify, sabit bir platform aboneliğini kendi sunucu maliyetinden ayırır; böylece fatura öngörülebilir olur — ve self-host ücretsizdir.',
+    diff3Title: 'Ne çalıştırabilirsin',
+    diff3Body:
+      'Vercel frontend ve serverless fonksiyonlar için optimizedir. Pushify, bir Docker konteynerinde gelen her şeyi çalıştırır — frontendler, backendler, worker’lar ve yönetilen veritabanları — sürekli çalışan sunucularda, ayrıca tek tıkla uygulama marketplace’i ve kodsuz site kurucu ile.',
+    faqTitle: 'Sıkça sorulan sorular',
+    faq1Q: 'Pushify bir Vercel alternatifi mi?',
+    faq1A:
+      'Evet. Pushify, Vercel ile aynı git-push dağıtım akışını sunar ama senin sahip olduğun sunucularda ve açık kaynaklı, self-host edilebilir yazılımla — Vercel tarzı sadeliği lock-in veya kullanım bazlı fiyatlandırma olmadan isteyen geliştiriciler için.',
+    faq2Q: 'Vercel gibi self-host edebilir miyim?',
+    faq2A:
+      'Vercel’in kendisi self-host edilemez — uygulamaların her zaman Vercel’in bulutunda çalışır. Pushify MIT lisanslı ve tamamen self-host edilebilir: tüm platformu ve uygulamalarını kendi altyapında çalıştır.',
+    faq3Q: 'Pushify Vercel’den ucuz mu?',
+    faq3A:
+      'Trafiğine bağlı. Vercel’in kullanım bazlı fiyatı küçük ölçekte cömerttir ama bant genişliği ve fonksiyon kullanımı arttıkça hızla yükselebilir. Pushify’da sabit bir platform ücreti artı kendi sunucu maliyetini ödersin (self-host edersen sıfır), bu da ölçekte daha öngörülebilirdir.',
+    faq4Q: 'Next.js uygulamamı Pushify’da çalıştırabilir miyim?',
+    faq4A:
+      'Evet. Deponu bağla; Pushify Next.js’i otomatik algılar, build eder ve otomatik SSL ile sıfır kesinti geçişiyle dağıtır — kendi sunucunda.',
+    ctaTitle: 'Stack’ine sahip ol',
+    ctaBody: 'Kontrol ettiğin altyapıda Vercel tarzı dağıtımlar — açık kaynak ve self-host için ücretsiz.',
+    ctaButton: 'Ücretsiz başla',
+  },
 };
