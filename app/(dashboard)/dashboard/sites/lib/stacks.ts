@@ -1,6 +1,7 @@
 import type { SiteStudioStack } from '@/lib/api';
 
 export const STACK_COLORS: Record<SiteStudioStack, string> = {
+  static: '#2563eb',
   wordpress: '#21759b',
   ghost: '#15171A',
   strapi: '#4945ff',
@@ -10,6 +11,7 @@ export const STACK_COLORS: Record<SiteStudioStack, string> = {
 };
 
 export const STACK_I18N: Record<SiteStudioStack, string> = {
+  static: 'stackStatic',
   wordpress: 'stackWordpress',
   ghost: 'stackGhost',
   strapi: 'stackStrapi',

@@ -146,6 +146,14 @@ export type SiteBlock =
 
 export type CmsMode = 'builtin' | 'strapi' | 'directus';
 
+export interface SitePage {
+  id: string;
+  title: string;
+  slug: string;
+  blocks: SiteBlock[];
+  seo: SiteSeo;
+}
+
 export interface CmsConfig {
   mode: CmsMode;
   apiUrl?: string;
@@ -167,6 +175,7 @@ export interface SiteEditorState {
   stack: string | null;
   seo: SiteSeo;
   blocks: SiteBlock[];
+  pages: SitePage[];
   theme: SiteTheme;
   cmsConfig: CmsConfig;
   publishedAt: string | null;
@@ -234,6 +243,54 @@ export async function updateSiteTheme(
     const { data } = await api.patch<{ data: { theme: SiteTheme } }>(
       `/projects/${projectId}/site-editor/theme`,
       theme,
+    );
+    return { data: data.data };
+  } catch (error) {
+    return { error: error as ApiResponse<never>['error'] };
+  }
+}
+
+export interface SiteDesign {
+  key: string;
+  label: string;
+  category: string;
+  theme: SiteTheme;
+}
+
+export async function getSiteDesigns(projectId: string): Promise<ApiResponse<SiteDesign[]>> {
+  try {
+    const { data } = await api.get<{ data: SiteDesign[] }>(
+      `/projects/${projectId}/site-editor/designs`,
+    );
+    return { data: data.data };
+  } catch (error) {
+    return { error: error as ApiResponse<never>['error'] };
+  }
+}
+
+export async function applySiteTemplate(
+  projectId: string,
+  designKey: string,
+): Promise<ApiResponse<{ blocks: SiteBlock[]; theme: SiteTheme }>> {
+  try {
+    const { data } = await api.post<{ data: { blocks: SiteBlock[]; theme: SiteTheme } }>(
+      `/projects/${projectId}/site-editor/apply-template`,
+      { designKey },
+    );
+    return { data: data.data };
+  } catch (error) {
+    return { error: error as ApiResponse<never>['error'] };
+  }
+}
+
+export async function updateSitePages(
+  projectId: string,
+  pages: SitePage[],
+): Promise<ApiResponse<{ pages: SitePage[] }>> {
+  try {
+    const { data } = await api.put<{ data: { pages: SitePage[] } }>(
+      `/projects/${projectId}/site-editor/pages`,
+      { pages },
     );
     return { data: data.data };
   } catch (error) {

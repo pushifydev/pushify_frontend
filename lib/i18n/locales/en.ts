@@ -1810,6 +1810,7 @@ export interface TranslationKeys {
     filterPlatform: string;
     platformsTitle: string;
     platformNote: string;
+    stackStatic: string;
     stackWordpress: string;
     stackGhost: string;
     stackStrapi: string;
@@ -1913,6 +1914,18 @@ export interface TranslationKeys {
     openEditor: string;
     openEditorDesc: string;
     tabDesign: string;
+    navBlocks: string;
+    navSeo: string;
+    navSettings: string;
+    navPages: string;
+    addPage: string;
+    pageNamePrompt: string;
+    deletePageConfirm: string;
+    designsTitle: string;
+    designsHint: string;
+    useTemplate: string;
+    templateApplied: string;
+    replaceConfirm: string;
     addBlock: string;
     layersTitle: string;
     duplicate: string;
@@ -3828,6 +3841,7 @@ export const en: TranslationKeys = {
     filterPlatform: 'Platform',
     platformsTitle: '6 platforms · 12 templates',
     platformNote: 'Not every template uses WordPress — pick Ghost for blogs, Cal.com for appointments, Directus or PocketBase for modern stacks.',
+    stackStatic: 'Static',
     stackWordpress: 'WordPress',
     stackGhost: 'Ghost',
     stackStrapi: 'Strapi',
@@ -3934,6 +3948,18 @@ export const en: TranslationKeys = {
     openEditor: 'Open Site Editor',
     openEditorDesc: 'Edit SEO, landing blocks, and publish without SSH.',
     tabDesign: 'Design',
+    navBlocks: 'Blocks',
+    navSeo: 'SEO',
+    navSettings: 'Settings',
+    navPages: 'Pages',
+    addPage: 'Add page',
+    pageNamePrompt: 'Page name:',
+    deletePageConfirm: 'Delete this page?',
+    designsTitle: 'Templates',
+    designsHint: 'Click to restyle instantly · Use template to start over',
+    useTemplate: 'Use template',
+    templateApplied: 'Template applied',
+    replaceConfirm: 'Replace your current content and design with this template?',
     addBlock: 'Add block',
     layersTitle: 'Layers',
     duplicate: 'Duplicate',
