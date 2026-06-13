@@ -13,6 +13,44 @@ interface SiteTemplateCardProps {
   categoryLabel: string;
 }
 
+/** Accent-tinted mini mock of a web page — gives each template a distinct visual feel. */
+function TemplateThumb({ accent }: { accent: string }) {
+  return (
+    <div
+      className="relative w-full overflow-hidden rounded-lg mb-5"
+      style={{
+        height: 128,
+        background: `linear-gradient(135deg, ${accent}14, ${accent}05)`,
+        border: '1px solid var(--ss-line)',
+      }}
+      aria-hidden
+    >
+      <div
+        className="absolute inset-x-0 top-0 h-5 flex items-center gap-1 px-2.5"
+        style={{ background: `${accent}1a` }}
+      >
+        <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
+        <span className="ml-auto w-8 h-1.5 rounded-full" style={{ background: `${accent}66` }} />
+        <span className="w-5 h-1.5 rounded-full" style={{ background: `${accent}40` }} />
+      </div>
+      <div className="absolute inset-x-0 top-8 flex flex-col items-center gap-1.5 px-6">
+        <span className="w-3/5 h-2.5 rounded-full" style={{ background: `${accent}cc` }} />
+        <span className="w-2/5 h-1.5 rounded-full" style={{ background: `${accent}55` }} />
+        <span className="mt-1 w-12 h-3.5 rounded-full" style={{ background: accent }} />
+      </div>
+      <div className="absolute inset-x-0 bottom-2.5 flex gap-1.5 px-3">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="flex-1 h-7 rounded"
+            style={{ background: `${accent}1f`, border: `1px solid ${accent}33` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function SiteTemplateCard({
   template,
   launchLabel,
@@ -24,6 +62,7 @@ export default function SiteTemplateCard({
   return (
     <Link href={`/dashboard/sites/${template.id}`} className="group block h-full">
       <article className="ss-card h-full p-6 flex flex-col">
+        <TemplateThumb accent={template.accent} />
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 mb-3">

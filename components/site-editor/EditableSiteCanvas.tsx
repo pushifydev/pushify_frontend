@@ -1,6 +1,26 @@
 'use client';
 
-import { Upload } from 'lucide-react';
+import { useState } from 'react';
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragStartEvent,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Upload, GripVertical } from 'lucide-react';
 import type { SiteBlock } from '@/lib/api';
 import type { SiteTheme } from '@/lib/site-editor/theme';
 import { themeCssVars } from '@/lib/site-editor/theme';
@@ -12,34 +32,86 @@ interface EditableSiteCanvasProps {
   selectedBlockId: string | null;
   onSelectBlock: (id: string | null) => void;
   onBlockChange: (id: string, patch: Partial<SiteBlock>) => void;
+  onReorder: (blocks: SiteBlock[]) => void;
   onBannerImagePick?: (blockId: string, file: File) => void;
   clickToEditHint: string;
+  dragToReorderLabel: string;
+  labelFor: (block: SiteBlock) => string;
 }
 
-function blockShell(
-  id: string,
-  selected: boolean,
-  onSelect: () => void,
-  children: React.ReactNode,
-) {
+/**
+ * One sortable block on the canvas. The whole block is click-to-select, but a drag is
+ * only started from the floating handle (so inline text editing and selection clicks are
+ * never hijacked by the drag sensor).
+ */
+function SortableBlock({
+  block,
+  selected,
+  onSelect,
+  dragLabel,
+  children,
+}: {
+  block: SiteBlock;
+  selected: boolean;
+  onSelect: () => void;
+  dragLabel: string;
+  children: React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: block.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
     <div
+      ref={setNodeRef}
+      style={style}
+      data-block-id={block.id}
       role="button"
       tabIndex={0}
       onClick={(e) => {
         e.stopPropagation();
         onSelect();
       }}
-      onKeyDown={(e) => e.key === 'Enter' && onSelect()}
-      className={`relative transition-all cursor-pointer ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') onSelect();
+      }}
+      className={`group/se relative transition-shadow cursor-pointer ${
+        isDragging ? 'opacity-60 z-30' : 'opacity-100'
+      } ${
         selected
           ? 'ring-2 ring-[var(--se-primary)] ring-offset-2 ring-offset-[var(--se-bg)]'
           : 'hover:ring-1 hover:ring-[var(--se-primary)]/30'
       }`}
-      data-block-id={id}
     >
+      {/* Drag handle in the left gutter — visible on hover or when the block is selected. */}
+      <button
+        type="button"
+        ref={setActivatorNodeRef}
+        {...attributes}
+        {...listeners}
+        onClick={(e) => e.stopPropagation()}
+        title={dragLabel}
+        aria-label={dragLabel}
+        className={`absolute -left-3 top-1/2 -translate-y-1/2 z-40 hidden sm:flex items-center justify-center w-6 h-8 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-[var(--text-muted)] shadow-sm cursor-grab active:cursor-grabbing touch-none transition-opacity hover:text-[var(--text-primary)] ${
+          selected ? 'opacity-100' : 'opacity-0 group-hover/se:opacity-100'
+        }`}
+      >
+        <GripVertical className="w-3.5 h-3.5" />
+      </button>
+
       {selected && (
-        <span className="absolute top-1 right-1 z-10 text-[9px] uppercase tracking-wide px-1.5 py-0.5 rounded bg-[var(--se-primary)] text-white font-semibold">
+        <span className="absolute top-1 right-1 z-20 text-[9px] uppercase tracking-wide px-1.5 py-0.5 rounded bg-[var(--se-primary)] text-white font-semibold pointer-events-none">
           Selected
         </span>
       )}
@@ -54,12 +126,309 @@ export function EditableSiteCanvas({
   selectedBlockId,
   onSelectBlock,
   onBlockChange,
+  onReorder,
   onBannerImagePick,
   clickToEditHint,
+  dragToReorderLabel,
+  labelFor,
 }: EditableSiteCanvasProps) {
   const vars = themeCssVars(theme);
-
   const patch = (id: string, p: Partial<SiteBlock>) => onBlockChange(id, p);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const activeBlock = activeId ? blocks.find((b) => b.id === activeId) ?? null : null;
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(String(event.active.id));
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveId(null);
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = blocks.findIndex((b) => b.id === active.id);
+    const newIndex = blocks.findIndex((b) => b.id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+    onReorder(arrayMove(blocks, oldIndex, newIndex));
+  };
+
+  const renderBlockBody = (block: SiteBlock, selected: boolean): React.ReactNode => {
+    switch (block.type) {
+      case 'hero':
+        return (
+          <section className="se-hero">
+            <h1>
+              <InlineEditable
+                value={block.headline}
+                onChange={(v) => patch(block.id, { headline: v })}
+                className="block"
+              />
+            </h1>
+            <p className="se-sub">
+              <InlineEditable
+                value={block.subheadline}
+                onChange={(v) => patch(block.id, { subheadline: v })}
+                multiline
+              />
+            </p>
+            <span className="se-btn">
+              <InlineEditable
+                value={block.ctaText}
+                onChange={(v) => patch(block.id, { ctaText: v })}
+              />
+            </span>
+          </section>
+        );
+
+      case 'banner':
+        return (
+          <section className="se-banner">
+            <div
+              className="se-banner-bg"
+              style={{ backgroundImage: `url('${block.imageUrl}')` }}
+            />
+            <div className="se-banner-overlay" style={{ opacity: block.overlayOpacity }} />
+            {selected && onBannerImagePick && (
+              <label className="absolute top-2 left-2 z-20 btn btn-secondary btn-sm cursor-pointer">
+                <Upload className="w-3.5 h-3.5" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) onBannerImagePick(block.id, f);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+            )}
+            <div className="se-banner-content">
+              <h2 className="text-xl font-bold mb-2">
+                <InlineEditable
+                  value={block.headline}
+                  onChange={(v) => patch(block.id, { headline: v })}
+                />
+              </h2>
+              <p>
+                <InlineEditable
+                  value={block.subheadline}
+                  onChange={(v) => patch(block.id, { subheadline: v })}
+                  multiline
+                />
+              </p>
+            </div>
+          </section>
+        );
+
+      case 'features':
+        return (
+          <section className="se-section">
+            <h2 className="se-h2">
+              <InlineEditable value={block.title} onChange={(v) => patch(block.id, { title: v })} />
+            </h2>
+            <div className="se-grid">
+              {block.items.map((item, idx) => (
+                <article key={idx} className="se-card">
+                  <h3 className="font-semibold text-sm mb-1">
+                    <InlineEditable
+                      value={item.title}
+                      onChange={(v) => {
+                        const items = [...block.items];
+                        items[idx] = { ...items[idx], title: v };
+                        patch(block.id, { items });
+                      }}
+                    />
+                  </h3>
+                  <p className="text-sm text-[var(--se-muted)]">
+                    <InlineEditable
+                      value={item.description}
+                      onChange={(v) => {
+                        const items = [...block.items];
+                        items[idx] = { ...items[idx], description: v };
+                        patch(block.id, { items });
+                      }}
+                      multiline
+                    />
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        );
+
+      case 'stats':
+        return (
+          <section className="se-section">
+            <div className="se-stats">
+              {block.items.map((item, idx) => (
+                <div key={idx} className="se-stat">
+                  <span className="se-stat-val">
+                    <InlineEditable
+                      value={item.value}
+                      onChange={(v) => {
+                        const items = [...block.items];
+                        items[idx] = { ...items[idx], value: v };
+                        patch(block.id, { items });
+                      }}
+                    />
+                  </span>
+                  <span className="text-xs text-[var(--se-muted)]">
+                    <InlineEditable
+                      value={item.label}
+                      onChange={(v) => {
+                        const items = [...block.items];
+                        items[idx] = { ...items[idx], label: v };
+                        patch(block.id, { items });
+                      }}
+                    />
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+
+      case 'text':
+        return (
+          <section className="se-section">
+            <h2 className="se-h2">
+              <InlineEditable value={block.title} onChange={(v) => patch(block.id, { title: v })} />
+            </h2>
+            <p className="text-[var(--se-muted)] leading-relaxed">
+              <InlineEditable
+                value={block.body}
+                onChange={(v) => patch(block.id, { body: v })}
+                multiline
+              />
+            </p>
+          </section>
+        );
+
+      case 'pricing':
+        return (
+          <section className="se-section">
+            <h2 className="se-h2">
+              <InlineEditable value={block.title} onChange={(v) => patch(block.id, { title: v })} />
+            </h2>
+            <div className="se-grid">
+              {block.plans.map((plan, idx) => (
+                <article
+                  key={idx}
+                  className={`se-card ${plan.highlighted ? 'ring-2 ring-[var(--se-primary)]' : ''}`}
+                >
+                  <h3 className="font-semibold">
+                    <InlineEditable
+                      value={plan.name}
+                      onChange={(v) => {
+                        const plans = [...block.plans];
+                        plans[idx] = { ...plans[idx], name: v };
+                        patch(block.id, { plans });
+                      }}
+                    />
+                  </h3>
+                  <p className="text-2xl font-bold text-[var(--se-primary)] my-2">
+                    <InlineEditable
+                      value={plan.price}
+                      onChange={(v) => {
+                        const plans = [...block.plans];
+                        plans[idx] = { ...plans[idx], price: v };
+                        patch(block.id, { plans });
+                      }}
+                    />
+                    <InlineEditable
+                      value={plan.period}
+                      onChange={(v) => {
+                        const plans = [...block.plans];
+                        plans[idx] = { ...plans[idx], period: v };
+                        patch(block.id, { plans });
+                      }}
+                      className="text-sm font-normal text-[var(--se-muted)]"
+                    />
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        );
+
+      case 'faq':
+        return (
+          <section className="se-section">
+            <h2 className="se-h2">
+              <InlineEditable value={block.title} onChange={(v) => patch(block.id, { title: v })} />
+            </h2>
+            <div className="space-y-2">
+              {block.items.map((item, idx) => (
+                <div key={idx} className="se-card">
+                  <p className="font-semibold text-sm">
+                    <InlineEditable
+                      value={item.question}
+                      onChange={(v) => {
+                        const items = [...block.items];
+                        items[idx] = { ...items[idx], question: v };
+                        patch(block.id, { items });
+                      }}
+                    />
+                  </p>
+                  <p className="text-sm text-[var(--se-muted)] mt-1">
+                    <InlineEditable
+                      value={item.answer}
+                      onChange={(v) => {
+                        const items = [...block.items];
+                        items[idx] = { ...items[idx], answer: v };
+                        patch(block.id, { items });
+                      }}
+                      multiline
+                    />
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+
+      case 'cta':
+        return (
+          <section className="se-cta">
+            <h2 className="se-h2">
+              <InlineEditable value={block.title} onChange={(v) => patch(block.id, { title: v })} />
+            </h2>
+            <p className="text-[var(--se-muted)] mb-4">
+              <InlineEditable
+                value={block.description}
+                onChange={(v) => patch(block.id, { description: v })}
+                multiline
+              />
+            </p>
+            <span className="se-btn">
+              <InlineEditable
+                value={block.buttonText}
+                onChange={(v) => patch(block.id, { buttonText: v })}
+              />
+            </span>
+          </section>
+        );
+
+      case 'footer':
+        return (
+          <footer className="se-footer">
+            <InlineEditable
+              value={block.copyright}
+              onChange={(v) => patch(block.id, { copyright: v })}
+            />
+          </footer>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <div style={vars} className="min-h-full text-[var(--se-text)] bg-[var(--se-bg)]">
@@ -88,336 +457,38 @@ export function EditableSiteCanvas({
         {clickToEditHint}
       </p>
 
-      <main className="se-wrap" onClick={() => onSelectBlock(null)}>
-        {blocks.map((block) => {
-          const selected = block.id === selectedBlockId;
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={() => setActiveId(null)}
+      >
+        <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
+          <main className="se-wrap" onClick={() => onSelectBlock(null)}>
+            {blocks.map((block) => (
+              <SortableBlock
+                key={block.id}
+                block={block}
+                selected={block.id === selectedBlockId}
+                onSelect={() => onSelectBlock(block.id)}
+                dragLabel={dragToReorderLabel}
+              >
+                {renderBlockBody(block, block.id === selectedBlockId)}
+              </SortableBlock>
+            ))}
+          </main>
+        </SortableContext>
 
-          switch (block.type) {
-            case 'hero':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <section className="se-hero">
-                      <h1>
-                        <InlineEditable
-                          value={block.headline}
-                          onChange={(v) => patch(block.id, { headline: v })}
-                          className="block"
-                        />
-                      </h1>
-                      <p className="se-sub">
-                        <InlineEditable
-                          value={block.subheadline}
-                          onChange={(v) => patch(block.id, { subheadline: v })}
-                          multiline
-                        />
-                      </p>
-                      <span className="se-btn">
-                        <InlineEditable
-                          value={block.ctaText}
-                          onChange={(v) => patch(block.id, { ctaText: v })}
-                        />
-                      </span>
-                    </section>
-                  ))}
-                </div>
-              );
-
-            case 'banner':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <section className="se-banner">
-                      <div
-                        className="se-banner-bg"
-                        style={{ backgroundImage: `url('${block.imageUrl}')` }}
-                      />
-                      <div
-                        className="se-banner-overlay"
-                        style={{ opacity: block.overlayOpacity }}
-                      />
-                      {selected && onBannerImagePick && (
-                        <label className="absolute top-2 left-2 z-20 btn btn-secondary btn-sm cursor-pointer">
-                          <Upload className="w-3.5 h-3.5" />
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const f = e.target.files?.[0];
-                              if (f) onBannerImagePick(block.id, f);
-                              e.target.value = '';
-                            }}
-                          />
-                        </label>
-                      )}
-                      <div className="se-banner-content">
-                        <h2 className="text-xl font-bold mb-2">
-                          <InlineEditable
-                            value={block.headline}
-                            onChange={(v) => patch(block.id, { headline: v })}
-                          />
-                        </h2>
-                        <p>
-                          <InlineEditable
-                            value={block.subheadline}
-                            onChange={(v) => patch(block.id, { subheadline: v })}
-                            multiline
-                          />
-                        </p>
-                      </div>
-                    </section>
-                  ))}
-                </div>
-              );
-
-            case 'features':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <section className="se-section">
-                      <h2 className="se-h2">
-                        <InlineEditable
-                          value={block.title}
-                          onChange={(v) => patch(block.id, { title: v })}
-                        />
-                      </h2>
-                      <div className="se-grid">
-                        {block.items.map((item, idx) => (
-                          <article key={idx} className="se-card">
-                            <h3 className="font-semibold text-sm mb-1">
-                              <InlineEditable
-                                value={item.title}
-                                onChange={(v) => {
-                                  const items = [...block.items];
-                                  items[idx] = { ...items[idx], title: v };
-                                  patch(block.id, { items });
-                                }}
-                              />
-                            </h3>
-                            <p className="text-sm text-[var(--se-muted)]">
-                              <InlineEditable
-                                value={item.description}
-                                onChange={(v) => {
-                                  const items = [...block.items];
-                                  items[idx] = { ...items[idx], description: v };
-                                  patch(block.id, { items });
-                                }}
-                                multiline
-                              />
-                            </p>
-                          </article>
-                        ))}
-                      </div>
-                    </section>
-                  ))}
-                </div>
-              );
-
-            case 'stats':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <section className="se-section">
-                      <div className="se-stats">
-                        {block.items.map((item, idx) => (
-                          <div key={idx} className="se-stat">
-                            <span className="se-stat-val">
-                              <InlineEditable
-                                value={item.value}
-                                onChange={(v) => {
-                                  const items = [...block.items];
-                                  items[idx] = { ...items[idx], value: v };
-                                  patch(block.id, { items });
-                                }}
-                              />
-                            </span>
-                            <span className="text-xs text-[var(--se-muted)]">
-                              <InlineEditable
-                                value={item.label}
-                                onChange={(v) => {
-                                  const items = [...block.items];
-                                  items[idx] = { ...items[idx], label: v };
-                                  patch(block.id, { items });
-                                }}
-                              />
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  ))}
-                </div>
-              );
-
-            case 'text':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <section className="se-section">
-                      <h2 className="se-h2">
-                        <InlineEditable
-                          value={block.title}
-                          onChange={(v) => patch(block.id, { title: v })}
-                        />
-                      </h2>
-                      <p className="text-[var(--se-muted)] leading-relaxed">
-                        <InlineEditable
-                          value={block.body}
-                          onChange={(v) => patch(block.id, { body: v })}
-                          multiline
-                        />
-                      </p>
-                    </section>
-                  ))}
-                </div>
-              );
-
-            case 'pricing':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <section className="se-section">
-                      <h2 className="se-h2">
-                        <InlineEditable
-                          value={block.title}
-                          onChange={(v) => patch(block.id, { title: v })}
-                        />
-                      </h2>
-                      <div className="se-grid">
-                        {block.plans.map((plan, idx) => (
-                          <article
-                            key={idx}
-                            className={`se-card ${plan.highlighted ? 'ring-2 ring-[var(--se-primary)]' : ''}`}
-                          >
-                            <h3 className="font-semibold">
-                              <InlineEditable
-                                value={plan.name}
-                                onChange={(v) => {
-                                  const plans = [...block.plans];
-                                  plans[idx] = { ...plans[idx], name: v };
-                                  patch(block.id, { plans });
-                                }}
-                              />
-                            </h3>
-                            <p className="text-2xl font-bold text-[var(--se-primary)] my-2">
-                              <InlineEditable
-                                value={plan.price}
-                                onChange={(v) => {
-                                  const plans = [...block.plans];
-                                  plans[idx] = { ...plans[idx], price: v };
-                                  patch(block.id, { plans });
-                                }}
-                              />
-                              <InlineEditable
-                                value={plan.period}
-                                onChange={(v) => {
-                                  const plans = [...block.plans];
-                                  plans[idx] = { ...plans[idx], period: v };
-                                  patch(block.id, { plans });
-                                }}
-                                className="text-sm font-normal text-[var(--se-muted)]"
-                              />
-                            </p>
-                          </article>
-                        ))}
-                      </div>
-                    </section>
-                  ))}
-                </div>
-              );
-
-            case 'faq':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <section className="se-section">
-                      <h2 className="se-h2">
-                        <InlineEditable
-                          value={block.title}
-                          onChange={(v) => patch(block.id, { title: v })}
-                        />
-                      </h2>
-                      <div className="space-y-2">
-                        {block.items.map((item, idx) => (
-                          <div key={idx} className="se-card">
-                            <p className="font-semibold text-sm">
-                              <InlineEditable
-                                value={item.question}
-                                onChange={(v) => {
-                                  const items = [...block.items];
-                                  items[idx] = { ...items[idx], question: v };
-                                  patch(block.id, { items });
-                                }}
-                              />
-                            </p>
-                            <p className="text-sm text-[var(--se-muted)] mt-1">
-                              <InlineEditable
-                                value={item.answer}
-                                onChange={(v) => {
-                                  const items = [...block.items];
-                                  items[idx] = { ...items[idx], answer: v };
-                                  patch(block.id, { items });
-                                }}
-                                multiline
-                              />
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  ))}
-                </div>
-              );
-
-            case 'cta':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <section className="se-cta">
-                      <h2 className="se-h2">
-                        <InlineEditable
-                          value={block.title}
-                          onChange={(v) => patch(block.id, { title: v })}
-                        />
-                      </h2>
-                      <p className="text-[var(--se-muted)] mb-4">
-                        <InlineEditable
-                          value={block.description}
-                          onChange={(v) => patch(block.id, { description: v })}
-                          multiline
-                        />
-                      </p>
-                      <span className="se-btn">
-                        <InlineEditable
-                          value={block.buttonText}
-                          onChange={(v) => patch(block.id, { buttonText: v })}
-                        />
-                      </span>
-                    </section>
-                  ))}
-                </div>
-              );
-
-            case 'footer':
-              return (
-                <div key={block.id}>
-                  {blockShell(block.id, selected, () => onSelectBlock(block.id), (
-                    <footer className="se-footer">
-                      <InlineEditable
-                        value={block.copyright}
-                        onChange={(v) => patch(block.id, { copyright: v })}
-                      />
-                    </footer>
-                  ))}
-                </div>
-              );
-
-            default:
-              return null;
-          }
-        })}
-      </main>
+        <DragOverlay dropAnimation={null}>
+          {activeBlock ? (
+            <div className="flex items-center gap-2 rounded-lg border border-[var(--se-primary)] bg-[var(--bg-secondary)] px-3 py-2 text-sm font-medium text-[var(--text-primary)] shadow-lg">
+              <GripVertical className="w-4 h-4 text-[var(--se-primary)]" />
+              {labelFor(activeBlock)}
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </div>
   );
 }

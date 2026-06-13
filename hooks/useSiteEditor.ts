@@ -10,9 +10,13 @@ import {
   updateSiteBlocks,
   updateSiteTheme,
   updateSiteCmsConfig,
+  updateSitePages,
   publishSite,
+  getSiteDesigns,
+  applySiteTemplate,
   type SiteSeo,
   type SiteBlock,
+  type SitePage,
   type SiteTheme,
   type CmsMode,
 } from '@/lib/api';
@@ -76,6 +80,26 @@ export function useUpdateSiteBlocks(projectId: string) {
   });
 }
 
+export function useUpdateSitePages(projectId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (pages: SitePage[]) => {
+      const result = await updateSitePages(projectId, pages);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: siteEditorKeys.state(projectId) });
+    },
+    onError: (error: Error) => {
+      toast.error(appT('errors', 'somethingWentWrong'), {
+        description: getApiErrorMessage(error),
+      });
+    },
+  });
+}
+
 export function useUpdateSiteTheme(projectId: string) {
   const queryClient = useQueryClient();
 
@@ -88,6 +112,40 @@ export function useUpdateSiteTheme(projectId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: siteEditorKeys.state(projectId) });
       toast.success(appT('siteEditor', 'themeSaved'));
+    },
+    onError: (error: Error) => {
+      toast.error(appT('errors', 'somethingWentWrong'), {
+        description: getApiErrorMessage(error),
+      });
+    },
+  });
+}
+
+export function useSiteDesigns(projectId: string) {
+  return useQuery({
+    queryKey: [...siteEditorKeys.all, 'designs'] as const,
+    queryFn: async () => {
+      const result = await getSiteDesigns(projectId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!projectId,
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+export function useApplySiteTemplate(projectId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (designKey: string) => {
+      const result = await applySiteTemplate(projectId, designKey);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: siteEditorKeys.state(projectId) });
+      toast.success(appT('siteEditor', 'templateApplied'));
     },
     onError: (error: Error) => {
       toast.error(appT('errors', 'somethingWentWrong'), {
