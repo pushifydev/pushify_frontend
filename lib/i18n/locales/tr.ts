@@ -2087,4 +2087,59 @@ export const tr: TranslationKeys = {
     uploadImage: 'Görsel yükle',
     uploading: 'Yükleniyor…',
   },
+  vsCoolify: {
+    eyebrow: 'Karşılaştırma',
+    h1: 'Pushify vs Coolify',
+    subtitle:
+      'Kendi sunucunuzda uygulama yayınlamanın iki açık kaynaklı yolu. Hangisinin nereye uyduğuna dürüst, yan yana bir bakış.',
+    ctaPrimary: 'Pushify ile başla',
+    ctaSecondary: 'Fiyatları gör',
+    tldrTitle: 'Kısa özet',
+    tldrBody:
+      'Coolify ve Pushify aynı temel sorunu çözer — uygulamalarınızı başkasının bulutunu kiralamak yerine kendi sunucunuza dağıtmak. Coolify daha köklü proje; geniş, aktif bir topluluğu ve ünlü tek komutluk kurulumu var. Pushify daha yeni ve yönetilen deneyime odaklanıyor: sizin için Hetzner sunucusu kurabiliyor, aynı self-host özgürlüğünün üstüne takım faturalandırması, AI asistanı ve kodsuz site kurucu ekliyor. İkisi de açık kaynak ve self-host için ücretsiz.',
+    choosePushifyTitle: 'Pushify’ı seç eğer…',
+    choosePushify1: 'Aynı arayüzle yönetilen bulut seçeneği istiyorsan — başlamak için sunucu kurulumu yok.',
+    choosePushify2: 'Hetzner sunucularının panelden senin için kurulmasını istiyorsan.',
+    choosePushify3: 'Kutudan çıktığı gibi takım rolleri, faturalandırma ve AI asistanı istiyorsan.',
+    choosePushify4: 'Kodsuz bir editörle tanıtım siteleri kurup yayınlamak istiyorsan.',
+    chooseCoolifyTitle: 'Coolify’ı seç eğer…',
+    chooseCoolify1: 'Geniş, sahada denenmiş bir topluluğa sahip en olgun seçeneği istiyorsan.',
+    chooseCoolify2: 'Tek komutla kurulan, tamamen senin kontrolünde tek bir self-host instance tercih ediyorsan.',
+    chooseCoolify3: 'Uzun bir geçmiş ve büyük bir topluluk şablon kütüphanesi istiyorsan.',
+    tableTitle: 'Özellik karşılaştırması',
+    tableNote:
+      'Kamuya açık bilgilere dayanır ve iki proje geliştikçe değişebilir. Güncel olmayan bir şey mi gördün? support@pushify.dev’e yaz.',
+    colCoolify: 'Coolify',
+    rowManagedCloud: 'Yönetilen bulut seçeneği',
+    rowProvisioning: 'Panelden Hetzner sunucu kurulumu',
+    rowOneClickInstall: 'Tek komutla self-host kurulum',
+    rowCommunity: 'Geniş, köklü topluluk',
+    rowBilling: 'Yerleşik takım faturalandırması',
+    diffTitle: 'Temel farklar',
+    diff1Title: 'Yönetilen vs kendin yönet',
+    diff1Body:
+      'İkisi de ücretsiz self-host imkanı verir. Pushify ayrıca yönetilen bir yol sunar — senin için Hetzner sunucusu kurup yönetebilir ve altyapı kullanımını ön ödemeli bir cüzdandan faturalandırır; böylece SSH’a hiç dokunmadan başlayabilirsin. Coolify, kendin çalıştırıp bakımını yaptığın bir self-host instance’a odaklanır (ücretli bir bulutu da var).',
+    diff2Title: 'Dağıtımın ötesinde',
+    diff2Body:
+      'Pushify küçük ekipler ve ajanslara yönelik ekstralar getirir: hata ayıklama ve yapılandırma için AI asistanı, rol tabanlı takım erişimi ve tanıtım siteleri yayınlamak için kodsuz site kurucu. Coolify dağıtımlara ve self-host servislere daha dar bir odakta kalır.',
+    diff3Title: 'Olgunluk ve topluluk',
+    diff3Body:
+      'Coolify daha uzun süredir var ve belirgin biçimde daha büyük bir topluluğa sahip; bu da daha fazla rehber, şablon ve gerçek dünyada test anlamına geliyor. Pushify daha yeni — büyük topluluk ve uzun geçmiş senin için belirleyiciyse, bu konuda şu an Coolify önde.',
+    faqTitle: 'Sıkça sorulan sorular',
+    faq1Q: 'Coolify ücretsiz mi?',
+    faq1A:
+      'Evet — Coolify açık kaynak ve self-host ettiğinde ücretsiz, ayrıca ücretli yönetilen bir bulutu var. Pushify de aynı: self-host için ücretsiz (MIT lisanslı), opsiyonel ücretli yönetilen planlarla.',
+    faq2Q: 'Pushify de Coolify gibi açık kaynak mı?',
+    faq2A:
+      'Evet. Pushify’ın frontend, backend ve CLI’ı MIT lisanslı ve GitHub’da açık. Tüm platformu hiçbir kısıtlama olmadan self-host edebilirsin.',
+    faq3Q: 'Pushify’a kendi sunucumu bağlayabilir miyim?',
+    faq3A:
+      'Evet. Herhangi bir Linux VPS’i SSH ile bağla (BYOS); Pushify Docker ve Nginx kurup oraya dağıtır — ya da Pushify’ın panelden senin için bir Hetzner sunucusu kurmasına izin ver.',
+    faq4Q: 'Coolify’dan Pushify’a geçebilir miyim?',
+    faq4A:
+      'Çoğu durumda evet — ikisi de bir Git deposundan standart Docker yüklerini dağıtır. Pushify’ı aynı depo ve sunucuya yönlendir, ortam değişkenlerini gir ve dağıt. Henüz otomatik bir içe aktarıcı yok.',
+    ctaTitle: 'Kendi şartlarınla dağıt',
+    ctaBody: 'Kendi sunucunda ücretsiz başla ya da altyapıyı Pushify’ın yönetmesine izin ver.',
+    ctaButton: 'Ücretsiz başla',
+  },
 };

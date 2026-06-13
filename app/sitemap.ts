@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/open-source',
     '/docs',
     '/about',
+    '/vs/coolify',
     '/privacy',
     '/terms',
     '/refund',

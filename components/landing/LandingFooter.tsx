@@ -30,6 +30,7 @@ export function LandingFooter() {
         href: 'https://github.com/pushifydev/pushify_frontend/blob/master/CHANGELOG.md',
         external: true,
       },
+      { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },
     ],
     [t('landing', 'company')]: [
       { label: t('legal', 'about'), href: '/about' },

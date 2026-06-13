@@ -2034,6 +2034,51 @@ export interface TranslationKeys {
     uploadImage: string;
     uploading: string;
   };
+  vsCoolify: {
+    eyebrow: string;
+    h1: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    tldrTitle: string;
+    tldrBody: string;
+    choosePushifyTitle: string;
+    choosePushify1: string;
+    choosePushify2: string;
+    choosePushify3: string;
+    choosePushify4: string;
+    chooseCoolifyTitle: string;
+    chooseCoolify1: string;
+    chooseCoolify2: string;
+    chooseCoolify3: string;
+    tableTitle: string;
+    tableNote: string;
+    colCoolify: string;
+    rowManagedCloud: string;
+    rowProvisioning: string;
+    rowOneClickInstall: string;
+    rowCommunity: string;
+    rowBilling: string;
+    diffTitle: string;
+    diff1Title: string;
+    diff1Body: string;
+    diff2Title: string;
+    diff2Body: string;
+    diff3Title: string;
+    diff3Body: string;
+    faqTitle: string;
+    faq1Q: string;
+    faq1A: string;
+    faq2Q: string;
+    faq2A: string;
+    faq3Q: string;
+    faq3A: string;
+    faq4Q: string;
+    faq4A: string;
+    ctaTitle: string;
+    ctaBody: string;
+    ctaButton: string;
+  };
 }
 
 export const en: TranslationKeys = {
@@ -4118,5 +4163,60 @@ export const en: TranslationKeys = {
     fullPreview: 'Preview',
     uploadImage: 'Upload image',
     uploading: 'Uploading…',
+  },
+  vsCoolify: {
+    eyebrow: 'Comparison',
+    h1: 'Pushify vs Coolify',
+    subtitle:
+      'Two open-source ways to deploy apps on servers you own. Here is an honest, side-by-side look at where each one fits.',
+    ctaPrimary: 'Start with Pushify',
+    ctaSecondary: 'See pricing',
+    tldrTitle: 'The short version',
+    tldrBody:
+      'Coolify and Pushify solve the same core problem — deploy your apps to your own servers instead of renting someone else’s cloud. Coolify is the more established project, with a large, active community and a famous one-command install. Pushify is newer and leans into a managed experience: it can provision Hetzner servers for you and adds team billing, an AI assistant, and a no-code site builder on top of the same self-host freedom. Both are open source and free to self-host.',
+    choosePushifyTitle: 'Choose Pushify if…',
+    choosePushify1: 'You want a managed cloud option with the same UI — no server setup to get started.',
+    choosePushify2: 'You want Hetzner servers provisioned for you from the dashboard.',
+    choosePushify3: 'You need team roles, billing, and an AI assistant out of the box.',
+    choosePushify4: 'You want to build and publish marketing sites with a no-code editor.',
+    chooseCoolifyTitle: 'Choose Coolify if…',
+    chooseCoolify1: 'You want the most mature option with a large, battle-tested community.',
+    chooseCoolify2: 'You prefer a single self-hosted instance you fully control, installed with one command.',
+    chooseCoolify3: 'You want a long track record and a big library of community templates.',
+    tableTitle: 'Feature comparison',
+    tableNote:
+      'This reflects publicly available information and may change as both projects evolve. Spot something out of date? Email support@pushify.dev.',
+    colCoolify: 'Coolify',
+    rowManagedCloud: 'Managed cloud option',
+    rowProvisioning: 'Hetzner provisioning from dashboard',
+    rowOneClickInstall: 'One-command self-host install',
+    rowCommunity: 'Large, established community',
+    rowBilling: 'Built-in team billing',
+    diffTitle: 'Key differences',
+    diff1Title: 'Managed vs self-managed',
+    diff1Body:
+      'Both let you self-host for free. Pushify also offers a managed path — it can create and manage Hetzner servers for you and bill infrastructure usage from a prepaid wallet, so you can start without touching SSH. Coolify centers on a self-hosted instance you run and maintain yourself (it also has a paid cloud).',
+    diff2Title: 'Beyond deployments',
+    diff2Body:
+      'Pushify bundles extras aimed at small teams and agencies: an AI assistant for debugging and config, role-based team access, and a no-code site builder for publishing marketing sites. Coolify keeps a tighter focus on deployments and self-hosted services.',
+    diff3Title: 'Maturity and community',
+    diff3Body:
+      'Coolify has been around longer and has a significantly larger community, which means more guides, templates, and real-world battle-testing. Pushify is newer — if a large community and long track record are decisive for you, Coolify currently leads there.',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Is Coolify free?',
+    faq1A:
+      'Yes — Coolify is open source and free when you self-host it, and it offers a paid managed cloud. Pushify is the same: free to self-host (MIT licensed), with optional paid managed plans.',
+    faq2Q: 'Is Pushify open source like Coolify?',
+    faq2A:
+      'Yes. Pushify’s frontend, backend, and CLI are MIT licensed and public on GitHub. You can self-host the entire platform with no restrictions.',
+    faq3Q: 'Can I bring my own server to Pushify?',
+    faq3A:
+      'Yes. Connect any Linux VPS over SSH (BYOS) and Pushify installs Docker and Nginx and deploys there — or let Pushify provision a Hetzner server for you from the dashboard.',
+    faq4Q: 'Can I migrate from Coolify to Pushify?',
+    faq4A:
+      'In most cases, yes — both deploy standard Docker workloads from a Git repo. Point Pushify at the same repository and server, set your environment variables, and deploy. There is no automated importer yet.',
+    ctaTitle: 'Deploy on your own terms',
+    ctaBody: 'Start free on your own server, or let Pushify manage the infrastructure for you.',
+    ctaButton: 'Get started free',
   },
 };
