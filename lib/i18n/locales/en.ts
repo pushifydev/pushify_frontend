@@ -301,6 +301,8 @@ export interface TranslationKeys {
     sites: string;
     // Hero
     openSourcePlatform: string;
+    heroTitleLead: string;
+    heroTitleEm: string;
     getStartedFree: string;
     viewOnGithub: string;
     edgeLocations: string;
@@ -2380,6 +2382,8 @@ export const en: TranslationKeys = {
     sites: 'Sites',
     // Hero
     openSourcePlatform: 'Open Source Cloud Platform',
+    heroTitleLead: 'Deploy to your own servers',
+    heroTitleEm: 'in seconds',
     getStartedFree: 'Get Started Free',
     viewOnGithub: 'View on GitHub',
     edgeLocations: 'Any VPS · Any region',

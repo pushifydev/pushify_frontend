@@ -301,6 +301,8 @@ export const tr: TranslationKeys = {
     sites: 'Siteler',
     // Hero
     openSourcePlatform: 'Açık Kaynak Bulut Platformu',
+    heroTitleLead: 'Kendi sunucularınıza',
+    heroTitleEm: 'saniyeler içinde dağıtın',
     getStartedFree: 'Ücretsiz Başlayın',
     viewOnGithub: 'GitHub\'da Görüntüle',
     edgeLocations: 'Her VPS · Her bölge',

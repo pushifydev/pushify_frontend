@@ -20,8 +20,8 @@ export function HeroSection() {
         <div className="max-w-3xl mx-auto text-center lp-reveal" style={{ animationDelay: '40ms' }}>
           <p className="lp-label mb-5">{t('landing', 'openSourcePlatform')}</p>
           <h1 className="lp-hero-title">
-            {t('branding', 'deployAt')}{' '}
-            <span style={{ color: 'var(--lp-ink)' }}>{t('branding', 'speedOfThought')}</span>.
+            {t('landing', 'heroTitleLead')}{' '}
+            <span style={{ color: 'var(--lp-ink)' }}>{t('landing', 'heroTitleEm')}</span>.
           </h1>
           <p className="lp-lead mt-6 max-w-xl mx-auto">{t('landing', 'heroLead')}</p>
 
