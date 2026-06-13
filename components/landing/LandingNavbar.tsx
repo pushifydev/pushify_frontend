@@ -51,6 +51,7 @@ export function LandingNavbar() {
 
   const navLinks = [
     { href: '/features', label: t('landing', 'features'), external: false },
+    { href: '/sites', label: t('landing', 'sites'), external: false },
     { href: '/pricing', label: t('landing', 'pricing'), external: false },
     { href: '/open-source', label: t('landing', 'openSource'), external: false },
     { href: '/docs', label: t('branding', 'documentation'), external: true },

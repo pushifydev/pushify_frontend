@@ -92,7 +92,7 @@ export function MarketplacePreviewSection() {
           <p className="text-sm" style={{ color: 'var(--lp-muted)' }}>
             {t('homepage', 'marketplaceCatalogFooter')}
           </p>
-          <Link href="/marketplace" className="lp-cta-ghost">
+          <Link href="/register" className="lp-cta-ghost">
             {t('homepage', 'marketplaceCTA')}
             <ArrowRight className="w-4 h-4" />
           </Link>

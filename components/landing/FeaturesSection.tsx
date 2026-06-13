@@ -5,9 +5,10 @@ import {
   GitBranch, Server, Database, Globe, Activity, Users,
   Bot, ScrollText, HeartPulse, Eye, Lock, Terminal,
   Bell, Sun, Check, ArrowRight, Cpu, HardDrive, Wifi,
-  Shield, GitCommit, GitPullRequest, Play, Clock,
+  Shield, GitCommit, GitPullRequest, Play, Clock, LayoutTemplate,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks';
+import { SiteBuilderMockup } from './SiteBuilderSection';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -239,11 +240,18 @@ export function FeaturesSection() {
         />
 
         <HeroFeature
+          label={t('landing', 'siteBuilderLabel')}
+          title={t('landing', 'siteBuilderTitle')}
+          description={t('landing', 'siteBuilderDesc')}
+          mockup={<SiteBuilderMockup />}
+          reverse
+        />
+
+        <HeroFeature
           label={t('landing', 'cliLabel')}
           title={t('landing', 'deployFromTerminalTitle')}
           description={t('landing', 'deployFromTerminalDesc')}
           mockup={<TerminalMockup />}
-          reverse
         />
       </section>
 
@@ -310,6 +318,11 @@ export function FeaturesSection() {
               icon={<Bell className="w-4 h-4" />}
               title={t('landing', 'notifications')}
               desc={t('landing', 'notificationsDesc')}
+            />
+            <MiniFeature
+              icon={<LayoutTemplate className="w-4 h-4" />}
+              title={t('landing', 'noCodeSiteBuilder')}
+              desc={t('landing', 'noCodeSiteBuilderDesc')}
             />
           </motion.div>
         </div>
