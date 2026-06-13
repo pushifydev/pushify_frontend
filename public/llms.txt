@@ -14,9 +14,19 @@
 - [Features](https://pushify.dev/features): Full feature set — deploy, servers, databases, CLI, monitoring
 - [Pricing](https://pushify.dev/pricing): Free tier and Pro plans
 - [Docs](https://pushify.dev/docs): REST API reference, authentication, CI/CD integration
+- [Site Builder](https://pushify.dev/sites): No-code visual website builder with multi-page management and one-click publish
 - [Open Source](https://pushify.dev/open-source): MIT license, self-hosting, contribution guide
 - [About](https://pushify.dev/about): Company background, mission, values
 - [GitHub](https://github.com/pushifydev): Source code, issues, contributions
+
+## Deployment Guides
+
+- [Deploy Next.js](https://pushify.dev/deploy/nextjs): Deploy Next.js 15 with automatic SSL and zero-downtime cutover
+- [Deploy React](https://pushify.dev/deploy/react): Deploy React/Vite single-page apps
+- [Deploy Vue](https://pushify.dev/deploy/vue): Deploy Vue and Nuxt applications
+- [Deploy Node.js](https://pushify.dev/deploy/nodejs): Deploy Node.js services with env vars and port binding
+- [Deploy Python](https://pushify.dev/deploy/python): Deploy Django/FastAPI/Flask apps
+- [Deploy Laravel](https://pushify.dev/deploy/laravel): Deploy Laravel with queue workers and scheduler
 
 ## Core Features
 

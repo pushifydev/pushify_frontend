@@ -301,6 +301,8 @@ export const tr: TranslationKeys = {
     sites: 'Siteler',
     // Hero
     openSourcePlatform: 'Açık Kaynak Bulut Platformu',
+    heroTitleLead: 'Kendi sunucularınıza',
+    heroTitleEm: 'saniyeler içinde dağıtın',
     getStartedFree: 'Ücretsiz Başlayın',
     viewOnGithub: 'GitHub\'da Görüntüle',
     edgeLocations: 'Her VPS · Her bölge',
@@ -2086,5 +2088,160 @@ export const tr: TranslationKeys = {
     fullPreview: 'Önizleme',
     uploadImage: 'Görsel yükle',
     uploading: 'Yükleniyor…',
+  },
+  vsCoolify: {
+    eyebrow: 'Karşılaştırma',
+    h1: 'Pushify vs Coolify',
+    subtitle:
+      'Kendi sunucunuzda uygulama yayınlamanın iki açık kaynaklı yolu. Hangisinin nereye uyduğuna dürüst, yan yana bir bakış.',
+    ctaPrimary: 'Pushify ile başla',
+    ctaSecondary: 'Fiyatları gör',
+    tldrTitle: 'Kısa özet',
+    tldrBody:
+      'Coolify ve Pushify aynı temel sorunu çözer — uygulamalarınızı başkasının bulutunu kiralamak yerine kendi sunucunuza dağıtmak. Coolify daha köklü proje; geniş, aktif bir topluluğu ve ünlü tek komutluk kurulumu var. Pushify daha yeni ve yönetilen deneyime odaklanıyor: sizin için Hetzner sunucusu kurabiliyor, aynı self-host özgürlüğünün üstüne takım faturalandırması, AI asistanı ve kodsuz site kurucu ekliyor. İkisi de açık kaynak ve self-host için ücretsiz.',
+    choosePushifyTitle: 'Pushify’ı seç eğer…',
+    choosePushify1: 'Aynı arayüzle yönetilen bulut seçeneği istiyorsan — başlamak için sunucu kurulumu yok.',
+    choosePushify2: 'Hetzner sunucularının panelden senin için kurulmasını istiyorsan.',
+    choosePushify3: 'Kutudan çıktığı gibi takım rolleri, faturalandırma ve AI asistanı istiyorsan.',
+    choosePushify4: 'Kodsuz bir editörle tanıtım siteleri kurup yayınlamak istiyorsan.',
+    chooseCoolifyTitle: 'Coolify’ı seç eğer…',
+    chooseCoolify1: 'Geniş, sahada denenmiş bir topluluğa sahip en olgun seçeneği istiyorsan.',
+    chooseCoolify2: 'Tek komutla kurulan, tamamen senin kontrolünde tek bir self-host instance tercih ediyorsan.',
+    chooseCoolify3: 'Uzun bir geçmiş ve büyük bir topluluk şablon kütüphanesi istiyorsan.',
+    tableTitle: 'Özellik karşılaştırması',
+    tableNote:
+      'Kamuya açık bilgilere dayanır ve iki proje geliştikçe değişebilir. Güncel olmayan bir şey mi gördün? support@pushify.dev’e yaz.',
+    colCoolify: 'Coolify',
+    rowManagedCloud: 'Yönetilen bulut seçeneği',
+    rowProvisioning: 'Panelden Hetzner sunucu kurulumu',
+    rowOneClickInstall: 'Tek komutla self-host kurulum',
+    rowCommunity: 'Geniş, köklü topluluk',
+    rowBilling: 'Yerleşik takım faturalandırması',
+    diffTitle: 'Temel farklar',
+    diff1Title: 'Yönetilen vs kendin yönet',
+    diff1Body:
+      'İkisi de ücretsiz self-host imkanı verir. Pushify ayrıca yönetilen bir yol sunar — senin için Hetzner sunucusu kurup yönetebilir ve altyapı kullanımını ön ödemeli bir cüzdandan faturalandırır; böylece SSH’a hiç dokunmadan başlayabilirsin. Coolify, kendin çalıştırıp bakımını yaptığın bir self-host instance’a odaklanır (ücretli bir bulutu da var).',
+    diff2Title: 'Dağıtımın ötesinde',
+    diff2Body:
+      'Pushify küçük ekipler ve ajanslara yönelik ekstralar getirir: hata ayıklama ve yapılandırma için AI asistanı, rol tabanlı takım erişimi ve tanıtım siteleri yayınlamak için kodsuz site kurucu. Coolify dağıtımlara ve self-host servislere daha dar bir odakta kalır.',
+    diff3Title: 'Olgunluk ve topluluk',
+    diff3Body:
+      'Coolify daha uzun süredir var ve belirgin biçimde daha büyük bir topluluğa sahip; bu da daha fazla rehber, şablon ve gerçek dünyada test anlamına geliyor. Pushify daha yeni — büyük topluluk ve uzun geçmiş senin için belirleyiciyse, bu konuda şu an Coolify önde.',
+    faqTitle: 'Sıkça sorulan sorular',
+    faq1Q: 'Coolify ücretsiz mi?',
+    faq1A:
+      'Evet — Coolify açık kaynak ve self-host ettiğinde ücretsiz, ayrıca ücretli yönetilen bir bulutu var. Pushify de aynı: self-host için ücretsiz (MIT lisanslı), opsiyonel ücretli yönetilen planlarla.',
+    faq2Q: 'Pushify de Coolify gibi açık kaynak mı?',
+    faq2A:
+      'Evet. Pushify’ın frontend, backend ve CLI’ı MIT lisanslı ve GitHub’da açık. Tüm platformu hiçbir kısıtlama olmadan self-host edebilirsin.',
+    faq3Q: 'Pushify’a kendi sunucumu bağlayabilir miyim?',
+    faq3A:
+      'Evet. Herhangi bir Linux VPS’i SSH ile bağla (BYOS); Pushify Docker ve Nginx kurup oraya dağıtır — ya da Pushify’ın panelden senin için bir Hetzner sunucusu kurmasına izin ver.',
+    faq4Q: 'Coolify’dan Pushify’a geçebilir miyim?',
+    faq4A:
+      'Çoğu durumda evet — ikisi de bir Git deposundan standart Docker yüklerini dağıtır. Pushify’ı aynı depo ve sunucuya yönlendir, ortam değişkenlerini gir ve dağıt. Henüz otomatik bir içe aktarıcı yok.',
+    ctaTitle: 'Kendi şartlarınla dağıt',
+    ctaBody: 'Kendi sunucunda ücretsiz başla ya da altyapıyı Pushify’ın yönetmesine izin ver.',
+    ctaButton: 'Ücretsiz başla',
+  },
+  vsVercel: {
+    eyebrow: 'Karşılaştırma',
+    h1: 'Pushify vs Vercel',
+    subtitle:
+      'Vercel, frontend geliştirici deneyiminde çıtayı belirliyor — ama Vercel’in bulutunda çalışır ve kullanıma göre fiyatlanır. Altyapına sahip olmak istediğinde Pushify nasıl kıyaslanıyor, işte buna bir bakış.',
+    ctaPrimary: 'Pushify ile başla',
+    ctaSecondary: 'Fiyatları gör',
+    tldrTitle: 'Kısa özet',
+    tldrBody:
+      'Vercel ve Pushify aynı git-push ile dağıtım akışını paylaşır ama zıt tercihler yapar. Vercel, sınıfının en iyisi edge ağı ve serverless ölçeklemeyle cilalı, tamamen yönetilen bir buluttur — hiç sunucu çalıştırmazsın ve kullanım kadar ödersin. Pushify açık kaynaktır ve senin sahip olduğun sunuculara dağıtır (kendi VPS’in ya da senin için kurduğu bir Hetzner sunucusu), öngörülebilir fiyatlandırma ve vendor lock-in olmadan. Küresel edge ağı ve sıfır-operasyon serverless en çok önemliyse Vercel önde. Altyapına sahip olmak, full-stack uygulamalar ve veritabanları çalıştırmak ve öngörülebilir maliyet daha önemliyse Pushify uygundur.',
+    choosePushifyTitle: 'Pushify’ı seç eğer…',
+    choosePushify1: 'Sunucularına ve verine sahip olmak — başkasının bulutunu kiralamamak — istiyorsan.',
+    choosePushify2: 'Aniden yükselebilen kullanım faturaları yerine öngörülebilir, sabit fiyat istiyorsan.',
+    choosePushify3: 'Sadece frontend değil, full-stack uygulamalar, backendler ve veritabanları çalıştırıyorsan.',
+    choosePushify4: 'Açık kaynağa ve sıfır vendor lock-in’e değer veriyorsan.',
+    chooseVercelTitle: 'Vercel’i seç eğer…',
+    chooseVercel1: 'Sıfır operasyonla en cilalı frontend deneyimini istiyorsan.',
+    chooseVercel2: 'Küresel edge ağı ve anlık serverless ölçekleme senin için belirleyiciyse.',
+    chooseVercel3: 'Altyapı kontrolünü tamamen yönetilen bir platform için takas etmeye razıysan.',
+    tableTitle: 'Özellik karşılaştırması',
+    tableNote:
+      'Kamuya açık bilgilere dayanır ve iki ürün geliştikçe değişebilir. Güncel olmayan bir şey mi gördün? support@pushify.dev’e yaz.',
+    colVercel: 'Vercel',
+    rowEdgeNetwork: 'Küresel edge ağı / CDN',
+    rowServerless: 'Serverless otomatik ölçekleme',
+    rowPredictablePricing: 'Öngörülebilir sabit fiyat',
+    rowNoLockIn: 'Vendor lock-in yok',
+    diffTitle: 'Temel farklar',
+    diff1Title: 'Uygulamaların nerede çalışır',
+    diff1Body:
+      'Vercel uygulamalarını kendi yönetilen bulutunda ve edge ağında çalıştırır — bir sunucuya hiç dokunmazsın. Pushify senin sahip olduğun altyapıya dağıtır: herhangi bir VPS’i SSH ile bağla ya da Pushify’ın senin için bir Hetzner sunucusu kurup yönetmesine izin ver.',
+    diff2Title: 'Nasıl ödersin',
+    diff2Body:
+      'Vercel kullanıma göre faturalandırır (bant genişliği, fonksiyon çağrıları, build dakikaları); bu sorunsuz ölçeklenir ama öngörülemez hale gelebilir. Pushify, sabit bir platform aboneliğini kendi sunucu maliyetinden ayırır; böylece fatura öngörülebilir olur — ve self-host ücretsizdir.',
+    diff3Title: 'Ne çalıştırabilirsin',
+    diff3Body:
+      'Vercel frontend ve serverless fonksiyonlar için optimizedir. Pushify, bir Docker konteynerinde gelen her şeyi çalıştırır — frontendler, backendler, worker’lar ve yönetilen veritabanları — sürekli çalışan sunucularda, ayrıca tek tıkla uygulama marketplace’i ve kodsuz site kurucu ile.',
+    faqTitle: 'Sıkça sorulan sorular',
+    faq1Q: 'Pushify bir Vercel alternatifi mi?',
+    faq1A:
+      'Evet. Pushify, Vercel ile aynı git-push dağıtım akışını sunar ama senin sahip olduğun sunucularda ve açık kaynaklı, self-host edilebilir yazılımla — Vercel tarzı sadeliği lock-in veya kullanım bazlı fiyatlandırma olmadan isteyen geliştiriciler için.',
+    faq2Q: 'Vercel gibi self-host edebilir miyim?',
+    faq2A:
+      'Vercel’in kendisi self-host edilemez — uygulamaların her zaman Vercel’in bulutunda çalışır. Pushify MIT lisanslı ve tamamen self-host edilebilir: tüm platformu ve uygulamalarını kendi altyapında çalıştır.',
+    faq3Q: 'Pushify Vercel’den ucuz mu?',
+    faq3A:
+      'Trafiğine bağlı. Vercel’in kullanım bazlı fiyatı küçük ölçekte cömerttir ama bant genişliği ve fonksiyon kullanımı arttıkça hızla yükselebilir. Pushify’da sabit bir platform ücreti artı kendi sunucu maliyetini ödersin (self-host edersen sıfır), bu da ölçekte daha öngörülebilirdir.',
+    faq4Q: 'Next.js uygulamamı Pushify’da çalıştırabilir miyim?',
+    faq4A:
+      'Evet. Deponu bağla; Pushify Next.js’i otomatik algılar, build eder ve otomatik SSL ile sıfır kesinti geçişiyle dağıtır — kendi sunucunda.',
+    ctaTitle: 'Stack’ine sahip ol',
+    ctaBody: 'Kontrol ettiğin altyapıda Vercel tarzı dağıtımlar — açık kaynak ve self-host için ücretsiz.',
+    ctaButton: 'Ücretsiz başla',
+  },
+  sitesPage: {
+    eyebrow: 'Site Kurucu',
+    h1: 'Kendi sunucunda barındırılan, kodsuz bir web sitesi kurucusu.',
+    subtitle:
+      'Bir tasarım seç, her bloğu doğrudan sayfa üzerinde düzenle, istediğin kadar sayfa ekle ve kendi sunucuna yayınla — özel domainde ya da sade bir portta. Kod yok, üçüncü taraf barındırma yok.',
+    ctaPrimary: 'Ücretsiz oluşturmaya başla',
+    ctaSecondary: 'Fiyatları gör',
+    howTitle: 'Fikirden canlı siteye dört adımda',
+    step1Title: 'Bir tasarım seç',
+    step1Desc:
+      'Şık, responsive bir şablonla — ya da boş bir tuvalle — başla. Tüm görünümü istediğin an tek tıkla değiştir.',
+    step2Title: 'Sayfa üzerinde düzenle',
+    step2Desc:
+      'Herhangi bir metne veya bloğa tıklayıp yerinde düzenle. Bölümleri sürükleyerek sırala. Ne görürsen onu yayınlarsın.',
+    step3Title: 'Sayfalarını ekle',
+    step3Desc:
+      'Hakkında, Fiyatlandırma, İletişim ya da ihtiyacın olan her sayfayı oluştur — otomatik olarak ortak bir menü çubuğu paylaşırlar.',
+    step4Title: 'Sunucuna yayınla',
+    step4Desc:
+      'Tek tıkla tüm çok sayfalı siteyi kendi sunucuna yayınla — domaininde ya da domain gerektirmeyen sade bir portta.',
+    feat1Title: 'Hazır tasarımlar',
+    feat1Desc:
+      'Her şablon kutudan çıktığı gibi mobil-uyumlu ve markaya uygun. CSS’e dokunmadan renkleri, fontları ve içeriği değiştir — ve tasarımı istediğin zaman değiştir.',
+    feat2Title: 'Gerçek çok sayfalı siteler',
+    feat2Desc:
+      'Sadece tek bir landing sayfası değil. Ortak menülü tam bir site kur, sayfaları serbestçe ekle ve yeniden adlandır; kurucu linkleri senin için senkron tutar.',
+    feat3Title: 'Kontrol ettiğin her yere yayınla',
+    feat3Desc:
+      'Siten, senin sahip olduğun altyapıya gider. Otomatik HTTPS ile özel domain kullan ya da hiç domain olmadan bir portta yayınla — iç siteler ve hızlı lansmanlar için ideal.',
+    faqTitle: 'Sıkça sorulan sorular',
+    faq1Q: 'Kod bilmem gerekiyor mu?',
+    faq1A:
+      'Hayır. Tüm site görsel olarak kurulur — bir tasarım seç, metinleri ve blokları sayfa üzerinde düzenle ve yayınla. Uğraşılacak HTML, CSS veya şablon yok.',
+    faq2Q: 'Sitem nereye yayınlanıyor?',
+    faq2A:
+      'Senin sahip olduğun bir sunucuya — herhangi bir VPS’i SSH ile bağla ya da Pushify’ın senin için bir Hetzner sunucusu kurmasına izin ver. Siten ve verisi senin altyapında kalır.',
+    faq3Q: 'Domaine ihtiyacım var mı?',
+    faq3A:
+      'Hayır. Otomatik SSL ile özel domainde yayınla ya da domain gerektirmeyen sade bir portta sun. Domaini sonradan ekleyebilirsin.',
+    faq4Q: 'Birden fazla sayfa kurabilir miyim?',
+    faq4A:
+      'Evet. İhtiyacın olan kadar sayfa ekle — Ana Sayfa, Hakkında, Fiyatlandırma, İletişim ve daha fazlası — hepsi kurucunun senkron tuttuğu ortak bir menüyü paylaşır.',
+    ctaTitle: 'Siteni bugün yayınla',
+    ctaBody: 'Görsel olarak kur, kendi sunucuna yayınla ve tam kontrolü elinde tut.',
+    ctaButton: 'Ücretsiz oluşturmaya başla',
   },
 };

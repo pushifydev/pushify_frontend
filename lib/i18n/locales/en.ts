@@ -301,6 +301,8 @@ export interface TranslationKeys {
     sites: string;
     // Hero
     openSourcePlatform: string;
+    heroTitleLead: string;
+    heroTitleEm: string;
     getStartedFree: string;
     viewOnGithub: string;
     edgeLocations: string;
@@ -2034,6 +2036,129 @@ export interface TranslationKeys {
     uploadImage: string;
     uploading: string;
   };
+  vsCoolify: {
+    eyebrow: string;
+    h1: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    tldrTitle: string;
+    tldrBody: string;
+    choosePushifyTitle: string;
+    choosePushify1: string;
+    choosePushify2: string;
+    choosePushify3: string;
+    choosePushify4: string;
+    chooseCoolifyTitle: string;
+    chooseCoolify1: string;
+    chooseCoolify2: string;
+    chooseCoolify3: string;
+    tableTitle: string;
+    tableNote: string;
+    colCoolify: string;
+    rowManagedCloud: string;
+    rowProvisioning: string;
+    rowOneClickInstall: string;
+    rowCommunity: string;
+    rowBilling: string;
+    diffTitle: string;
+    diff1Title: string;
+    diff1Body: string;
+    diff2Title: string;
+    diff2Body: string;
+    diff3Title: string;
+    diff3Body: string;
+    faqTitle: string;
+    faq1Q: string;
+    faq1A: string;
+    faq2Q: string;
+    faq2A: string;
+    faq3Q: string;
+    faq3A: string;
+    faq4Q: string;
+    faq4A: string;
+    ctaTitle: string;
+    ctaBody: string;
+    ctaButton: string;
+  };
+  vsVercel: {
+    eyebrow: string;
+    h1: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    tldrTitle: string;
+    tldrBody: string;
+    choosePushifyTitle: string;
+    choosePushify1: string;
+    choosePushify2: string;
+    choosePushify3: string;
+    choosePushify4: string;
+    chooseVercelTitle: string;
+    chooseVercel1: string;
+    chooseVercel2: string;
+    chooseVercel3: string;
+    tableTitle: string;
+    tableNote: string;
+    colVercel: string;
+    rowEdgeNetwork: string;
+    rowServerless: string;
+    rowPredictablePricing: string;
+    rowNoLockIn: string;
+    diffTitle: string;
+    diff1Title: string;
+    diff1Body: string;
+    diff2Title: string;
+    diff2Body: string;
+    diff3Title: string;
+    diff3Body: string;
+    faqTitle: string;
+    faq1Q: string;
+    faq1A: string;
+    faq2Q: string;
+    faq2A: string;
+    faq3Q: string;
+    faq3A: string;
+    faq4Q: string;
+    faq4A: string;
+    ctaTitle: string;
+    ctaBody: string;
+    ctaButton: string;
+  };
+  sitesPage: {
+    eyebrow: string;
+    h1: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    howTitle: string;
+    step1Title: string;
+    step1Desc: string;
+    step2Title: string;
+    step2Desc: string;
+    step3Title: string;
+    step3Desc: string;
+    step4Title: string;
+    step4Desc: string;
+    feat1Title: string;
+    feat1Desc: string;
+    feat2Title: string;
+    feat2Desc: string;
+    feat3Title: string;
+    feat3Desc: string;
+    faqTitle: string;
+    faq1Q: string;
+    faq1A: string;
+    faq2Q: string;
+    faq2A: string;
+    faq3Q: string;
+    faq3A: string;
+    faq4Q: string;
+    faq4A: string;
+    ctaTitle: string;
+    ctaBody: string;
+    ctaButton: string;
+  };
 }
 
 export const en: TranslationKeys = {
@@ -2335,6 +2460,8 @@ export const en: TranslationKeys = {
     sites: 'Sites',
     // Hero
     openSourcePlatform: 'Open Source Cloud Platform',
+    heroTitleLead: 'Deploy to your own servers',
+    heroTitleEm: 'in seconds',
     getStartedFree: 'Get Started Free',
     viewOnGithub: 'View on GitHub',
     edgeLocations: 'Any VPS · Any region',
@@ -4118,5 +4245,160 @@ export const en: TranslationKeys = {
     fullPreview: 'Preview',
     uploadImage: 'Upload image',
     uploading: 'Uploading…',
+  },
+  vsCoolify: {
+    eyebrow: 'Comparison',
+    h1: 'Pushify vs Coolify',
+    subtitle:
+      'Two open-source ways to deploy apps on servers you own. Here is an honest, side-by-side look at where each one fits.',
+    ctaPrimary: 'Start with Pushify',
+    ctaSecondary: 'See pricing',
+    tldrTitle: 'The short version',
+    tldrBody:
+      'Coolify and Pushify solve the same core problem — deploy your apps to your own servers instead of renting someone else’s cloud. Coolify is the more established project, with a large, active community and a famous one-command install. Pushify is newer and leans into a managed experience: it can provision Hetzner servers for you and adds team billing, an AI assistant, and a no-code site builder on top of the same self-host freedom. Both are open source and free to self-host.',
+    choosePushifyTitle: 'Choose Pushify if…',
+    choosePushify1: 'You want a managed cloud option with the same UI — no server setup to get started.',
+    choosePushify2: 'You want Hetzner servers provisioned for you from the dashboard.',
+    choosePushify3: 'You need team roles, billing, and an AI assistant out of the box.',
+    choosePushify4: 'You want to build and publish marketing sites with a no-code editor.',
+    chooseCoolifyTitle: 'Choose Coolify if…',
+    chooseCoolify1: 'You want the most mature option with a large, battle-tested community.',
+    chooseCoolify2: 'You prefer a single self-hosted instance you fully control, installed with one command.',
+    chooseCoolify3: 'You want a long track record and a big library of community templates.',
+    tableTitle: 'Feature comparison',
+    tableNote:
+      'This reflects publicly available information and may change as both projects evolve. Spot something out of date? Email support@pushify.dev.',
+    colCoolify: 'Coolify',
+    rowManagedCloud: 'Managed cloud option',
+    rowProvisioning: 'Hetzner provisioning from dashboard',
+    rowOneClickInstall: 'One-command self-host install',
+    rowCommunity: 'Large, established community',
+    rowBilling: 'Built-in team billing',
+    diffTitle: 'Key differences',
+    diff1Title: 'Managed vs self-managed',
+    diff1Body:
+      'Both let you self-host for free. Pushify also offers a managed path — it can create and manage Hetzner servers for you and bill infrastructure usage from a prepaid wallet, so you can start without touching SSH. Coolify centers on a self-hosted instance you run and maintain yourself (it also has a paid cloud).',
+    diff2Title: 'Beyond deployments',
+    diff2Body:
+      'Pushify bundles extras aimed at small teams and agencies: an AI assistant for debugging and config, role-based team access, and a no-code site builder for publishing marketing sites. Coolify keeps a tighter focus on deployments and self-hosted services.',
+    diff3Title: 'Maturity and community',
+    diff3Body:
+      'Coolify has been around longer and has a significantly larger community, which means more guides, templates, and real-world battle-testing. Pushify is newer — if a large community and long track record are decisive for you, Coolify currently leads there.',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Is Coolify free?',
+    faq1A:
+      'Yes — Coolify is open source and free when you self-host it, and it offers a paid managed cloud. Pushify is the same: free to self-host (MIT licensed), with optional paid managed plans.',
+    faq2Q: 'Is Pushify open source like Coolify?',
+    faq2A:
+      'Yes. Pushify’s frontend, backend, and CLI are MIT licensed and public on GitHub. You can self-host the entire platform with no restrictions.',
+    faq3Q: 'Can I bring my own server to Pushify?',
+    faq3A:
+      'Yes. Connect any Linux VPS over SSH (BYOS) and Pushify installs Docker and Nginx and deploys there — or let Pushify provision a Hetzner server for you from the dashboard.',
+    faq4Q: 'Can I migrate from Coolify to Pushify?',
+    faq4A:
+      'In most cases, yes — both deploy standard Docker workloads from a Git repo. Point Pushify at the same repository and server, set your environment variables, and deploy. There is no automated importer yet.',
+    ctaTitle: 'Deploy on your own terms',
+    ctaBody: 'Start free on your own server, or let Pushify manage the infrastructure for you.',
+    ctaButton: 'Get started free',
+  },
+  vsVercel: {
+    eyebrow: 'Comparison',
+    h1: 'Pushify vs Vercel',
+    subtitle:
+      'Vercel sets the bar for frontend developer experience — but it runs on Vercel’s cloud, priced by usage. Here is how Pushify compares when you want to own your infrastructure.',
+    ctaPrimary: 'Start with Pushify',
+    ctaSecondary: 'See pricing',
+    tldrTitle: 'The short version',
+    tldrBody:
+      'Vercel and Pushify share the same git-push-to-deploy workflow, but they make opposite trade-offs. Vercel is a polished, fully managed cloud with a best-in-class edge network and serverless scaling — you run no servers and pay for usage. Pushify is open source and deploys to servers you own (your VPS, or a Hetzner box it provisions for you), with predictable pricing and no vendor lock-in. If a global edge network and zero-ops serverless matter most, Vercel leads. If owning your infrastructure, running full-stack apps and databases, and predictable cost matter more, Pushify fits.',
+    choosePushifyTitle: 'Choose Pushify if…',
+    choosePushify1: 'You want to own your servers and your data — not rent someone else’s cloud.',
+    choosePushify2: 'You want predictable, flat pricing instead of usage bills that can spike.',
+    choosePushify3: 'You run full-stack apps, backends, and databases — not just frontends.',
+    choosePushify4: 'You value open source and zero vendor lock-in.',
+    chooseVercelTitle: 'Choose Vercel if…',
+    chooseVercel1: 'You want the most polished frontend experience with zero operations.',
+    chooseVercel2: 'A global edge network and instant serverless scaling are decisive for you.',
+    chooseVercel3: 'You are happy to trade infrastructure control for a fully managed platform.',
+    tableTitle: 'Feature comparison',
+    tableNote:
+      'This reflects publicly available information and may change as both products evolve. Spot something out of date? Email support@pushify.dev.',
+    colVercel: 'Vercel',
+    rowEdgeNetwork: 'Global edge network / CDN',
+    rowServerless: 'Serverless auto-scaling',
+    rowPredictablePricing: 'Predictable flat pricing',
+    rowNoLockIn: 'No vendor lock-in',
+    diffTitle: 'Key differences',
+    diff1Title: 'Where your apps run',
+    diff1Body:
+      'Vercel runs your apps on its own managed cloud and edge network — you never touch a server. Pushify deploys to infrastructure you own: connect any VPS over SSH, or let Pushify provision and manage a Hetzner server for you.',
+    diff2Title: 'How you pay',
+    diff2Body:
+      'Vercel bills by usage (bandwidth, function invocations, build minutes), which scales smoothly but can become unpredictable. Pushify separates a flat platform subscription from your own server costs, so the bill is predictable — and self-hosting is free.',
+    diff3Title: 'What you can run',
+    diff3Body:
+      'Vercel is optimized for frontends and serverless functions. Pushify runs anything that ships in a Docker container — frontends, backends, workers, and managed databases — on long-running servers, plus a one-click app marketplace and a no-code site builder.',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Is Pushify a Vercel alternative?',
+    faq1A:
+      'Yes. Pushify offers the same git-push deploy workflow as Vercel, but on servers you own and with open-source, self-hostable software — aimed at developers who want Vercel-style simplicity without the lock-in or usage-based pricing.',
+    faq2Q: 'Can I self-host like Vercel?',
+    faq2A:
+      'Vercel itself is not self-hostable — your apps always run on Vercel’s cloud. Pushify is MIT licensed and fully self-hostable: run the entire platform and your apps on your own infrastructure.',
+    faq3Q: 'Is Pushify cheaper than Vercel?',
+    faq3A:
+      'It depends on your traffic. Vercel’s usage-based pricing is generous at small scale but can rise quickly as bandwidth and function usage grow. With Pushify you pay a flat platform fee plus your own server cost (or nothing if you self-host), which is more predictable at scale.',
+    faq4Q: 'Can I run my Next.js app on Pushify?',
+    faq4A:
+      'Yes. Connect your repository and Pushify auto-detects Next.js, builds it, and deploys with automatic SSL and zero-downtime cutover — on your own server.',
+    ctaTitle: 'Own your stack',
+    ctaBody: 'Get Vercel-style deploys on infrastructure you control — open source and free to self-host.',
+    ctaButton: 'Get started free',
+  },
+  sitesPage: {
+    eyebrow: 'Site Builder',
+    h1: 'A no-code website builder, hosted on your own server.',
+    subtitle:
+      'Pick a design, edit every block right on the page, add as many pages as you need, and publish to your own server — on a custom domain or a plain port. No code, no third-party hosting.',
+    ctaPrimary: 'Start building free',
+    ctaSecondary: 'See pricing',
+    howTitle: 'From idea to live site in four steps',
+    step1Title: 'Pick a design',
+    step1Desc:
+      'Start from a polished, responsive template — or a blank canvas. Swap the whole look anytime in one click.',
+    step2Title: 'Edit on the page',
+    step2Desc:
+      'Click any text or block and edit it in place. Drag to reorder sections. What you see is exactly what ships.',
+    step3Title: 'Add your pages',
+    step3Desc:
+      'Create About, Pricing, Contact, or any page you need — they share a navigation bar automatically.',
+    step4Title: 'Publish to your server',
+    step4Desc:
+      'One click publishes the whole multi-page site to your own server — on your domain, or a plain port with no domain required.',
+    feat1Title: 'Ready-made designs',
+    feat1Desc:
+      'Every template is mobile-responsive and on-brand out of the box. Change colours, fonts, and content without touching CSS — and switch designs whenever you want.',
+    feat2Title: 'Real multi-page sites',
+    feat2Desc:
+      'Not just a single landing page. Build a full site with a shared nav, add and rename pages freely, and the builder keeps the links in sync for you.',
+    feat3Title: 'Publish anywhere you control',
+    feat3Desc:
+      'Your site ships to infrastructure you own. Use a custom domain with automatic HTTPS, or serve it on a port with no domain at all — ideal for internal sites and quick launches.',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Do I need to know how to code?',
+    faq1A:
+      'No. The whole site is built visually — pick a design, edit text and blocks on the page, and publish. No HTML, CSS, or templates to wrangle.',
+    faq2Q: 'Where does my site get published?',
+    faq2A:
+      'To a server you own — connect any VPS over SSH, or let Pushify provision a Hetzner server for you. Your site and its data stay on your infrastructure.',
+    faq3Q: 'Do I need a domain?',
+    faq3A:
+      'No. Publish on a custom domain with automatic SSL, or serve the site on a plain port with no domain required. You can add a domain later.',
+    faq4Q: 'Can I build more than one page?',
+    faq4A:
+      'Yes. Add as many pages as you need — Home, About, Pricing, Contact, and more — all sharing a navigation bar the builder keeps in sync.',
+    ctaTitle: 'Launch your site today',
+    ctaBody: 'Build it visually, publish it to your own server, and keep full control.',
+    ctaButton: 'Start building free',
   },
 };
