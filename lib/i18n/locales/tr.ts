@@ -2198,4 +2198,50 @@ export const tr: TranslationKeys = {
     ctaBody: 'Kontrol ettiğin altyapıda Vercel tarzı dağıtımlar — açık kaynak ve self-host için ücretsiz.',
     ctaButton: 'Ücretsiz başla',
   },
+  sitesPage: {
+    eyebrow: 'Site Kurucu',
+    h1: 'Kendi sunucunda barındırılan, kodsuz bir web sitesi kurucusu.',
+    subtitle:
+      'Bir tasarım seç, her bloğu doğrudan sayfa üzerinde düzenle, istediğin kadar sayfa ekle ve kendi sunucuna yayınla — özel domainde ya da sade bir portta. Kod yok, üçüncü taraf barındırma yok.',
+    ctaPrimary: 'Ücretsiz oluşturmaya başla',
+    ctaSecondary: 'Fiyatları gör',
+    howTitle: 'Fikirden canlı siteye dört adımda',
+    step1Title: 'Bir tasarım seç',
+    step1Desc:
+      'Şık, responsive bir şablonla — ya da boş bir tuvalle — başla. Tüm görünümü istediğin an tek tıkla değiştir.',
+    step2Title: 'Sayfa üzerinde düzenle',
+    step2Desc:
+      'Herhangi bir metne veya bloğa tıklayıp yerinde düzenle. Bölümleri sürükleyerek sırala. Ne görürsen onu yayınlarsın.',
+    step3Title: 'Sayfalarını ekle',
+    step3Desc:
+      'Hakkında, Fiyatlandırma, İletişim ya da ihtiyacın olan her sayfayı oluştur — otomatik olarak ortak bir menü çubuğu paylaşırlar.',
+    step4Title: 'Sunucuna yayınla',
+    step4Desc:
+      'Tek tıkla tüm çok sayfalı siteyi kendi sunucuna yayınla — domaininde ya da domain gerektirmeyen sade bir portta.',
+    feat1Title: 'Hazır tasarımlar',
+    feat1Desc:
+      'Her şablon kutudan çıktığı gibi mobil-uyumlu ve markaya uygun. CSS’e dokunmadan renkleri, fontları ve içeriği değiştir — ve tasarımı istediğin zaman değiştir.',
+    feat2Title: 'Gerçek çok sayfalı siteler',
+    feat2Desc:
+      'Sadece tek bir landing sayfası değil. Ortak menülü tam bir site kur, sayfaları serbestçe ekle ve yeniden adlandır; kurucu linkleri senin için senkron tutar.',
+    feat3Title: 'Kontrol ettiğin her yere yayınla',
+    feat3Desc:
+      'Siten, senin sahip olduğun altyapıya gider. Otomatik HTTPS ile özel domain kullan ya da hiç domain olmadan bir portta yayınla — iç siteler ve hızlı lansmanlar için ideal.',
+    faqTitle: 'Sıkça sorulan sorular',
+    faq1Q: 'Kod bilmem gerekiyor mu?',
+    faq1A:
+      'Hayır. Tüm site görsel olarak kurulur — bir tasarım seç, metinleri ve blokları sayfa üzerinde düzenle ve yayınla. Uğraşılacak HTML, CSS veya şablon yok.',
+    faq2Q: 'Sitem nereye yayınlanıyor?',
+    faq2A:
+      'Senin sahip olduğun bir sunucuya — herhangi bir VPS’i SSH ile bağla ya da Pushify’ın senin için bir Hetzner sunucusu kurmasına izin ver. Siten ve verisi senin altyapında kalır.',
+    faq3Q: 'Domaine ihtiyacım var mı?',
+    faq3A:
+      'Hayır. Otomatik SSL ile özel domainde yayınla ya da domain gerektirmeyen sade bir portta sun. Domaini sonradan ekleyebilirsin.',
+    faq4Q: 'Birden fazla sayfa kurabilir miyim?',
+    faq4A:
+      'Evet. İhtiyacın olan kadar sayfa ekle — Ana Sayfa, Hakkında, Fiyatlandırma, İletişim ve daha fazlası — hepsi kurucunun senkron tuttuğu ortak bir menüyü paylaşır.',
+    ctaTitle: 'Siteni bugün yayınla',
+    ctaBody: 'Görsel olarak kur, kendi sunucuna yayınla ve tam kontrolü elinde tut.',
+    ctaButton: 'Ücretsiz oluşturmaya başla',
+  },
 };

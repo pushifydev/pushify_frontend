@@ -2125,6 +2125,40 @@ export interface TranslationKeys {
     ctaBody: string;
     ctaButton: string;
   };
+  sitesPage: {
+    eyebrow: string;
+    h1: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    howTitle: string;
+    step1Title: string;
+    step1Desc: string;
+    step2Title: string;
+    step2Desc: string;
+    step3Title: string;
+    step3Desc: string;
+    step4Title: string;
+    step4Desc: string;
+    feat1Title: string;
+    feat1Desc: string;
+    feat2Title: string;
+    feat2Desc: string;
+    feat3Title: string;
+    feat3Desc: string;
+    faqTitle: string;
+    faq1Q: string;
+    faq1A: string;
+    faq2Q: string;
+    faq2A: string;
+    faq3Q: string;
+    faq3A: string;
+    faq4Q: string;
+    faq4A: string;
+    ctaTitle: string;
+    ctaBody: string;
+    ctaButton: string;
+  };
 }
 
 export const en: TranslationKeys = {
@@ -4320,5 +4354,51 @@ export const en: TranslationKeys = {
     ctaTitle: 'Own your stack',
     ctaBody: 'Get Vercel-style deploys on infrastructure you control — open source and free to self-host.',
     ctaButton: 'Get started free',
+  },
+  sitesPage: {
+    eyebrow: 'Site Builder',
+    h1: 'A no-code website builder, hosted on your own server.',
+    subtitle:
+      'Pick a design, edit every block right on the page, add as many pages as you need, and publish to your own server — on a custom domain or a plain port. No code, no third-party hosting.',
+    ctaPrimary: 'Start building free',
+    ctaSecondary: 'See pricing',
+    howTitle: 'From idea to live site in four steps',
+    step1Title: 'Pick a design',
+    step1Desc:
+      'Start from a polished, responsive template — or a blank canvas. Swap the whole look anytime in one click.',
+    step2Title: 'Edit on the page',
+    step2Desc:
+      'Click any text or block and edit it in place. Drag to reorder sections. What you see is exactly what ships.',
+    step3Title: 'Add your pages',
+    step3Desc:
+      'Create About, Pricing, Contact, or any page you need — they share a navigation bar automatically.',
+    step4Title: 'Publish to your server',
+    step4Desc:
+      'One click publishes the whole multi-page site to your own server — on your domain, or a plain port with no domain required.',
+    feat1Title: 'Ready-made designs',
+    feat1Desc:
+      'Every template is mobile-responsive and on-brand out of the box. Change colours, fonts, and content without touching CSS — and switch designs whenever you want.',
+    feat2Title: 'Real multi-page sites',
+    feat2Desc:
+      'Not just a single landing page. Build a full site with a shared nav, add and rename pages freely, and the builder keeps the links in sync for you.',
+    feat3Title: 'Publish anywhere you control',
+    feat3Desc:
+      'Your site ships to infrastructure you own. Use a custom domain with automatic HTTPS, or serve it on a port with no domain at all — ideal for internal sites and quick launches.',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Do I need to know how to code?',
+    faq1A:
+      'No. The whole site is built visually — pick a design, edit text and blocks on the page, and publish. No HTML, CSS, or templates to wrangle.',
+    faq2Q: 'Where does my site get published?',
+    faq2A:
+      'To a server you own — connect any VPS over SSH, or let Pushify provision a Hetzner server for you. Your site and its data stay on your infrastructure.',
+    faq3Q: 'Do I need a domain?',
+    faq3A:
+      'No. Publish on a custom domain with automatic SSL, or serve the site on a plain port with no domain required. You can add a domain later.',
+    faq4Q: 'Can I build more than one page?',
+    faq4A:
+      'Yes. Add as many pages as you need — Home, About, Pricing, Contact, and more — all sharing a navigation bar the builder keeps in sync.',
+    ctaTitle: 'Launch your site today',
+    ctaBody: 'Build it visually, publish it to your own server, and keep full control.',
+    ctaButton: 'Start building free',
   },
 };
