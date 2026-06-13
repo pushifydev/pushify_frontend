@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { JsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Open Source',
@@ -12,5 +13,32 @@ export const metadata: Metadata = {
 };
 
 export default function OpenSourceLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareSourceCode',
+          '@id': 'https://pushify.dev/open-source#sourcecode',
+          name: 'Pushify',
+          description:
+            'Open-source cloud deployment platform. MIT-licensed, self-hostable, community-driven.',
+          url: 'https://pushify.dev/open-source',
+          codeRepository: 'https://github.com/pushifydev',
+          license: 'https://opensource.org/licenses/MIT',
+          programmingLanguage: { '@type': 'ComputerLanguage', name: 'TypeScript' },
+          runtimePlatform: 'Node.js',
+          about: { '@id': 'https://pushify.dev/#software' },
+          breadcrumb: {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://pushify.dev' },
+              { '@type': 'ListItem', position: 2, name: 'Open Source', item: 'https://pushify.dev/open-source' },
+            ],
+          },
+        }}
+      />
+      {children}
+    </>
+  );
 }
