@@ -298,6 +298,7 @@ export interface TranslationKeys {
     frameworks: string;
     pricing: string;
     openSource: string;
+    sites: string;
     // Hero
     openSourcePlatform: string;
     getStartedFree: string;
@@ -344,6 +345,9 @@ export interface TranslationKeys {
     cliLabel: string;
     deployFromTerminalTitle: string;
     deployFromTerminalDesc: string;
+    siteBuilderLabel: string;
+    siteBuilderTitle: string;
+    siteBuilderDesc: string;
     // Mini features grid
     andEverythingElse: string;
     everyFeatureBuiltIn: string;
@@ -363,6 +367,8 @@ export interface TranslationKeys {
     environmentVariablesDesc: string;
     notifications: string;
     notificationsDesc: string;
+    noCodeSiteBuilder: string;
+    noCodeSiteBuilderDesc: string;
     // Features section (legacy)
     platformFeatures: string;
     everythingYouNeed: string;
@@ -510,6 +516,50 @@ export interface TranslationKeys {
     marketplaceTitle: string;
     marketplaceSubtitle: string;
     marketplaceCTA: string;
+    // Site builder showcase
+    siteBuilderEyebrow: string;
+    siteBuilderHeadline: string;
+    siteBuilderSubtitle: string;
+    siteBuilderFeat1Title: string;
+    siteBuilderFeat1Desc: string;
+    siteBuilderFeat2Title: string;
+    siteBuilderFeat2Desc: string;
+    siteBuilderFeat3Title: string;
+    siteBuilderFeat3Desc: string;
+    siteBuilderFeat4Title: string;
+    siteBuilderFeat4Desc: string;
+    siteBuilderCTA: string;
+    siteBuilderMockToolbar: string;
+    siteBuilderMockPublish: string;
+    // Security
+    securityEyebrow: string;
+    securityHeadline: string;
+    securitySubtitle: string;
+    securityFeat1Title: string;
+    securityFeat1Desc: string;
+    securityFeat2Title: string;
+    securityFeat2Desc: string;
+    securityFeat3Title: string;
+    securityFeat3Desc: string;
+    securityFeat4Title: string;
+    securityFeat4Desc: string;
+    securityFeat5Title: string;
+    securityFeat5Desc: string;
+    securityFeat6Title: string;
+    securityFeat6Desc: string;
+    // Social proof
+    socialProofEyebrow: string;
+    socialProofHeadline: string;
+    socialProofSubtitle: string;
+    sp1Quote: string;
+    sp1Author: string;
+    sp1Role: string;
+    sp2Quote: string;
+    sp2Author: string;
+    sp2Role: string;
+    sp3Quote: string;
+    sp3Author: string;
+    sp3Role: string;
     // Comparison
     comparisonEyebrow: string;
     comparisonTitle: string;
@@ -523,6 +573,7 @@ export interface TranslationKeys {
     rowDatabaseMgmt: string;
     rowOwnServers: string;
     rowAIAssistant: string;
+    rowSiteBuilder: string;
     rowPricing: string;
     rowFreeTier: string;
     pricingFromVercel: string;
@@ -2281,6 +2332,7 @@ export const en: TranslationKeys = {
     frameworks: 'Frameworks',
     pricing: 'Pricing',
     openSource: 'Open Source',
+    sites: 'Sites',
     // Hero
     openSourcePlatform: 'Open Source Cloud Platform',
     getStartedFree: 'Get Started Free',
@@ -2327,6 +2379,9 @@ export const en: TranslationKeys = {
     cliLabel: 'CLI',
     deployFromTerminalTitle: 'Deploy from your terminal.',
     deployFromTerminalDesc: 'The Pushify CLI gives you full control from the command line. Init, deploy, manage env vars, tail logs — everything without leaving your editor.',
+    siteBuilderLabel: 'Site Builder',
+    siteBuilderTitle: 'A website builder, built in.',
+    siteBuilderDesc: 'Launch marketing sites and landing pages without writing code. A visual drag-and-drop editor with multi-page management, ready-made design templates, and one-click publish straight to your own server — domain optional.',
     // Mini features grid
     andEverythingElse: 'And everything else',
     everyFeatureBuiltIn: 'Every feature a modern deployment platform needs, built-in from day one.',
@@ -2346,6 +2401,8 @@ export const en: TranslationKeys = {
     environmentVariablesDesc: 'Per-environment secrets management. Encrypted at rest, injected at build and runtime.',
     notifications: 'Notifications',
     notificationsDesc: 'Email, webhook, and Slack alerts for deploys, failures, and health check incidents.',
+    noCodeSiteBuilder: 'No-Code Site Builder',
+    noCodeSiteBuilderDesc: 'Pick a template, edit on the page, and publish a multi-page site to your server in minutes.',
     // Features section (legacy)
     platformFeatures: 'Platform Features',
     everythingYouNeed: 'Everything you need to',
@@ -2483,10 +2540,10 @@ export const en: TranslationKeys = {
   homepage: {
     // Stats
     stats: 'Trusted by developers worldwide',
-    statsTrusted: 'GitHub stars',
-    statsDeployed: 'Deployments per month',
+    statsTrusted: 'Open source',
+    statsDeployed: 'Avg. deploy time',
     statsApps: 'Marketplace apps',
-    statsUptime: 'Uptime SLA',
+    statsUptime: 'Vendor lock-in',
     statsByTheNumbers: 'By the numbers',
     // What is Pushify
     whatIsPushifyEyebrow: 'What is Pushify?',
@@ -2509,6 +2566,50 @@ export const en: TranslationKeys = {
     marketplaceTitle: '24+ apps. One-click install.',
     marketplaceSubtitle: 'Self-host the tools you love. WordPress, Supabase, Cal.com, NextCloud, and more — fully configured and ready in minutes.',
     marketplaceCTA: 'Browse marketplace',
+    // Site builder showcase
+    siteBuilderEyebrow: 'Site Builder',
+    siteBuilderHeadline: 'Build a website. No code required.',
+    siteBuilderSubtitle: 'A WordPress-style visual editor, built right in. Pick a design, edit blocks on the page, add pages, and publish to your own server — with or without a domain.',
+    siteBuilderFeat1Title: 'Drag-and-drop editor',
+    siteBuilderFeat1Desc: 'Edit text and rearrange blocks directly on the live page. What you see is what ships.',
+    siteBuilderFeat2Title: 'Multi-page sites',
+    siteBuilderFeat2Desc: 'Add, rename, and organize pages with a shared navigation bar — no setup.',
+    siteBuilderFeat3Title: 'Ready-made designs',
+    siteBuilderFeat3Desc: 'Start from a polished template and swap your entire look in a single click.',
+    siteBuilderFeat4Title: 'Publish anywhere',
+    siteBuilderFeat4Desc: 'Ship to your own server on a custom domain — or a plain port. No domain needed.',
+    siteBuilderCTA: 'Start building free',
+    siteBuilderMockToolbar: 'acme.site — editor',
+    siteBuilderMockPublish: 'Publish',
+    // Security
+    securityEyebrow: 'Security',
+    securityHeadline: 'Secure by default.',
+    securitySubtitle: 'Your code, secrets, and infrastructure are protected at every layer — with no extra configuration.',
+    securityFeat1Title: 'Encrypted secrets',
+    securityFeat1Desc: 'Environment variables are encrypted at rest and injected only at build and runtime — never printed in logs.',
+    securityFeat2Title: 'Isolated deployments',
+    securityFeat2Desc: 'Every app runs in its own Docker container, sandboxed from other workloads on the server.',
+    securityFeat3Title: 'Scoped authorization',
+    securityFeat3Desc: 'Every project, server, and database is verified against your organization on each request.',
+    securityFeat4Title: 'Hardened APIs',
+    securityFeat4Desc: 'Protected against command injection and SSRF, with strict input validation across every endpoint.',
+    securityFeat5Title: 'Automatic HTTPS',
+    securityFeat5Desc: "Free Let's Encrypt certificates with auto-renewal on every custom domain.",
+    securityFeat6Title: 'Audit logs & 2FA',
+    securityFeat6Desc: 'Two-factor authentication and a full audit trail of who changed what, and when.',
+    // Social proof
+    socialProofEyebrow: 'Loved by builders',
+    socialProofHeadline: 'Built for developers who ship.',
+    socialProofSubtitle: 'From solo makers to small teams — here is what early users are saying.',
+    sp1Quote: 'I moved three side projects off Vercel in an afternoon. Same DX, my own server, a fraction of the cost.',
+    sp1Author: 'Indie developer',
+    sp1Role: 'Early access',
+    sp2Quote: 'The one-click marketplace alone saved us a week of DevOps. Strapi and Postgres were live in minutes.',
+    sp2Author: 'Backend engineer',
+    sp2Role: 'Early access',
+    sp3Quote: 'Finally a self-hostable platform that does not feel like a downgrade. The site builder was a genuine surprise.',
+    sp3Author: 'Full-stack freelancer',
+    sp3Role: 'Early access',
     // Comparison
     comparisonEyebrow: 'Compare',
     comparisonTitle: 'How does Pushify compare?',
@@ -2522,6 +2623,7 @@ export const en: TranslationKeys = {
     rowDatabaseMgmt: 'Managed databases',
     rowOwnServers: 'Bring your own servers',
     rowAIAssistant: 'Built-in AI assistant',
+    rowSiteBuilder: 'No-code site builder',
     rowPricing: 'Starting price',
     rowFreeTier: 'Generous free tier',
     pricingFromVercel: 'From $20/mo',

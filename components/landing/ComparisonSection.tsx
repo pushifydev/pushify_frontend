@@ -16,6 +16,7 @@ export function ComparisonSection() {
     { label: t('homepage', 'rowDatabaseMgmt'), pushify: true, vercel: true, coolify: true },
     { label: t('homepage', 'rowOwnServers'), pushify: true, vercel: false, coolify: true },
     { label: t('homepage', 'rowAIAssistant'), pushify: true, vercel: false, coolify: false },
+    { label: t('homepage', 'rowSiteBuilder'), pushify: true, vercel: false, coolify: false },
     { label: t('homepage', 'rowFreeTier'), pushify: true, vercel: true, coolify: true },
     {
       label: t('homepage', 'rowPricing'),

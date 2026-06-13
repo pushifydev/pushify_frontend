@@ -8,9 +8,12 @@ import {
   HowItWorksSection,
   FrameworksSection,
   MarketplacePreviewSection,
+  SiteBuilderSection,
   ComparisonSection,
+  SecuritySection,
   BillingHowItWorksSection,
   FAQSection,
+  SocialProofSection,
   CTASection,
   LandingFooter,
 } from '@/components/landing';
@@ -50,9 +53,12 @@ export default function LandingPage() {
       <HowItWorksSection />
       <FrameworksSection />
       <MarketplacePreviewSection />
+      <SiteBuilderSection />
       <ComparisonSection />
+      <SecuritySection />
       <BillingHowItWorksSection />
       <FAQSection />
+      <SocialProofSection />
       <CTASection />
       <LandingFooter />
     </div>

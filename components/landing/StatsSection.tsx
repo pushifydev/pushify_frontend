@@ -6,10 +6,10 @@ export function StatsSection() {
   const { t } = useTranslation();
 
   const stats = [
-    { num: '1.2k+', label: t('homepage', 'statsTrusted') },
-    { num: '50k+', label: t('homepage', 'statsDeployed') },
+    { num: '100%', label: t('homepage', 'statsTrusted') },
     { num: '24+', label: t('homepage', 'statsApps') },
-    { num: '99.9%', label: t('homepage', 'statsUptime') },
+    { num: '<60s', label: t('homepage', 'statsDeployed') },
+    { num: '0', label: t('homepage', 'statsUptime') },
   ];
 
   return (
