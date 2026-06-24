@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0-beta.15] - 2026-06-24
+
+### Fixed
+- Team invite links now work for already-signed-in users. The `(auth)` layout used to redirect any authenticated visitor to the dashboard before `/accept-invitation` could render, so clicking an invite link from email appeared to "do nothing". The layout now makes an exception for the invite flow, letting logged-in invitees see and click "Accept".
+
+### Added
+- Server creation page now shows the plan's server quota ("{used} of {limit} servers used on your {plan} plan"). When the limit is reached it switches to an upgrade prompt (link to Compare Plans) and disables the Create button, instead of only surfacing a 403 after submit.
+
 ## [0.2.0-beta.14] - 2026-06-13
 
 ### Added
