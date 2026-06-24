@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.19] - 2026-06-24
+
+### Fixed
+- Content-Security-Policy was blocking Google Analytics — `script-src` now allows `https://www.googletagmanager.com` and `https://www.google-analytics.com`, so GA4 (gtag.js) loads. (`connect-src`/`img-src` already permit `https:` for the analytics beacons.)
+
 ## [0.2.0-beta.18] - 2026-06-24
 
 ### SEO
