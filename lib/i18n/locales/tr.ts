@@ -1489,6 +1489,8 @@ export const tr: TranslationKeys = {
     description: 'Bulut sunucularınızı ve altyapınızı yönetin.',
     newServer: 'Yeni Sunucu',
     createServer: 'Sunucu Oluştur',
+    planServersUsage: '{plan} planında {used}/{limit} sunucu kullanılıyor',
+    serverLimitReached: '{plan} planının sunucu limitine ulaştın ({used}/{limit}). Daha fazlası için yükselt.',
     creating: 'Oluşturuluyor...',
     noServers: 'Henüz sunucu yok',
     noServersDesc: 'Uygulamalarınızı kendi altyapınızda çalıştırmak için bir sunucu oluşturun.',

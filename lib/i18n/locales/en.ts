@@ -1453,6 +1453,8 @@ export interface TranslationKeys {
     description: string;
     newServer: string;
     createServer: string;
+    planServersUsage: string;
+    serverLimitReached: string;
     creating: string;
     noServers: string;
     noServersDesc: string;
@@ -3647,6 +3649,8 @@ export const en: TranslationKeys = {
     description: 'Manage your cloud servers and infrastructure.',
     newServer: 'New Server',
     createServer: 'Create Server',
+    planServersUsage: '{used} of {limit} servers used on your {plan} plan',
+    serverLimitReached: "You've reached your {plan} plan's server limit ({used}/{limit}). Upgrade to add more.",
     creating: 'Creating...',
     noServers: 'No servers yet',
     noServersDesc: 'Create a server to deploy your applications on your own infrastructure.',

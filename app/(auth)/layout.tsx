@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/auth';
 import { useTranslation } from '@/hooks';
@@ -16,18 +16,24 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
   const { t } = useTranslation();
+
+  // The invite page lives under (auth) but must render for logged-in users too — they need
+  // to accept the invite. Without this exception the guard below would bounce them to the
+  // dashboard before they can act, so clicking an invite link appears to "do nothing".
+  const isInvitationFlow = pathname?.startsWith('/accept-invitation') ?? false;
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    if (!isLoading && isAuthenticated && !isInvitationFlow) {
       router.push('/dashboard');
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, router, isInvitationFlow]);
 
   if (isLoading) {
     return (
@@ -37,7 +43,7 @@ export default function AuthLayout({
     );
   }
 
-  if (isAuthenticated) {
+  if (isAuthenticated && !isInvitationFlow) {
     return null;
   }
 
