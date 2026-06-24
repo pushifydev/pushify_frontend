@@ -63,6 +63,13 @@ export default function VsCoolifyPage() {
         { q: t('vsCoolify', 'faq3Q'), a: t('vsCoolify', 'faq3A') },
         { q: t('vsCoolify', 'faq4Q'), a: t('vsCoolify', 'faq4A') },
       ]}
+      relatedTitle={t('landing', 'exploreMore')}
+      relatedLinks={[
+        { href: '/vs/vercel', label: t('vsVercel', 'h1') },
+        { href: '/deploy/nextjs', label: 'Deploy Next.js' },
+        { href: '/pricing', label: t('landing', 'pricing') },
+        { href: '/features', label: t('landing', 'features') },
+      ]}
       ctaTitle={t('vsCoolify', 'ctaTitle')}
       ctaBody={t('vsCoolify', 'ctaBody')}
       ctaButton={t('vsCoolify', 'ctaButton')}
