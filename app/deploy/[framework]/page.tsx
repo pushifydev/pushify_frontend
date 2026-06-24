@@ -329,6 +329,11 @@ export default function DeployFrameworkPage() {
             {content.docsBtn}
           </Link>
         </div>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <Link href="/vs/coolify" className="lp-cta-ghost text-sm">Pushify vs Coolify</Link>
+          <Link href="/vs/vercel" className="lp-cta-ghost text-sm">Pushify vs Vercel</Link>
+          <Link href="/features" className="lp-cta-ghost text-sm">Features</Link>
+        </div>
       </section>
 
       {/* JSON-LD HowTo Schema */}

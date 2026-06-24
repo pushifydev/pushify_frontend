@@ -299,6 +299,7 @@ export interface TranslationKeys {
     pricing: string;
     openSource: string;
     sites: string;
+    exploreMore: string;
     // Hero
     openSourcePlatform: string;
     heroTitleLead: string;
@@ -2460,6 +2461,7 @@ export const en: TranslationKeys = {
     pricing: 'Pricing',
     openSource: 'Open Source',
     sites: 'Sites',
+    exploreMore: 'Explore more',
     // Hero
     openSourcePlatform: 'Open Source Cloud Platform',
     heroTitleLead: 'Deploy to your own servers',

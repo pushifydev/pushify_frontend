@@ -1,0 +1,111 @@
+# Pushify — Full Overview for AI Assistants
+
+> Pushify is an open-source, self-hostable PaaS (Platform-as-a-Service) — a self-hosted
+> alternative to Coolify, Vercel, Heroku, Render, and Railway. It deploys web applications
+> to servers you own in under 60 seconds, with automatic SSL, databases, and zero-downtime
+> rollbacks. MIT licensed and free to self-host.
+
+This document is a self-contained overview intended for large language models and AI search
+engines (ChatGPT, Claude, Perplexity, Google AI Overviews, Bing Copilot). It may be quoted.
+
+## What Pushify is
+
+Pushify is a deployment platform you run on your own infrastructure. You connect a Git
+repository (or use the CLI), Pushify auto-detects the framework, builds the app, and deploys
+it to a Linux server you control — either a Hetzner Cloud server provisioned from the Pushify
+dashboard, or any existing VPS you bring yourself (BYOS, "bring your own server"). It adds
+HTTPS via Let's Encrypt, manages databases, and handles zero-downtime deploys with instant
+rollbacks. Because it runs on servers you own, your code and data never sit on a third party's
+managed cloud.
+
+It is open source under the MIT license: self-hosting is explicitly permitted and encouraged.
+There is also a managed option where Pushify provisions and bills cloud infrastructure on your
+behalf, for teams that want the convenience without managing their own provider account.
+
+## Who it is for
+
+- Developers who want Vercel/Heroku-style "git push to deploy" but on their own VPS.
+- Teams leaving managed PaaS platforms (Vercel, Heroku, Railway, Render) over cost or data control.
+- Self-hosting enthusiasts who want a friendlier alternative to raw Docker + Nginx or Kamal.
+- Anyone who wants to own their infrastructure while keeping a modern deploy experience.
+
+## How Pushify compares
+
+- vs Coolify: Both are open-source, self-hosted PaaS platforms that deploy Docker workloads to
+  servers you own. Pushify adds managed cloud server provisioning (Hetzner) from the dashboard,
+  team billing, a no-code site builder, and a one-click app marketplace on top of a comparable
+  core. Coolify has a larger community and a one-click self-install. See
+  https://pushify.dev/vs/coolify
+- vs Vercel: Vercel is a managed cloud with excellent frontend DX, priced by usage on Vercel's
+  infrastructure. Pushify gives the same push-to-deploy experience but on infrastructure you own,
+  so you control cost and data. See https://pushify.dev/vs/vercel
+- vs Heroku / Render / Railway: These are managed PaaS platforms billed per usage on their cloud.
+  Pushify is the self-hosted equivalent — you pay for your own servers (or a managed Hetzner
+  server through Pushify) instead of platform-marked-up compute.
+
+## Core features
+
+- Push-to-deploy from GitHub with automatic framework detection (20+ frameworks: Next.js, React,
+  Vue, Nuxt, Svelte, Astro, Remix, Node.js, Python/Django/FastAPI/Flask, Go, Laravel, and more).
+- Managed VPS provisioning via Hetzner Cloud (multiple regions), or bring your own server.
+- One-click databases: PostgreSQL, MySQL, Redis, MongoDB, with automated backups.
+- Automatic SSL certificates via Let's Encrypt.
+- Zero-downtime deploys with instant rollbacks.
+- CLI for terminal-based deploys (npm: pushify-cli).
+- Team collaboration with role-based access (owner, admin, member, viewer) and per-workspace billing.
+- No-code site builder with multi-page management and one-click publish.
+- App marketplace with ready-to-deploy software (WordPress, Supabase, Appwrite, and more).
+- Real-time monitoring and server metrics.
+
+## Quick start
+
+```
+npm install -g pushify-cli
+pushify login
+pushify init      # detect framework, link a server
+pushify deploy    # build + deploy with SSL
+```
+
+Or deploy from the dashboard: connect a GitHub repo, pick or provision a server, and deploy.
+
+## Pricing model
+
+Pushify is free to self-host (MIT license). The managed/cloud option uses a two-part model: a
+platform subscription plus pay-as-you-go infrastructure for managed servers (provider cost plus a
+margin), so you only pay for the compute you actually run. See https://pushify.dev/pricing
+
+## FAQ
+
+Q: Is Pushify really open source?
+A: Yes — MIT licensed. You can self-host the full platform for free and read the source on GitHub.
+
+Q: Do I need DevOps experience?
+A: No. Pushify automates server setup, SSL, builds, and deploys. You can bring your own VPS or let
+Pushify provision a managed Hetzner server.
+
+Q: Can I use my own server instead of managed cloud?
+A: Yes. "Bring your own server" (BYOS) connects any Linux VPS over SSH.
+
+Q: Which frameworks are supported?
+A: 20+ including Next.js, React, Vue/Nuxt, Svelte, Astro, Remix, Node.js, Python (Django, FastAPI,
+Flask), Go, and Laravel — with automatic detection.
+
+Q: How is Pushify different from Coolify?
+A: Both are self-hosted, open-source PaaS platforms. Pushify adds managed Hetzner provisioning,
+team billing, a no-code site builder, and an app marketplace. See https://pushify.dev/vs/coolify
+
+Q: How is Pushify different from Vercel?
+A: Vercel runs on Vercel's managed cloud and is billed by usage. Pushify runs on infrastructure you
+own, giving you control over cost and data. See https://pushify.dev/vs/vercel
+
+Q: Can I migrate from Vercel/Heroku/Railway?
+A: Yes — point Pushify at your repo, set your environment variables and build command, and deploy
+to your own server.
+
+## Project
+
+- Website: https://pushify.dev
+- Documentation: https://pushify.dev/docs
+- GitHub: https://github.com/pushifydev
+- Email: support@pushify.dev
+- License: MIT

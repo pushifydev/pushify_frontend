@@ -299,6 +299,7 @@ export const tr: TranslationKeys = {
     pricing: 'Fiyatlandırma',
     openSource: 'Açık Kaynak',
     sites: 'Siteler',
+    exploreMore: 'Daha fazlasını keşfet',
     // Hero
     openSourcePlatform: 'Açık Kaynak Bulut Platformu',
     heroTitleLead: 'Kendi sunucularınıza',
