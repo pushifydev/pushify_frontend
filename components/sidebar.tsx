@@ -28,10 +28,11 @@ import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
 import { useTranslation, useBillingInfo } from '@/hooks';
 import { LogoMark } from '@/components/logo';
+import { OrgSwitcher } from '@/components/OrgSwitcher';
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { user, organization, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { t } = useTranslation();
   const { collapsed, mobileOpen, toggleCollapse, closeMobile } = useSidebarStore();
   const { data: billingInfo } = useBillingInfo();
@@ -146,7 +147,7 @@ export function Sidebar() {
           <p className="text-[13px] font-medium truncate leading-tight text-[var(--text-primary)]">
             {user?.name || 'User'}
           </p>
-          <p className="text-[10px] truncate text-[var(--text-muted)]">{organization?.name || 'Personal'}</p>
+          <OrgSwitcher />
         </div>
       )}
       {collapsed && (

@@ -122,6 +122,8 @@ export {
   organizationKeys,
   useOrganization,
   useOrganizationMembers,
+  useMyOrganizations,
+  useSwitchOrganization,
   useUpdateOrganization,
   useAddMember,
   useUpdateMemberRole,

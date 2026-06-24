@@ -183,6 +183,8 @@ export {
 // Organizations Functions
 export {
   getOrganization,
+  getMyOrganizations,
+  switchOrganization,
   updateOrganization,
   getMembers,
   addMember,
@@ -195,6 +197,7 @@ export {
   acceptInvitation,
   organizationsService,
   type OrganizationDetails,
+  type UserOrganization,
   type OrganizationMember,
   type MemberRole,
   type UpdateOrganizationInput,

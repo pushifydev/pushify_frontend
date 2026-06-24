@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0-beta.16] - 2026-06-24
+
+### Added
+- **Workspace switcher** in the sidebar footer: users who belong to more than one organization can switch the active workspace from a dropdown (shows each org + the user's role, with the current one checked). Switching re-scopes the session and refetches all org data (projects, servers, billing, members…).
+- Accepting a team invitation now **auto-switches** the member into that team's workspace, so they immediately land on the team's resources instead of their own (empty) personal workspace.
+
 ## [0.2.0-beta.15] - 2026-06-24
 
 ### Fixed
