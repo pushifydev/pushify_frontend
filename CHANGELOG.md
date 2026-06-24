@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.17] - 2026-06-24
+
+### Added
+- Optional Google Analytics 4 integration, gated behind `NEXT_PUBLIC_GA_ID`. GA loads only when the Measurement ID is set, so dev/preview builds stay tracking-free. Set the env var to enable in production.
+
 ## [0.2.0-beta.16] - 2026-06-24
 
 ### Added
