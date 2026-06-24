@@ -1,10 +1,18 @@
 import { AxiosError } from 'axios';
-import { api } from '../client';
+import { api, setTokens } from '../client';
 import type { ApiResponse, ApiError } from '../types';
 
 // ============ Types ============
 
 export type MemberRole = 'owner' | 'admin' | 'member' | 'viewer';
+
+/** A workspace the current user belongs to, with their role in it (for the switcher). */
+export interface UserOrganization {
+  id: string;
+  name: string;
+  slug: string;
+  role: MemberRole;
+}
 
 export interface OrganizationDetails {
   id: string;
@@ -106,6 +114,37 @@ export const getOrganization = async (): Promise<ApiResponse<OrganizationDetails
   try {
     const response = await api.get<{ data: OrganizationDetails }>('/organizations');
     return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+/** List every workspace the current user belongs to (for the switcher). */
+export const getMyOrganizations = async (): Promise<ApiResponse<UserOrganization[]>> => {
+  try {
+    const response = await api.get<{ data: UserOrganization[] }>('/organizations/mine');
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+/**
+ * Switch the active workspace. The backend re-issues tokens scoped to the target org;
+ * we persist them so all subsequent requests resolve to the new workspace.
+ */
+export const switchOrganization = async (
+  organizationId: string
+): Promise<ApiResponse<{ id: string; name: string; slug: string }>> => {
+  try {
+    const response = await api.post<{
+      data: { organization: { id: string; name: string; slug: string } };
+      accessToken: string;
+      refreshToken: string;
+    }>('/organizations/switch', { organizationId });
+    const { data, accessToken, refreshToken } = response.data;
+    setTokens(accessToken, refreshToken);
+    return { data: data.organization };
   } catch (error) {
     return handleError(error);
   }
@@ -239,6 +278,8 @@ export const acceptInvitation = async (
 
 export const organizationsService = {
   getOrganization,
+  getMyOrganizations,
+  switchOrganization,
   updateOrganization,
   getMembers,
   addMember,

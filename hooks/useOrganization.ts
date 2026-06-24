@@ -3,6 +3,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getOrganization,
+  getMyOrganizations,
+  switchOrganization,
   updateOrganization,
   getMembers,
   addMember,
@@ -17,11 +19,13 @@ import {
   type UpdateMemberRoleInput,
   type SendInvitationInput,
 } from '@/lib/api';
+import { useAuthStore } from '@/stores/auth';
 
 // Query Keys
 export const organizationKeys = {
   all: ['organization'] as const,
   details: () => [...organizationKeys.all, 'details'] as const,
+  mine: () => [...organizationKeys.all, 'mine'] as const,
   members: () => [...organizationKeys.all, 'members'] as const,
   invitations: () => [...organizationKeys.all, 'invitations'] as const,
 };
@@ -50,7 +54,40 @@ export function useOrganizationMembers() {
   });
 }
 
+/** All workspaces the user belongs to — powers the switcher. */
+export function useMyOrganizations() {
+  return useQuery({
+    queryKey: organizationKeys.mine(),
+    queryFn: async () => {
+      const result = await getMyOrganizations();
+      if (result.error) throw new Error(result.error.message);
+      return result.data ?? [];
+    },
+  });
+}
+
 // ============ Mutations ============
+
+/**
+ * Switch the active workspace. switchOrganization() persists the new scoped tokens; here we
+ * reflect the org in the auth store and refetch every query so all org-scoped data reloads.
+ */
+export function useSwitchOrganization() {
+  const queryClient = useQueryClient();
+  const setOrganization = useAuthStore((s) => s.setOrganization);
+
+  return useMutation({
+    mutationFn: async (organizationId: string) => {
+      const result = await switchOrganization(organizationId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (organization) => {
+      setOrganization(organization);
+      queryClient.invalidateQueries();
+    },
+  });
+}
 
 export function useUpdateOrganization() {
   const queryClient = useQueryClient();
