@@ -1,13 +1,15 @@
 import Script from 'next/script';
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+// Public GA4 Measurement ID (not a secret — visible in any GA site's page source).
+// Override the property by setting NEXT_PUBLIC_GA_ID; otherwise this default is used.
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-SW4LNQEV9M';
 
 /**
- * Google Analytics 4. Renders nothing unless NEXT_PUBLIC_GA_ID (e.g. "G-XXXXXXXXXX") is set,
- * so it's a no-op in dev / previews and only loads in environments where the ID is configured.
+ * Google Analytics 4. Loads in production builds only (skipped in local dev) so analytics
+ * isn't polluted by development traffic.
  */
 export function Analytics() {
-  if (!GA_ID) return null;
+  if (process.env.NODE_ENV !== 'production' || !GA_ID) return null;
 
   return (
     <>
