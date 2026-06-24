@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Zap,
@@ -156,17 +155,19 @@ const VALID_SECTIONS: DocsSectionId[] = [
 
 function DocsPageContent() {
   const { content: c } = useDocsContent();
-  const searchParams = useSearchParams();
   const [activeSection, setActiveSection] = useState<DocsSectionId>('intro');
   const [mobileNav, setMobileNav] = useState(false);
   const [search, setSearch] = useState('');
 
+  // Read the ?section= deep-link after mount (client only). Using
+  // window.location instead of useSearchParams keeps this route server-rendered
+  // (all sections in the HTML for crawlers) instead of bailing to client-only.
   useEffect(() => {
-    const section = searchParams.get('section');
+    const section = new URLSearchParams(window.location.search).get('section');
     if (section && VALID_SECTIONS.includes(section as DocsSectionId)) {
       setActiveSection(section as DocsSectionId);
     }
-  }, [searchParams]);
+  }, []);
 
   const navigate = (section: DocsSectionId) => {
     setActiveSection(section);
@@ -304,16 +305,38 @@ function DocsPageContent() {
           id="docs-main"
           className="flex-1 min-w-0 px-4 sm:px-6 lg:px-10 py-8 lg:py-10 scroll-mt-[6.5rem] md:scroll-mt-28"
         >
-          {activeSection === 'intro' && <IntroSection c={c} apiBase={API_BASE} onNavigate={navigate} />}
-          {activeSection === 'auth' && <AuthSection c={c} apiBase={API_BASE} />}
-          {activeSection === 'projects' && <ProjectsSection c={c} apiBase={API_BASE} />}
-          {activeSection === 'deployments' && <DeploymentsSection c={c} apiBase={API_BASE} />}
-          {activeSection === 'envvars' && <EnvVarsSection c={c} apiBase={API_BASE} />}
-          {activeSection === 'domains' && <DomainsSection c={c} apiBase={API_BASE} />}
-          {activeSection === 'servers' && <ServersSection c={c} apiBase={API_BASE} />}
-          {activeSection === 'databases' && <DatabasesSection c={c} apiBase={API_BASE} />}
-          {activeSection === 'webhooks' && <WebhooksSection c={c} apiBase={API_BASE} />}
-          {activeSection === 'errors' && <ErrorsSection c={c} apiBase={API_BASE} />}
+          {/* All sections are rendered into the HTML (crawlable); only the
+              active one is shown. Inactive sections are hidden, not unmounted. */}
+          <div className={activeSection === 'intro' ? undefined : 'hidden'}>
+            <IntroSection c={c} apiBase={API_BASE} onNavigate={navigate} />
+          </div>
+          <div className={activeSection === 'auth' ? undefined : 'hidden'}>
+            <AuthSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'projects' ? undefined : 'hidden'}>
+            <ProjectsSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'deployments' ? undefined : 'hidden'}>
+            <DeploymentsSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'envvars' ? undefined : 'hidden'}>
+            <EnvVarsSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'domains' ? undefined : 'hidden'}>
+            <DomainsSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'servers' ? undefined : 'hidden'}>
+            <ServersSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'databases' ? undefined : 'hidden'}>
+            <DatabasesSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'webhooks' ? undefined : 'hidden'}>
+            <WebhooksSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'errors' ? undefined : 'hidden'}>
+            <ErrorsSection c={c} apiBase={API_BASE} />
+          </div>
         </main>
       </div>
       </div>
@@ -322,19 +345,7 @@ function DocsPageContent() {
 }
 
 export default function DocsPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="lp-page min-h-screen flex items-center justify-center">
-          <p className="text-sm" style={{ color: 'var(--lp-muted)' }}>
-            Loading…
-          </p>
-        </div>
-      }
-    >
-      <DocsPageContent />
-    </Suspense>
-  );
+  return <DocsPageContent />;
 }
 
 function IntroSection({

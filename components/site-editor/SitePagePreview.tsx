@@ -17,7 +17,10 @@ interface SitePagePreviewProps {
   selectedBlockId: string | null;
   onSelectBlock: (id: string | null) => void;
   onBlockChange: (id: string, patch: Partial<SiteBlock>) => void;
+  onReorder: (blocks: SiteBlock[]) => void;
   onBannerImagePick?: (blockId: string, file: File) => void;
+  dragToReorderLabel: string;
+  labelFor: (block: SiteBlock) => string;
   previewLabel: string;
   viewport: 'desktop' | 'mobile';
   onViewportChange: (v: 'desktop' | 'mobile') => void;
@@ -26,6 +29,8 @@ interface SitePagePreviewProps {
   canvasModeLabel: string;
   fullPreviewLabel: string;
   clickToEditHint: string;
+  /** Hide the built-in header (device/mode controls) — used when they live in the app toolbar. */
+  chromeless?: boolean;
 }
 
 export function SitePagePreview({
@@ -36,7 +41,10 @@ export function SitePagePreview({
   selectedBlockId,
   onSelectBlock,
   onBlockChange,
+  onReorder,
   onBannerImagePick,
+  dragToReorderLabel,
+  labelFor,
   previewLabel,
   viewport,
   onViewportChange,
@@ -45,6 +53,7 @@ export function SitePagePreview({
   canvasModeLabel,
   fullPreviewLabel,
   clickToEditHint,
+  chromeless,
 }: SitePagePreviewProps) {
   const html = useMemo(
     () => renderSiteHtmlClient(seo, blocks, siteName, theme),
@@ -52,7 +61,12 @@ export function SitePagePreview({
   );
 
   return (
-    <div className="flex flex-col h-full min-h-0 rounded-xl border border-[var(--border-subtle)] overflow-hidden bg-[var(--bg-tertiary)]">
+    <div
+      className={`flex flex-col h-full min-h-0 overflow-hidden bg-[var(--bg-tertiary)] ${
+        chromeless ? '' : 'rounded-xl border border-[var(--border-subtle)]'
+      }`}
+    >
+      {!chromeless && (
       <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
         <span className="text-xs font-medium text-[var(--text-muted)]">{previewLabel}</span>
         <div className="flex items-center gap-1">
@@ -99,11 +113,16 @@ export function SitePagePreview({
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-auto p-4 flex justify-center">
+      )}
+      <div
+        className={`flex-1 overflow-auto p-4 flex justify-center ${
+          mode === 'canvas' ? 'items-start' : 'items-stretch'
+        }`}
+      >
         <div
-          className={`bg-white shadow-lg transition-all duration-300 rounded-lg overflow-hidden ${
-            viewport === 'mobile' ? 'w-[375px]' : 'w-full max-w-4xl'
-          }`}
+          className={`bg-white shadow-lg transition-all duration-300 rounded-lg overflow-hidden shrink-0 ${
+            mode === 'canvas' ? 'h-fit' : ''
+          } ${viewport === 'mobile' ? 'w-[375px]' : 'w-full max-w-4xl'}`}
           style={{ minHeight: viewport === 'mobile' ? 640 : 480 }}
         >
           {mode === 'canvas' ? (
@@ -113,8 +132,11 @@ export function SitePagePreview({
               selectedBlockId={selectedBlockId}
               onSelectBlock={onSelectBlock}
               onBlockChange={onBlockChange}
+              onReorder={onReorder}
               onBannerImagePick={onBannerImagePick}
               clickToEditHint={clickToEditHint}
+              dragToReorderLabel={dragToReorderLabel}
+              labelFor={labelFor}
             />
           ) : (
             <iframe

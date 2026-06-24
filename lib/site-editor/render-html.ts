@@ -6,7 +6,36 @@ function escapeHtml(text: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+const SAFE_URL_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+
+/** Allow only relative/anchor and http(s)/mailto/tel URLs; block javascript:/data: (CR-5). */
+function sanitizeUrl(url: string): string {
+  const cleaned = (url ?? '').trim().replace(/[\u0000-\u0020\u007f]/g, '');
+  if (!cleaned) return '';
+  const scheme = cleaned.match(/^([a-z][a-z0-9+.-]*):/i);
+  if (scheme && !SAFE_URL_SCHEMES.has(scheme[1].toLowerCase() + ':')) {
+    return '';
+  }
+  return cleaned;
+}
+
+/** Sanitize a URL for a CSS url('...') context (HTML-escaping is insufficient there). */
+function sanitizeCssUrl(url: string): string {
+  return sanitizeUrl(url).replace(
+    /['"()\\\s<>]/g,
+    (c) => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'),
+  );
+}
+
+/** Clamp an arbitrary value to a CSS-safe opacity in [0, 1]. */
+function clampOpacity(value: unknown): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0.4;
+  return Math.min(1, Math.max(0, n));
 }
 
 function themeToCss(theme: SiteTheme): string {
@@ -33,9 +62,9 @@ function themeToCss(theme: SiteTheme): string {
 function renderBlock(block: SiteBlock): string {
   switch (block.type) {
     case 'hero':
-      return `<section class="hero"><h1>${escapeHtml(block.headline)}</h1><p class="sub">${escapeHtml(block.subheadline)}</p><a class="btn" href="${escapeHtml(block.ctaUrl)}">${escapeHtml(block.ctaText)}</a></section>`;
+      return `<section class="hero"><h1>${escapeHtml(block.headline)}</h1><p class="sub">${escapeHtml(block.subheadline)}</p><a class="btn" href="${escapeHtml(sanitizeUrl(block.ctaUrl))}">${escapeHtml(block.ctaText)}</a></section>`;
     case 'banner':
-      return `<section class="banner" style="--overlay:${block.overlayOpacity}"><div class="banner-bg" style="background-image:url('${escapeHtml(block.imageUrl)}')"></div><div class="banner-content"><h2>${escapeHtml(block.headline)}</h2><p>${escapeHtml(block.subheadline)}</p></div></section>`;
+      return `<section class="banner" style="--overlay:${clampOpacity(block.overlayOpacity)}"><div class="banner-bg" style="background-image:url('${escapeHtml(sanitizeCssUrl(block.imageUrl))}')"></div><div class="banner-content"><h2>${escapeHtml(block.headline)}</h2><p>${escapeHtml(block.subheadline)}</p></div></section>`;
     case 'features':
       return `<section class="features"><h2>${escapeHtml(block.title)}</h2><div class="grid">${block.items.map((f) => `<article><h3>${escapeHtml(f.title)}</h3><p>${escapeHtml(f.description)}</p></article>`).join('')}</div></section>`;
     case 'stats':
@@ -43,13 +72,13 @@ function renderBlock(block: SiteBlock): string {
     case 'text':
       return `<section class="text"><h2>${escapeHtml(block.title)}</h2><p>${escapeHtml(block.body).replace(/\n/g, '<br/>')}</p></section>`;
     case 'pricing':
-      return `<section class="pricing"><h2>${escapeHtml(block.title)}</h2><div class="pricing-grid">${block.plans.map((p) => `<article class="plan${p.highlighted ? ' plan-highlight' : ''}"><h3>${escapeHtml(p.name)}</h3><p class="plan-price"><span>${escapeHtml(p.price)}</span><small>${escapeHtml(p.period)}</small></p><ul>${p.features.map((f) => `<li>${escapeHtml(f)}</li>`).join('')}</ul><a class="btn${p.highlighted ? '' : ' btn-outline'}" href="${escapeHtml(p.ctaUrl)}">${escapeHtml(p.ctaText)}</a></article>`).join('')}</div></section>`;
+      return `<section class="pricing"><h2>${escapeHtml(block.title)}</h2><div class="pricing-grid">${block.plans.map((p) => `<article class="plan${p.highlighted ? ' plan-highlight' : ''}"><h3>${escapeHtml(p.name)}</h3><p class="plan-price"><span>${escapeHtml(p.price)}</span><small>${escapeHtml(p.period)}</small></p><ul>${p.features.map((f) => `<li>${escapeHtml(f)}</li>`).join('')}</ul><a class="btn${p.highlighted ? '' : ' btn-outline'}" href="${escapeHtml(sanitizeUrl(p.ctaUrl))}">${escapeHtml(p.ctaText)}</a></article>`).join('')}</div></section>`;
     case 'faq':
       return `<section class="faq"><h2>${escapeHtml(block.title)}</h2><div class="faq-list">${block.items.map((item) => `<details><summary>${escapeHtml(item.question)}</summary><p>${escapeHtml(item.answer)}</p></details>`).join('')}</div></section>`;
     case 'cta':
-      return `<section class="cta"><h2>${escapeHtml(block.title)}</h2><p>${escapeHtml(block.description)}</p><a class="btn" href="${escapeHtml(block.buttonUrl)}">${escapeHtml(block.buttonText)}</a></section>`;
+      return `<section class="cta"><h2>${escapeHtml(block.title)}</h2><p>${escapeHtml(block.description)}</p><a class="btn" href="${escapeHtml(sanitizeUrl(block.buttonUrl))}">${escapeHtml(block.buttonText)}</a></section>`;
     case 'footer':
-      return `<footer><p>${escapeHtml(block.copyright)}</p><nav>${block.links.map((l) => `<a href="${escapeHtml(l.url)}">${escapeHtml(l.label)}</a>`).join('')}</nav></footer>`;
+      return `<footer><p>${escapeHtml(block.copyright)}</p><nav>${block.links.map((l) => `<a href="${escapeHtml(sanitizeUrl(l.url))}">${escapeHtml(l.label)}</a>`).join('')}</nav></footer>`;
     default:
       return '';
   }

@@ -12,6 +12,7 @@ export type SiteStudioCategory =
   | 'saas';
 
 export type SiteStudioStack =
+  | 'static'
   | 'wordpress'
   | 'ghost'
   | 'strapi'
@@ -50,7 +51,9 @@ export interface SiteStudioTemplate {
   icon: string;
   launchFields?: SiteStudioLaunchField[];
   accent: string;
-  marketplaceTemplateId: string;
+  /** 'static' = Pushify-native site served as static HTML (no CMS app); 'cms' otherwise. */
+  deployment?: 'cms' | 'static';
+  marketplaceTemplateId?: string;
   featured: boolean;
   estimatedMinutes: number;
   features: string[];

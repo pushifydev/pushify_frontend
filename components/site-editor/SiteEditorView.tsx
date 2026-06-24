@@ -7,25 +7,30 @@ import {
   ExternalLink,
   Globe,
   Palette,
-  Database,
   Save,
   Rocket,
   RefreshCw,
   Eye,
   BookOpen,
-  Layers,
   SlidersHorizontal,
+  LayoutGrid,
+  Search,
+  Settings,
+  Monitor,
+  Smartphone,
+  MousePointer2,
+  Maximize2,
+  Files,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import {
   useSiteEditor,
-  useUpdateSiteSeo,
-  useUpdateSiteBlocks,
   useUpdateSiteTheme,
   useUpdateSiteCms,
+  useUpdateSitePages,
   usePublishSite,
 } from '@/hooks/useSiteEditor';
-import type { SiteBlock, SiteSeo, SiteBlockType, CmsMode } from '@/lib/api';
+import type { SiteBlock, SiteSeo, SiteBlockType, CmsMode, SitePage } from '@/lib/api';
 import { uploadSiteImage } from '@/lib/api';
 import { toast } from 'sonner';
 import { DEFAULT_SITE_THEME, normalizeSiteTheme } from '@/lib/site-editor/theme';
@@ -36,26 +41,31 @@ import { BlockInspector } from './BlockInspector';
 import { ThemePanel } from './ThemePanel';
 import { SitePagePreview, type PreviewMode } from './SitePagePreview';
 import { ImageUploadField } from './ImageUploadField';
+import { DesignGallery } from './DesignGallery';
+import { PagesPanel } from './PagesPanel';
 
-type Tab = 'design' | 'cms' | 'headless';
-type RightPanel = 'block' | 'theme';
+type Section = 'pages' | 'blocks' | 'design' | 'seo' | 'cms' | 'settings';
 
 interface SiteEditorViewProps {
   projectId: string;
   projectName?: string;
 }
 
+function slugify(s: string): string {
+  return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
 export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) {
   const { t } = useTranslation();
   const { data, isLoading, error } = useSiteEditor(projectId);
-  const updateSeo = useUpdateSiteSeo(projectId);
-  const updateBlocks = useUpdateSiteBlocks(projectId);
   const updateTheme = useUpdateSiteTheme(projectId);
   const updateCms = useUpdateSiteCms(projectId);
+  const updatePages = useUpdateSitePages(projectId);
   const publish = usePublishSite(projectId);
 
-  const [tab, setTab] = useState<Tab>('design');
-  const [rightPanel, setRightPanel] = useState<RightPanel>('block');
+  const [section, setSection] = useState<Section>('pages');
+  const [pages, setPages] = useState<SitePage[]>([]);
+  const [activePageId, setActivePageId] = useState<string | null>(null);
   const [seo, setSeo] = useState<SiteSeo>({ title: '', description: '', ogImage: '', keywords: '' });
   const [blocks, setBlocks] = useState<SiteBlock[]>([]);
   const [theme, setTheme] = useState(DEFAULT_SITE_THEME);
@@ -68,19 +78,30 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
   const [previewMode, setPreviewMode] = useState<PreviewMode>('canvas');
   const [dirty, setDirty] = useState(false);
 
+  // Load editor state. Runs on every refetch (save/apply-template); keeps the active page if
+  // it still exists (so saving doesn't bounce you back to Home), else falls back to Home.
   useEffect(() => {
     if (!data) return;
-    setSeo(data.seo);
-    setBlocks(data.blocks);
+    const pgs: SitePage[] =
+      data.pages && data.pages.length > 0
+        ? data.pages
+        : [{ id: 'home', title: 'Home', slug: '', blocks: data.blocks, seo: data.seo }];
+    setPages(pgs);
+    const active = pgs.find((p) => p.id === activePageId) ?? pgs[0];
+    setActivePageId(active.id);
+    setBlocks(active.blocks);
+    setSeo(active.seo);
     setTheme(normalizeSiteTheme(data.theme));
     setCmsMode(data.cmsConfig.mode);
     setCmsApiUrl(data.cmsConfig.apiUrl ?? '');
     setCmsCollection(data.cmsConfig.collection ?? '');
-    if (!selectedBlockId && data.blocks[0]) {
-      setSelectedBlockId(data.blocks[0].id);
-    }
+    setSelectedBlockId((prev) =>
+      prev && active.blocks.some((b) => b.id === prev) ? prev : active.blocks[0]?.id ?? null,
+    );
     setDirty(false);
-  }, [data, selectedBlockId]);
+    // activePageId intentionally omitted: switching pages must not re-trigger a reload.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const blockLabel = useCallback(
     (block: SiteBlock) => {
@@ -107,9 +128,7 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
   const markDirty = () => setDirty(true);
 
   const updateBlockById = (id: string, patch: Partial<SiteBlock>) => {
-    setBlocks((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, ...patch } as SiteBlock : b)),
-    );
+    setBlocks((prev) => prev.map((b) => (b.id === id ? ({ ...b, ...patch } as SiteBlock) : b)));
     markDirty();
   };
 
@@ -128,35 +147,99 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
     if (url) {
       updateBlockById(blockId, { imageUrl: url });
       setSelectedBlockId(blockId);
-      setRightPanel('block');
     }
   };
 
-  const handleSaveDesign = async () => {
-    await Promise.all([
-      updateBlocks.mutateAsync(blocks),
-      updateTheme.mutateAsync(theme),
-    ]);
+  // Fold the in-progress edits to the active page back into the pages array.
+  const commitActivePage = useCallback(
+    (): SitePage[] => pages.map((p) => (p.id === activePageId ? { ...p, blocks, seo } : p)),
+    [pages, activePageId, blocks, seo],
+  );
+
+  const switchPage = (id: string) => {
+    if (id === activePageId) return;
+    const committed = commitActivePage();
+    const target = committed.find((p) => p.id === id);
+    if (!target) return;
+    setPages(committed);
+    setActivePageId(id);
+    setBlocks(target.blocks);
+    setSeo(target.seo);
+    setSelectedBlockId(target.blocks[0]?.id ?? null);
+    setPreviewMode('canvas');
+  };
+
+  const addPage = () => {
+    const title = window.prompt(t('siteEditor', 'pageNamePrompt'));
+    if (!title || !title.trim()) return;
+    const committed = commitActivePage();
+    const newPage: SitePage = {
+      id: crypto.randomUUID(),
+      title: title.trim(),
+      slug: slugify(title) || `page-${committed.length}`,
+      blocks: [createDefaultBlock('hero', data?.siteName), createDefaultBlock('footer', data?.siteName)],
+      seo: { title: title.trim(), description: '', ogImage: '', keywords: '' },
+    };
+    setPages([...committed, newPage]);
+    setActivePageId(newPage.id);
+    setBlocks(newPage.blocks);
+    setSeo(newPage.seo);
+    setSelectedBlockId(newPage.blocks[0]?.id ?? null);
+    markDirty();
+  };
+
+  const renamePage = (id: string) => {
+    const page = pages.find((p) => p.id === id);
+    const title = window.prompt(t('siteEditor', 'pageNamePrompt'), page?.title ?? '');
+    if (!title || !title.trim()) return;
+    setPages((prev) => prev.map((p) => (p.id === id ? { ...p, title: title.trim() } : p)));
+    markDirty();
+  };
+
+  const deletePage = (id: string) => {
+    if (pages[0]?.id === id) return; // Home can't be deleted.
+    if (!window.confirm(t('siteEditor', 'deletePageConfirm'))) return;
+    const committed = commitActivePage().filter((p) => p.id !== id);
+    setPages(committed);
+    if (activePageId === id) {
+      const home = committed[0];
+      setActivePageId(home.id);
+      setBlocks(home.blocks);
+      setSeo(home.seo);
+      setSelectedBlockId(home.blocks[0]?.id ?? null);
+    }
+    markDirty();
+  };
+
+  const handleSave = async () => {
+    const committed = commitActivePage();
+    setPages(committed);
+    await Promise.all([updatePages.mutateAsync(committed), updateTheme.mutateAsync(theme)]);
     setDirty(false);
   };
 
   const handleAddBlock = (type: SiteBlockType) => {
     const block = createDefaultBlock(type, data?.siteName);
     setBlocks((prev) => {
+      // Footer is unique and always pinned to the very end.
       if (type === 'footer') {
         const withoutFooter = prev.filter((b) => b.type !== 'footer');
         return [...withoutFooter, block];
       }
       const footerIdx = prev.findIndex((b) => b.type === 'footer');
-      if (footerIdx >= 0) {
-        const next = [...prev];
-        next.splice(footerIdx, 0, block);
-        return next;
-      }
-      return [...prev, block];
+      const selIdx = prev.findIndex((b) => b.id === selectedBlockId);
+      let insertAt =
+        selIdx >= 0 && prev[selIdx].type !== 'footer'
+          ? selIdx + 1
+          : footerIdx >= 0
+            ? footerIdx
+            : prev.length;
+      if (footerIdx >= 0 && insertAt > footerIdx) insertAt = footerIdx;
+      const next = [...prev];
+      next.splice(insertAt, 0, block);
+      return next;
     });
     setSelectedBlockId(block.id);
-    setRightPanel('block');
     markDirty();
   };
 
@@ -182,6 +265,11 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
     markDirty();
   };
 
+  const publishAll = async () => {
+    if (dirty) await handleSave();
+    publish.mutate();
+  };
+
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-4">
@@ -202,297 +290,365 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
     );
   }
 
-  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: 'design', label: t('siteEditor', 'tabDesign'), icon: <Palette className="w-4 h-4" /> },
-    { id: 'cms', label: t('siteEditor', 'tabCms'), icon: <Globe className="w-4 h-4" /> },
-    { id: 'headless', label: t('siteEditor', 'tabHeadless'), icon: <Database className="w-4 h-4" /> },
+  const tt = (key: string) =>
+    t('siteEditor', key as keyof import('@/lib/i18n').TranslationKeys['siteEditor']);
+
+  const sections: { id: Section; label: string; icon: typeof Palette }[] = [
+    { id: 'pages', label: t('siteEditor', 'navPages'), icon: Files },
+    { id: 'blocks', label: t('siteEditor', 'navBlocks'), icon: LayoutGrid },
+    { id: 'design', label: t('siteEditor', 'tabDesign'), icon: Palette },
+    { id: 'seo', label: t('siteEditor', 'navSeo'), icon: Search },
+    { id: 'cms', label: t('siteEditor', 'tabCms'), icon: Globe },
+    { id: 'settings', label: t('siteEditor', 'navSettings'), icon: Settings },
   ];
 
   return (
-    <div className="dash-page min-w-0 flex flex-col h-[calc(100vh-4rem)] pb-4 animate-slide-in">
-      <header className="shrink-0 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border-subtle)] pb-4 mb-4">
-        <div className="flex items-center gap-3 min-w-0">
+    <div className="fixed inset-0 z-[60] flex flex-col bg-[var(--bg-primary)] animate-fade-in">
+      {/* ── Top toolbar ── */}
+      <header className="shrink-0 h-14 flex items-center justify-between gap-3 px-3 border-b border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
+        <div className="flex items-center gap-2 min-w-0">
           <Link
             href={`/dashboard/projects/${projectId}`}
-            className="p-2 rounded-lg hover:bg-[var(--bg-secondary)] text-[var(--text-muted)]"
+            className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-muted)]"
+            title={t('siteEditor', 'backToProject')}
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-widest text-[var(--accent-primary)] font-bold">
+          <div className="min-w-0 leading-tight">
+            <p className="text-[9px] uppercase tracking-widest text-[var(--accent-primary)] font-bold">
               {t('siteEditor', 'badge')}
             </p>
-            <h1 className="text-lg font-bold truncate">{projectName || data.siteName}</h1>
+            <h1 className="text-sm font-bold truncate max-w-[36vw]">{projectName || data.siteName}</h1>
           </div>
           {dirty && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
-              {t('siteEditor', 'unsaved')}
+            <span className="hidden sm:inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
+              ● {t('siteEditor', 'unsaved')}
             </span>
           )}
         </div>
-        <div className="flex flex-wrap gap-2">
-          {tab === 'design' && (
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={handleSaveDesign}
-              disabled={updateBlocks.isPending || updateTheme.isPending || !dirty}
+
+        {/* device + mode */}
+        <div className="hidden md:flex items-center gap-0.5 rounded-lg border border-[var(--border-subtle)] p-0.5 bg-[var(--bg-primary)]">
+          <ToolbarToggle active={previewMode === 'canvas'} onClick={() => setPreviewMode('canvas')} icon={MousePointer2} label={t('siteEditor', 'canvasMode')} />
+          <ToolbarToggle active={previewMode === 'iframe'} onClick={() => setPreviewMode('iframe')} icon={Maximize2} label={t('siteEditor', 'fullPreview')} />
+          <span className="w-px h-5 bg-[var(--border-subtle)] mx-1" />
+          <ToolbarToggle active={viewport === 'desktop'} onClick={() => setViewport('desktop')} icon={Monitor} />
+          <ToolbarToggle active={viewport === 'mobile'} onClick={() => setViewport('mobile')} icon={Smartphone} />
+        </div>
+
+        <div className="flex items-center gap-2">
+          {data.previewUrl && (
+            <a
+              href={data.previewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-ghost btn-sm hidden lg:inline-flex"
             >
-              <Save className="w-4 h-4" />
-              {t('siteEditor', 'saveDesign')}
-            </button>
+              <Eye className="w-4 h-4" />
+              {t('siteEditor', 'openLiveSite')}
+            </a>
           )}
           <button
             type="button"
-            className="btn btn-primary btn-sm"
-            onClick={async () => {
-              if (dirty) await handleSaveDesign();
-              publish.mutate();
-            }}
-            disabled={publish.isPending}
+            className="btn btn-secondary btn-sm"
+            onClick={handleSave}
+            disabled={updatePages.isPending || updateTheme.isPending || !dirty}
           >
-            {publish.isPending ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
-            ) : (
-              <Rocket className="w-4 h-4" />
-            )}
-            {t('siteEditor', 'publish')}
+            <Save className="w-4 h-4" />
+            <span className="hidden sm:inline">{t('siteEditor', 'saveDesign')}</span>
+          </button>
+          <button type="button" className="btn btn-primary btn-sm" onClick={publishAll} disabled={publish.isPending}>
+            {publish.isPending ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
+            <span className="hidden sm:inline">{t('siteEditor', 'publish')}</span>
           </button>
         </div>
       </header>
 
-      <div className="shrink-0 flex gap-1 border-b border-[var(--border-subtle)] mb-4">
-        {tabs.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setTab(item.id)}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
-              tab === item.id
-                ? 'border-[var(--accent-primary)] text-[var(--accent-primary)]'
-                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
-            }`}
-          >
-            {item.icon}
-            {item.label}
-          </button>
-        ))}
-      </div>
-
-      {tab === 'design' && (
-        <div className="flex-1 min-h-0 grid grid-cols-1 xl:grid-cols-[240px_1fr_280px] gap-4">
-          <aside className="hidden xl:flex flex-col gap-4 overflow-y-auto pr-1">
-            <BlockPalette onAdd={handleAddBlock} title={t('siteEditor', 'addBlock')} labelFor={paletteLabel} />
-            <BlockLayers
-              blocks={blocks}
-              selectedId={selectedBlockId}
-              onSelect={(id) => {
-                setSelectedBlockId(id);
-                setPreviewMode('canvas');
-                setRightPanel('block');
-              }}
-              onReorder={(next) => {
-                setBlocks(next);
-                markDirty();
-              }}
-              onDuplicate={handleDuplicate}
-              onDelete={handleDelete}
-              labelFor={blockLabel}
-              layersTitle={t('siteEditor', 'layersTitle')}
-              duplicateLabel={t('siteEditor', 'duplicate')}
-              deleteLabel={t('siteEditor', 'deleteBlock')}
-            />
-          </aside>
-
-          <main className="min-h-0 flex flex-col">
-            <SitePagePreview
-              seo={seo}
-              blocks={blocks}
-              siteName={data.siteName}
-              theme={theme}
-              selectedBlockId={selectedBlockId}
-              onSelectBlock={setSelectedBlockId}
-              onBlockChange={updateBlockById}
-              onBannerImagePick={handleBannerImagePick}
-              previewLabel={t('siteEditor', 'livePreview')}
-              viewport={viewport}
-              onViewportChange={setViewport}
-              mode={previewMode}
-              onModeChange={setPreviewMode}
-              canvasModeLabel={t('siteEditor', 'canvasMode')}
-              fullPreviewLabel={t('siteEditor', 'fullPreview')}
-              clickToEditHint={t('siteEditor', 'clickToEditHint')}
-            />
-          </main>
-
-          <aside className="min-h-0 flex flex-col overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
-            <div className="flex border-b border-[var(--border-subtle)]">
+      {/* ── Body ── */}
+      <div className="flex-1 flex min-h-0">
+        {/* icon rail */}
+        <nav className="shrink-0 w-16 flex flex-col items-center gap-1 py-3 border-r border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
+          {sections.map((s) => {
+            const Icon = s.icon;
+            const active = section === s.id;
+            return (
               <button
+                key={s.id}
                 type="button"
-                onClick={() => setRightPanel('block')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium ${
-                  rightPanel === 'block'
-                    ? 'text-[var(--accent-primary)] border-b-2 border-[var(--accent-primary)]'
-                    : 'text-[var(--text-muted)]'
+                onClick={() => setSection(s.id)}
+                title={s.label}
+                className={`w-12 h-12 flex flex-col items-center justify-center gap-0.5 rounded-xl text-[9px] font-medium transition-colors ${
+                  active
+                    ? 'bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]'
+                    : 'text-[var(--text-muted)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-secondary)]'
                 }`}
               >
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                {t('siteEditor', 'inspectorTab')}
+                <Icon className="w-[18px] h-[18px]" />
+                <span>{s.label}</span>
               </button>
-              <button
-                type="button"
-                onClick={() => setRightPanel('theme')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium ${
-                  rightPanel === 'theme'
-                    ? 'text-[var(--accent-primary)] border-b-2 border-[var(--accent-primary)]'
-                    : 'text-[var(--text-muted)]'
-                }`}
-              >
-                <Palette className="w-3.5 h-3.5" />
-                {t('siteEditor', 'themeTab')}
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-4">
-              {rightPanel === 'block' ? (
-                <BlockInspector
-                  projectId={projectId}
-                  block={selectedBlock}
-                  onChange={updateSelectedBlock}
-                  t={(key) => t('siteEditor', key as keyof import('@/lib/i18n').TranslationKeys['siteEditor'])}
-                  emptyLabel={t('siteEditor', 'selectBlock')}
-                />
-              ) : (
+            );
+          })}
+        </nav>
+
+        {/* contextual left panel */}
+        <aside className="shrink-0 w-72 hidden md:flex flex-col overflow-y-auto border-r border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 gap-5">
+          {section === 'pages' && (
+            <PagesPanel
+              pages={pages}
+              activePageId={activePageId}
+              onSelect={switchPage}
+              onAdd={addPage}
+              onRename={renamePage}
+              onDelete={deletePage}
+            />
+          )}
+
+          {section === 'blocks' && (
+            <>
+              <BlockPalette onAdd={handleAddBlock} title={t('siteEditor', 'addBlock')} labelFor={paletteLabel} />
+              <BlockLayers
+                blocks={blocks}
+                selectedId={selectedBlockId}
+                onSelect={(id) => {
+                  setSelectedBlockId(id);
+                  setPreviewMode('canvas');
+                }}
+                onReorder={(next) => {
+                  setBlocks(next);
+                  markDirty();
+                }}
+                onDuplicate={handleDuplicate}
+                onDelete={handleDelete}
+                labelFor={blockLabel}
+                layersTitle={t('siteEditor', 'layersTitle')}
+                duplicateLabel={t('siteEditor', 'duplicate')}
+                deleteLabel={t('siteEditor', 'deleteBlock')}
+              />
+            </>
+          )}
+
+          {section === 'design' && (
+            <>
+              <DesignGallery
+                projectId={projectId}
+                currentPrimary={theme.primaryColor}
+                onApplyTheme={(patch) => {
+                  setTheme((prev) => ({ ...prev, ...patch }));
+                  markDirty();
+                }}
+              />
+              <div className="pt-1 border-t border-[var(--border-subtle)]">
                 <ThemePanel
                   theme={theme}
                   onChange={(patch) => {
                     setTheme((prev) => ({ ...prev, ...patch }));
                     markDirty();
                   }}
-                  t={(key) => t('siteEditor', key as keyof import('@/lib/i18n').TranslationKeys['siteEditor'])}
+                  t={tt}
                 />
-              )}
-            </div>
-          </aside>
-
-          <div className="xl:hidden space-y-4 col-span-1">
-            <BlockPalette onAdd={handleAddBlock} title={t('siteEditor', 'addBlock')} labelFor={paletteLabel} />
-            <BlockLayers
-              blocks={blocks}
-              selectedId={selectedBlockId}
-              onSelect={(id) => {
-                setSelectedBlockId(id);
-                setPreviewMode('canvas');
-                setRightPanel('block');
-              }}
-              onReorder={(next) => {
-                setBlocks(next);
-                markDirty();
-              }}
-              onDuplicate={handleDuplicate}
-              onDelete={handleDelete}
-              labelFor={blockLabel}
-              layersTitle={t('siteEditor', 'layersTitle')}
-              duplicateLabel={t('siteEditor', 'duplicate')}
-              deleteLabel={t('siteEditor', 'deleteBlock')}
-            />
-          </div>
-        </div>
-      )}
-
-      {tab === 'cms' && (
-        <div className="overflow-y-auto max-w-2xl space-y-4">
-          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 space-y-3">
-            <h2 className="font-semibold flex items-center gap-2">
-              <Layers className="w-4 h-4" />
-              {t('siteEditor', 'cmsBridgeTitle')}
-            </h2>
-            <p className="text-sm text-[var(--text-secondary)]">{t('siteEditor', 'cmsBridgeDesc')}</p>
-            <div className="flex flex-wrap gap-2">
-              {data.cmsBridge.adminUrl && (
-                <a href={data.cmsBridge.adminUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
-                  <ExternalLink className="w-4 h-4" />
-                  {data.cmsBridge.label}
-                </a>
-              )}
-              {data.previewUrl && (
-                <a href={data.previewUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm">
-                  <Eye className="w-4 h-4" />
-                  {t('siteEditor', 'openLiveSite')}
-                </a>
-              )}
-              {data.cmsBridge.docsUrl && (
-                <a href={data.cmsBridge.docsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm">
-                  <BookOpen className="w-4 h-4" />
-                  {t('siteEditor', 'cmsDocs')}
-                </a>
-              )}
-            </div>
-          </div>
-          <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 space-y-4">
-            <h2 className="font-semibold">{t('siteEditor', 'seoTitle')}</h2>
-            <Field label={t('siteEditor', 'seoPageTitle')} value={seo.title} onChange={(v) => setSeo((s) => ({ ...s, title: v }))} />
-            <Field label={t('siteEditor', 'seoDescription')} value={seo.description} onChange={(v) => setSeo((s) => ({ ...s, description: v }))} multiline />
-            <ImageUploadField
-              projectId={projectId}
-              value={seo.ogImage}
-              onChange={(v) => setSeo((s) => ({ ...s, ogImage: v }))}
-              label={t('siteEditor', 'seoOgImage')}
-              uploadLabel={t('siteEditor', 'uploadImage')}
-              uploadingLabel={t('siteEditor', 'uploading')}
-            />
-            <Field label={t('siteEditor', 'seoKeywords')} value={seo.keywords} onChange={(v) => setSeo((s) => ({ ...s, keywords: v }))} />
-            <button type="button" className="btn btn-primary btn-sm" onClick={() => updateSeo.mutate(seo)} disabled={updateSeo.isPending}>
-              <Save className="w-4 h-4" />
-              {t('siteEditor', 'saveSeo')}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {tab === 'headless' && (
-        <div className="overflow-y-auto max-w-2xl rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 space-y-4">
-          <h2 className="font-semibold">{t('siteEditor', 'headlessTitle')}</h2>
-          <p className="text-sm text-[var(--text-secondary)]">{t('siteEditor', 'headlessDesc')}</p>
-          <label className="block space-y-1">
-            <span className="text-sm text-[var(--text-secondary)]">{t('siteEditor', 'cmsMode')}</span>
-            <select className="select w-full" value={cmsMode} onChange={(e) => setCmsMode(e.target.value as CmsMode)}>
-              <option value="builtin">{t('siteEditor', 'modeBuiltin')}</option>
-              <option value="strapi">{t('siteEditor', 'modeStrapi')}</option>
-              <option value="directus">{t('siteEditor', 'modeDirectus')}</option>
-            </select>
-          </label>
-          {cmsMode !== 'builtin' && (
-            <>
-              <Field label={t('siteEditor', 'apiUrl')} value={cmsApiUrl} onChange={setCmsApiUrl} />
-              <label className="block space-y-1">
-                <span className="text-sm text-[var(--text-secondary)]">
-                  {t('siteEditor', 'apiToken')}
-                  {data.cmsConfig.hasApiToken ? ` (${t('siteEditor', 'tokenSet')})` : ''}
-                </span>
-                <input className="input w-full" type="password" value={cmsToken} onChange={(e) => setCmsToken(e.target.value)} />
-              </label>
-              <Field label={t('siteEditor', 'collection')} value={cmsCollection} onChange={setCmsCollection} />
+              </div>
             </>
           )}
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            onClick={() =>
-              updateCms.mutate({
-                mode: cmsMode,
-                apiUrl: cmsApiUrl || undefined,
-                apiToken: cmsToken || undefined,
-                collection: cmsCollection || undefined,
-              })
-            }
-            disabled={updateCms.isPending}
-          >
-            <Save className="w-4 h-4" />
-            {t('siteEditor', 'saveCms')}
-          </button>
-        </div>
-      )}
+
+          {section === 'seo' && (
+            <div className="space-y-4">
+              <SectionHeading icon={Search} title={t('siteEditor', 'seoTitle')} />
+              <Field label={t('siteEditor', 'seoPageTitle')} value={seo.title} onChange={(v) => setSeo((s) => ({ ...s, title: v }))} />
+              <Field label={t('siteEditor', 'seoDescription')} value={seo.description} onChange={(v) => setSeo((s) => ({ ...s, description: v }))} multiline />
+              <ImageUploadField
+                projectId={projectId}
+                value={seo.ogImage}
+                onChange={(v) => setSeo((s) => ({ ...s, ogImage: v }))}
+                label={t('siteEditor', 'seoOgImage')}
+                uploadLabel={t('siteEditor', 'uploadImage')}
+                uploadingLabel={t('siteEditor', 'uploading')}
+              />
+              <Field label={t('siteEditor', 'seoKeywords')} value={seo.keywords} onChange={(v) => setSeo((s) => ({ ...s, keywords: v }))} />
+              <button type="button" className="btn btn-primary btn-sm w-full" onClick={handleSave} disabled={updatePages.isPending}>
+                <Save className="w-4 h-4" />
+                {t('siteEditor', 'saveSeo')}
+              </button>
+            </div>
+          )}
+
+          {section === 'cms' && (
+            <div className="space-y-5">
+              <div className="space-y-3">
+                <SectionHeading icon={Globe} title={t('siteEditor', 'cmsBridgeTitle')} />
+                <p className="text-xs text-[var(--text-secondary)]">{t('siteEditor', 'cmsBridgeDesc')}</p>
+                <div className="flex flex-col gap-2">
+                  {data.cmsBridge.adminUrl && (
+                    <a href={data.cmsBridge.adminUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm w-full">
+                      <ExternalLink className="w-4 h-4" />
+                      {data.cmsBridge.label}
+                    </a>
+                  )}
+                  {data.cmsBridge.docsUrl && (
+                    <a href={data.cmsBridge.docsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm w-full">
+                      <BookOpen className="w-4 h-4" />
+                      {t('siteEditor', 'cmsDocs')}
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-1 border-t border-[var(--border-subtle)]">
+                <SectionHeading icon={RefreshCw} title={t('siteEditor', 'headlessTitle')} />
+                <p className="text-xs text-[var(--text-secondary)]">{t('siteEditor', 'headlessDesc')}</p>
+                <label className="block space-y-1">
+                  <span className="text-xs text-[var(--text-secondary)]">{t('siteEditor', 'cmsMode')}</span>
+                  <select className="select w-full" value={cmsMode} onChange={(e) => setCmsMode(e.target.value as CmsMode)}>
+                    <option value="builtin">{t('siteEditor', 'modeBuiltin')}</option>
+                    <option value="strapi">{t('siteEditor', 'modeStrapi')}</option>
+                    <option value="directus">{t('siteEditor', 'modeDirectus')}</option>
+                  </select>
+                </label>
+                {cmsMode !== 'builtin' && (
+                  <>
+                    <Field label={t('siteEditor', 'apiUrl')} value={cmsApiUrl} onChange={setCmsApiUrl} />
+                    <label className="block space-y-1">
+                      <span className="text-xs text-[var(--text-secondary)]">
+                        {t('siteEditor', 'apiToken')}
+                        {data.cmsConfig.hasApiToken ? ` (${t('siteEditor', 'tokenSet')})` : ''}
+                      </span>
+                      <input className="input w-full" type="password" value={cmsToken} onChange={(e) => setCmsToken(e.target.value)} />
+                    </label>
+                    <Field label={t('siteEditor', 'collection')} value={cmsCollection} onChange={setCmsCollection} />
+                  </>
+                )}
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm w-full"
+                  onClick={() =>
+                    updateCms.mutate({
+                      mode: cmsMode,
+                      apiUrl: cmsApiUrl || undefined,
+                      apiToken: cmsToken || undefined,
+                      collection: cmsCollection || undefined,
+                    })
+                  }
+                  disabled={updateCms.isPending}
+                >
+                  <Save className="w-4 h-4" />
+                  {t('siteEditor', 'saveCms')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {section === 'settings' && (
+            <div className="space-y-4">
+              <SectionHeading icon={Settings} title={t('siteEditor', 'navSettings')} />
+              <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-3 space-y-1.5">
+                <p className="text-[11px] uppercase tracking-wide text-[var(--text-muted)] font-semibold">{t('siteEditor', 'badge')}</p>
+                <p className="text-sm font-medium truncate">{projectName || data.siteName}</p>
+                {data.previewUrl && (
+                  <a href={data.previewUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[var(--accent-primary)] hover:underline break-all inline-flex items-center gap-1">
+                    <Globe className="w-3.5 h-3.5 shrink-0" />
+                    {data.previewUrl}
+                  </a>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                {data.previewUrl && (
+                  <a href={data.previewUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm w-full">
+                    <Eye className="w-4 h-4" />
+                    {t('siteEditor', 'openLiveSite')}
+                  </a>
+                )}
+                <button type="button" className="btn btn-primary btn-sm w-full" onClick={publishAll} disabled={publish.isPending}>
+                  {publish.isPending ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
+                  {t('siteEditor', 'publish')}
+                </button>
+              </div>
+            </div>
+          )}
+        </aside>
+
+        {/* canvas */}
+        <main className="flex-1 min-h-0 flex flex-col bg-[var(--bg-tertiary)]">
+          <SitePagePreview
+            chromeless
+            seo={seo}
+            blocks={blocks}
+            siteName={data.siteName}
+            theme={theme}
+            selectedBlockId={selectedBlockId}
+            onSelectBlock={setSelectedBlockId}
+            onBlockChange={updateBlockById}
+            onReorder={(next) => {
+              setBlocks(next);
+              markDirty();
+            }}
+            onBannerImagePick={handleBannerImagePick}
+            dragToReorderLabel={t('siteEditor', 'dragToReorder')}
+            labelFor={blockLabel}
+            previewLabel={t('siteEditor', 'livePreview')}
+            viewport={viewport}
+            onViewportChange={setViewport}
+            mode={previewMode}
+            onModeChange={setPreviewMode}
+            canvasModeLabel={t('siteEditor', 'canvasMode')}
+            fullPreviewLabel={t('siteEditor', 'fullPreview')}
+            clickToEditHint={t('siteEditor', 'clickToEditHint')}
+          />
+        </main>
+
+        {/* right inspector */}
+        <aside className="shrink-0 w-80 hidden lg:flex flex-col overflow-hidden border-l border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
+          <div className="shrink-0 px-4 py-3 border-b border-[var(--border-subtle)] flex items-center gap-2 text-sm font-semibold">
+            <SlidersHorizontal className="w-4 h-4 text-[var(--accent-primary)]" />
+            {t('siteEditor', 'inspectorTab')}
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            <BlockInspector
+              projectId={projectId}
+              block={selectedBlock}
+              onChange={updateSelectedBlock}
+              t={tt}
+              emptyLabel={t('siteEditor', 'selectBlock')}
+            />
+          </div>
+        </aside>
+      </div>
     </div>
+  );
+}
+
+function ToolbarToggle({
+  active,
+  onClick,
+  icon: Icon,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: typeof Palette;
+  label?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={label}
+      className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
+        active
+          ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]'
+          : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+      }`}
+    >
+      <Icon className="w-4 h-4" />
+      {label && <span className="hidden lg:inline">{label}</span>}
+    </button>
+  );
+}
+
+function SectionHeading({ icon: Icon, title }: { icon: typeof Palette; title: string }) {
+  return (
+    <h2 className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+      <Icon className="w-4 h-4 text-[var(--accent-primary)]" />
+      {title}
+    </h2>
   );
 }
 
@@ -509,7 +665,7 @@ function Field({
 }) {
   return (
     <label className="block space-y-1">
-      <span className="text-sm text-[var(--text-secondary)]">{label}</span>
+      <span className="text-xs text-[var(--text-secondary)]">{label}</span>
       {multiline ? (
         <textarea className="textarea w-full" rows={3} value={value} onChange={(e) => onChange(e.target.value)} />
       ) : (

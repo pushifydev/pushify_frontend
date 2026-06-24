@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/hooks';
 import { LogoMark } from '@/components/logo';
-import { Github, Twitter, Mail, ArrowUpRight } from 'lucide-react';
+import { Github, Mail, ArrowUpRight } from 'lucide-react';
 
 export function LandingFooter() {
   const { t } = useTranslation();
@@ -10,6 +10,7 @@ export function LandingFooter() {
   const links = {
     [t('landing', 'product')]: [
       { label: t('landing', 'features'), href: '/features' },
+      { label: t('landing', 'sites'), href: '/sites' },
       { label: t('landing', 'pricing'), href: '/pricing' },
       {
         label: t('landing', 'cli'),
@@ -24,11 +25,16 @@ export function LandingFooter() {
         href: 'https://github.com/pushifydev',
         external: true,
       },
-      { label: t('landing', 'changelog'), href: '#' },
+      {
+        label: t('landing', 'changelog'),
+        href: 'https://github.com/pushifydev/pushify_frontend/blob/master/CHANGELOG.md',
+        external: true,
+      },
+      { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },
+      { label: t('vsVercel', 'h1'), href: '/vs/vercel' },
     ],
     [t('landing', 'company')]: [
       { label: t('legal', 'about'), href: '/about' },
-      { label: t('landing', 'blog'), href: '#' },
       { label: t('landing', 'contact'), href: 'mailto:support@pushify.dev' },
     ],
     [t('legal', 'legal')]: [
@@ -44,7 +50,6 @@ export function LandingFooter() {
       href: 'https://github.com/pushifydev',
       label: t('landing', 'socialGithub'),
     },
-    { icon: <Twitter className="w-4 h-4" />, href: '#', label: t('landing', 'twitter') },
     {
       icon: <Mail className="w-4 h-4" />,
       href: 'mailto:support@pushify.dev',
