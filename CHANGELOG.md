@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.17] - 2026-06-24
+
+### Added
+- Google Analytics 4 integration (Measurement ID `G-SW4LNQEV9M`, overridable via `NEXT_PUBLIC_GA_ID`). Loads in production builds only — local dev stays tracking-free.
+
 ## [0.2.0-beta.16] - 2026-06-24
 
 ### Added
