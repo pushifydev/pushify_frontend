@@ -7,6 +7,8 @@ import { formatMessage } from '@/lib/i18n/format-message';
 import { showErrorToast, showSuccessToast } from '@/lib/toast-i18n';
 import { useWebSocketEvent } from '@/providers/WebSocketProvider';
 import { deploymentKeys } from './useDeployments';
+import { projectKeys } from './useProjects';
+import { domainKeys } from './useDomains';
 import {
   getDeployFailureI18nKey,
   parseDeployFailureCategory,
@@ -45,8 +47,14 @@ export function useDeploymentStatusEvents(projectId: string | undefined) {
         queryKey: deploymentKeys.detail(projectId, data.deploymentId),
       });
 
+      // Keep the project's own data (status, production URL, last-deployed time) in sync as the
+      // deployment progresses and completes — otherwise the detail page shows stale info.
+      queryClient.invalidateQueries({ queryKey: projectKeys.detail(projectId) });
+
       // Show toast for terminal states
       if (data.status === 'running') {
+        // First successful deploy assigns the auto-generated domain / production URL.
+        queryClient.invalidateQueries({ queryKey: domainKeys.list(projectId) });
         showSuccessToast('deploymentSuccessTitle', 'deploymentRunningDesc');
       } else if (data.status === 'failed') {
         const category = parseDeployFailureCategory(data.message);
