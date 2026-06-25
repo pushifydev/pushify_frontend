@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.20] - 2026-06-24
+
+### Changed
+- Language is no longer switchable from the public UI — removed the language toggle from the landing navbar, dashboard header, and auth screens. Language now auto-detects the device/browser language on first visit and is changed only from **Settings → Appearance**. (Browser auto-detection in `stores/locale.ts` and the Settings language control already existed; this removes the redundant public toggles.)
+
 ## [0.2.0-beta.19] - 2026-06-24
 
 ### Fixed

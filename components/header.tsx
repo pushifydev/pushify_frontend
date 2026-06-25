@@ -15,7 +15,6 @@ import {
 import { useTranslation } from "@/hooks";
 import { useSidebarStore } from "@/stores/sidebar";
 import { useThemeStore } from "@/stores/theme";
-import { LanguageSwitcher } from "./LanguageSwitcher";
 import { HeaderAlertsMenu } from "./header/HeaderAlertsMenu";
 
 const PAGE_LABELS: Record<string, string> = {
@@ -108,8 +107,6 @@ export function Header() {
           >
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
-
-          <LanguageSwitcher />
 
           <Link
             href="/dashboard/projects/new"
