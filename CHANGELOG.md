@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.31] - 2026-06-25
+
+### Security
+- The Google and GitHub OAuth callbacks now honor two-factor authentication. When the backend returns a `requiresTwoFactor` challenge (for an account with 2FA enabled), the callback stores the challenge token and hands off to the existing 2FA form on `/login` instead of trying to read tokens that aren't there — so OAuth sign-in goes through the same second-factor step as password login. (Pairs with backend 0.2.0-beta.21.)
+
 ## [0.2.0-beta.30] - 2026-06-24
 
 ### Changed
