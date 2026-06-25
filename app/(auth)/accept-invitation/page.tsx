@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle, XCircle, Loader2, Users, Shield, User, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks';
-import { useAcceptInvitation } from '@/hooks';
+import { useAcceptInvitation, useSwitchOrganization } from '@/hooks';
 import { getInvitationInfo } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import type { InvitationInfo } from '@/lib/api';
@@ -30,6 +30,7 @@ function AcceptInvitationContent() {
   const hasFetched = useRef(false);
 
   const acceptInvitation = useAcceptInvitation();
+  const switchOrganization = useSwitchOrganization();
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -56,9 +57,16 @@ function AcceptInvitationContent() {
     if (!token) return;
     setStatus('accepting');
     try {
-      await acceptInvitation.mutateAsync(token);
+      const accepted = await acceptInvitation.mutateAsync(token);
+      // Switch into the team workspace so the member immediately lands on its resources.
+      // Best-effort: if it fails, membership is already added and they can switch from the sidebar.
+      try {
+        await switchOrganization.mutateAsync(accepted.organizationId);
+      } catch {
+        /* keep going — manual switch is available */
+      }
       setStatus('success');
-      setTimeout(() => router.push('/dashboard'), 2000);
+      setTimeout(() => router.push('/dashboard'), 1500);
     } catch (err) {
       setStatus('error');
       setErrorMessage(err instanceof Error ? err.message : t('team', 'invitationInvalid'));

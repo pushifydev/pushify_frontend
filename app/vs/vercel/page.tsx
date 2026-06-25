@@ -62,6 +62,13 @@ export default function VsVercelPage() {
         { q: t('vsVercel', 'faq3Q'), a: t('vsVercel', 'faq3A') },
         { q: t('vsVercel', 'faq4Q'), a: t('vsVercel', 'faq4A') },
       ]}
+      relatedTitle={t('landing', 'exploreMore')}
+      relatedLinks={[
+        { href: '/vs/coolify', label: t('vsCoolify', 'h1') },
+        { href: '/deploy/nextjs', label: 'Deploy Next.js' },
+        { href: '/pricing', label: t('landing', 'pricing') },
+        { href: '/open-source', label: t('landing', 'openSource') },
+      ]}
       ctaTitle={t('vsVercel', 'ctaTitle')}
       ctaBody={t('vsVercel', 'ctaBody')}
       ctaButton={t('vsVercel', 'ctaButton')}

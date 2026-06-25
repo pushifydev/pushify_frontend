@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { ArrowRight, Menu, X, Github, Sun, Moon, ExternalLink } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from '@/hooks';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { LogoMark } from '@/components/logo';
 import { useThemeStore } from '@/stores/theme';
 
@@ -99,7 +98,6 @@ export function LandingNavbar() {
 
           {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-1.5 shrink-0">
-            <LanguageSwitcher />
             <button
               type="button"
               onClick={() => setTheme(isDark ? 'light' : 'dark')}
@@ -221,8 +219,7 @@ export function LandingNavbar() {
             <ArrowRight className="w-4 h-4" />
           </Link>
 
-          <div className="flex items-center justify-between gap-2 pt-1">
-            <LanguageSwitcher />
+          <div className="flex items-center justify-end gap-2 pt-1">
             <div className="flex items-center gap-1">
               <button
                 type="button"

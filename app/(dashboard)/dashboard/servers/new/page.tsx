@@ -7,7 +7,7 @@ import {
   ArrowLeft, Server, Loader2, Cpu, HardDrive, MemoryStick,
   Globe, Key, Lock, Eye, EyeOff, Info, CheckCircle,
 } from 'lucide-react';
-import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages, useInfraBilling } from '@/hooks';
+import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages, useInfraBilling, useBillingInfo } from '@/hooks';
 import type { CreateServerInput } from '@/lib/api';
 import { toast } from 'sonner';
 import { ManagedCloudProviderBar } from '@/components/servers/ManagedCloudProviderBar';
@@ -44,7 +44,12 @@ export default function NewServerPage() {
   const { data: regions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
   const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner', managedData.region);
   const { data: infraBilling } = useInfraBilling();
+  const { data: billingInfo } = useBillingInfo();
   const { data: images = [], isLoading: imagesLoading } = useProviderImages('hetzner');
+
+  // Plan server quota (the backend enforces this and returns 403 when exceeded).
+  const serverUsage = billingInfo?.usage.servers;
+  const atServerLimit = !!serverUsage && !serverUsage.unlimited && serverUsage.used >= serverUsage.limit;
 
   useEffect(() => {
     if (regions.length > 0 && !managedData.region) {
@@ -149,6 +154,30 @@ export default function NewServerPage() {
           </button>
         ))}
       </div>
+
+      {serverUsage && !serverUsage.unlimited && (
+        <div
+          className="rounded-xl px-4 py-3 text-sm flex items-center justify-between gap-3"
+          style={{
+            background: atServerLimit ? 'var(--dash-warning-bg)' : 'var(--bg-tertiary)',
+            border: '1px solid var(--border-subtle)',
+            color: 'var(--text-primary)',
+          }}
+        >
+          <span className="flex items-center gap-2">
+            <Server className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+            {(atServerLimit ? t('servers', 'serverLimitReached') : t('servers', 'planServersUsage'))
+              .replace('{used}', String(serverUsage.used))
+              .replace('{limit}', String(serverUsage.limit))
+              .replace('{plan}', billingInfo?.planName ?? '')}
+          </span>
+          {atServerLimit && (
+            <Link href="/dashboard/billing/plans" className="font-medium shrink-0" style={{ color: 'var(--accent-cyan)' }}>
+              {t('billing', 'comparePlans')}
+            </Link>
+          )}
+        </div>
+      )}
 
       {mode === 'managed' && infraBilling && walletBalance < requiredCents && requiredCents > 0 && (
         <div
@@ -437,7 +466,14 @@ export default function NewServerPage() {
           style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
         >
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {isValid ? t('servers', 'readyToCreate') : t('servers', 'fillRequiredFields')}
+            {atServerLimit
+              ? t('servers', 'serverLimitReached')
+                  .replace('{used}', String(serverUsage?.used ?? 0))
+                  .replace('{limit}', String(serverUsage?.limit ?? 0))
+                  .replace('{plan}', billingInfo?.planName ?? '')
+              : isValid
+                ? t('servers', 'readyToCreate')
+                : t('servers', 'fillRequiredFields')}
           </p>
           <div className="flex items-center gap-3">
             <Link href="/dashboard/servers" className="btn btn-secondary px-5">
@@ -445,7 +481,7 @@ export default function NewServerPage() {
             </Link>
             <button
               type="submit"
-              disabled={!isValid || createServer.isPending}
+              disabled={!isValid || createServer.isPending || atServerLimit}
               className="btn btn-primary px-6"
             >
               {createServer.isPending ? (

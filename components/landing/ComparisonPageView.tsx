@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Check, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { MarketingShell, MarketingPageHero } from './MarketingShell';
 import { LandingSectionHeader } from './LandingSectionHeader';
+import { JsonLd } from '@/components/JsonLd';
 
 export interface ComparisonRow {
   label: string;
@@ -33,6 +34,8 @@ export interface ComparisonPageViewProps {
   diffs: { title: string; body: string }[];
   faqTitle: string;
   faqs: { q: string; a: string }[];
+  relatedTitle?: string;
+  relatedLinks?: { href: string; label: string }[];
   ctaTitle: string;
   ctaBody: string;
   ctaButton: string;
@@ -52,8 +55,21 @@ function cell(val: boolean, highlight: boolean) {
 
 export function ComparisonPageView(p: ComparisonPageViewProps) {
   return (
-    <MarketingShell noPad>
-      <MarketingPageHero label={p.eyebrow} title={p.h1} description={p.subtitle} />
+    <>
+      {/* FAQ rich-result schema, built from the same FAQ content rendered below. */}
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: p.faqs.map((f) => ({
+            '@type': 'Question',
+            name: f.q,
+            acceptedAnswer: { '@type': 'Answer', text: f.a },
+          })),
+        }}
+      />
+      <MarketingShell noPad>
+        <MarketingPageHero label={p.eyebrow} title={p.h1} description={p.subtitle} />
 
       <div className="lp-container -mt-4 mb-4 flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link href="/register" className="lp-cta group">
@@ -168,6 +184,25 @@ export function ComparisonPageView(p: ComparisonPageViewProps) {
         </div>
       </section>
 
+      {/* Related pages — internal linking for topical authority */}
+      {p.relatedLinks && p.relatedLinks.length > 0 && (
+        <section className="lp-section">
+          <div className="lp-container max-w-4xl">
+            {p.relatedTitle && (
+              <LandingSectionHeader title={p.relatedTitle} align="center" className="mx-auto text-center" />
+            )}
+            <div className="flex flex-wrap justify-center gap-3">
+              {p.relatedLinks.map((l) => (
+                <Link key={l.href} href={l.href} className="lp-cta-ghost">
+                  {l.label}
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* CTA */}
       <section className="lp-section">
         <div className="lp-container max-w-2xl text-center">
@@ -179,6 +214,7 @@ export function ComparisonPageView(p: ComparisonPageViewProps) {
           </Link>
         </div>
       </section>
-    </MarketingShell>
+      </MarketingShell>
+    </>
   );
 }

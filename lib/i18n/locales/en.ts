@@ -299,6 +299,7 @@ export interface TranslationKeys {
     pricing: string;
     openSource: string;
     sites: string;
+    exploreMore: string;
     // Hero
     openSourcePlatform: string;
     heroTitleLead: string;
@@ -723,6 +724,8 @@ export interface TranslationKeys {
     logsHelpHistorical: string;
     // Environment tab
     envVarsDesc: string;
+    oauthHintTitle: string;
+    oauthHintBody: string;
     addVariable: string;
     pasteEnv: string;
     pasteEnvContent: string;
@@ -1453,6 +1456,8 @@ export interface TranslationKeys {
     description: string;
     newServer: string;
     createServer: string;
+    planServersUsage: string;
+    serverLimitReached: string;
     creating: string;
     noServers: string;
     noServersDesc: string;
@@ -2458,6 +2463,7 @@ export const en: TranslationKeys = {
     pricing: 'Pricing',
     openSource: 'Open Source',
     sites: 'Sites',
+    exploreMore: 'Explore more',
     // Hero
     openSourcePlatform: 'Open Source Cloud Platform',
     heroTitleLead: 'Deploy to your own servers',
@@ -2900,6 +2906,8 @@ export const en: TranslationKeys = {
     logsHelpHistorical: 'History — logs saved periodically on the server (retained ~7 days).',
     // Environment tab
     envVarsDesc: 'Environment variables are encrypted and available during build and runtime.',
+    oauthHintTitle: 'Enable social login (OAuth)',
+    oauthHintBody: 'To add Google/GitHub login, set the variables below and Redeploy. In your provider console, set the callback URL to: {url}',
     addVariable: 'Add Variable',
     pasteEnv: 'Paste .env',
     pasteEnvContent: 'Paste your .env file content',
@@ -3647,6 +3655,8 @@ export const en: TranslationKeys = {
     description: 'Manage your cloud servers and infrastructure.',
     newServer: 'New Server',
     createServer: 'Create Server',
+    planServersUsage: '{used} of {limit} servers used on your {plan} plan',
+    serverLimitReached: "You've reached your {plan} plan's server limit ({used}/{limit}). Upgrade to add more.",
     creating: 'Creating...',
     noServers: 'No servers yet',
     noServersDesc: 'Create a server to deploy your applications on your own infrastructure.',

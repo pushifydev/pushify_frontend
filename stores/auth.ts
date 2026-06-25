@@ -25,6 +25,7 @@ interface AuthState {
   register: (email: string, password: string, name: string) => Promise<boolean>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  setOrganization: (organization: Organization) => void;
   clearError: () => void;
   clearTwoFactor: () => void;
 }
@@ -176,6 +177,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
     }
   },
+
+  setOrganization: (organization) => set({ organization }),
 
   clearError: () => set({ error: null }),
 

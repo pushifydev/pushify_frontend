@@ -299,6 +299,7 @@ export const tr: TranslationKeys = {
     pricing: 'Fiyatlandırma',
     openSource: 'Açık Kaynak',
     sites: 'Siteler',
+    exploreMore: 'Daha fazlasını keşfet',
     // Hero
     openSourcePlatform: 'Açık Kaynak Bulut Platformu',
     heroTitleLead: 'Kendi sunucularınıza',
@@ -741,6 +742,8 @@ export const tr: TranslationKeys = {
     logsHelpHistorical: 'Geçmiş — sunucuda periyodik kaydedilen loglar (yaklaşık 7 gün saklanır).',
     // Environment tab
     envVarsDesc: 'Ortam değişkenleri şifrelenir ve derleme ile çalışma zamanında kullanılabilir.',
+    oauthHintTitle: 'Sosyal giriş ekle (OAuth)',
+    oauthHintBody: 'Google/GitHub girişi eklemek için aşağıdaki değişkenleri girip Redeploy alın. Sağlayıcı panelinde callback URL olarak şunu kullanın: {url}',
     addVariable: 'Değişken Ekle',
     pasteEnv: '.env Yapıştır',
     pasteEnvContent: '.env dosyanızın içeriğini yapıştırın',
@@ -1489,6 +1492,8 @@ export const tr: TranslationKeys = {
     description: 'Bulut sunucularınızı ve altyapınızı yönetin.',
     newServer: 'Yeni Sunucu',
     createServer: 'Sunucu Oluştur',
+    planServersUsage: '{plan} planında {used}/{limit} sunucu kullanılıyor',
+    serverLimitReached: '{plan} planının sunucu limitine ulaştın ({used}/{limit}). Daha fazlası için yükselt.',
     creating: 'Oluşturuluyor...',
     noServers: 'Henüz sunucu yok',
     noServersDesc: 'Uygulamalarınızı kendi altyapınızda çalıştırmak için bir sunucu oluşturun.',

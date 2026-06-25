@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/auth';
 import { useTranslation } from '@/hooks';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { LogoMark } from '@/components/logo';
 import { AuthThemeToggle } from '@/components/auth';
 import { Check } from 'lucide-react';
@@ -16,18 +15,24 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
   const { t } = useTranslation();
+
+  // The invite page lives under (auth) but must render for logged-in users too — they need
+  // to accept the invite. Without this exception the guard below would bounce them to the
+  // dashboard before they can act, so clicking an invite link appears to "do nothing".
+  const isInvitationFlow = pathname?.startsWith('/accept-invitation') ?? false;
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    if (!isLoading && isAuthenticated && !isInvitationFlow) {
       router.push('/dashboard');
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, router, isInvitationFlow]);
 
   if (isLoading) {
     return (
@@ -37,7 +42,7 @@ export default function AuthLayout({
     );
   }
 
-  if (isAuthenticated) {
+  if (isAuthenticated && !isInvitationFlow) {
     return null;
   }
 
@@ -58,7 +63,6 @@ export default function AuthLayout({
           </Link>
           <div className="flex items-center gap-1">
             <AuthThemeToggle />
-            <LanguageSwitcher />
           </div>
         </div>
 
@@ -105,7 +109,6 @@ export default function AuthLayout({
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
         <div className="lg:hidden absolute top-4 right-4 flex items-center gap-1">
           <AuthThemeToggle />
-          <LanguageSwitcher />
         </div>
         <div className="w-full max-w-md">{children}</div>
       </div>

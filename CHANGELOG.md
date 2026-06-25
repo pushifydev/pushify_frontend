@@ -1,5 +1,66 @@
 # Changelog
 
+## [0.2.0-beta.25] - 2026-06-24
+
+### Changed
+- Refactored the project detail page from a single 3,546-line file into a thin orchestrator (492 lines) plus 12 extracted components under `projects/[id]/components/` (OverviewTab, DeploymentsTab, EnvironmentTab, DomainsTab, DomainCard, NginxSettingsModal, ToggleOption, SettingsTab, NotificationsTab, HealthCheckSection, PreviewDeploymentsSection, MetricsSection). Pure refactor — no behavior change; typecheck clean.
+
+## [0.2.0-beta.24] - 2026-06-24
+
+### Fixed
+- Project detail data (status, production URL, last-deployed time) now refreshes automatically when a deployment finishes. The `deployment:status` realtime handler previously invalidated only the deployment queries; it now also invalidates the project detail query (and the domains list on first success), so the page no longer shows stale info after a deploy.
+
+## [0.2.0-beta.23] - 2026-06-24
+
+### Added
+- Supabase marketplace projects show an info note on the Environment tab explaining how to enable social login (OAuth): set `GOOGLE_ENABLED`/`GOOGLE_CLIENT_ID`/`GOOGLE_SECRET` and Redeploy, with the exact provider callback URL (`<app-url>/auth/v1/callback`) for the project. No SSH needed — the existing env-edit + redeploy flow already applies it.
+
+## [0.2.0-beta.22] - 2026-06-24
+
+### Fixed
+- Mobile sidebar: the page behind the drawer no longer scrolls while it's open — background scroll is now locked (`body` overflow) and the backdrop ignores touch gestures (`touch-none`, `overscroll-contain`). The sidebar also uses `h-dvh` so its full height (including the user row) fits the visible viewport on mobile browsers with dynamic chrome.
+
+## [0.2.0-beta.21] - 2026-06-24
+
+### Fixed
+- Dark mode on the auth (login/register) and landing pages now follows the app theme toggle. Tailwind v4's `dark:` variant was defaulting to the OS `prefers-color-scheme` because no `@custom-variant dark` was defined — so when the app theme was dark but the OS was light, those pages stayed in light styles. Added `@custom-variant dark (&:where(.dark, .dark *))` so `dark:` utilities are driven by the `.dark` class set in `stores/theme.ts`, consistent with the rest of the app.
+
+## [0.2.0-beta.20] - 2026-06-24
+
+### Changed
+- Language is no longer switchable from the public UI — removed the language toggle from the landing navbar, dashboard header, and auth screens. Language now auto-detects the device/browser language on first visit and is changed only from **Settings → Appearance**. (Browser auto-detection in `stores/locale.ts` and the Settings language control already existed; this removes the redundant public toggles.)
+
+## [0.2.0-beta.19] - 2026-06-24
+
+### Fixed
+- Content-Security-Policy was blocking Google Analytics — `script-src` now allows `https://www.googletagmanager.com` and `https://www.google-analytics.com`, so GA4 (gtag.js) loads. (`connect-src`/`img-src` already permit `https:` for the analytics beacons.)
+
+## [0.2.0-beta.18] - 2026-06-24
+
+### SEO
+- **FAQPage structured data** on the comparison pages (/vs/coolify, /vs/vercel), generated from the FAQ content already on each page — unlocks FAQ rich results in Google for "pushify vs coolify / vercel" queries.
+- **Internal linking** for topical authority: comparison pages now cross-link to each other plus a deploy guide, pricing, and features; framework deploy pages link to the comparison pages and features.
+- **AI-search (GEO)**: strengthened `llms.txt` with explicit "alternative to Coolify/Vercel/Heroku/Render/Railway" framing and links to the comparison guides; added `llms-full.txt` — a self-contained product overview (definition, comparisons, features, quick-start, FAQ) for AI assistants doing deep research.
+
+## [0.2.0-beta.17] - 2026-06-24
+
+### Added
+- Google Analytics 4 integration (Measurement ID `G-SW4LNQEV9M`, overridable via `NEXT_PUBLIC_GA_ID`). Loads in production builds only — local dev stays tracking-free.
+
+## [0.2.0-beta.16] - 2026-06-24
+
+### Added
+- **Workspace switcher** in the sidebar footer: users who belong to more than one organization can switch the active workspace from a dropdown (shows each org + the user's role, with the current one checked). Switching re-scopes the session and refetches all org data (projects, servers, billing, members…).
+- Accepting a team invitation now **auto-switches** the member into that team's workspace, so they immediately land on the team's resources instead of their own (empty) personal workspace.
+
+## [0.2.0-beta.15] - 2026-06-24
+
+### Fixed
+- Team invite links now work for already-signed-in users. The `(auth)` layout used to redirect any authenticated visitor to the dashboard before `/accept-invitation` could render, so clicking an invite link from email appeared to "do nothing". The layout now makes an exception for the invite flow, letting logged-in invitees see and click "Accept".
+
+### Added
+- Server creation page now shows the plan's server quota ("{used} of {limit} servers used on your {plan} plan"). When the limit is reached it switches to an upgrade prompt (link to Compare Plans) and disables the Create button, instead of only surfacing a 403 after submit.
+
 ## [0.2.0-beta.14] - 2026-06-13
 
 ### Added
