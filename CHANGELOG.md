@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.21] - 2026-06-24
+
+### Fixed
+- Dark mode on the auth (login/register) and landing pages now follows the app theme toggle. Tailwind v4's `dark:` variant was defaulting to the OS `prefers-color-scheme` because no `@custom-variant dark` was defined — so when the app theme was dark but the OS was light, those pages stayed in light styles. Added `@custom-variant dark (&:where(.dark, .dark *))` so `dark:` utilities are driven by the `.dark` class set in `stores/theme.ts`, consistent with the rest of the app.
+
 ## [0.2.0-beta.20] - 2026-06-24
 
 ### Changed
