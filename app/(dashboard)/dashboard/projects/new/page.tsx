@@ -12,22 +12,15 @@ import {
   Github,
   Globe,
   Loader2,
-  ClipboardCopy,
-  Plus,
   Rocket,
   RefreshCw,
   Settings,
-  Trash2,
   Unlink,
   Zap,
-  Eye,
   EyeOff,
   AlertCircle,
   Sparkles,
-  Box,
   Terminal,
-  FolderCode,
-  Server,
 } from 'lucide-react';
 import {
   useCreateProject,
@@ -51,17 +44,15 @@ import { createDeployment, getApiErrorMessage } from '@/lib/api';
 import { buildGitWebhookUrl } from '@/lib/build-webhook-url';
 import type { CreateProjectInput, GitHubRepo, GitLabRepo } from '@/lib/api';
 import { FRAMEWORKS } from '@/lib/frameworks';
-import { Checkbox } from '@/components/Checkbox';
-import { Modal } from '@/components/Modal';
-
-type Step = 'source' | 'configure' | 'environment' | 'review';
-
-interface EnvVariable {
-  id: string;
-  key: string;
-  value: string;
-  isSecret: boolean;
-}
+import {
+  ProgressSteps,
+  ConfigureStep,
+  EnvironmentStep,
+  ReviewStep,
+  WebhookSecretModal,
+  type Step,
+  type EnvVariable,
+} from './components';
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -459,50 +450,12 @@ export default function NewProjectPage() {
       </div>
 
       {/* Progress Steps */}
-      <div className="mb-10">
-        <div className="flex items-center justify-between relative">
-          {/* Progress line */}
-          <div className="absolute top-5 left-0 right-0 h-0.5 bg-[var(--border-subtle)]">
-            <div
-              className="h-full bg-gradient-to-r from-[var(--accent-cyan)] to-[var(--accent-purple)] transition-all duration-500"
-              style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
-            />
-          </div>
-
-          {steps.map((step, index) => {
-            const isCompleted = index < currentStepIndex;
-            const isCurrent = step.id === currentStep;
-
-            return (
-              <button
-                key={step.id}
-                onClick={() => index <= currentStepIndex && setCurrentStep(step.id)}
-                disabled={index > currentStepIndex}
-                className={`relative z-10 flex flex-col items-center gap-2 ${
-                  index <= currentStepIndex ? 'cursor-pointer' : 'cursor-not-allowed'
-                }`}
-              >
-                <div className={`
-                  w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
-                  ${isCompleted
-                    ? 'dash-accent-fill'
-                    : isCurrent
-                      ? 'bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-purple)] text-[var(--bg-primary)]'
-                      : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)]'
-                  }
-                `}>
-                  {isCompleted ? <Check className="w-5 h-5" /> : step.icon}
-                </div>
-                <span className={`text-sm font-medium hidden sm:block ${
-                  isCurrent ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'
-                }`}>
-                  {step.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <ProgressSteps
+        steps={steps}
+        currentStep={currentStep}
+        currentStepIndex={currentStepIndex}
+        setCurrentStep={setCurrentStep}
+      />
 
       {/* Step Content */}
       <div className="p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
@@ -1005,324 +958,58 @@ export default function NewProjectPage() {
 
         {/* Step 2: Configure */}
         {currentStep === 'configure' && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-2">{t('newProject', 'configureProject')}</h2>
-              <p className="text-[var(--text-secondary)]">{t('newProject', 'configureProjectDesc')}</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">{t('newProject', 'projectName')} *</label>
-                <input
-                  type="text"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
-                  placeholder="my-awesome-project"
-                  className="input"
-                />
-                <p className="text-xs text-[var(--text-muted)] mt-1">{t('newProject', 'projectNameHint')}</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">{t('newProject', 'description')}</label>
-                <input
-                  type="text"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder={t('newProject', 'descriptionPlaceholder')}
-                  className="input"
-                />
-              </div>
-            </div>
-
-            {/* Framework Selection */}
-            <div>
-              <label className="block text-sm font-medium mb-3">{t('newProject', 'framework')} *</label>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                {FRAMEWORKS.map((fw) => (
-                  <button
-                    key={fw.id}
-                    onClick={() => setSelectedFramework(fw.id)}
-                    className={`p-3 rounded-xl border text-center transition-all duration-200 ${
-                      selectedFramework === fw.id
-                        ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5'
-                        : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
-                    }`}
-                  >
-                    <span className="text-2xl mb-1 block">{fw.icon}</span>
-                    <span className="text-xs font-medium">{fw.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Build Settings */}
-            <div className="pt-4 border-t border-[var(--border-subtle)]">
-              <h3 className="text-lg font-semibold mb-4">{t('newProject', 'buildSettings')}</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'rootDirectory')}</label>
-                  <input
-                    type="text"
-                    value={rootDirectory}
-                    onChange={(e) => setRootDirectory(e.target.value)}
-                    placeholder="./"
-                    className="input terminal-text"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'installCommand')}</label>
-                  <input
-                    type="text"
-                    value={installCommand}
-                    onChange={(e) => setInstallCommand(e.target.value)}
-                    placeholder="npm install"
-                    className="input terminal-text"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'buildCommand')}</label>
-                  <input
-                    type="text"
-                    value={buildCommand}
-                    onChange={(e) => setBuildCommand(e.target.value)}
-                    placeholder="npm run build"
-                    className="input terminal-text"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'outputDirectory')}</label>
-                  <input
-                    type="text"
-                    value={outputDirectory}
-                    onChange={(e) => setOutputDirectory(e.target.value)}
-                    placeholder="dist"
-                    className="input terminal-text"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'startCommand')}</label>
-                  <input
-                    type="text"
-                    value={startCommand}
-                    onChange={(e) => setStartCommand(e.target.value)}
-                    placeholder="npm start"
-                    className="input terminal-text"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'port')}</label>
-                  <input
-                    type="number"
-                    value={port || ''}
-                    onChange={(e) => setPort(e.target.value ? parseInt(e.target.value) : undefined)}
-                    placeholder="3000"
-                    className="input terminal-text"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Deployment Server Selection */}
-            <div className="pt-4 border-t border-[var(--border-subtle)]">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Server className="w-5 h-5 text-[var(--accent-cyan)]" />
-                {t('newProject', 'deploymentServer')}
-              </h3>
-              <p className="text-sm text-[var(--text-secondary)] mb-4">
-                {t('newProject', 'deploymentServerDesc')}
-              </p>
-
-              {isLoadingServers ? (
-                <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  {t('newProject', 'loadingServers')}
-                </div>
-              ) : availableServers.length === 0 ? (
-                <div className="p-4 rounded-lg bg-[var(--bg-tertiary)]">
-                  <p className="text-sm text-[var(--text-muted)]">
-                    {t('newProject', 'noServersAvailable')}
-                  </p>
-                  <Link href="/dashboard/servers" className="text-sm text-[var(--accent-cyan)] hover:underline">
-                    {t('newProject', 'createServerLink')}
-                  </Link>
-                </div>
-              ) : (
-                <div>
-                  <select
-                    value={selectedServerId || ''}
-                    onChange={(e) => setSelectedServerId(e.target.value || undefined)}
-                    className="input w-full max-w-md"
-                  >
-                    <option value="">{t('newProject', 'noServerSelected')}</option>
-                    {availableServers.map((server) => (
-                      <option key={server.id} value={server.id}>
-                        {server.name} ({server.ipv4})
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-[var(--text-muted)] mt-1">
-                    {t('newProject', 'serverSelectionHint')}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+          <ConfigureStep
+            projectName={projectName}
+            setProjectName={setProjectName}
+            description={description}
+            setDescription={setDescription}
+            selectedFramework={selectedFramework}
+            setSelectedFramework={setSelectedFramework}
+            rootDirectory={rootDirectory}
+            setRootDirectory={setRootDirectory}
+            installCommand={installCommand}
+            setInstallCommand={setInstallCommand}
+            buildCommand={buildCommand}
+            setBuildCommand={setBuildCommand}
+            outputDirectory={outputDirectory}
+            setOutputDirectory={setOutputDirectory}
+            startCommand={startCommand}
+            setStartCommand={setStartCommand}
+            port={port}
+            setPort={setPort}
+            isLoadingServers={isLoadingServers}
+            availableServers={availableServers}
+            selectedServerId={selectedServerId}
+            setSelectedServerId={setSelectedServerId}
+          />
         )}
 
         {/* Step 3: Environment Variables */}
         {currentStep === 'environment' && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-2">{t('newProject', 'envVariables')}</h2>
-              <p className="text-[var(--text-secondary)]">{t('newProject', 'envVariablesDesc')}</p>
-            </div>
-
-            <div className="space-y-3">
-              {envVariables.map((env) => (
-                <EnvVariableRow
-                  key={env.id}
-                  env={env}
-                  onUpdate={(field, value) => updateEnvVariable(env.id, field, value)}
-                  onRemove={() => removeEnvVariable(env.id)}
-                />
-              ))}
-
-              <button
-                onClick={addEnvVariable}
-                className="w-full p-4 rounded-xl border-2 border-dashed border-[var(--border-subtle)] hover:border-[var(--accent-cyan)] text-[var(--text-muted)] hover:text-[var(--accent-cyan)] transition-colors flex items-center justify-center gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                {t('newProject', 'addEnvVariable')}
-              </button>
-            </div>
-
-            {envVariables.length === 0 && (
-              <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
-                <Terminal className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-3" />
-                <p className="text-[var(--text-secondary)]">{t('newProject', 'noEnvVariables')}</p>
-                <p className="text-sm text-[var(--text-muted)] mt-1">{t('newProject', 'envVariablesLater')}</p>
-              </div>
-            )}
-          </div>
+          <EnvironmentStep
+            envVariables={envVariables}
+            addEnvVariable={addEnvVariable}
+            updateEnvVariable={updateEnvVariable}
+            removeEnvVariable={removeEnvVariable}
+          />
         )}
 
         {/* Step 4: Review */}
         {currentStep === 'review' && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-2">{t('newProject', 'reviewDeploy')}</h2>
-              <p className="text-[var(--text-secondary)]">{t('newProject', 'reviewDeployDesc')}</p>
-            </div>
-
-            {/* Project Summary */}
-            <div className="space-y-4">
-              <div className="p-5 rounded-xl bg-[var(--bg-tertiary)]">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-purple)] flex items-center justify-center">
-                    <Box className="w-7 h-7 text-[var(--bg-primary)]" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold">{projectName}</h3>
-                    <p className="text-[var(--text-muted)]">{description || t('newProject', 'noDescription')}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-[var(--text-muted)]">{t('newProject', 'framework')}:</span>
-                    <span className="ml-2 font-medium">
-                      {FRAMEWORKS.find(f => f.id === selectedFramework)?.name || '-'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[var(--text-muted)]">{t('newProject', 'branch')}:</span>
-                    <span className="ml-2 font-medium terminal-text">{gitBranch || 'main'}</span>
-                  </div>
-                  {repositoryUrl && (
-                    <div className="col-span-2">
-                      <span className="text-[var(--text-muted)]">{t('newProject', 'repository')}:</span>
-                      <span className="ml-2 font-medium terminal-text text-[var(--accent-cyan)]">{repositoryUrl}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Build Configuration */}
-              <div className="p-5 rounded-xl border border-[var(--border-subtle)]">
-                <h4 className="font-semibold mb-3 flex items-center gap-2">
-                  <FolderCode className="w-4 h-4 text-[var(--accent-cyan)]" />
-                  {t('newProject', 'buildConfig')}
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <span className="text-[var(--text-muted)]">{t('newProject', 'rootDirectory')}:</span>
-                    <span className="ml-2 terminal-text">{rootDirectory}</span>
-                  </div>
-                  <div>
-                    <span className="text-[var(--text-muted)]">{t('newProject', 'installCommand')}:</span>
-                    <span className="ml-2 terminal-text">{installCommand || '-'}</span>
-                  </div>
-                  <div>
-                    <span className="text-[var(--text-muted)]">{t('newProject', 'buildCommand')}:</span>
-                    <span className="ml-2 terminal-text">{buildCommand || '-'}</span>
-                  </div>
-                  <div>
-                    <span className="text-[var(--text-muted)]">{t('newProject', 'outputDirectory')}:</span>
-                    <span className="ml-2 terminal-text">{outputDirectory || '-'}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Environment Variables */}
-              {envVariables.length > 0 && (
-                <div className="p-5 rounded-xl border border-[var(--border-subtle)]">
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Terminal className="w-4 h-4 text-[var(--accent-purple)]" />
-                    {t('newProject', 'envVariables')} ({envVariables.length})
-                  </h4>
-                  <div className="space-y-2">
-                    {envVariables.map((env) => (
-                      <div key={env.id} className="flex items-center gap-2 text-sm">
-                        <span className="terminal-text text-[var(--accent-cyan)]">{env.key}</span>
-                        <span className="text-[var(--text-muted)]">=</span>
-                        <span className="terminal-text">
-                          {env.isSecret ? '••••••••' : env.value}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Auto Deploy Toggle */}
-              <div className="p-5 rounded-xl border border-[var(--border-subtle)]">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div>
-                    <h4 className="font-semibold">{t('newProject', 'autoDeploy')}</h4>
-                    <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'autoDeployDesc')}</p>
-                  </div>
-                  <button
-                    onClick={() => setAutoDeploy(!autoDeploy)}
-                    className={`relative w-12 h-6 rounded-full transition-colors ${
-                      autoDeploy ? 'bg-[var(--accent-cyan)]' : 'bg-[var(--bg-tertiary)]'
-                    }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                      autoDeploy ? 'translate-x-7' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </label>
-              </div>
-            </div>
-          </div>
+          <ReviewStep
+            projectName={projectName}
+            description={description}
+            selectedFramework={selectedFramework}
+            gitBranch={gitBranch}
+            repositoryUrl={repositoryUrl}
+            rootDirectory={rootDirectory}
+            installCommand={installCommand}
+            buildCommand={buildCommand}
+            outputDirectory={outputDirectory}
+            envVariables={envVariables}
+            autoDeploy={autoDeploy}
+            setAutoDeploy={setAutoDeploy}
+          />
         )}
 
         {/* Navigation Buttons */}
@@ -1368,122 +1055,13 @@ export default function NewProjectPage() {
       </div>
     </div>
 
-    <Modal
-      isOpen={!!webhookSecretDialog}
-      onClose={closeWebhookDialogAndDeploy}
-      title={t('newProject', 'webhookSetupOnceTitle')}
-      description={t('newProject', 'webhookSetupOnceDesc')}
-      maxWidth="lg"
-    >
-      <div className="space-y-5">
-        <div>
-          <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
-            {t('newProject', 'webhookUrlLabel')}
-          </p>
-          <p className="text-xs text-[var(--text-muted)] mb-2">{t('newProject', 'webhookUrlOnceHint')}</p>
-          <div
-            className="rounded-xl p-3 font-mono text-xs sm:text-sm break-all border border-[var(--border-subtle)] bg-[var(--bg-secondary)]"
-          >
-            {webhookSecretDialog?.webhookUrl}
-          </div>
-          <button
-            type="button"
-            onClick={copyWebhookUrl}
-            className="btn btn-secondary mt-2 inline-flex items-center gap-2 text-sm"
-          >
-            <ClipboardCopy className="w-4 h-4" />
-            {t('newProject', 'webhookUrlCopy')}
-          </button>
-        </div>
-
-        <div>
-          <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
-            {t('newProject', 'webhookSecretLabel')}
-          </p>
-          <p className="text-xs text-[var(--text-muted)] mb-2">{t('newProject', 'webhookSecretOnceHint')}</p>
-          <div
-            className="rounded-xl p-3 font-mono text-xs sm:text-sm break-all border border-[var(--border-subtle)] bg-[var(--bg-secondary)]"
-          >
-            {webhookSecretDialog?.secret}
-          </div>
-          <button
-            type="button"
-            onClick={copyWebhookSecret}
-            className="btn btn-secondary mt-2 inline-flex items-center gap-2 text-sm"
-          >
-            <ClipboardCopy className="w-4 h-4" />
-            {t('newProject', 'webhookSecretCopy')}
-          </button>
-        </div>
-
-        <p className="text-xs text-[var(--text-muted)]">{t('newProject', 'webhookSetupFootnote')}</p>
-
-        <div className="flex flex-wrap gap-3 justify-end pt-1">
-          <button
-            type="button"
-            onClick={closeWebhookDialogAndDeploy}
-            disabled={isCreating}
-            className="btn btn-primary inline-flex items-center gap-2 disabled:opacity-50"
-          >
-            {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
-            {t('newProject', 'webhookSecretContinue')}
-          </button>
-        </div>
-      </div>
-    </Modal>
+    <WebhookSecretModal
+      webhookSecretDialog={webhookSecretDialog}
+      isCreating={isCreating}
+      closeWebhookDialogAndDeploy={closeWebhookDialogAndDeploy}
+      copyWebhookUrl={copyWebhookUrl}
+      copyWebhookSecret={copyWebhookSecret}
+    />
     </>
-  );
-}
-
-// Environment Variable Row Component
-function EnvVariableRow({
-  env,
-  onUpdate,
-  onRemove,
-}: {
-  env: EnvVariable;
-  onUpdate: (field: keyof EnvVariable, value: string | boolean) => void;
-  onRemove: () => void;
-}) {
-  const [showValue, setShowValue] = useState(false);
-  const { t } = useTranslation();
-
-  return (
-    <div className="flex items-center gap-3 p-4 rounded-xl bg-[var(--bg-tertiary)]">
-      <input
-        type="text"
-        value={env.key}
-        onChange={(e) => onUpdate('key', e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '_'))}
-        placeholder="KEY_NAME"
-        className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-sm terminal-text"
-      />
-      <span className="text-[var(--text-muted)]">=</span>
-      <div className="flex-1 relative">
-        <input
-          type={showValue ? 'text' : 'password'}
-          value={env.value}
-          onChange={(e) => onUpdate('value', e.target.value)}
-          placeholder="value"
-          className="w-full px-3 py-2 pr-10 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-sm terminal-text"
-        />
-        <button
-          onClick={() => setShowValue(!showValue)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-        >
-          {showValue ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-        </button>
-      </div>
-      <Checkbox
-        checked={env.isSecret}
-        onChange={(checked) => onUpdate('isSecret', checked)}
-        label={t('newProject', 'secret')}
-      />
-      <button
-        onClick={onRemove}
-        className="p-2 text-[var(--text-muted)] hover:text-[var(--status-error)] transition-colors"
-      >
-        <Trash2 className="w-4 h-4" />
-      </button>
-    </div>
   );
 }

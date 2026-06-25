@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0-beta.26] - 2026-06-24
+
+### Changed
+- Continued the component-extraction cleanup on the two next-largest pages (pure refactors, no behavior change, typecheck clean):
+  - **Docs page** (`app/docs/page.tsx`): 1,445 → 247 lines. Extracted the 10 API-reference sections into `app/docs/sections/` with a shared `shared.ts` (types + param defs).
+  - **New project page** (`projects/new/page.tsx`): 1,489 → 1,067 lines. Extracted the step panels (`ProgressSteps`, `ConfigureStep`, `EnvironmentStep`, `ReviewStep`), `EnvVariableRow`, and `WebhookSecretModal` into `projects/new/components/`. The Step 1 "import source" block (deeply entangled with 25+ state values) was intentionally left in the parent for now.
+
 ## [0.2.0-beta.25] - 2026-06-24
 
 ### Changed
