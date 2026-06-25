@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.25] - 2026-06-24
+
+### Changed
+- Refactored the project detail page from a single 3,546-line file into a thin orchestrator (492 lines) plus 12 extracted components under `projects/[id]/components/` (OverviewTab, DeploymentsTab, EnvironmentTab, DomainsTab, DomainCard, NginxSettingsModal, ToggleOption, SettingsTab, NotificationsTab, HealthCheckSection, PreviewDeploymentsSection, MetricsSection). Pure refactor — no behavior change; typecheck clean.
+
 ## [0.2.0-beta.24] - 2026-06-24
 
 ### Fixed
