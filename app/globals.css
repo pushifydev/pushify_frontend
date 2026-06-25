@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Drive Tailwind's `dark:` variant from the `.dark` class set by the theme store
+   (stores/theme.ts) instead of the OS `prefers-color-scheme`. Without this, pages
+   that use `dark:` utilities (auth screens, landing) follow the OS, not the app's
+   theme toggle — leaving login stuck in light styles when the app theme is dark. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* ─── Core Backgrounds ─── */
   --bg-primary:   #07070a;
