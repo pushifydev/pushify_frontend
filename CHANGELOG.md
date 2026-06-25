@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.30] - 2026-06-24
+
+### Changed
+- Redesigned the Settings tabs to a clean, airy Cal.com-style layout using a new reusable `SettingsCard` primitive (quiet bordered panel: title + muted description header, body, and an optional tinted footer bar that right-aligns the primary action). Applied consistently across Profile, Appearance, Notifications, Security, Sessions, and API Keys — all on the existing design tokens. Presentational only: hooks, handlers, and sonner toasts are unchanged; typecheck clean.
+
 ## [0.2.0-beta.29] - 2026-06-24
 
 ### Changed

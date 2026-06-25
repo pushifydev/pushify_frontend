@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Smartphone, Shield, Check } from 'lucide-react';
+import { Shield, Check } from 'lucide-react';
 import {
   useTranslation,
   use2FAStatus,
@@ -13,6 +13,7 @@ import {
 import { TwoFactorSetupModal } from './TwoFactorSetupModal';
 import { TwoFactorDisableModal } from './TwoFactorDisableModal';
 import { RegenerateBackupCodesModal } from './RegenerateBackupCodesModal';
+import { SettingsCard } from './SettingsCard';
 
 interface TwoFactorSetupData {
   secret: string;
@@ -94,41 +95,11 @@ export function SecurityTab() {
       </div>
 
       {/* 2FA Card */}
-      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] overflow-hidden">
-        <div className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-[var(--accent-cyan)]/20 to-[var(--accent-purple)]/20">
-              <Smartphone className="w-6 h-6 text-[var(--accent-cyan)]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">{t('security', 'twoFactor')}</h3>
-                  <p className="text-sm text-[var(--text-secondary)] mb-4 max-w-lg">
-                    {t('security', 'twoFactorDesc')}
-                  </p>
-                  {isLoading2FA ? (
-                    <div className="h-7 w-24 bg-[var(--bg-tertiary)] rounded-full animate-pulse" />
-                  ) : twoFactorStatus?.enabled ? (
-                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
-                      <Check className="w-4 h-4" />
-                      {t('security', 'enabled')}
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
-                      <Shield className="w-4 h-4" />
-                      {t('security', 'disabled')}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="px-6 py-4 bg-[var(--bg-tertiary)]/50 border-t border-[var(--border-subtle)]">
-          {isLoading2FA ? (
+      <SettingsCard
+        title={t('security', 'twoFactor')}
+        description={t('security', 'twoFactorDesc')}
+        footer={
+          isLoading2FA ? (
             <div className="h-10 w-32 bg-[var(--bg-tertiary)] rounded-lg animate-pulse" />
           ) : twoFactorStatus?.enabled ? (
             <div className="flex items-center gap-3">
@@ -159,9 +130,23 @@ export function SecurityTab() {
             >
               {setup2FA.isPending ? t('common', 'loading') : t('security', 'enable')}
             </button>
-          )}
-        </div>
-      </div>
+          )
+        }
+      >
+        {isLoading2FA ? (
+          <div className="h-7 w-24 bg-[var(--bg-tertiary)] rounded-full animate-pulse" />
+        ) : twoFactorStatus?.enabled ? (
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+            <Check className="w-4 h-4" />
+            {t('security', 'enabled')}
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+            <Shield className="w-4 h-4" />
+            {t('security', 'disabled')}
+          </span>
+        )}
+      </SettingsCard>
 
       {/* Modals */}
       {setupData && (
