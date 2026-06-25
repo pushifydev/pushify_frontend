@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.0-beta.27] - 2026-06-24
+
+### Changed
+- Continued component extraction across four more large files (pure refactors, no behavior change, typecheck clean):
+  - **Monitoring page**: 687 → 212 lines — helpers + chart/table sections into `monitoring/components/`.
+  - **Server detail page**: 650 → 396 lines — status banners + provider/network sections into `servers/components/`.
+  - **Database detail sections**: split the 670-line `DatabaseDetailSections.tsx` into one file per component under `components/databases/detail/`; the original file is now a thin re-export so import sites are unchanged.
+  - **Site editor**: extracted the `ToolbarToggle`/`SectionHeading`/`Field` helpers into `site-editor/parts/`; the stateful editor panels were intentionally left in the parent to avoid risky prop threading.
+
 ## [0.2.0-beta.26] - 2026-06-24
 
 ### Changed
