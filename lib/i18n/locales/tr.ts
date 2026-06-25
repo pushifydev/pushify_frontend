@@ -742,6 +742,8 @@ export const tr: TranslationKeys = {
     logsHelpHistorical: 'Geçmiş — sunucuda periyodik kaydedilen loglar (yaklaşık 7 gün saklanır).',
     // Environment tab
     envVarsDesc: 'Ortam değişkenleri şifrelenir ve derleme ile çalışma zamanında kullanılabilir.',
+    oauthHintTitle: 'Sosyal giriş ekle (OAuth)',
+    oauthHintBody: 'Google/GitHub girişi eklemek için aşağıdaki değişkenleri girip Redeploy alın. Sağlayıcı panelinde callback URL olarak şunu kullanın: {url}',
     addVariable: 'Değişken Ekle',
     pasteEnv: '.env Yapıştır',
     pasteEnvContent: '.env dosyanızın içeriğini yapıştırın',

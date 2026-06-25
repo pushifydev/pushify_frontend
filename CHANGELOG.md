@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.23] - 2026-06-24
+
+### Added
+- Supabase marketplace projects show an info note on the Environment tab explaining how to enable social login (OAuth): set `GOOGLE_ENABLED`/`GOOGLE_CLIENT_ID`/`GOOGLE_SECRET` and Redeploy, with the exact provider callback URL (`<app-url>/auth/v1/callback`) for the project. No SSH needed — the existing env-edit + redeploy flow already applies it.
+
 ## [0.2.0-beta.22] - 2026-06-24
 
 ### Fixed

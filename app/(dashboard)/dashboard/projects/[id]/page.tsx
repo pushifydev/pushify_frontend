@@ -24,6 +24,7 @@ import {
   Copy,
   Check,
   FileText,
+  Info,
   Bell,
   Plus,
   Send,
@@ -492,6 +493,12 @@ export default function ProjectDetailPage() {
             onCreate={(data) => createEnvVar.mutate(data)}
             onDelete={(id) => deleteEnvVar.mutate(id)}
             onBulkCreate={(data) => bulkCreateEnvVars.mutate(data)}
+            marketplaceTemplateId={
+              typeof projectSettings.marketplaceTemplateId === 'string'
+                ? projectSettings.marketplaceTemplateId
+                : undefined
+            }
+            productionUrl={project.productionUrl ?? null}
             t={t}
           />
         )}
@@ -845,12 +852,16 @@ function EnvironmentTab({
   onCreate,
   onDelete,
   onBulkCreate,
+  marketplaceTemplateId,
+  productionUrl,
   t,
 }: {
   envVars: ReturnType<typeof useEnvVars>['data'];
   onCreate: (data: { key: string; value: string }) => void;
   onDelete: (id: string) => void;
   onBulkCreate: (data: { key: string; value: string }[]) => void;
+  marketplaceTemplateId?: string;
+  productionUrl?: string | null;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
   const confirm = useConfirm();
@@ -923,6 +934,33 @@ function EnvironmentTab({
 
   return (
     <div className="space-y-4 min-w-0 overflow-hidden">
+      {marketplaceTemplateId === 'supabase' && (
+        <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 flex gap-3">
+          <Info className="w-4 h-4 mt-0.5 shrink-0 text-[var(--accent-cyan)]" />
+          <div className="min-w-0 text-sm">
+            <p className="font-medium text-[var(--text-primary)] mb-1">
+              {t('projectDetail', 'oauthHintTitle')}
+            </p>
+            <p className="text-[var(--text-secondary)] mb-2 break-words">
+              {t('projectDetail', 'oauthHintBody').replace(
+                '{url}',
+                `${productionUrl ?? 'https://<app-url>'}/auth/v1/callback`
+              )}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {['GOOGLE_ENABLED=true', 'GOOGLE_CLIENT_ID', 'GOOGLE_SECRET'].map((v) => (
+                <code
+                  key={v}
+                  className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-[var(--text-secondary)]"
+                >
+                  {v}
+                </code>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <p className="text-sm text-[var(--text-secondary)] min-w-0">
           {t('projectDetail', 'envVarsDesc')}
