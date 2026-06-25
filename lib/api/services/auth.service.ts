@@ -382,13 +382,22 @@ export const getGithubLoginUrl = async (): Promise<ApiResponse<{ url: string; st
 export const githubLoginCallback = async (
   code: string,
   state: string,
-): Promise<ApiResponse<AuthResponse>> => {
+): Promise<ApiResponse<LoginResponse>> => {
   try {
-    const response = await api.post<{
-      data: AuthResponse;
-      accessToken: string;
-      refreshToken: string;
-    }>('/auth/github/login-callback', { code, state });
+    const response = await api.post<
+      | { data: AuthResponse; accessToken: string; refreshToken: string }
+      | { requiresTwoFactor: true; twoFactorToken: string }
+    >('/auth/github/login-callback', { code, state });
+
+    // 2FA-enabled account: no tokens yet — surface the challenge to the caller
+    if ('requiresTwoFactor' in response.data) {
+      return {
+        data: {
+          requiresTwoFactor: true,
+          twoFactorToken: response.data.twoFactorToken,
+        },
+      };
+    }
 
     const { data, accessToken, refreshToken } = response.data;
     setTokens(accessToken, refreshToken);
@@ -425,13 +434,22 @@ export const getGoogleLoginUrl = async (): Promise<ApiResponse<{ url: string; st
 export const googleLoginCallback = async (
   code: string,
   state: string,
-): Promise<ApiResponse<AuthResponse>> => {
+): Promise<ApiResponse<LoginResponse>> => {
   try {
-    const response = await api.post<{
-      data: AuthResponse;
-      accessToken: string;
-      refreshToken: string;
-    }>('/auth/google/login-callback', { code, state });
+    const response = await api.post<
+      | { data: AuthResponse; accessToken: string; refreshToken: string }
+      | { requiresTwoFactor: true; twoFactorToken: string }
+    >('/auth/google/login-callback', { code, state });
+
+    // 2FA-enabled account: no tokens yet — surface the challenge to the caller
+    if ('requiresTwoFactor' in response.data) {
+      return {
+        data: {
+          requiresTwoFactor: true,
+          twoFactorToken: response.data.twoFactorToken,
+        },
+      };
+    }
 
     const { data, accessToken, refreshToken } = response.data;
     setTokens(accessToken, refreshToken);
