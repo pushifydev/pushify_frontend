@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.24] - 2026-06-24
+
+### Fixed
+- Project detail data (status, production URL, last-deployed time) now refreshes automatically when a deployment finishes. The `deployment:status` realtime handler previously invalidated only the deployment queries; it now also invalidates the project detail query (and the domains list on first success), so the page no longer shows stale info after a deploy.
+
 ## [0.2.0-beta.23] - 2026-06-24
 
 ### Added
