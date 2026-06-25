@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.28] - 2026-06-24
+
+### Changed
+- Finished the new-project page refactor: the Step 1 "import source" block (GitHub/GitLab connect, repo/branch selection, framework detection) was moved into a `useImportSource` hook plus a presentational `ImportSourceStep` component. `page.tsx` is now 462 lines (down from the original 1,489). The step's props are typed via `Pick<ReturnType<typeof useImportSource>>` so the compiler enforces complete prop threading. Pure refactor — state/effects moved verbatim, typecheck clean.
+
 ## [0.2.0-beta.27] - 2026-06-24
 
 ### Changed
