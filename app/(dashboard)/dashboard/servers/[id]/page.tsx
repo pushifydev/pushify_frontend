@@ -1,16 +1,14 @@
 'use client';
 
-import { use, useState, type ReactNode } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft,
-  Globe,
   Cpu,
   MemoryStick,
   HardDrive,
   Activity,
-  Clock,
   MapPin,
   Play,
   Square,
@@ -18,9 +16,6 @@ import {
   Trash2,
   RefreshCw,
   Terminal,
-  Shield,
-  Network,
-  Box,
   AlertTriangle,
   Check,
   Loader2,
@@ -28,7 +23,6 @@ import {
   Database,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { formatBytes, formatShortDate } from '@/lib/formatters';
 import {
   isInfraCreditsStoppedMessage,
   resolveServerStatusMessage,
@@ -49,7 +43,6 @@ import {
 } from '@/components/servers/ServerHubSections';
 import { ServerHealthPanel } from '@/components/servers/ServerHealthPanel';
 import { SERVER_STATUS_COLORS } from '@/lib/constants';
-import type { ServerStatus } from '@/lib/api';
 import { ProviderIcon } from '@/components/servers/ProviderIcon';
 import { DeleteServerModal } from '../components/DeleteServerModal';
 import {
@@ -64,135 +57,18 @@ import {
 import {
   ServerDetailSection,
   StatTile,
-  CopyField,
-  InfoRow,
 } from '../components/ServerDetailSection';
+import { StatusBadge, SetupBanner } from '../components/ServerDetailBanners';
+import {
+  ServerNetworkSection,
+  ServerProviderPanels,
+  type ProviderLabels,
+} from '../components/ServerProviderInfo';
 
 const ICON_SM = 'w-4 h-4 shrink-0';
 
 interface PageProps {
   params: Promise<{ id: string }>;
-}
-
-type ProviderLabels = {
-  hetznerServerId?: number;
-  datacenter?: string;
-  datacenterDescription?: string;
-  location?: {
-    name: string;
-    city: string;
-    country: string;
-    latitude: number;
-    longitude: number;
-    network_zone: string;
-  };
-  serverType?: {
-    id: number;
-    name: string;
-    description: string;
-    cpuType: string;
-    architecture: string;
-    storageType: string;
-  };
-  image?: {
-    id: number;
-    name: string;
-    description: string;
-    osFamily: string;
-    osVersion: string;
-    architecture: string;
-  };
-  traffic?: {
-    outgoing: number | null;
-    ingoing: number | null;
-    included: number;
-  };
-  protection?: {
-    delete: boolean;
-    rebuild: boolean;
-  };
-};
-
-function StatusBadge({
-  status,
-  label,
-}: {
-  status: ServerStatus;
-  label: string;
-}) {
-  const accent = SERVER_STATUS_COLORS[status] ?? 'var(--text-muted)';
-
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
-      style={{
-        background: `${accent}18`,
-        border: `1px solid ${accent}35`,
-        color: accent,
-      }}
-    >
-      <span
-        className="w-1.5 h-1.5 rounded-full shrink-0"
-        style={{ background: accent }}
-      />
-      {label}
-    </span>
-  );
-}
-
-function SetupBanner({
-  variant,
-  title,
-  description,
-  icon,
-}: {
-  variant: 'info' | 'error' | 'success';
-  title: string;
-  description: string;
-  icon: ReactNode;
-}) {
-  const styles = {
-    info: {
-      border: 'var(--accent-cyan)',
-      bg: 'rgba(34,211,238,0.06)',
-      title: 'var(--accent-cyan)',
-    },
-    error: {
-      border: 'var(--status-error)',
-      bg: 'rgba(239,68,68,0.06)',
-      title: 'var(--status-error)',
-    },
-    success: {
-      border: 'var(--status-success)',
-      bg: 'rgba(34,197,94,0.06)',
-      title: 'var(--status-success)',
-    },
-  }[variant];
-
-  return (
-    <div
-      className="rounded-xl p-5 flex items-start gap-4"
-      style={{
-        background: styles.bg,
-        border: `1px solid color-mix(in srgb, ${styles.border} 35%, transparent)`,
-      }}
-    >
-      <div
-        className="w-10 h-10 rounded-lg dash-section-icon"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
-      >
-        {icon}
-      </div>
-      <div className="min-w-0">
-        <h3 className="text-sm font-semibold" style={{ color: styles.title }}>
-          {title}
-        </h3>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          {description}
-        </p>
-      </div>
-    </div>
-  );
 }
 
 export default function ServerDetailPage({ params }: PageProps) {
@@ -488,66 +364,12 @@ export default function ServerDetailPage({ params }: PageProps) {
             </div>
           </ServerDetailSection>
 
-          <ServerDetailSection icon={Network} title={t('servers', 'network')}>
-            <div className="space-y-3">
-              {server.ipv4 && (
-                <CopyField
-                  label="IPv4"
-                  value={server.ipv4}
-                  fieldKey="ipv4"
-                  copiedField={copiedField}
-                  onCopy={copyToClipboard}
-                />
-              )}
-              {server.ipv6 && (
-                <CopyField
-                  label="IPv6"
-                  value={server.ipv6}
-                  fieldKey="ipv6"
-                  copiedField={copiedField}
-                  onCopy={copyToClipboard}
-                />
-              )}
-              {server.privateIp && (
-                <CopyField
-                  label={t('servers', 'privateIp')}
-                  value={server.privateIp}
-                  fieldKey="privateIp"
-                  copiedField={copiedField}
-                  onCopy={copyToClipboard}
-                />
-              )}
-            </div>
-
-            {providerData.traffic && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
-                  <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-                    {t('servers', 'trafficIngoing')}
-                  </p>
-                  <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {formatBytes(providerData.traffic.ingoing)}
-                  </p>
-                </div>
-                <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
-                  <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-                    {t('servers', 'trafficOutgoing')}
-                  </p>
-                  <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {formatBytes(providerData.traffic.outgoing)}
-                  </p>
-                </div>
-                <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
-                  <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-                    {t('servers', 'trafficIncluded')}
-                  </p>
-                  <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {formatBytes(providerData.traffic.included)}
-                  </p>
-                </div>
-              </div>
-            )}
-          </ServerDetailSection>
+          <ServerNetworkSection
+            server={server}
+            providerData={providerData}
+            copiedField={copiedField}
+            onCopy={copyToClipboard}
+          />
 
         </div>
 
@@ -557,83 +379,7 @@ export default function ServerDetailPage({ params }: PageProps) {
           <ServerHealthPanel server={server} />
           <ServerSnapshotsPanel server={server} />
           <ServerTimelinePanel serverId={id} />
-          {providerData.serverType && (
-            <ServerDetailSection icon={Box} title={t('servers', 'serverType')}>
-              <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
-                <InfoRow label={t('servers', 'fieldType')} value={providerData.serverType.name} />
-                <InfoRow label={t('servers', 'fieldDescription')} value={providerData.serverType.description} />
-                <InfoRow
-                  label={t('servers', 'cpuType')}
-                  value={<span className="capitalize">{providerData.serverType.cpuType}</span>}
-                />
-                <InfoRow label={t('servers', 'architecture')} value={providerData.serverType.architecture} />
-                <InfoRow
-                  label={t('servers', 'storageType')}
-                  value={<span className="uppercase">{providerData.serverType.storageType}</span>}
-                />
-              </div>
-            </ServerDetailSection>
-          )}
-
-          {providerData.image && (
-            <ServerDetailSection icon={Globe} title={t('servers', 'image')}>
-              <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
-                <InfoRow label={t('servers', 'fieldType')} value={providerData.image.name} />
-                <InfoRow label={t('servers', 'fieldDescription')} value={providerData.image.description} />
-                <InfoRow
-                  label={t('servers', 'fieldOs')}
-                  value={<span className="capitalize">{providerData.image.osFamily}</span>}
-                />
-                <InfoRow label={t('servers', 'architecture')} value={providerData.image.osVersion} />
-              </div>
-            </ServerDetailSection>
-          )}
-
-          {providerData.location && (
-            <ServerDetailSection icon={MapPin} title={t('servers', 'location')}>
-              <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
-                <InfoRow label={t('servers', 'city')} value={providerData.location.city} />
-                <InfoRow label={t('servers', 'country')} value={providerData.location.country} />
-                {providerData.datacenter && (
-                  <InfoRow label={t('servers', 'datacenter')} value={providerData.datacenter} />
-                )}
-                <InfoRow label={t('servers', 'networkZone')} value={providerData.location.network_zone} />
-              </div>
-            </ServerDetailSection>
-          )}
-
-          {providerData.protection && (
-            <ServerDetailSection icon={Shield} iconColor="var(--accent-purple)" title={t('servers', 'protection')}>
-              <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
-                <InfoRow
-                  label={t('servers', 'deleteProtection')}
-                  value={
-                    providerData.protection.delete
-                      ? t('servers', 'detailEnabled')
-                      : t('servers', 'detailDisabled')
-                  }
-                />
-                <InfoRow
-                  label={t('servers', 'rebuildProtection')}
-                  value={
-                    providerData.protection.rebuild
-                      ? t('servers', 'detailEnabled')
-                      : t('servers', 'detailDisabled')
-                  }
-                />
-              </div>
-            </ServerDetailSection>
-          )}
-
-          <ServerDetailSection icon={Clock} title={t('servers', 'timestamps')}>
-            <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
-              <InfoRow label={t('servers', 'createdAtLabel')} value={formatShortDate(server.createdAt)} />
-              <InfoRow label={t('servers', 'updatedAtLabel')} value={formatShortDate(server.updatedAt)} />
-              {server.lastSeenAt && (
-                <InfoRow label={t('servers', 'lastSeen')} value={formatShortDate(server.lastSeenAt)} />
-              )}
-            </div>
-          </ServerDetailSection>
+          <ServerProviderPanels server={server} providerData={providerData} />
         </div>
       </div>
 

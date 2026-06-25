@@ -43,6 +43,7 @@ import { SitePagePreview, type PreviewMode } from './SitePagePreview';
 import { ImageUploadField } from './ImageUploadField';
 import { DesignGallery } from './DesignGallery';
 import { PagesPanel } from './PagesPanel';
+import { ToolbarToggle, SectionHeading, Field } from './parts';
 
 type Section = 'pages' | 'blocks' | 'design' | 'seo' | 'cms' | 'settings';
 
@@ -612,65 +613,5 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
         </aside>
       </div>
     </div>
-  );
-}
-
-function ToolbarToggle({
-  active,
-  onClick,
-  icon: Icon,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  icon: typeof Palette;
-  label?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={label}
-      className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
-        active
-          ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]'
-          : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
-      }`}
-    >
-      <Icon className="w-4 h-4" />
-      {label && <span className="hidden lg:inline">{label}</span>}
-    </button>
-  );
-}
-
-function SectionHeading({ icon: Icon, title }: { icon: typeof Palette; title: string }) {
-  return (
-    <h2 className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
-      <Icon className="w-4 h-4 text-[var(--accent-primary)]" />
-      {title}
-    </h2>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  multiline,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  multiline?: boolean;
-}) {
-  return (
-    <label className="block space-y-1">
-      <span className="text-xs text-[var(--text-secondary)]">{label}</span>
-      {multiline ? (
-        <textarea className="textarea w-full" rows={3} value={value} onChange={(e) => onChange(e.target.value)} />
-      ) : (
-        <input className="input w-full" value={value} onChange={(e) => onChange(e.target.value)} />
-      )}
-    </label>
   );
 }
