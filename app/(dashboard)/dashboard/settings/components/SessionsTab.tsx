@@ -7,13 +7,12 @@ import {
   Globe,
   Clock,
   LogOut,
-  Check,
   AlertTriangle,
   Loader2,
 } from 'lucide-react';
 import { useTranslation, useSessions, useTerminateSession, useTerminateOtherSessions } from '@/hooks';
 import { formatShortDate } from '@/lib/formatters';
-import { AlertBox } from './Modal';
+import { showSuccessToast } from '@/lib/toast-i18n';
 import type { Session } from '@/lib/api/services/auth.service';
 
 // Extended session with computed isCurrent field
@@ -159,7 +158,6 @@ export function SessionsTab() {
 
   const [terminatingId, setTerminatingId] = useState<string | null>(null);
   const [showTerminateAllConfirm, setShowTerminateAllConfirm] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // The first session in the list is typically the current one (most recent)
   // We mark it as current and the rest as other sessions
@@ -175,22 +173,17 @@ export function SessionsTab() {
     setTerminatingId(sessionId);
     try {
       await terminateSession.mutateAsync(sessionId);
-      setSuccessMessage(t('sessions', 'terminated'));
-      setTimeout(() => setSuccessMessage(null), 3000);
+      showSuccessToast('sessionRevokedTitle', 'sessionRevokedDesc');
     } finally {
       setTerminatingId(null);
     }
   };
 
   const handleTerminateAllOthers = async () => {
-    try {
-      await terminateOtherSessions.mutateAsync();
-      setShowTerminateAllConfirm(false);
-      setSuccessMessage(t('sessions', 'allOthersTerminated'));
-      setTimeout(() => setSuccessMessage(null), 3000);
-    } catch {
-      // Error handled by mutation
-    }
+    // Server/mutation errors are surfaced by the global MutationCache toast.
+    await terminateOtherSessions.mutateAsync();
+    setShowTerminateAllConfirm(false);
+    showSuccessToast('allSessionsRevokedTitle', 'allSessionsRevokedDesc');
   };
 
   if (isLoading) {
@@ -207,12 +200,6 @@ export function SessionsTab() {
         <h2 className="text-xl font-semibold mb-1">{t('sessions', 'title')}</h2>
         <p className="text-[var(--text-secondary)]">{t('sessions', 'description')}</p>
       </div>
-
-      {successMessage && (
-        <AlertBox variant="success" icon={<Check className="w-4 h-4" />}>
-          {successMessage}
-        </AlertBox>
-      )}
 
       {/* Current Session */}
       {currentSession && (

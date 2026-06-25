@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.29] - 2026-06-24
+
+### Changed
+- Settings tabs (Profile, Appearance, Notifications, Sessions) now use the app-wide sonner toast for save/validation feedback instead of inline `AlertBox` "saved" banners — consistent with the rest of the app. Removed the local `saved`/`error` state + timeouts; added the matching `toasts` i18n keys (EN + TR). Server/mutation errors flow through the existing global error toast.
+
 ## [0.2.0-beta.28] - 2026-06-24
 
 ### Changed
