@@ -41,6 +41,16 @@ export function Sidebar() {
     closeMobile();
   }, [pathname, closeMobile]);
 
+  // Lock background scroll while the mobile drawer is open.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   const mainNavItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: t('navigation', 'overview') },
     { href: '/dashboard/projects', icon: Folder, label: t('navigation', 'projects') },
@@ -171,7 +181,7 @@ export function Sidebar() {
 
   const sidebarContent = (
     <aside
-      className={`fixed left-0 top-0 h-screen flex flex-col z-50 transition-all duration-300 bg-[var(--bg-sidebar)] border-r border-[var(--border-subtle)]
+      className={`fixed left-0 top-0 h-dvh flex flex-col z-50 transition-all duration-300 bg-[var(--bg-sidebar)] border-r border-[var(--border-subtle)]
         ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0
         ${collapsed ? 'md:w-17' : 'md:w-60'}
@@ -266,7 +276,10 @@ export function Sidebar() {
   return (
     <>
       {mobileOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm" onClick={closeMobile} />
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm overscroll-contain touch-none"
+          onClick={closeMobile}
+        />
       )}
       {sidebarContent}
     </>

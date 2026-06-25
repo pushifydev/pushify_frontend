@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.22] - 2026-06-24
+
+### Fixed
+- Mobile sidebar: the page behind the drawer no longer scrolls while it's open — background scroll is now locked (`body` overflow) and the backdrop ignores touch gestures (`touch-none`, `overscroll-contain`). The sidebar also uses `h-dvh` so its full height (including the user row) fits the visible viewport on mobile browsers with dynamic chrome.
+
 ## [0.2.0-beta.21] - 2026-06-24
 
 ### Fixed
