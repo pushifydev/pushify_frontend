@@ -724,6 +724,8 @@ export interface TranslationKeys {
     logsHelpHistorical: string;
     // Environment tab
     envVarsDesc: string;
+    oauthHintTitle: string;
+    oauthHintBody: string;
     addVariable: string;
     pasteEnv: string;
     pasteEnvContent: string;
@@ -2904,6 +2906,8 @@ export const en: TranslationKeys = {
     logsHelpHistorical: 'History — logs saved periodically on the server (retained ~7 days).',
     // Environment tab
     envVarsDesc: 'Environment variables are encrypted and available during build and runtime.',
+    oauthHintTitle: 'Enable social login (OAuth)',
+    oauthHintBody: 'To add Google/GitHub login, set the variables below and Redeploy. In your provider console, set the callback URL to: {url}',
     addVariable: 'Add Variable',
     pasteEnv: 'Paste .env',
     pasteEnvContent: 'Paste your .env file content',

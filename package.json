@@ -1,6 +1,6 @@
 {
   "name": "pushify-frontend",
-  "version": "0.2.0-beta.22",
+  "version": "0.2.0-beta.23",
   "private": true,
   "description": "Pushify cloud deployment platform — frontend dashboard",
   "license": "MIT",
