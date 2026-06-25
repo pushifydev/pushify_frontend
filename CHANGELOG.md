@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.2.0-beta.31] - 2026-06-25
+
+### Security
+- The Google and GitHub OAuth callbacks now honor two-factor authentication. When the backend returns a `requiresTwoFactor` challenge (for an account with 2FA enabled), the callback stores the challenge token and hands off to the existing 2FA form on `/login` instead of trying to read tokens that aren't there — so OAuth sign-in goes through the same second-factor step as password login. (Pairs with backend 0.2.0-beta.21.)
+
+## [0.2.0-beta.30] - 2026-06-24
+
+### Changed
+- Redesigned the Settings tabs to a clean, airy Cal.com-style layout using a new reusable `SettingsCard` primitive (quiet bordered panel: title + muted description header, body, and an optional tinted footer bar that right-aligns the primary action). Applied consistently across Profile, Appearance, Notifications, Security, Sessions, and API Keys — all on the existing design tokens. Presentational only: hooks, handlers, and sonner toasts are unchanged; typecheck clean.
+
+## [0.2.0-beta.29] - 2026-06-24
+
+### Changed
+- Settings tabs (Profile, Appearance, Notifications, Sessions) now use the app-wide sonner toast for save/validation feedback instead of inline `AlertBox` "saved" banners — consistent with the rest of the app. Removed the local `saved`/`error` state + timeouts; added the matching `toasts` i18n keys (EN + TR). Server/mutation errors flow through the existing global error toast.
+
+## [0.2.0-beta.28] - 2026-06-24
+
+### Changed
+- Finished the new-project page refactor: the Step 1 "import source" block (GitHub/GitLab connect, repo/branch selection, framework detection) was moved into a `useImportSource` hook plus a presentational `ImportSourceStep` component. `page.tsx` is now 462 lines (down from the original 1,489). The step's props are typed via `Pick<ReturnType<typeof useImportSource>>` so the compiler enforces complete prop threading. Pure refactor — state/effects moved verbatim, typecheck clean.
+
+## [0.2.0-beta.27] - 2026-06-24
+
+### Changed
+- Continued component extraction across four more large files (pure refactors, no behavior change, typecheck clean):
+  - **Monitoring page**: 687 → 212 lines — helpers + chart/table sections into `monitoring/components/`.
+  - **Server detail page**: 650 → 396 lines — status banners + provider/network sections into `servers/components/`.
+  - **Database detail sections**: split the 670-line `DatabaseDetailSections.tsx` into one file per component under `components/databases/detail/`; the original file is now a thin re-export so import sites are unchanged.
+  - **Site editor**: extracted the `ToolbarToggle`/`SectionHeading`/`Field` helpers into `site-editor/parts/`; the stateful editor panels were intentionally left in the parent to avoid risky prop threading.
+
+## [0.2.0-beta.26] - 2026-06-24
+
+### Changed
+- Continued the component-extraction cleanup on the two next-largest pages (pure refactors, no behavior change, typecheck clean):
+  - **Docs page** (`app/docs/page.tsx`): 1,445 → 247 lines. Extracted the 10 API-reference sections into `app/docs/sections/` with a shared `shared.ts` (types + param defs).
+  - **New project page** (`projects/new/page.tsx`): 1,489 → 1,067 lines. Extracted the step panels (`ProgressSteps`, `ConfigureStep`, `EnvironmentStep`, `ReviewStep`), `EnvVariableRow`, and `WebhookSecretModal` into `projects/new/components/`. The Step 1 "import source" block (deeply entangled with 25+ state values) was intentionally left in the parent for now.
+
 ## [0.2.0-beta.25] - 2026-06-24
 
 ### Changed

@@ -7,14 +7,14 @@ import {
   Globe,
   Clock,
   LogOut,
-  Check,
   AlertTriangle,
   Loader2,
 } from 'lucide-react';
 import { useTranslation, useSessions, useTerminateSession, useTerminateOtherSessions } from '@/hooks';
 import { formatShortDate } from '@/lib/formatters';
-import { AlertBox } from './Modal';
+import { showSuccessToast } from '@/lib/toast-i18n';
 import type { Session } from '@/lib/api/services/auth.service';
+import { SettingsCard } from './SettingsCard';
 
 // Extended session with computed isCurrent field
 interface SessionWithCurrent extends Session {
@@ -159,7 +159,6 @@ export function SessionsTab() {
 
   const [terminatingId, setTerminatingId] = useState<string | null>(null);
   const [showTerminateAllConfirm, setShowTerminateAllConfirm] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // The first session in the list is typically the current one (most recent)
   // We mark it as current and the rest as other sessions
@@ -175,22 +174,17 @@ export function SessionsTab() {
     setTerminatingId(sessionId);
     try {
       await terminateSession.mutateAsync(sessionId);
-      setSuccessMessage(t('sessions', 'terminated'));
-      setTimeout(() => setSuccessMessage(null), 3000);
+      showSuccessToast('sessionRevokedTitle', 'sessionRevokedDesc');
     } finally {
       setTerminatingId(null);
     }
   };
 
   const handleTerminateAllOthers = async () => {
-    try {
-      await terminateOtherSessions.mutateAsync();
-      setShowTerminateAllConfirm(false);
-      setSuccessMessage(t('sessions', 'allOthersTerminated'));
-      setTimeout(() => setSuccessMessage(null), 3000);
-    } catch {
-      // Error handled by mutation
-    }
+    // Server/mutation errors are surfaced by the global MutationCache toast.
+    await terminateOtherSessions.mutateAsync();
+    setShowTerminateAllConfirm(false);
+    showSuccessToast('allSessionsRevokedTitle', 'allSessionsRevokedDesc');
   };
 
   if (isLoading) {
@@ -202,51 +196,41 @@ export function SessionsTab() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-5 animate-in fade-in duration-200">
       <div>
         <h2 className="text-xl font-semibold mb-1">{t('sessions', 'title')}</h2>
         <p className="text-[var(--text-secondary)]">{t('sessions', 'description')}</p>
       </div>
 
-      {successMessage && (
-        <AlertBox variant="success" icon={<Check className="w-4 h-4" />}>
-          {successMessage}
-        </AlertBox>
-      )}
-
       {/* Current Session */}
       {currentSession && (
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">
-            {t('sessions', 'currentSession')}
-          </h3>
+        <SettingsCard title={t('sessions', 'currentSession')} description={t('sessions', 'description')}>
           <SessionCard
             session={currentSession}
             onTerminate={() => {}}
             isTerminating={false}
             t={t}
           />
-        </div>
+        </SettingsCard>
       )}
 
       {/* Other Sessions */}
-      <div className="space-y-3">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">
-            {t('sessions', 'otherSessions')}
-          </h3>
-          {otherSessions.length > 0 && (
+      <SettingsCard
+        title={t('sessions', 'otherSessions')}
+        description={t('sessions', 'noOtherSessionsDesc')}
+        footer={
+          otherSessions.length > 0 ? (
             <button
               onClick={() => setShowTerminateAllConfirm(true)}
-              className="text-sm text-red-400 hover:text-red-300 transition-colors self-start sm:self-center shrink-0"
+              className="text-sm text-red-400 hover:text-red-300 transition-colors shrink-0"
             >
               {t('sessions', 'terminateOthers')}
             </button>
-          )}
-        </div>
-
+          ) : undefined
+        }
+      >
         {otherSessions.length === 0 ? (
-          <div className="p-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-center">
+          <div className="py-6 text-center">
             <Monitor className="w-10 h-10 mx-auto mb-3 text-[var(--text-muted)]" />
             <p className="font-medium">{t('sessions', 'noOtherSessions')}</p>
             <p className="text-sm text-[var(--text-secondary)] mt-1">
@@ -266,7 +250,7 @@ export function SessionsTab() {
             ))}
           </div>
         )}
-      </div>
+      </SettingsCard>
 
       {/* Terminate All Confirmation */}
       {showTerminateAllConfirm && (

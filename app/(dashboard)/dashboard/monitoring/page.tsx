@@ -1,32 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Link from 'next/link';
 import {
-  Activity,
   Cpu,
   HardDrive,
   Network,
-  ArrowDownRight,
-  ArrowUpRight,
   Container,
   RefreshCw,
-  ChevronRight,
   AlertCircle,
   CheckCircle2,
   AlertTriangle,
 } from 'lucide-react';
-import {
-  AreaChart,
-  Area,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
 import {
   useMetricsOverview,
   useMetricsTimeSeries,
@@ -35,203 +19,16 @@ import {
 } from '@/hooks';
 import { MonitoringEmptyState } from '@/components/monitoring/MonitoringEmptyState';
 import { formatStorage } from '@/lib/formatters';
-import { STATUS_COLORS } from '@/lib/constants';
 import { SkeletonMonitoringGaugeCard, SkeletonMonitoringChartBlock } from '@/components/Skeleton';
-
-// ============ Chart Tooltip ============
-
-type MetricsChartPoint = {
-  timestamp: string;
-  axisTime: string;
-  cpuPercent?: number;
-  memoryPercent?: number;
-  memoryUsageMB?: number;
-  networkRxMB?: number;
-  networkTxMB?: number;
-};
-
-const MAX_X_AXIS_TICKS = 6;
-
-function formatChartAxisTime(ts: string, hours: number): string {
-  const d = new Date(ts);
-  if (Number.isNaN(d.getTime())) return '';
-  if (hours >= 24) {
-    return d.toLocaleString([], {
-      day: 'numeric',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
-  if (hours >= 6) {
-    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
-  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-/** Evenly spaced axis labels — avoids hundreds of ticks when metrics poll every ~15s. */
-function pickXAxisTickLabels(data: MetricsChartPoint[], maxTicks = MAX_X_AXIS_TICKS): string[] {
-  if (data.length === 0) return [];
-  if (data.length <= maxTicks) {
-    return data.map((p) => p.axisTime);
-  }
-  const last = data.length - 1;
-  const indices = Array.from({ length: maxTicks }, (_, i) =>
-    i === maxTicks - 1 ? last : Math.round((i * last) / (maxTicks - 1))
-  );
-  const unique = [...new Set(indices)].sort((a, b) => a - b);
-  return unique.map((i) => data[i].axisTime);
-}
-
-function MetricsXAxis({ ticks, angled }: { ticks: string[]; angled?: boolean }) {
-  return (
-    <XAxis
-      dataKey="axisTime"
-      ticks={ticks}
-      interval={0}
-      tick={{
-        fill: 'var(--text-muted)',
-        fontSize: 10,
-        fontFamily: 'JetBrains Mono',
-        ...(angled ? { angle: -32, textAnchor: 'end' as const, dy: 4 } : {}),
-      }}
-      axisLine={{ stroke: 'var(--border-subtle)' }}
-      tickLine={false}
-      height={angled ? 48 : 28}
-    />
-  );
-}
-
-function formatMetricTooltipTime(ts: string | undefined, hours: number): string {
-  if (!ts) return '';
-  const d = new Date(ts);
-  if (Number.isNaN(d.getTime())) return '';
-  if (hours >= 24) {
-    return d.toLocaleString([], {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
-  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-}
-
-function ChartTooltip({
-  active,
-  payload,
-  hours = 1,
-}: {
-  active?: boolean;
-  payload?: Array<{ value: number; name: string; color: string; payload?: MetricsChartPoint }>;
-  hours?: number;
-}) {
-  if (!active || !payload?.length) return null;
-
-  const point = payload[0]?.payload;
-  const timeLabel = formatMetricTooltipTime(point?.timestamp, hours);
-
-  return (
-    <div className="rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-default)] px-3 py-2 shadow-xl">
-      <p className="text-xs text-[var(--text-muted)] mb-1 font-mono">
-        {timeLabel}
-      </p>
-      {payload.map((entry, i) => (
-        <div key={i} className="flex items-center gap-2 text-sm">
-          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-          <span className="text-[var(--text-secondary)]">{entry.name}:</span>
-          <span className="font-mono font-medium text-[var(--text-primary)]">
-            {typeof entry.value === 'number' ? entry.value.toFixed(1) : entry.value}
-            {entry.name?.includes('CPU') || entry.name?.includes('Memory') ? '%' : ' MB'}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ============ Gauge Card ============
-
-function GaugeCard({
-  label,
-  value,
-  subValue,
-  icon: Icon,
-  color,
-  maxValue = 100,
-  suffix = '%',
-}: {
-  label: string;
-  value: number;
-  subValue?: string;
-  icon: React.ElementType;
-  color: string;
-  maxValue?: number;
-  suffix?: string;
-}) {
-  const percentage = Math.min((value / maxValue) * 100, 100);
-  const barColor =
-    percentage > 85 ? 'var(--status-error)' : percentage > 60 ? 'var(--status-warning)' : color;
-
-  return (
-    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-[var(--border-default)] transition-colors">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm text-[var(--text-secondary)] font-medium">{label}</span>
-        <div className="p-2 rounded-lg" style={{ backgroundColor: `${color}15` }}>
-          <Icon className="w-4 h-4" style={{ color }} />
-        </div>
-      </div>
-      <div className="text-3xl font-bold font-mono" style={{ color }}>
-        {value.toFixed(1)}{suffix}
-      </div>
-      {subValue && (
-        <p className="text-xs text-[var(--text-muted)] mt-1 font-mono">{subValue}</p>
-      )}
-      <div className="mt-3 h-2 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${percentage}%`, backgroundColor: barColor }}
-        />
-      </div>
-    </div>
-  );
-}
-
-// ============ Time Range Selector ============
-
-function TimeRangeSelector({
-  selected,
-  onChange,
-  t,
-}: {
-  selected: number;
-  onChange: (h: number) => void;
-  t: ReturnType<typeof useTranslation>['t'];
-}) {
-  const options = [
-    { value: 1, label: t('monitoring', 'last1Hour') },
-    { value: 6, label: t('monitoring', 'last6Hours') },
-    { value: 24, label: t('monitoring', 'last24Hours') },
-  ];
-
-  return (
-    <div className="flex items-center gap-1 bg-[var(--bg-tertiary)] rounded-lg p-1">
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          onClick={() => onChange(opt.value)}
-          className={`px-3 py-1 text-xs font-mono font-medium rounded-md transition-colors ${
-            selected === opt.value
-              ? 'dash-accent-fill'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-          }`}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
-  );
-}
+import {
+  GaugeCard,
+  TimeRangeSelector,
+  ChartsSection,
+  ProjectResourcesTable,
+  formatChartAxisTime,
+  pickXAxisTickLabels,
+  type MetricsChartPoint,
+} from './components';
 
 // ============ Main Page ============
 
@@ -395,293 +192,21 @@ export default function MonitoringPage() {
         <TimeRangeSelector selected={selectedHours} onChange={setSelectedHours} t={t} />
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* CPU Chart */}
-        <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-[var(--accent-cyan)]" />
-              <span className="text-sm font-medium">{t('monitoring', 'cpuUsage')}</span>
-            </div>
-          </div>
-          <div className="h-56">
-            {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={chartMargin}>
-                  <defs>
-                    <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="var(--accent-cyan)" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="var(--accent-cyan)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="3 3" vertical={false} />
-                  <MetricsXAxis ticks={xAxisTicks} angled={xAxisAngled} />
-                  <YAxis
-                    tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                    axisLine={false}
-                    tickLine={false}
-                    domain={[0, 'auto']}
-                    tickFormatter={(v) => `${v}%`}
-                    width={45}
-                  />
-                  <Tooltip content={<ChartTooltip hours={selectedHours} />} />
-                  <Area
-                    type="monotone"
-                    dataKey="cpuPercent"
-                    name="CPU"
-                    stroke="var(--accent-cyan)"
-                    fill="url(#cpuGradient)"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, fill: 'var(--accent-cyan)', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-full flex items-center justify-center text-sm text-[var(--text-muted)]">
-                {t('monitoring', 'noData')}
-              </div>
-            )}
-          </div>
-        </div>
+      <ChartsSection
+        chartData={chartData}
+        chartMargin={chartMargin}
+        xAxisTicks={xAxisTicks}
+        xAxisAngled={xAxisAngled}
+        selectedHours={selectedHours}
+        t={t}
+      />
 
-        {/* Memory Chart */}
-        <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-[#a78bfa]" />
-              <span className="text-sm font-medium">{t('monitoring', 'memoryUsage')}</span>
-            </div>
-          </div>
-          <div className="h-56">
-            {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={chartMargin}>
-                  <defs>
-                    <linearGradient id="memGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#a78bfa" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="#a78bfa" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="3 3" vertical={false} />
-                  <MetricsXAxis ticks={xAxisTicks} angled={xAxisAngled} />
-                  <YAxis
-                    tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                    axisLine={false}
-                    tickLine={false}
-                    domain={[0, 'auto']}
-                    tickFormatter={(v) => `${v}%`}
-                    width={45}
-                  />
-                  <Tooltip content={<ChartTooltip hours={selectedHours} />} />
-                  <Area
-                    type="monotone"
-                    dataKey="memoryPercent"
-                    name="Memory"
-                    stroke="#a78bfa"
-                    fill="url(#memGradient)"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, fill: '#a78bfa', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-full flex items-center justify-center text-sm text-[var(--text-muted)]">
-                {t('monitoring', 'noData')}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Network Chart - Full Width */}
-      <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Network className="w-4 h-4 text-[#34d399]" />
-            <span className="text-sm font-medium">{t('monitoring', 'networkIO')}</span>
-          </div>
-          <div className="flex items-center gap-4 text-xs">
-            <span className="flex items-center gap-1">
-              <div className="w-3 h-0.5 bg-[#34d399] rounded" />
-              <ArrowDownRight className="w-3 h-3 text-[#34d399]" />
-              {t('monitoring', 'totalNetworkIn')}
-            </span>
-            <span className="flex items-center gap-1">
-              <div className="w-3 h-0.5 bg-[#3b82f6] rounded" />
-              <ArrowUpRight className="w-3 h-3 text-[#3b82f6]" />
-              {t('monitoring', 'totalNetworkOut')}
-            </span>
-          </div>
-        </div>
-        <div className="h-56">
-          {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={chartMargin}>
-                <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="3 3" vertical={false} />
-                <MetricsXAxis ticks={xAxisTicks} angled={xAxisAngled} />
-                <YAxis
-                  tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(v) => `${v} MB`}
-                  width={55}
-                />
-                <Tooltip content={<ChartTooltip hours={selectedHours} />} />
-                <Line
-                  type="monotone"
-                  dataKey="networkRxMB"
-                  name="Network In"
-                  stroke="#34d399"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 4, fill: '#34d399', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="networkTxMB"
-                  name="Network Out"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 4, fill: '#3b82f6', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-full flex items-center justify-center text-sm text-[var(--text-muted)]">
-              {t('monitoring', 'noData')}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Project Resources Table */}
-      <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-hidden">
-        <div className="px-5 py-4 border-b border-[var(--border-subtle)]">
-          <h3 className="text-sm font-semibold">{t('monitoring', 'projectResources')}</h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-[var(--border-subtle)]">
-                <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-5 py-3">
-                  {t('monitoring', 'project')}
-                </th>
-                <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-5 py-3">
-                  {t('monitoring', 'cpu')}
-                </th>
-                <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-5 py-3">
-                  {t('monitoring', 'memory')}
-                </th>
-                <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-5 py-3">
-                  {t('monitoring', 'network')}
-                </th>
-                <th className="text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider px-5 py-3">
-                  {t('monitoring', 'status')}
-                </th>
-                <th className="px-5 py-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {projects.map((project, index) => {
-                const cpuColor =
-                  project.cpuPercent > 85 ? 'var(--status-error)' :
-                  project.cpuPercent > 60 ? 'var(--status-warning)' : STATUS_COLORS.cyan;
-                const memColor =
-                  project.memoryPercent > 85 ? 'var(--status-error)' :
-                  project.memoryPercent > 60 ? 'var(--status-warning)' : STATUS_COLORS.purple;
-
-                return (
-                  <tr
-                    key={project.projectId}
-                    className={`border-b border-[var(--border-subtle)] hover:bg-[var(--bg-tertiary)] transition-colors cursor-pointer ${
-                      selectedProjectId === project.projectId ? 'bg-[var(--bg-tertiary)]' : ''
-                    }`}
-                    onClick={() => setSelectedProjectId(
-                      selectedProjectId === project.projectId ? null : project.projectId
-                    )}
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--accent-cyan)]/20 to-[var(--accent-purple)]/20 flex items-center justify-center text-xs font-bold text-[var(--accent-cyan)]">
-                          {project.projectName.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">{project.projectName}</p>
-                          <p className="text-xs text-[var(--text-muted)] font-mono">{project.projectSlug}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-20">
-                          <div className="h-1.5 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all"
-                              style={{ width: `${Math.min(project.cpuPercent, 100)}%`, backgroundColor: cpuColor }}
-                            />
-                          </div>
-                        </div>
-                        <span className="text-sm font-mono" style={{ color: cpuColor }}>
-                          {project.cpuPercent.toFixed(1)}%
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-20">
-                          <div className="h-1.5 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all"
-                              style={{ width: `${Math.min(project.memoryPercent, 100)}%`, backgroundColor: memColor }}
-                            />
-                          </div>
-                        </div>
-                        <span className="text-sm font-mono" style={{ color: memColor }}>
-                          {formatStorage(project.memoryUsageMB)}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-2 text-sm font-mono">
-                        <ArrowDownRight className="w-3 h-3 text-[#34d399]" />
-                        <span className="text-[#34d399]">{formatStorage(project.networkRxMB)}</span>
-                        <span className="text-[var(--text-muted)]">/</span>
-                        <ArrowUpRight className="w-3 h-3 text-[#3b82f6]" />
-                        <span className="text-[#3b82f6]">{formatStorage(project.networkTxMB)}</span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3">
-                      <span
-                        className={`badge ${
-                          project.containerStatus === 'running' ? 'badge-success' : 'badge-error'
-                        }`}
-                      >
-                        {project.containerStatus === 'running'
-                          ? t('monitoring', 'running')
-                          : t('monitoring', 'stopped')}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      <Link
-                        href={`/dashboard/projects/${project.projectId}`}
-                        className="text-[var(--text-muted)] hover:text-[var(--accent-cyan)] transition-colors"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <ProjectResourcesTable
+        projects={projects}
+        selectedProjectId={selectedProjectId}
+        setSelectedProjectId={setSelectedProjectId}
+        t={t}
+      />
     </div>
   );
 }

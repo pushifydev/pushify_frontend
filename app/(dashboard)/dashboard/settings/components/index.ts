@@ -6,6 +6,9 @@ export { NotificationsTab } from './NotificationsTab';
 export { SecurityTab } from './SecurityTab';
 export { ApiKeysTab } from './ApiKeysTab';
 
+// Shared layout primitives
+export { SettingsCard, SettingsField, SettingsRow } from './SettingsCard';
+
 // Modal Components
 export { Modal, ModalActions, AlertBox } from './Modal';
 export { TwoFactorSetupModal } from './TwoFactorSetupModal';

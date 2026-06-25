@@ -63,6 +63,17 @@ function GitHubCallbackContent() {
           }
 
           if (result.data) {
+            // 2FA-enabled account: hand the challenge to the existing 2FA form on /login
+            if ('requiresTwoFactor' in result.data) {
+              useAuthStore.setState({
+                requiresTwoFactor: true,
+                twoFactorToken: result.data.twoFactorToken,
+                isLoading: false,
+              });
+              router.replace('/login');
+              return;
+            }
+
             useAuthStore.setState({
               user: result.data.user,
               organization: result.data.organization,
