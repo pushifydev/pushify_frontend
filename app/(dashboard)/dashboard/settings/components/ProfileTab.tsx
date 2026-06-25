@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User, Lock, Check, AlertTriangle, Eye, EyeOff } from 'lucide-react';
+import { User, Lock, Eye, EyeOff } from 'lucide-react';
 import { useTranslation, useUpdateProfile, useChangePassword } from '@/hooks';
 import { useAuthStore } from '@/stores/auth';
-import { AlertBox } from './Modal';
+import { showSuccessToast, showErrorToast } from '@/lib/toast-i18n';
 
 export function ProfileTab() {
   const { t } = useTranslation();
@@ -15,8 +15,6 @@ export function ProfileTab() {
   // Profile form state
   const [name, setName] = useState(user?.name || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || '');
-  const [profileSaved, setProfileSaved] = useState(false);
-  const [profileError, setProfileError] = useState<string | null>(null);
 
   // Password form state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -24,8 +22,6 @@ export function ProfileTab() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [passwordChanged, setPasswordChanged] = useState(false);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   // Update form when user changes
   useEffect(() => {
@@ -36,50 +32,34 @@ export function ProfileTab() {
   }, [user]);
 
   const handleSaveProfile = async () => {
-    setProfileError(null);
-    setProfileSaved(false);
-
-    try {
-      await updateProfile.mutateAsync({
-        name: name.trim(),
-        avatarUrl: avatarUrl.trim() || null,
-      });
-      setProfileSaved(true);
-      setTimeout(() => setProfileSaved(false), 3000);
-    } catch (err) {
-      setProfileError(err instanceof Error ? err.message : 'Failed to update profile');
-    }
+    // Server/mutation errors are surfaced by the global MutationCache toast.
+    await updateProfile.mutateAsync({
+      name: name.trim(),
+      avatarUrl: avatarUrl.trim() || null,
+    });
+    showSuccessToast('profileUpdatedTitle', 'profileUpdatedDesc');
   };
 
   const handleChangePassword = async () => {
-    setPasswordError(null);
-    setPasswordChanged(false);
-
-    // Validate passwords match
+    // Client-side validation
     if (newPassword !== confirmPassword) {
-      setPasswordError(t('profile', 'passwordMismatch'));
+      showErrorToast('passwordMismatchTitle', 'passwordMismatchDesc');
       return;
     }
-
-    // Validate password length
     if (newPassword.length < 8) {
-      setPasswordError(t('profile', 'passwordRequirements'));
+      showErrorToast('passwordTooShortTitle', 'passwordTooShortDesc');
       return;
     }
 
-    try {
-      await changePassword.mutateAsync({
-        currentPassword,
-        newPassword,
-      });
-      setPasswordChanged(true);
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      setTimeout(() => setPasswordChanged(false), 3000);
-    } catch (err) {
-      setPasswordError(err instanceof Error ? err.message : 'Failed to change password');
-    }
+    // Server/mutation errors are surfaced by the global MutationCache toast.
+    await changePassword.mutateAsync({
+      currentPassword,
+      newPassword,
+    });
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    showSuccessToast('passwordChangedTitle', 'passwordChangedDesc');
   };
 
   const isProfileChanged = name !== user?.name || avatarUrl !== (user?.avatarUrl || '');
@@ -104,22 +84,6 @@ export function ProfileTab() {
               <p className="text-sm text-[var(--text-secondary)] mb-6">
                 {t('profile', 'personalInfoDesc')}
               </p>
-
-              {profileError && (
-                <div className="mb-4">
-                  <AlertBox variant="error" icon={<AlertTriangle className="w-4 h-4" />}>
-                    {profileError}
-                  </AlertBox>
-                </div>
-              )}
-
-              {profileSaved && (
-                <div className="mb-4">
-                  <AlertBox variant="success" icon={<Check className="w-4 h-4" />}>
-                    {t('profile', 'saved')}
-                  </AlertBox>
-                </div>
-              )}
 
               <div className="space-y-4 max-w-md">
                 {/* Name */}
@@ -197,22 +161,6 @@ export function ProfileTab() {
               <p className="text-sm text-[var(--text-secondary)] mb-6">
                 {t('profile', 'changePasswordDesc')}
               </p>
-
-              {passwordError && (
-                <div className="mb-4">
-                  <AlertBox variant="error" icon={<AlertTriangle className="w-4 h-4" />}>
-                    {passwordError}
-                  </AlertBox>
-                </div>
-              )}
-
-              {passwordChanged && (
-                <div className="mb-4">
-                  <AlertBox variant="success" icon={<Check className="w-4 h-4" />}>
-                    {t('profile', 'passwordChanged')}
-                  </AlertBox>
-                </div>
-              )}
 
               <div className="space-y-4 max-w-md">
                 {/* Current Password */}

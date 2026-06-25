@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, Mail, Shield, Calendar, Sparkles, Check } from 'lucide-react';
+import { Bell, Mail, Shield, Calendar, Sparkles } from 'lucide-react';
 import { useTranslation } from '@/hooks';
-import { AlertBox } from './Modal';
+import { showSuccessToast } from '@/lib/toast-i18n';
 
 interface NotificationPreferences {
   deploymentAlerts: boolean;
@@ -83,7 +83,6 @@ function NotificationItem({
 export function NotificationsTab() {
   const { t } = useTranslation();
   const [preferences, setPreferences] = useState<NotificationPreferences>(defaultPreferences);
-  const [saved, setSaved] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   // Load preferences from localStorage on mount
@@ -103,12 +102,7 @@ export function NotificationsTab() {
     const newPreferences = { ...preferences, [key]: value };
     setPreferences(newPreferences);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newPreferences));
-    showSaved();
-  };
-
-  const showSaved = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    showSuccessToast('notificationPrefsSavedTitle', 'notificationPrefsSavedDesc');
   };
 
   if (!loaded) {
@@ -121,12 +115,6 @@ export function NotificationsTab() {
         <h2 className="text-xl font-semibold mb-1">{t('notificationPrefs', 'title')}</h2>
         <p className="text-[var(--text-secondary)]">{t('notificationPrefs', 'description')}</p>
       </div>
-
-      {saved && (
-        <AlertBox variant="success" icon={<Check className="w-4 h-4" />}>
-          {t('notificationPrefs', 'saved')}
-        </AlertBox>
-      )}
 
       {/* Email Notifications Section */}
       <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] overflow-hidden">

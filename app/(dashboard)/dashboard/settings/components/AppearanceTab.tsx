@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { serverKeys } from '@/hooks/useServers';
 import { Palette, Globe, Sun, Moon, Monitor, Check } from 'lucide-react';
@@ -8,7 +7,7 @@ import { useTranslation } from '@/hooks';
 import { useThemeStore, type Theme } from '@/stores/theme';
 import { useLocaleStore } from '@/stores/locale';
 import { type SupportedLocale } from '@/lib/i18n';
-import { AlertBox } from './Modal';
+import { showSuccessToast } from '@/lib/toast-i18n';
 
 const themes: { id: Theme; icon: React.ElementType; labelKey: 'light' | 'dark' | 'system' }[] = [
   { id: 'light', icon: Sun, labelKey: 'light' },
@@ -26,22 +25,16 @@ export function AppearanceTab() {
   const { theme, setTheme } = useThemeStore();
   const { locale, setLocale } = useLocaleStore();
   const queryClient = useQueryClient();
-  const [saved, setSaved] = useState(false);
 
   const handleThemeChange = (newTheme: Theme) => {
     setTheme(newTheme);
-    showSaved();
+    showSuccessToast('preferencesSavedTitle', 'preferencesSavedDesc');
   };
 
   const handleLanguageChange = (newLocale: SupportedLocale) => {
     setLocale(newLocale);
     void queryClient.invalidateQueries({ queryKey: serverKeys.providers });
-    showSaved();
-  };
-
-  const showSaved = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    showSuccessToast('preferencesSavedTitle', 'preferencesSavedDesc');
   };
 
   return (
@@ -50,12 +43,6 @@ export function AppearanceTab() {
         <h2 className="text-xl font-semibold mb-1">{t('appearance', 'title')}</h2>
         <p className="text-[var(--text-secondary)]">{t('appearance', 'description')}</p>
       </div>
-
-      {saved && (
-        <AlertBox variant="success" icon={<Check className="w-4 h-4" />}>
-          {t('appearance', 'saved')}
-        </AlertBox>
-      )}
 
       {/* Theme Selection */}
       <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] overflow-hidden">
