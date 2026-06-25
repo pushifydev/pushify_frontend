@@ -17,6 +17,7 @@ import { CreateApiKeyModal } from './CreateApiKeyModal';
 import { ApiKeySecretModal } from './ApiKeySecretModal';
 import { RevokeApiKeyModal } from './RevokeApiKeyModal';
 import { SkeletonKeyValueRow } from '@/components/Skeleton';
+import { SettingsCard } from './SettingsCard';
 
 export function ApiKeysTab() {
   const { t } = useTranslation();
@@ -51,7 +52,7 @@ export function ApiKeysTab() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-5 animate-in fade-in duration-200">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h2 className="text-xl font-semibold mb-1">{t('apiKeys', 'title')}</h2>
@@ -81,28 +82,30 @@ export function ApiKeysTab() {
       )}
 
       {/* API Keys List */}
-      <div className="rounded-xl border border-[var(--border-subtle)] overflow-hidden">
-        {isLoading ? (
-          <div className="divide-y divide-[var(--border-subtle)]">
-            {[1, 2].map((i) => (
-              <SkeletonKeyValueRow key={i} />
-            ))}
-          </div>
-        ) : apiKeys.length === 0 ? (
-          <EmptyState onCreateClick={() => setShowCreateModal(true)} />
-        ) : (
-          <div className="divide-y divide-[var(--border-subtle)]">
-            {apiKeys.map((key) => (
-              <ApiKeyRow
-                key={key.id}
-                apiKey={key}
-                isExpired={isExpired(key.expiresAt)}
-                onRevoke={() => setKeyToRevoke(key.id)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      <SettingsCard title={t('apiKeys', 'title')} description={t('apiKeys', 'description')}>
+        <div className="-mx-5 -mb-5 md:-mx-6 border-t border-[var(--border-subtle)]">
+          {isLoading ? (
+            <div className="divide-y divide-[var(--border-subtle)]">
+              {[1, 2].map((i) => (
+                <SkeletonKeyValueRow key={i} />
+              ))}
+            </div>
+          ) : apiKeys.length === 0 ? (
+            <EmptyState onCreateClick={() => setShowCreateModal(true)} />
+          ) : (
+            <div className="divide-y divide-[var(--border-subtle)]">
+              {apiKeys.map((key) => (
+                <ApiKeyRow
+                  key={key.id}
+                  apiKey={key}
+                  isExpired={isExpired(key.expiresAt)}
+                  onRevoke={() => setKeyToRevoke(key.id)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </SettingsCard>
 
       {/* Modals */}
       <CreateApiKeyModal
