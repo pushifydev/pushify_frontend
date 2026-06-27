@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.32] - 2026-06-27
+
+### Added
+- **Edit environment variable values inline.** The Environment tab only let you reveal/delete a variable, so changing a value meant deleting and re-adding it. Each variable now has an **Edit** (pencil) action that turns the value into an inline input with Save/Cancel (Enter saves, Esc cancels). Wired to the existing `useUpdateEnvVar` hook / backend `PATCH /:envVarId` — the value is updated and applied on the next deploy. (Renaming a key is still delete + add.)
+
 ## [0.2.0-beta.31] - 2026-06-25
 
 ### Security
