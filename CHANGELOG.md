@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.33] - 2026-06-27
+
+### Added
+- **Multi-line environment variable values.** The add-variable and edit-value fields are now resizable textareas, so you can paste a value that spans multiple lines — e.g. a Firebase / service-account **PEM private key** — and it's stored and injected with real newlines intact (the whole pipeline already preserved them; only the single-line input was the limit). No code-side `\n` juggling needed. In the inline editor, plain Enter inserts a newline and **Cmd/Ctrl+Enter saves** (Esc cancels). The `.env` bulk-paste parser is unchanged.
+
 ## [0.2.0-beta.32] - 2026-06-27
 
 ### Added
