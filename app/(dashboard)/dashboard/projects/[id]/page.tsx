@@ -43,6 +43,7 @@ import {
   useCreateDeployment,
   useEnvVars,
   useCreateEnvVar,
+  useUpdateEnvVar,
   useDeleteEnvVar,
   useBulkCreateEnvVars,
   useDomains,
@@ -96,6 +97,7 @@ export default function ProjectDetailPage() {
   const redeployDeployment = useRedeployDeployment(projectId);
   const createDeployment = useCreateDeployment(projectId);
   const createEnvVar = useCreateEnvVar(projectId);
+  const updateEnvVar = useUpdateEnvVar(projectId);
   const deleteEnvVar = useDeleteEnvVar(projectId);
   const bulkCreateEnvVars = useBulkCreateEnvVars(projectId);
   const addDomain = useAddDomain(projectId);
@@ -451,6 +453,7 @@ export default function ProjectDetailPage() {
           <EnvironmentTab
             envVars={envVars}
             onCreate={(data) => createEnvVar.mutate(data)}
+            onUpdate={(id, value) => updateEnvVar.mutate({ envVarId: id, input: { value } })}
             onDelete={(id) => deleteEnvVar.mutate(id)}
             onBulkCreate={(data) => bulkCreateEnvVars.mutate(data)}
             marketplaceTemplateId={

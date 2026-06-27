@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, Info, Key, Trash2 } from 'lucide-react';
+import { FileText, Info, Key, Trash2, Pencil, Check } from 'lucide-react';
 import { useEnvVars, useTranslation } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
 
 export function EnvironmentTab({
   envVars,
   onCreate,
+  onUpdate,
   onDelete,
   onBulkCreate,
   marketplaceTemplateId,
@@ -16,6 +17,7 @@ export function EnvironmentTab({
 }: {
   envVars: ReturnType<typeof useEnvVars>['data'];
   onCreate: (data: { key: string; value: string }) => void;
+  onUpdate: (id: string, value: string) => void;
   onDelete: (id: string) => void;
   onBulkCreate: (data: { key: string; value: string }[]) => void;
   marketplaceTemplateId?: string;
@@ -30,6 +32,23 @@ export function EnvironmentTab({
   const [envContent, setEnvContent] = useState('');
   const [parsedVars, setParsedVars] = useState<{ key: string; value: string }[]>([]);
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
+
+  const startEdit = (id: string, currentValue: string) => {
+    setEditingId(id);
+    setEditValue(currentValue);
+    setRevealedIds((prev) => new Set(prev).add(id)); // reveal while editing
+  };
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditValue('');
+  };
+  const saveEdit = (id: string) => {
+    if (editValue.trim() === '') return; // value is required
+    onUpdate(id, editValue);
+    cancelEdit();
+  };
 
   const parseEnvContent = (content: string) => {
     const lines = content.split('\n');
@@ -242,31 +261,69 @@ export function EnvironmentTab({
             >
               <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 w-full">
                 <span className="terminal-text font-medium">{envVar.key}</span>
-                <span className="text-[var(--text-muted)] terminal-text truncate">
-                  {revealedIds.has(envVar.id) ? envVar.value : '••••••••'}
-                </span>
+                {editingId === envVar.id ? (
+                  <input
+                    autoFocus
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') saveEdit(envVar.id);
+                      if (e.key === 'Escape') cancelEdit();
+                    }}
+                    className="input terminal-text flex-1 min-w-0 h-8 text-xs"
+                  />
+                ) : (
+                  <span className="text-[var(--text-muted)] terminal-text truncate">
+                    {revealedIds.has(envVar.id) ? envVar.value : '••••••••'}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                <button onClick={() => toggleReveal(envVar.id)} className="btn btn-ghost h-8 text-xs">
-                  {revealedIds.has(envVar.id) ? t('projectDetail', 'hide') : t('projectDetail', 'reveal')}
-                </button>
-                <button
-                  onClick={async () => {
-                    const ok = await confirm({
-                      variant: 'danger',
-                      title: 'Delete environment variable',
-                      description: t('projectDetail', 'deleteEnvVarConfirm'),
-                      confirmText: t('common', 'delete'),
-                      cancelText: t('common', 'cancel'),
-                    });
-                    if (ok) {
-                      onDelete(envVar.id);
-                    }
-                  }}
-                  className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                {editingId === envVar.id ? (
+                  <>
+                    <button
+                      onClick={() => saveEdit(envVar.id)}
+                      disabled={editValue.trim() === ''}
+                      className="btn btn-primary h-8 text-xs flex items-center gap-1 disabled:opacity-50"
+                    >
+                      <Check className="w-4 h-4" />
+                      {t('common', 'save')}
+                    </button>
+                    <button onClick={cancelEdit} className="btn btn-ghost h-8 text-xs">
+                      {t('common', 'cancel')}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => toggleReveal(envVar.id)} className="btn btn-ghost h-8 text-xs">
+                      {revealedIds.has(envVar.id) ? t('projectDetail', 'hide') : t('projectDetail', 'reveal')}
+                    </button>
+                    <button
+                      onClick={() => startEdit(envVar.id, envVar.value)}
+                      title={t('common', 'edit')}
+                      className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10 transition-colors"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const ok = await confirm({
+                          variant: 'danger',
+                          title: 'Delete environment variable',
+                          description: t('projectDetail', 'deleteEnvVarConfirm'),
+                          confirmText: t('common', 'delete'),
+                          cancelText: t('common', 'cancel'),
+                        });
+                        if (ok) {
+                          onDelete(envVar.id);
+                        }
+                      }}
+                      className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}
