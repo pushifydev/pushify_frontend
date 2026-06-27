@@ -228,12 +228,12 @@ export function EnvironmentTab({
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t('projectDetail', 'value')}</label>
-              <input
-                type="text"
+              <textarea
                 value={newValue}
                 onChange={(e) => setNewValue(e.target.value)}
-                placeholder="your-secret-value"
-                className="input terminal-text"
+                placeholder="your-secret-value (multi-line OK — e.g. a PEM private key)"
+                rows={1}
+                className="input terminal-text resize-y min-h-[38px] py-2"
               />
             </div>
           </div>
@@ -262,15 +262,17 @@ export function EnvironmentTab({
               <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 w-full">
                 <span className="terminal-text font-medium">{envVar.key}</span>
                 {editingId === envVar.id ? (
-                  <input
+                  <textarea
                     autoFocus
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') saveEdit(envVar.id);
+                      // Cmd/Ctrl+Enter saves (plain Enter inserts a newline for multi-line values)
+                      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveEdit(envVar.id);
                       if (e.key === 'Escape') cancelEdit();
                     }}
-                    className="input terminal-text flex-1 min-w-0 h-8 text-xs"
+                    rows={1}
+                    className="input terminal-text flex-1 min-w-0 text-xs resize-y min-h-[32px] py-1"
                   />
                 ) : (
                   <span className="text-[var(--text-muted)] terminal-text truncate">
