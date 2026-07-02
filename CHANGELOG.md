@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.34] - 2026-07-02
+
+### Added
+- **Docker image for self-hosting.** New multi-stage `Dockerfile` producing a Next.js standalone build (enabled `output: 'standalone'` in `next.config.ts` — no effect on `next dev`). The backend's `selfhost/docker-compose.yml` + `install.sh` use it to run the dashboard as part of the one-command self-host stack. Note: `NEXT_PUBLIC_API_URL` is inlined at build time, so it's a build arg — changing the API URL requires rebuilding the image.
+
 ## [0.2.0-beta.33] - 2026-06-27
 
 ### Added
