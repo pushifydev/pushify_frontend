@@ -7,6 +7,7 @@ export { NginxSettingsModal } from './NginxSettingsModal';
 export { ToggleOption } from './ToggleOption';
 export { SettingsTab } from './SettingsTab';
 export { NotificationsTab } from './NotificationsTab';
+export { ScheduledTasksTab } from './ScheduledTasksTab';
 export { HealthCheckSection } from './HealthCheckSection';
 export { PreviewDeploymentsSection } from './PreviewDeploymentsSection';
 export { MetricsSection } from './MetricsSection';

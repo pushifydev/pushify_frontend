@@ -937,6 +937,55 @@ export interface TranslationKeys {
     webhookSecretCopied: string;
     webhookSecretContinue: string;
   };
+  cron: {
+    title: string;
+    description: string;
+    addTask: string;
+    editTask: string;
+    name: string;
+    namePlaceholder: string;
+    taskType: string;
+    typeCommand: string;
+    typeHttp: string;
+    command: string;
+    commandPlaceholder: string;
+    url: string;
+    urlPlaceholder: string;
+    schedule: string;
+    schedulePlaceholder: string;
+    scheduleHelp: string;
+    presetEvery5m: string;
+    presetEvery30m: string;
+    presetHourly: string;
+    presetDaily: string;
+    presetWeekly: string;
+    presetCustom: string;
+    timezone: string;
+    timeoutSeconds: string;
+    lastRun: string;
+    nextRun: string;
+    never: string;
+    runNow: string;
+    running: string;
+    pause: string;
+    resume: string;
+    showRuns: string;
+    hideRuns: string;
+    noRuns: string;
+    statusSuccess: string;
+    statusFailed: string;
+    statusTimeout: string;
+    manualTrigger: string;
+    exitCode: string;
+    httpStatus: string;
+    duration: string;
+    output: string;
+    noTasks: string;
+    noTasksDesc: string;
+    deleteConfirmTitle: string;
+    deleteConfirmMessage: string;
+    save: string;
+  };
   notifications: {
     title: string;
     description: string;
@@ -3130,6 +3179,55 @@ export const en: TranslationKeys = {
     webhookSecretCopy: 'Copy secret',
     webhookSecretCopied: 'Secret copied to clipboard',
     webhookSecretContinue: 'Continue to deploy',
+  },
+  cron: {
+    title: 'Cron Jobs',
+    description: 'Run commands inside your app container or call an HTTP endpoint on a schedule.',
+    addTask: 'Add Cron Job',
+    editTask: 'Edit Cron Job',
+    name: 'Name',
+    namePlaceholder: 'e.g., Nightly cleanup',
+    taskType: 'Type',
+    typeCommand: 'Command',
+    typeHttp: 'HTTP Request',
+    command: 'Command',
+    commandPlaceholder: 'e.g., node scripts/cleanup.js',
+    url: 'URL',
+    urlPlaceholder: 'https://your-app.pushify.dev/api/cron',
+    schedule: 'Schedule',
+    schedulePlaceholder: '*/5 * * * *',
+    scheduleHelp: '5-field cron expression: minute hour day month weekday',
+    presetEvery5m: 'Every 5 minutes',
+    presetEvery30m: 'Every 30 minutes',
+    presetHourly: 'Hourly',
+    presetDaily: 'Daily at 03:00',
+    presetWeekly: 'Weekly (Mon 03:00)',
+    presetCustom: 'Custom',
+    timezone: 'Timezone',
+    timeoutSeconds: 'Timeout (seconds)',
+    lastRun: 'Last run',
+    nextRun: 'Next run',
+    never: 'Never',
+    runNow: 'Run now',
+    running: 'Running…',
+    pause: 'Pause',
+    resume: 'Resume',
+    showRuns: 'Show runs',
+    hideRuns: 'Hide runs',
+    noRuns: 'No runs yet.',
+    statusSuccess: 'Success',
+    statusFailed: 'Failed',
+    statusTimeout: 'Timeout',
+    manualTrigger: 'manual',
+    exitCode: 'Exit code',
+    httpStatus: 'HTTP status',
+    duration: 'Duration',
+    output: 'Output',
+    noTasks: 'No cron jobs yet',
+    noTasksDesc: 'Schedule a command in your app container or a periodic HTTP call — cleanups, reports, cache warmups.',
+    deleteConfirmTitle: 'Delete cron job',
+    deleteConfirmMessage: 'This will delete the job and its run history. Continue?',
+    save: 'Save',
   },
   notifications: {
     title: 'Notifications',
