@@ -937,6 +937,27 @@ export interface TranslationKeys {
     webhookSecretCopied: string;
     webhookSecretContinue: string;
   };
+  logs: {
+    title: string;
+    live: string;
+    history: string;
+    connected: string;
+    connecting: string;
+    disconnected: string;
+    pauseScroll: string;
+    resumeScroll: string;
+    download: string;
+    filterPlaceholder: string;
+    searchPlaceholder: string;
+    allTypes: string;
+    search: string;
+    searching: string;
+    noDeployment: string;
+    waiting: string;
+    historyHint: string;
+    noResults: string;
+    retentionNote: string;
+  };
   volumes: {
     title: string;
     description: string;
@@ -3192,6 +3213,27 @@ export const en: TranslationKeys = {
     webhookSecretCopy: 'Copy secret',
     webhookSecretCopied: 'Secret copied to clipboard',
     webhookSecretContinue: 'Continue to deploy',
+  },
+  logs: {
+    title: 'Logs',
+    live: 'Live',
+    history: 'History',
+    connected: 'Live',
+    connecting: 'Connecting…',
+    disconnected: 'Disconnected',
+    pauseScroll: 'Pause scroll',
+    resumeScroll: 'Follow',
+    download: 'Download',
+    filterPlaceholder: 'Filter live output…',
+    searchPlaceholder: 'Search persisted logs (e.g. error, timeout)…',
+    allTypes: 'All',
+    search: 'Search',
+    searching: 'Searching…',
+    noDeployment: 'No deployment yet — deploy the project to see logs.',
+    waiting: 'Waiting for output…',
+    historyHint: 'Search the last 7 days of container logs.',
+    noResults: 'No matching log lines.',
+    retentionNote: 'Runtime logs are retained for 7 days. Timestamps in history mode are chunk-level.',
   },
   volumes: {
     title: 'Persistent Volumes',

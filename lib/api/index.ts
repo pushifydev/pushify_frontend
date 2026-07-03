@@ -155,6 +155,14 @@ export {
   type CreateProjectVolumeInput,
 } from './services/volumes.service';
 
+// Project Logs (explorer)
+export {
+  searchProjectLogs,
+  type ProjectLogLine,
+  type ProjectLogSearchResult,
+  type ProjectLogSearchParams,
+} from './services/project-logs.service';
+
 // Health Check Functions
 export {
   getHealthCheckConfig,
