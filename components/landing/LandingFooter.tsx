@@ -27,8 +27,7 @@ export function LandingFooter() {
       },
       {
         label: t('landing', 'changelog'),
-        href: 'https://github.com/pushifydev/pushify_frontend/blob/master/CHANGELOG.md',
-        external: true,
+        href: '/changelog',
       },
       { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },
       { label: t('vsVercel', 'h1'), href: '/vs/vercel' },

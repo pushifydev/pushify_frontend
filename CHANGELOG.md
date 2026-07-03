@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.0-beta.35] - 2026-07-02
+
+### Added
+- **Public `/changelog` page.** Every release across the platform, API and dashboard on one timeline — parsed from both repos' `CHANGELOG.md` (local checkout first, GitHub raw as fallback once the repos are public), ISR-refreshed hourly so new releases appear without a redeploy. Footer link now points here instead of GitHub; added to the sitemap.
+- **Discord notification channel UI.** Fourth channel type in the project Notifications tab (webhook-URL field, embeds preview parity with backend beta.41); Discord icon wired into the alerts center and header alerts menu. EN/TR i18n.
+- **Copy env vars between environments.** New "Copy Between Environments" action in the Environment tab — pick source/target (production/staging/development/preview) and optionally overwrite; uses the existing `/env/clone` endpoint that previously had no UI.
+
+### Changed
+- **Live metrics and health-check updates.** The project page now subscribes to the `metrics:update` and `healthcheck:result` WebSocket events (hooks existed but were never mounted): charts and health logs refresh on push instead of waiting for the 15–30s polling intervals; time-series chart invalidation added for every hours-window.
+
 ## [0.2.0-beta.34] - 2026-07-02
 
 ### Added

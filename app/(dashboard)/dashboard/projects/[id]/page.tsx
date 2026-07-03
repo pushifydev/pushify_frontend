@@ -36,6 +36,8 @@ import {
   useDeleteProject,
   useUpdateProjectStatus,
   useDeploymentStatusEvents,
+  useMetricsPushEvents,
+  useHealthCheckEvents,
   useDeployments,
   useCancelDeployment,
   useRollbackDeployment,
@@ -46,6 +48,7 @@ import {
   useUpdateEnvVar,
   useDeleteEnvVar,
   useBulkCreateEnvVars,
+  useCloneEnvVars,
   useDomains,
   useAddDomain,
   useDeleteDomain,
@@ -92,6 +95,8 @@ export default function ProjectDetailPage() {
   const deleteProjectMutation = useDeleteProject();
   const updateProjectStatus = useUpdateProjectStatus(projectId);
   useDeploymentStatusEvents(projectId);
+  useMetricsPushEvents(projectId);
+  useHealthCheckEvents(projectId);
   const cancelDeployment = useCancelDeployment(projectId);
   const rollbackDeployment = useRollbackDeployment(projectId);
   const redeployDeployment = useRedeployDeployment(projectId);
@@ -100,6 +105,7 @@ export default function ProjectDetailPage() {
   const updateEnvVar = useUpdateEnvVar(projectId);
   const deleteEnvVar = useDeleteEnvVar(projectId);
   const bulkCreateEnvVars = useBulkCreateEnvVars(projectId);
+  const cloneEnvVars = useCloneEnvVars(projectId);
   const addDomain = useAddDomain(projectId);
   const deleteDomain = useDeleteDomain(projectId);
   const setPrimaryDomain = useSetPrimaryDomain(projectId);
@@ -456,6 +462,7 @@ export default function ProjectDetailPage() {
             onUpdate={(id, value) => updateEnvVar.mutate({ envVarId: id, input: { value } })}
             onDelete={(id) => deleteEnvVar.mutate(id)}
             onBulkCreate={(data) => bulkCreateEnvVars.mutate(data)}
+            onClone={(input) => cloneEnvVars.mutate(input)}
             marketplaceTemplateId={
               typeof projectSettings.marketplaceTemplateId === 'string'
                 ? projectSettings.marketplaceTemplateId

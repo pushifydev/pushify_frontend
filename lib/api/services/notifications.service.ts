@@ -4,7 +4,7 @@ import type { ApiResponse, ApiError } from '../types';
 
 // ============ Types ============
 
-export type NotificationChannelType = 'slack' | 'email' | 'webhook';
+export type NotificationChannelType = 'slack' | 'email' | 'webhook' | 'discord';
 
 export type NotificationEvent =
   | 'deployment.started'
@@ -47,7 +47,11 @@ export interface WebhookConfig {
   secret?: string;
 }
 
-export type ChannelConfig = SlackConfig | EmailConfig | WebhookConfig;
+export interface DiscordConfig {
+  webhookUrl: string;
+}
+
+export type ChannelConfig = SlackConfig | EmailConfig | WebhookConfig | DiscordConfig;
 
 export interface CreateNotificationChannelInput {
   type: NotificationChannelType;

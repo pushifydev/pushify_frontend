@@ -11,8 +11,7 @@ import {
   Mail,
   MessageSquare,
   Webhook,
-  XCircle,
-} from 'lucide-react';
+  XCircle, MessageCircle} from 'lucide-react';
 import { useAlertsOverview, useTranslation } from '@/hooks';
 import { formatMessage } from '@/lib/i18n/format-message';
 import { formatTimeAgo } from '@/lib/formatters';
@@ -24,6 +23,7 @@ const channelIcons = {
   slack: MessageSquare,
   email: Mail,
   webhook: Webhook,
+  discord: MessageCircle,
 } as const;
 
 function isUnhealthy(hc: OrgHealthCheckRow): boolean {
