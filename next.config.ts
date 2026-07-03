@@ -52,6 +52,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Self-contained server build (.next/standalone) — required by the Docker image / self-host
+  // stack. Has no effect on `next dev` or the Vercel-style deploy paths.
+  output: 'standalone',
   env: {
     NEXT_PUBLIC_APP_VERSION: pkg.version,
   },
