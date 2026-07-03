@@ -29,6 +29,7 @@ import {
   EnvironmentTab,
   DomainsTab,
   NotificationsTab,
+  ScheduledTasksTab,
   SettingsTab,
 } from './components';
 import {
@@ -60,9 +61,9 @@ import { useConfirm } from '@/hooks/useConfirm';
 import { type ProjectStatus } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
 
-type Tab = 'overview' | 'deployments' | 'environment' | 'domains' | 'notifications' | 'settings';
+type Tab = 'overview' | 'deployments' | 'environment' | 'domains' | 'cron' | 'notifications' | 'settings';
 
-const VALID_TABS: Tab[] = ['overview', 'deployments', 'environment', 'domains', 'notifications', 'settings'];
+const VALID_TABS: Tab[] = ['overview', 'deployments', 'environment', 'domains', 'cron', 'notifications', 'settings'];
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -203,6 +204,7 @@ export default function ProjectDetailPage() {
     { id: 'deployments', label: t('projectDetail', 'deployments'), icon: <Rocket className="w-4 h-4" /> },
     { id: 'environment', label: t('projectDetail', 'environment'), icon: <Key className="w-4 h-4" /> },
     { id: 'domains', label: t('projectDetail', 'domains'), icon: <Globe className="w-4 h-4" /> },
+    { id: 'cron', label: t('cron', 'title'), icon: <Clock className="w-4 h-4" /> },
     { id: 'notifications', label: t('notifications', 'title'), icon: <Bell className="w-4 h-4" /> },
     { id: 'settings', label: t('projectDetail', 'settings'), icon: <Settings className="w-4 h-4" /> },
   ];
@@ -484,6 +486,7 @@ export default function ProjectDetailPage() {
             t={t}
           />
         )}
+        {activeTab === 'cron' && <ScheduledTasksTab projectId={projectId} t={t} />}
         {activeTab === 'notifications' && (
           <NotificationsTab projectId={projectId} t={t} />
         )}

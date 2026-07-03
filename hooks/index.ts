@@ -270,3 +270,13 @@ export {
   useUpdateSiteCms,
   usePublishSite,
 } from './useSiteEditor';
+
+export {
+  scheduledTaskKeys,
+  useScheduledTasks,
+  useScheduledTaskRuns,
+  useCreateScheduledTask,
+  useUpdateScheduledTask,
+  useDeleteScheduledTask,
+  useRunScheduledTask,
+} from './useScheduledTasks';

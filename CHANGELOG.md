@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.36] - 2026-07-03
+
+### Added
+- **Cron Jobs tab.** New per-project tab (pairs with backend beta.42): schedule **commands that run inside the app container** or **periodic HTTP calls**. Schedule presets (every 5/30 min, hourly, daily, weekly) plus raw 5-field cron input with timezone and timeout; per-task pause/resume, **Run now**, edit and delete; expandable run history showing status, trigger (manual/schedule), duration, exit code / HTTP status and captured output. EN/TR i18n (`cron` namespace).
+
 ## [0.2.0-beta.35] - 2026-07-02
 
 ### Added

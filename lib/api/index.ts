@@ -129,6 +129,23 @@ export {
   type UpdateNotificationChannelInput,
 } from './services/notifications.service';
 
+// Scheduled Tasks (cron jobs)
+export {
+  getScheduledTasks,
+  createScheduledTask,
+  updateScheduledTask,
+  deleteScheduledTask,
+  runScheduledTask,
+  getScheduledTaskRuns,
+  type ScheduledTask,
+  type ScheduledTaskRun,
+  type ScheduledTaskType,
+  type ScheduledTaskRunStatus,
+  type ScheduledTaskRunResult,
+  type CreateScheduledTaskInput,
+  type UpdateScheduledTaskInput,
+} from './services/scheduled-tasks.service';
+
 // Health Check Functions
 export {
   getHealthCheckConfig,
