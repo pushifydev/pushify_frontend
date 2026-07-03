@@ -99,6 +99,8 @@ export function useMetricsPushEvents(projectId: string | undefined) {
       // Invalidate metrics queries to trigger refetch
       queryClient.invalidateQueries({ queryKey: metricsKeys.summary(projectId) });
       queryClient.invalidateQueries({ queryKey: metricsKeys.overview() });
+      // Prefix match covers every hours-window variant of the charts
+      queryClient.invalidateQueries({ queryKey: [...metricsKeys.all, 'timeSeries', projectId] });
     },
     { channel: projectId ? `project:${projectId}` : undefined }
   );

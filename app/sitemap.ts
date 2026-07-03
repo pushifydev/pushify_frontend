@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/pricing',
     '/open-source',
     '/docs',
+    '/changelog',
     '/about',
     '/vs/coolify',
     '/vs/vercel',

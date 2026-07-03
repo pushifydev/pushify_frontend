@@ -14,8 +14,7 @@ import {
   XCircle,
   AlertTriangle,
   Plus,
-  Activity,
-} from 'lucide-react';
+  Activity, MessageCircle} from 'lucide-react';
 import { useAlertsOverview, useTranslation, useBillingInfo } from '@/hooks';
 import { STATUS_COLORS } from '@/lib/constants';
 import { formatTimeAgo } from '@/lib/formatters';
@@ -27,6 +26,7 @@ const channelIcons: Record<string, typeof MessageSquare> = {
   slack: MessageSquare,
   email: Mail,
   webhook: Webhook,
+  discord: MessageCircle,
 };
 
 function StatusDot({ ok }: { ok: boolean }) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Bell, Globe, Plus, Send, Trash2 } from 'lucide-react';
+import { Bell, Globe, MessageCircle, Plus, Send, Trash2 } from 'lucide-react';
 import {
   useNotificationChannels,
   useCreateNotificationChannel,
@@ -28,6 +28,7 @@ export function NotificationsTab({
   const [emailAddresses, setEmailAddresses] = useState('');
   const [webhookUrl, setWebhookUrl] = useState('');
   const [webhookSecret, setWebhookSecret] = useState('');
+  const [discordWebhookUrl, setDiscordWebhookUrl] = useState('');
   const [selectedEvents, setSelectedEvents] = useState<NotificationEvent[]>([
     'deployment.started',
     'deployment.success',
@@ -48,6 +49,7 @@ export function NotificationsTab({
     setEmailAddresses('');
     setWebhookUrl('');
     setWebhookSecret('');
+    setDiscordWebhookUrl('');
     setSelectedEvents(['deployment.started', 'deployment.success', 'deployment.failed']);
     setEditingChannel(null);
     setShowAddForm(false);
@@ -65,6 +67,9 @@ export function NotificationsTab({
         break;
       case 'webhook':
         config = { url: webhookUrl, ...(webhookSecret && { secret: webhookSecret }) };
+        break;
+      case 'discord':
+        config = { webhookUrl: discordWebhookUrl };
         break;
     }
 
@@ -137,6 +142,8 @@ export function NotificationsTab({
         return <Send className="w-4 h-4" />;
       case 'webhook':
         return <Globe className="w-4 h-4" />;
+      case 'discord':
+        return <MessageCircle className="w-4 h-4" />;
     }
   };
 
@@ -194,7 +201,7 @@ export function NotificationsTab({
                 {t('notifications', 'channelType')}
               </label>
               <div className="flex flex-wrap gap-2">
-                {(['slack', 'email', 'webhook'] as NotificationChannelType[]).map((type) => (
+                {(['slack', 'email', 'webhook', 'discord'] as NotificationChannelType[]).map((type) => (
                   <button
                     key={type}
                     onClick={() => setChannelType(type)}
@@ -222,6 +229,21 @@ export function NotificationsTab({
                 value={slackWebhookUrl}
                 onChange={(e) => setSlackWebhookUrl(e.target.value)}
                 placeholder={t('notifications', 'slackWebhookUrlPlaceholder')}
+                className="input max-w-xl terminal-text text-sm"
+              />
+            </div>
+          )}
+
+          {channelType === 'discord' && (
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                {t('notifications', 'discordWebhookUrl')}
+              </label>
+              <input
+                type="text"
+                value={discordWebhookUrl}
+                onChange={(e) => setDiscordWebhookUrl(e.target.value)}
+                placeholder={t('notifications', 'discordWebhookUrlPlaceholder')}
                 className="input max-w-xl terminal-text text-sm"
               />
             </div>

@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, Info, Key, Trash2, Pencil, Check } from 'lucide-react';
+import { Copy, FileText, Info, Key, Trash2, Pencil, Check } from 'lucide-react';
 import { useEnvVars, useTranslation } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
+import type { Environment } from '@/lib/api';
+
+const ENVIRONMENTS: Environment[] = ['production', 'staging', 'development', 'preview'];
 
 export function EnvironmentTab({
   envVars,
@@ -11,6 +14,7 @@ export function EnvironmentTab({
   onUpdate,
   onDelete,
   onBulkCreate,
+  onClone,
   marketplaceTemplateId,
   productionUrl,
   t,
@@ -20,6 +24,7 @@ export function EnvironmentTab({
   onUpdate: (id: string, value: string) => void;
   onDelete: (id: string) => void;
   onBulkCreate: (data: { key: string; value: string }[]) => void;
+  onClone: (input: { sourceEnvironment: Environment; targetEnvironment: Environment; overwrite?: boolean }) => void;
   marketplaceTemplateId?: string;
   productionUrl?: string | null;
   t: ReturnType<typeof useTranslation>['t'];
@@ -27,6 +32,10 @@ export function EnvironmentTab({
   const confirm = useConfirm();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showPasteForm, setShowPasteForm] = useState(false);
+  const [showCloneForm, setShowCloneForm] = useState(false);
+  const [cloneSource, setCloneSource] = useState<Environment>('production');
+  const [cloneTarget, setCloneTarget] = useState<Environment>('preview');
+  const [cloneOverwrite, setCloneOverwrite] = useState(false);
   const [newKey, setNewKey] = useState('');
   const [newValue, setNewValue] = useState('');
   const [envContent, setEnvContent] = useState('');
@@ -144,7 +153,14 @@ export function EnvironmentTab({
         </p>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
           <button
-            onClick={() => { setShowPasteForm(true); setShowAddForm(false); }}
+            onClick={() => { setShowCloneForm(true); setShowPasteForm(false); setShowAddForm(false); }}
+            className="btn btn-secondary justify-center"
+          >
+            <Copy className="w-4 h-4" />
+            {t('projectDetail', 'cloneEnv')}
+          </button>
+          <button
+            onClick={() => { setShowPasteForm(true); setShowAddForm(false); setShowCloneForm(false); }}
             className="btn btn-secondary justify-center"
           >
             <FileText className="w-4 h-4" />
@@ -159,6 +175,67 @@ export function EnvironmentTab({
           </button>
         </div>
       </div>
+
+      {/* Clone between environments */}
+      {showCloneForm && (
+        <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
+          <h3 className="text-sm font-semibold">{t('projectDetail', 'cloneEnv')}</h3>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+                {t('projectDetail', 'sourceEnvironment')}
+              </label>
+              <select
+                value={cloneSource}
+                onChange={(e) => setCloneSource(e.target.value as Environment)}
+                className="input w-full"
+              >
+                {ENVIRONMENTS.map((env) => (
+                  <option key={env} value={env}>{env}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+                {t('projectDetail', 'targetEnvironment')}
+              </label>
+              <select
+                value={cloneTarget}
+                onChange={(e) => setCloneTarget(e.target.value as Environment)}
+                className="input w-full"
+              >
+                {ENVIRONMENTS.map((env) => (
+                  <option key={env} value={env}>{env}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+            <input
+              type="checkbox"
+              checked={cloneOverwrite}
+              onChange={(e) => setCloneOverwrite(e.target.checked)}
+            />
+            {t('projectDetail', 'overwriteExisting')}
+          </label>
+          <div className="flex gap-2 justify-end">
+            <button onClick={() => setShowCloneForm(false)} className="btn btn-ghost">
+              {t('common', 'cancel')}
+            </button>
+            <button
+              onClick={() => {
+                onClone({ sourceEnvironment: cloneSource, targetEnvironment: cloneTarget, overwrite: cloneOverwrite });
+                setShowCloneForm(false);
+              }}
+              disabled={cloneSource === cloneTarget}
+              className="btn btn-primary"
+            >
+              <Copy className="w-4 h-4" />
+              {t('projectDetail', 'cloneEnvRun')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Paste .env Form */}
       {showPasteForm && (

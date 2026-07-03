@@ -123,6 +123,7 @@ export {
   type SlackConfig,
   type EmailConfig,
   type WebhookConfig,
+  type DiscordConfig,
   type ChannelConfig,
   type CreateNotificationChannelInput,
   type UpdateNotificationChannelInput,

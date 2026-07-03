@@ -728,6 +728,11 @@ export interface TranslationKeys {
     oauthHintBody: string;
     addVariable: string;
     pasteEnv: string;
+    cloneEnv: string;
+    sourceEnvironment: string;
+    targetEnvironment: string;
+    overwriteExisting: string;
+    cloneEnvRun: string;
     pasteEnvContent: string;
     parsedVariables: string;
     addVariables: string;
@@ -944,6 +949,7 @@ export interface TranslationKeys {
     slack: string;
     email: string;
     webhook: string;
+    discord: string;
     // Form fields
     channelName: string;
     channelNamePlaceholder: string;
@@ -956,6 +962,8 @@ export interface TranslationKeys {
     webhookUrlPlaceholder: string;
     webhookSecret: string;
     webhookSecretPlaceholder: string;
+    discordWebhookUrl: string;
+    discordWebhookUrlPlaceholder: string;
     // Events
     events: string;
     eventsDesc: string;
@@ -2910,6 +2918,11 @@ export const en: TranslationKeys = {
     oauthHintBody: 'To add Google/GitHub login, set the variables below and Redeploy. In your provider console, set the callback URL to: {url}',
     addVariable: 'Add Variable',
     pasteEnv: 'Paste .env',
+    cloneEnv: 'Copy Between Environments',
+    sourceEnvironment: 'Source environment',
+    targetEnvironment: 'Target environment',
+    overwriteExisting: 'Overwrite existing variables',
+    cloneEnvRun: 'Copy Variables',
     pasteEnvContent: 'Paste your .env file content',
     parsedVariables: 'Parsed variables',
     addVariables: 'Add Variables',
@@ -3130,6 +3143,7 @@ export const en: TranslationKeys = {
     slack: 'Slack',
     email: 'Email',
     webhook: 'Webhook',
+    discord: 'Discord',
     // Form fields
     channelName: 'Channel Name',
     channelNamePlaceholder: 'e.g., Production Alerts',
@@ -3142,6 +3156,8 @@ export const en: TranslationKeys = {
     webhookUrlPlaceholder: 'https://api.example.com/webhook',
     webhookSecret: 'Webhook Secret (optional)',
     webhookSecretPlaceholder: 'Secret for HMAC signature verification',
+    discordWebhookUrl: 'Discord Webhook URL',
+    discordWebhookUrlPlaceholder: 'https://discord.com/api/webhooks/...',
     // Events
     events: 'Events',
     eventsDesc: 'Select which events should trigger notifications.',

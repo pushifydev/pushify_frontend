@@ -746,6 +746,11 @@ export const tr: TranslationKeys = {
     oauthHintBody: 'Google/GitHub girişi eklemek için aşağıdaki değişkenleri girip Redeploy alın. Sağlayıcı panelinde callback URL olarak şunu kullanın: {url}',
     addVariable: 'Değişken Ekle',
     pasteEnv: '.env Yapıştır',
+    cloneEnv: 'Ortamlar Arası Kopyala',
+    sourceEnvironment: 'Kaynak ortam',
+    targetEnvironment: 'Hedef ortam',
+    overwriteExisting: 'Mevcut değişkenlerin üzerine yaz',
+    cloneEnvRun: 'Değişkenleri Kopyala',
     pasteEnvContent: '.env dosyanızın içeriğini yapıştırın',
     parsedVariables: 'Ayrıştırılan değişkenler',
     addVariables: 'Değişkenleri Ekle',
@@ -967,6 +972,7 @@ export const tr: TranslationKeys = {
     slack: 'Slack',
     email: 'E-posta',
     webhook: 'Webhook',
+    discord: 'Discord',
     // Form fields
     channelName: 'Kanal Adı',
     channelNamePlaceholder: 'örn. Prodüksiyon Uyarıları',
@@ -979,6 +985,8 @@ export const tr: TranslationKeys = {
     webhookUrlPlaceholder: 'https://api.example.com/webhook',
     webhookSecret: 'Webhook Anahtarı (isteğe bağlı)',
     webhookSecretPlaceholder: 'HMAC imza doğrulaması için anahtar',
+    discordWebhookUrl: 'Discord Webhook URL',
+    discordWebhookUrlPlaceholder: 'https://discord.com/api/webhooks/...',
     // Events
     events: 'Olaylar',
     eventsDesc: 'Hangi olayların bildirim tetiklemesi gerektiğini seçin.',
