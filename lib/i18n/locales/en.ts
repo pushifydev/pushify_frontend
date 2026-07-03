@@ -937,6 +937,19 @@ export interface TranslationKeys {
     webhookSecretCopied: string;
     webhookSecretContinue: string;
   };
+  volumes: {
+    title: string;
+    description: string;
+    applyNote: string;
+    addVolume: string;
+    name: string;
+    namePlaceholder: string;
+    containerPath: string;
+    containerPathPlaceholder: string;
+    noVolumes: string;
+    deleteConfirmTitle: string;
+    deleteConfirmMessage: string;
+  };
   cron: {
     title: string;
     description: string;
@@ -3179,6 +3192,19 @@ export const en: TranslationKeys = {
     webhookSecretCopy: 'Copy secret',
     webhookSecretCopied: 'Secret copied to clipboard',
     webhookSecretContinue: 'Continue to deploy',
+  },
+  volumes: {
+    title: 'Persistent Volumes',
+    description: 'Attach named volumes so files (SQLite, uploads, caches) survive redeploys.',
+    applyNote: 'Changes take effect on the next deploy. Deleting a project also deletes its volumes.',
+    addVolume: 'Add Volume',
+    name: 'Name',
+    namePlaceholder: 'e.g., data',
+    containerPath: 'Mount path (in container)',
+    containerPathPlaceholder: '/app/data',
+    noVolumes: 'No volumes attached.',
+    deleteConfirmTitle: 'Delete volume',
+    deleteConfirmMessage: 'The volume "{name}" will be detached on the next deploy. Its data is removed when the project is deleted. Continue?',
   },
   cron: {
     title: 'Cron Jobs',

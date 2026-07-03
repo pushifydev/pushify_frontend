@@ -146,6 +146,15 @@ export {
   type UpdateScheduledTaskInput,
 } from './services/scheduled-tasks.service';
 
+// Project Volumes
+export {
+  getProjectVolumes,
+  createProjectVolume,
+  deleteProjectVolume,
+  type ProjectVolume,
+  type CreateProjectVolumeInput,
+} from './services/volumes.service';
+
 // Health Check Functions
 export {
   getHealthCheckConfig,
