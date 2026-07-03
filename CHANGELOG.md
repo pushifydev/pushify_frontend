@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.38] - 2026-07-03
+
+### Added
+- **Logs tab — full-page logs explorer** (pairs with backend beta.44). Logs escape the modals: a dedicated project tab with two modes. **Live** — real-time container tail (SSE) with follow/pause auto-scroll, client-side filtering, reconnect, clear and download. **History** — server-side search over the last 7 days of persisted logs with stdout/stderr filter and chunk-level timestamps, downloadable. EN/TR i18n (`logs` namespace).
+
 ## [0.2.0-beta.37] - 2026-07-03
 
 ### Added

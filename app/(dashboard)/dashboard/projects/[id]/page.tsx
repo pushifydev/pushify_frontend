@@ -18,8 +18,7 @@ import {
   ChevronRight,
   Copy,
   Check,
-  Bell,
-} from 'lucide-react';
+  Bell, ScrollText} from 'lucide-react';
 import { DeploymentLogsModal } from '@/components/DeploymentLogsModal';
 import { ContainerLogsModal } from '@/components/ContainerLogsModal';
 import { HistoricalLogsModal } from '@/components/HistoricalLogsModal';
@@ -30,6 +29,7 @@ import {
   DomainsTab,
   NotificationsTab,
   ScheduledTasksTab,
+  LogsTab,
   SettingsTab,
 } from './components';
 import {
@@ -61,9 +61,9 @@ import { useConfirm } from '@/hooks/useConfirm';
 import { type ProjectStatus } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
 
-type Tab = 'overview' | 'deployments' | 'environment' | 'domains' | 'cron' | 'notifications' | 'settings';
+type Tab = 'overview' | 'deployments' | 'logs' | 'environment' | 'domains' | 'cron' | 'notifications' | 'settings';
 
-const VALID_TABS: Tab[] = ['overview', 'deployments', 'environment', 'domains', 'cron', 'notifications', 'settings'];
+const VALID_TABS: Tab[] = ['overview', 'deployments', 'logs', 'environment', 'domains', 'cron', 'notifications', 'settings'];
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -202,6 +202,7 @@ export default function ProjectDetailPage() {
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'overview', label: t('projectDetail', 'overview'), icon: <Activity className="w-4 h-4" /> },
     { id: 'deployments', label: t('projectDetail', 'deployments'), icon: <Rocket className="w-4 h-4" /> },
+    { id: 'logs', label: t('logs', 'title'), icon: <ScrollText className="w-4 h-4" /> },
     { id: 'environment', label: t('projectDetail', 'environment'), icon: <Key className="w-4 h-4" /> },
     { id: 'domains', label: t('projectDetail', 'domains'), icon: <Globe className="w-4 h-4" /> },
     { id: 'cron', label: t('cron', 'title'), icon: <Clock className="w-4 h-4" /> },
@@ -457,6 +458,7 @@ export default function ProjectDetailPage() {
             onClose={() => setShowHistoricalLogs(null)}
           />
         )}
+        {activeTab === 'logs' && <LogsTab projectId={projectId} t={t} />}
         {activeTab === 'environment' && (
           <EnvironmentTab
             envVars={envVars}
