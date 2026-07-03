@@ -280,3 +280,10 @@ export {
   useDeleteScheduledTask,
   useRunScheduledTask,
 } from './useScheduledTasks';
+
+export {
+  projectVolumeKeys,
+  useProjectVolumes,
+  useCreateProjectVolume,
+  useDeleteProjectVolume,
+} from './useProjectVolumes';

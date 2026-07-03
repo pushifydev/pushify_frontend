@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.37] - 2026-07-03
+
+### Added
+- **Persistent Volumes section** in project Settings (pairs with backend beta.43): attach named volumes at a container path so SQLite files, uploads and caches survive redeploys. Add/delete with client-side name/path validation; copy notes that changes apply on the next deploy and volumes are removed with the project. EN/TR i18n (`volumes` namespace).
+
 ## [0.2.0-beta.36] - 2026-07-03
 
 ### Added

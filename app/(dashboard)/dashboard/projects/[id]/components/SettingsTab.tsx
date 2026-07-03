@@ -15,6 +15,7 @@ import {
 } from '@/hooks';
 import { type ProjectStatus } from '@/lib/api';
 import { HealthCheckSection } from './HealthCheckSection';
+import { VolumesSection } from './VolumesSection';
 import { PreviewDeploymentsSection } from './PreviewDeploymentsSection';
 
 export function SettingsTab({
@@ -521,6 +522,9 @@ export function SettingsTab({
           )}
         </div>
       )}
+
+      {/* Persistent Volumes */}
+      <VolumesSection projectId={projectId} t={t} />
 
       {/* Health Checks */}
       <HealthCheckSection projectId={projectId} t={t} />
