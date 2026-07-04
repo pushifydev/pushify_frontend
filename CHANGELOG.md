@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.40] - 2026-07-05
+
+### Added
+- **Auto-Sleep (scale to zero) UI** (pairs with backend beta.46). Project Settings gains an "Auto-Sleep" card: enable per project and set the idle window (5–1440 minutes). The Overview tab shows a **sleeping/waking banner** with a **Wake now** button when the app has been put to sleep. EN/TR i18n (`sleep` namespace).
+
 ## [0.2.0-beta.39] - 2026-07-05
 
 ### Added

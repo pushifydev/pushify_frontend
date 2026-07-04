@@ -1,11 +1,13 @@
 'use client';
 
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { wakeProject } from '@/lib/api';
 import {
   ExternalLink,
   GitBranch,
   Rocket,
-  RotateCcw,
-} from 'lucide-react';
+  RotateCcw, Moon, Sun} from 'lucide-react';
 import { DeploymentFailureSummary } from '@/components/DeploymentFailureSummary';
 import { DeploymentTimeline } from '@/components/DeploymentTimeline';
 import { findLastGoodDeployment } from '@/lib/deployment-utils';
@@ -29,10 +31,39 @@ export function OverviewTab({
   onRollback: (deploymentId: string) => void;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
+  const queryClient = useQueryClient();
+  const [wakePending, setWakePending] = useState(false);
+  const handleWake = async () => {
+    setWakePending(true);
+    await wakeProject(projectId);
+    await queryClient.invalidateQueries({ queryKey: ['projects'] });
+    setWakePending(false);
+  };
+
   const latestDeployment = deployments?.[0];
   const lastGood = deployments ? findLastGoodDeployment(deployments) : null;
 
   return (
+    <>
+    {project.sleepState !== 'awake' && (
+      <div className="mb-4 p-4 rounded-lg border flex items-center gap-3" style={{ background: 'var(--dash-warning-bg, rgba(251,191,36,0.08))', borderColor: 'var(--border-subtle)' }}>
+        <Moon className="w-5 h-5 shrink-0" style={{ color: 'var(--status-warning, #fbbf24)' }} />
+        <div className="min-w-0 flex-1">
+          <p className="font-medium text-sm">
+            {project.sleepState === 'waking' ? t('sleep', 'wakingTitle') : t('sleep', 'sleepingTitle')}
+          </p>
+          <p className="text-xs text-[var(--text-secondary)]">
+            {project.sleepState === 'waking' ? t('sleep', 'wakingDesc') : t('sleep', 'sleepingDesc')}
+          </p>
+        </div>
+        {project.sleepState === 'sleeping' && (
+          <button onClick={handleWake} disabled={wakePending} className="btn btn-secondary shrink-0">
+            <Sun className="w-4 h-4" />
+            {wakePending ? t('sleep', 'waking') : t('sleep', 'wake')}
+          </button>
+        )}
+      </div>
+    )}
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
       <div className="lg:col-span-2 space-y-4 min-w-0">
         <h3 className="text-lg font-semibold">{t('projectDetail', 'latestDeployment')}</h3>
@@ -136,5 +167,6 @@ export function OverviewTab({
         <MetricsSection projectId={projectId} t={t} />
       </div>
     </div>
+    </>
   );
 }

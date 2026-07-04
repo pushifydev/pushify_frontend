@@ -35,6 +35,7 @@ export {
   type WebhookInfo,
   type WebhookSecret,
   type ProjectSettings,
+  wakeProject,
 } from './services/projects.service';
 
 // Deployments Functions

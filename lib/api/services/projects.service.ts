@@ -175,3 +175,22 @@ export const projectsService = {
   installGitHubWebhook,
   updateSettings: updateProjectSettings,
 };
+
+export const wakeProject = async (
+  projectId: string
+): Promise<ApiResponse<{ result: 'started' | 'in-progress' | 'awake' | 'failed' }>> => {
+  try {
+    const response = await api.post<{ data: { result: 'started' | 'in-progress' | 'awake' | 'failed' } }>(
+      `/projects/${projectId}/wake`
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    const axiosError = error as import('axios').AxiosError<{ error: ApiError }>;
+    return {
+      error: axiosError.response?.data?.error || {
+        code: 'NETWORK_ERROR',
+        message: 'Unable to connect to server',
+      },
+    };
+  }
+};
