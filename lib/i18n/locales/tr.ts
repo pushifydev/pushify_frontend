@@ -980,6 +980,7 @@ export const tr: TranslationKeys = {
     historyHint: 'Son 7 günün container loglarında arayın.',
     noResults: 'Eşleşen log satırı yok.',
     retentionNote: 'Çalışma zamanı logları 7 gün saklanır. Geçmiş modundaki zaman damgaları blok bazlıdır.',
+    shell: 'Shell',
   },
   volumes: {
     title: 'Kalıcı Diskler',

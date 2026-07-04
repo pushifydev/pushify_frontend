@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.39] - 2026-07-05
+
+### Added
+- **App Shell — web terminal into the running app container** (pairs with backend beta.45). New `/dashboard/projects/:id/shell` page (xterm.js, same terminal chrome as the server terminal) attaching an interactive shell inside the project's container over the runner-aware SSH path; opens via the **Shell** button in the Logs tab. `ServerTerminalView` now accepts `projectId` for the app-shell socket alongside `serverId`.
+
 ## [0.2.0-beta.38] - 2026-07-03
 
 ### Added

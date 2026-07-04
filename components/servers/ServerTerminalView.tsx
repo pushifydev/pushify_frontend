@@ -2,14 +2,17 @@
 
 import '@xterm/xterm/css/xterm.css';
 import { useEffect, useRef, useCallback } from 'react';
-import { getServerTerminalWsUrl } from '@/lib/server-terminal-ws';
+import { getServerTerminalWsUrl, getProjectShellWsUrl } from '@/lib/server-terminal-ws';
 
 interface ServerTerminalViewProps {
-  serverId: string;
+  /** SSH terminal into a server (exactly one of serverId/projectId must be set) */
+  serverId?: string;
+  /** Shell into a project's app container */
+  projectId?: string;
   onStatusChange?: (status: 'connecting' | 'connected' | 'disconnected' | 'error') => void;
 }
 
-export function ServerTerminalView({ serverId, onStatusChange }: ServerTerminalViewProps) {
+export function ServerTerminalView({ serverId, projectId, onStatusChange }: ServerTerminalViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const termRef = useRef<import('@xterm/xterm').Terminal | null>(null);
@@ -32,7 +35,11 @@ export function ServerTerminalView({ serverId, onStatusChange }: ServerTerminalV
 
   const connectSocket = useCallback(
     (cols: number, rows: number) => {
-      const url = getServerTerminalWsUrl(serverId, cols, rows);
+      const url = projectId
+        ? getProjectShellWsUrl(projectId, cols, rows)
+        : serverId
+          ? getServerTerminalWsUrl(serverId, cols, rows)
+          : null;
       if (!url) {
         termRef.current?.writeln('\r\n\x1b[31mNot authenticated — please sign in again.\x1b[0m');
         notify('error');
@@ -101,7 +108,7 @@ export function ServerTerminalView({ serverId, onStatusChange }: ServerTerminalV
         notify('disconnected');
       };
     },
-    [serverId, notify, sendResize],
+    [serverId, projectId, notify, sendResize],
   );
 
   useEffect(() => {
@@ -164,7 +171,7 @@ export function ServerTerminalView({ serverId, onStatusChange }: ServerTerminalV
       termRef.current = null;
       fitRef.current = null;
     };
-  }, [serverId, connectSocket, sendResize]);
+  }, [serverId, projectId, connectSocket, sendResize]);
 
   return (
     <div
