@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Check, Copy, Pause, Play, RefreshCw, Server, Trash2 } from 'lucide-react';
+import { Check, Copy, Pause, Play, RefreshCw, Server, Trash2, Moon} from 'lucide-react';
 import {
   useProject,
   useUpdateProjectSettings,
@@ -49,6 +49,9 @@ export function SettingsTab({
   // Server selection state
   const [selectedServerId, setSelectedServerId] = useState<string | null>(project.serverId || null);
   const [serverSaved, setServerSaved] = useState(false);
+  const [sleepEnabled, setSleepEnabled] = useState(project.sleepEnabled);
+  const [sleepAfterMinutes, setSleepAfterMinutes] = useState(project.sleepAfterMinutes || 30);
+  const [sleepSaved, setSleepSaved] = useState(false);
 
   const { data: servers = [], isLoading: isLoadingServers } = useServers();
   const { data: webhookInfo } = useWebhookInfo(project.id);
@@ -82,6 +85,15 @@ export function SettingsTab({
     });
     setServerSaved(true);
     setTimeout(() => setServerSaved(false), 3000);
+  };
+
+  const handleSaveSleep = async () => {
+    await updateProject.mutateAsync({
+      sleepEnabled,
+      sleepAfterMinutes: Math.min(1440, Math.max(5, sleepAfterMinutes || 30)),
+    });
+    setSleepSaved(true);
+    setTimeout(() => setSleepSaved(false), 3000);
   };
 
   // Get current PR status checks setting from project settings
@@ -522,6 +534,43 @@ export function SettingsTab({
           )}
         </div>
       )}
+
+      {/* Auto-sleep (scale to zero) */}
+      <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <Moon className="w-4 h-4" />
+          {t('sleep', 'title')}
+        </h3>
+        <p className="text-sm text-[var(--text-secondary)] mt-1 mb-4">{t('sleep', 'description')}</p>
+        <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={sleepEnabled}
+              onChange={(e) => setSleepEnabled(e.target.checked)}
+            />
+            {t('sleep', 'enable')}
+          </label>
+          <div>
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+              {t('sleep', 'afterMinutes')}
+            </label>
+            <input
+              type="number"
+              min={5}
+              max={1440}
+              value={sleepAfterMinutes}
+              onChange={(e) => setSleepAfterMinutes(parseInt(e.target.value, 10) || 30)}
+              disabled={!sleepEnabled}
+              className="input w-28 text-sm"
+            />
+          </div>
+          <button onClick={handleSaveSleep} disabled={updateProject.isPending} className="btn btn-secondary">
+            {sleepSaved ? t('sleep', 'saved') : t('sleep', 'save')}
+          </button>
+        </div>
+        <p className="text-xs text-[var(--text-muted)] mt-3">{t('sleep', 'note')}</p>
+      </div>
 
       {/* Persistent Volumes */}
       <VolumesSection projectId={projectId} t={t} />

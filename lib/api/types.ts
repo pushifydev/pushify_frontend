@@ -85,6 +85,11 @@ export interface Project {
   port: number | null;
   autoDeploy: boolean;
   status: ProjectStatus;
+  sleepEnabled: boolean;
+  sleepAfterMinutes: number;
+  /** awake | sleeping | waking */
+  sleepState: string;
+  lastWakeAt: string | null;
   productionUrl: string | null;
   settings: Record<string, unknown>;
   createdAt: string;
@@ -119,6 +124,8 @@ export interface CreateProjectInput {
 
 export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'serverId'>> {
   serverId?: string | null;
+  sleepEnabled?: boolean;
+  sleepAfterMinutes?: number;
 }
 
 // ============ Environment Variable Types ============

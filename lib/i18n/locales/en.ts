@@ -937,6 +937,21 @@ export interface TranslationKeys {
     webhookSecretCopied: string;
     webhookSecretContinue: string;
   };
+  sleep: {
+    title: string;
+    description: string;
+    enable: string;
+    afterMinutes: string;
+    save: string;
+    saved: string;
+    note: string;
+    sleepingTitle: string;
+    sleepingDesc: string;
+    wakingTitle: string;
+    wakingDesc: string;
+    wake: string;
+    waking: string;
+  };
   logs: {
     title: string;
     live: string;
@@ -3214,6 +3229,21 @@ export const en: TranslationKeys = {
     webhookSecretCopy: 'Copy secret',
     webhookSecretCopied: 'Secret copied to clipboard',
     webhookSecretContinue: 'Continue to deploy',
+  },
+  sleep: {
+    title: 'Auto-Sleep (Scale to Zero)',
+    description: 'Stop the container when the app is idle and wake it automatically on the next request.',
+    enable: 'Enable auto-sleep',
+    afterMinutes: 'Sleep after (minutes)',
+    save: 'Save',
+    saved: 'Saved',
+    note: 'Visitors hitting a sleeping app see a brief "waking up" page (a few seconds). Health checks pause while asleep.',
+    sleepingTitle: 'App is sleeping',
+    sleepingDesc: 'This app was stopped after being idle. It will wake automatically on the next request.',
+    wakingTitle: 'Waking up…',
+    wakingDesc: 'The container is starting. This takes a few seconds.',
+    wake: 'Wake now',
+    waking: 'Waking…',
   },
   logs: {
     title: 'Logs',
