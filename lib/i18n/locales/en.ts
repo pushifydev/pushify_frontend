@@ -957,6 +957,7 @@ export interface TranslationKeys {
     historyHint: string;
     noResults: string;
     retentionNote: string;
+    shell: string;
   };
   volumes: {
     title: string;
@@ -3234,6 +3235,7 @@ export const en: TranslationKeys = {
     historyHint: 'Search the last 7 days of container logs.',
     noResults: 'No matching log lines.',
     retentionNote: 'Runtime logs are retained for 7 days. Timestamps in history mode are chunk-level.',
+    shell: 'Shell',
   },
   volumes: {
     title: 'Persistent Volumes',

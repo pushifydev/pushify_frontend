@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Download, Pause, Play, RefreshCw, Search, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { Download, Pause, Play, RefreshCw, Search, Terminal, Trash2 } from 'lucide-react';
 import { useContainerLogsStream } from '@/hooks/useContainerLogsStream';
 import { useDeployments, useTranslation } from '@/hooks';
 import { searchProjectLogs, type ProjectLogLine } from '@/lib/api';
@@ -145,6 +146,13 @@ export function LogsTab({
             <Download className="w-3.5 h-3.5" />
             {t('logs', 'download')}
           </button>
+          <Link
+            href={`/dashboard/projects/${projectId}/shell`}
+            className="btn btn-ghost h-8 text-xs"
+          >
+            <Terminal className="w-3.5 h-3.5" />
+            {t('logs', 'shell')}
+          </Link>
         </div>
       </div>
 
