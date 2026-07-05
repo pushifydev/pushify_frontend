@@ -65,10 +65,7 @@ export function LandingNavbar() {
         className="fixed top-0 left-0 right-0 z-50 pt-3 supports-[padding:max(0px)]:pt-[max(0.75rem,env(safe-area-inset-top))]"
       >
         <div className="lp-container">
-          <div
-            className="flex items-center justify-between h-14 rounded-full border border-[var(--lp-border)] bg-[var(--bg-primary)]/85 backdrop-blur-md px-4 sm:px-5"
-            style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)' }}
-          >
+          <div className="lp-nav-capsule flex items-center justify-between h-14 rounded-full border backdrop-blur-md px-4 sm:px-5">
           <Link href="/" className="flex items-center gap-2.5 shrink-0 min-w-0">
             <LogoMark size={28} />
             <span
