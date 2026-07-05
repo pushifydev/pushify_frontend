@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.47] - 2026-07-05
+
+### Added
+- **Product showcase — the dashboard, shown big.** New full-width section right under the hero: a high-fidelity, code-built replica of the actual dashboard in a browser frame (sidebar with active nav, ⌘K search pill, stat cards with mono numerals, a recent-deployments list with Live/Building chips, and a CPU/memory metrics panel with an area chart). Pure CSS/SVG — crisp on any display, adapts to light/dark automatically, no image assets to go stale. This is the Cal.com move the page was missing: show the product, don't describe it. EN/TR i18n.
+
 ## [0.2.0-beta.46] - 2026-07-05
 
 ### Changed

@@ -467,6 +467,9 @@ export interface TranslationKeys {
     // CTA section
     readyToLaunch: string;
     selfHostOneLiner: string;
+    showcaseEyebrow: string;
+    showcaseTitle: string;
+    showcaseLead: string;
     copyCommand: string;
     copiedCommand: string;
     launch: string;
@@ -2758,6 +2761,9 @@ export const en: TranslationKeys = {
     // CTA section
     readyToLaunch: 'Ready to',
     selfHostOneLiner: 'Prefer your own hardware? Self-host the whole platform with one command:',
+    showcaseEyebrow: 'The dashboard',
+    showcaseTitle: 'Everything in one place.',
+    showcaseLead: 'Projects, servers, databases, logs and metrics — one clean surface, no tab juggling.',
     copyCommand: 'Copy',
     copiedCommand: 'Copied',
     launch: 'launch',

@@ -3,6 +3,7 @@
 import {
   LandingNavbar,
   HeroSection,
+  ProductShowcaseSection,
   StatsSection,
   WhatIsPushifySection,
   HowItWorksSection,
@@ -50,6 +51,7 @@ export default function LandingPage() {
 
       <LandingNavbar />
       <HeroSection />
+      <ProductShowcaseSection />
       <StatsSection />
       <WhatIsPushifySection />
       <HowItWorksSection />
