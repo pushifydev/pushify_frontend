@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/hooks';
+import { Reveal } from './Reveal';
 
 export function StatsSection() {
   const { t } = useTranslation();
@@ -16,11 +17,13 @@ export function StatsSection() {
     <section className="lp-section py-16 md:py-20 border-t-0">
       <div className="lp-container">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-          {stats.map((s) => (
-            <div key={s.label}>
-              <div className="lp-stat-value">{s.num}</div>
-              <div className="lp-stat-label">{s.label}</div>
-            </div>
+          {stats.map((s, i) => (
+            <Reveal key={s.label} delay={i * 90}>
+              <div>
+                <div className="lp-stat-value">{s.num}</div>
+                <div className="lp-stat-label">{s.label}</div>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>

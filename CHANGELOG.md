@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.42] - 2026-07-05
+
+### Changed
+- **Landing redesign — motion and depth, same palette and type.** The hero is now a two-column "deploy theater": a live terminal that replays a real Pushify deploy line by line (`git push` → framework detection → Docker build → blue-green switch → **Live at your URL**, with the status pill flipping to Live) on a continuous loop, layered over a dashboard card for depth, on a faint dot-grid backdrop. Site-wide scroll-reveal system (every section header + staggered card grids via a reusable `<Reveal>`), quiet hover-lift on all `lp-card`s, and a dashed pipeline connector between the How-it-works steps. All motion respects `prefers-reduced-motion` (terminal renders the full transcript statically); colors and fonts untouched — the new atmosphere is derived entirely from existing tokens. Verified with before/after screenshots in light, dark and mobile.
+
 ## [0.2.0-beta.41] - 2026-07-05
 
 ### Changed
