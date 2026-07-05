@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.49] - 2026-07-05
+
+### Changed
+- **Floating capsule navbar.** The landing header is no longer a full-width bar: it now floats slightly inset from the top as a rounded-full capsule — hairline border, backdrop blur, soft shadow — matching the page's pill language. Verified at top, scrolled (blurring over content) and on mobile.
+
 ## [0.2.0-beta.48] - 2026-07-05
 
 ### Changed
