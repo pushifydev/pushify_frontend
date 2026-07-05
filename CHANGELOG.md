@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.46] - 2026-07-05
+
+### Changed
+- **Cal.com-grade design-system refinement across the landing.** Token-level polish so the whole page shifts together: eyebrow labels became bordered **pill badges**; cards moved to a softer 16px radius with a quiet base shadow; section vertical rhythm widened (`clamp(5rem…7.5rem)`); headline tracking tightened and the lead size refined for a calmer hierarchy; primary CTA gains depth (shadow + hover lift) and the ghost CTA sits on a surfaced background. Colors and fonts untouched — the same palette, rendered with more precision.
+
 ## [0.2.0-beta.45] - 2026-07-05
 
 ### Changed
