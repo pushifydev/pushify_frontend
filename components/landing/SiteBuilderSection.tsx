@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { LandingSectionHeader } from './LandingSectionHeader';
+import { Reveal } from './Reveal';
 
 /* ───────────────── Editor mockup (shared with /features) ───────────────── */
 export function SiteBuilderMockup() {
@@ -25,6 +26,11 @@ export function SiteBuilderMockup() {
         className="flex items-center gap-2.5 px-3 sm:px-4 py-2.5 border-b border-[var(--lp-border)]"
         style={{ background: 'var(--bg-tertiary)' }}
       >
+        <span className="hidden sm:flex gap-1.5 mr-1">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444]/80" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#eab308]/80" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#22c55e]/80" />
+        </span>
         <ChevronLeft className="w-4 h-4 shrink-0" style={{ color: 'var(--lp-muted)' }} />
         <span className="text-xs font-medium truncate" style={{ color: 'var(--lp-muted)' }}>
           {t('homepage', 'siteBuilderMockToolbar')}
@@ -139,7 +145,7 @@ export function SiteBuilderMockup() {
 /* ───────────────── Value card ───────────────── */
 function ValueCard({ icon: Icon, title, desc }: { icon: LucideIcon; title: string; desc: string }) {
   return (
-    <div className="lp-card p-5 hover:border-[var(--lp-muted)] transition-colors">
+    <div className="lp-card p-5 h-full hover:border-[var(--lp-muted)] transition-colors">
       <div
         className="w-9 h-9 rounded-lg flex items-center justify-center mb-3.5"
         style={{ color: 'var(--lp-ink)', background: 'var(--lp-border)' }}
@@ -165,15 +171,23 @@ export function SiteBuilderSection() {
           description={t('homepage', 'siteBuilderSubtitle')}
         />
 
-        <div className="max-w-4xl mx-auto">
-          <SiteBuilderMockup />
-        </div>
+        <Reveal>
+          <div className="max-w-4xl mx-auto">
+            <SiteBuilderMockup />
+          </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
-          <ValueCard icon={MousePointer2} title={t('homepage', 'siteBuilderFeat1Title')} desc={t('homepage', 'siteBuilderFeat1Desc')} />
-          <ValueCard icon={Files} title={t('homepage', 'siteBuilderFeat2Title')} desc={t('homepage', 'siteBuilderFeat2Desc')} />
-          <ValueCard icon={Palette} title={t('homepage', 'siteBuilderFeat3Title')} desc={t('homepage', 'siteBuilderFeat3Desc')} />
-          <ValueCard icon={Globe} title={t('homepage', 'siteBuilderFeat4Title')} desc={t('homepage', 'siteBuilderFeat4Desc')} />
+          {[
+            { icon: MousePointer2, title: t('homepage', 'siteBuilderFeat1Title'), desc: t('homepage', 'siteBuilderFeat1Desc') },
+            { icon: Files, title: t('homepage', 'siteBuilderFeat2Title'), desc: t('homepage', 'siteBuilderFeat2Desc') },
+            { icon: Palette, title: t('homepage', 'siteBuilderFeat3Title'), desc: t('homepage', 'siteBuilderFeat3Desc') },
+            { icon: Globe, title: t('homepage', 'siteBuilderFeat4Title'), desc: t('homepage', 'siteBuilderFeat4Desc') },
+          ].map((card, i) => (
+            <Reveal key={card.title} delay={i * 90} className="h-full">
+              <ValueCard icon={card.icon} title={card.title} desc={card.desc} />
+            </Reveal>
+          ))}
         </div>
 
         <div className="mt-10 flex justify-center">

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.45] - 2026-07-05
+
+### Changed
+- **Frameworks, Marketplace, Site Builder and Security sections professionalized.** Frameworks: marquee pauses on hover and the weak footer line became a bordered strip with a mono `$ git push → ✓ framework auto-detected — zero config` chip (EN/TR). Marketplace: six recognizable apps (Supabase, WordPress, n8n, Cal.com, Ghost, PostgreSQL) promoted to larger featured tiles with icon plates above the compact grid — a curated bento feel. Site Builder: editor mockup gains browser traffic-dots (chrome consistency with the hero) and reveals; value cards stagger in with equal heights. Security: cards switch to a denser horizontal layout — black icon chip beside the title — matching the page's monochrome language. Also removed the provider name from the How-it-works server vignette (`2 vCPU · 4 GB RAM`).
+
 ## [0.2.0-beta.44] - 2026-07-05
 
 ### Changed

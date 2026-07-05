@@ -1513,6 +1513,12 @@ html.dark .lp-page .lp-preview {
   }
 }
 
+/* Marquee: pause on hover */
+.lp-page .animate-marquee:hover,
+.lp-page .animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
 /* Card micro-interaction: quiet lift on hover */
 .lp-page .lp-card {
   transition:

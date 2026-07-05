@@ -48,7 +48,7 @@ function ServerVignette() {
         fra1
       </span>
       <span className="text-[11px] truncate" style={{ color: 'var(--lp-muted)' }}>
-        Hetzner · 2 vCPU · 4 GB
+        2 vCPU · 4 GB RAM
       </span>
       <span
         className="ml-auto w-1.5 h-1.5 rounded-full shrink-0 bg-[#22c55e]"

@@ -95,11 +95,24 @@ export function FrameworksSection() {
         <MarqueeRow items={[...FRAMEWORKS].reverse()} reverse />
       </div>
 
-      <div className="lp-container flex items-center justify-between text-sm" style={{ color: 'var(--lp-muted)' }}>
-        <span>{t('landing', 'frameworksSupported')}</span>
-        <span className="font-semibold" style={{ color: 'var(--lp-ink)' }}>
-          20+
-        </span>
+      <div className="lp-container">
+        <div
+          className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-lg px-4 py-3 border border-[var(--lp-border)]"
+          style={{ background: 'var(--lp-surface)' }}
+        >
+          <span
+            className="inline-flex items-center gap-2 text-xs"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            <span style={{ color: 'var(--lp-muted)' }}>$ git push</span>
+            <span aria-hidden="true" style={{ color: 'var(--lp-muted)' }}>→</span>
+            <span style={{ color: '#16a34a' }}>✓ {t('landing', 'frameworkDetectedChip')}</span>
+          </span>
+          <span className="text-sm" style={{ color: 'var(--lp-muted)' }}>
+            {t('landing', 'frameworksSupported')}{' '}
+            <span className="font-semibold" style={{ color: 'var(--lp-ink)', fontFamily: 'var(--font-mono)' }}>20+</span>
+          </span>
+        </div>
       </div>
     </section>
   );
