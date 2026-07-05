@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.48] - 2026-07-05
+
+### Changed
+- **Marketing pages brought into the landing's design language.** `/about` redesigned: eyebrow pill on the hero, correctly-scaled section headings (the giant `lp-section-title` clamp no longer leaks into subsections), black icon chips on the What-We-Do grid, values as a three-column card row with staggered reveals. Both `/vs/*` comparison tables gain the same **Pushify-column spotlight** as the homepage table. `/features`, `/pricing`, `/open-source` and `/deploy/*` inherit the earlier token refinements (pill labels, card radius/shadows, CTA polish) automatically.
+
 ## [0.2.0-beta.47] - 2026-07-05
 
 ### Added
