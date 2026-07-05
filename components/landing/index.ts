@@ -19,3 +19,5 @@ export { BillingHowItWorksSection } from './BillingHowItWorksSection';
 export { FAQSection } from './FAQSection';
 export { CTASection } from './CTASection';
 export { LandingFooter } from './LandingFooter';
+export { Reveal } from './Reveal';
+export { DeployTerminal } from './DeployTerminal';

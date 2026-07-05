@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { Reveal } from './Reveal';
 
 interface LandingSectionHeaderProps {
   label?: string;
@@ -20,10 +21,12 @@ export function LandingSectionHeader({
   const alignClass = align === 'center' ? 'text-center mx-auto' : '';
 
   return (
-    <header className={`max-w-2xl mb-12 md:mb-14 ${alignClass} ${className}`}>
-      {label && <p className="lp-label mb-3">{label}</p>}
-      <h2 className="lp-section-title">{title}</h2>
-      {description && <p className="lp-lead mt-4">{description}</p>}
-    </header>
+    <Reveal>
+      <header className={`max-w-2xl mb-12 md:mb-14 ${alignClass} ${className}`}>
+        {label && <p className="lp-label mb-3">{label}</p>}
+        <h2 className="lp-section-title">{title}</h2>
+        {description && <p className="lp-lead mt-4">{description}</p>}
+      </header>
+    </Reveal>
   );
 }
