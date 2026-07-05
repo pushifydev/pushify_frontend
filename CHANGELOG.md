@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.44] - 2026-07-05
+
+### Changed
+- **Homepage sections redesigned in the hero's visual language.** The stats row became a single divided spec-strip (bordered card, mono tabular numerals). Each **How-it-works step now carries a mini product vignette**: a GitHub repo row with a `main` branch chip, a server row (`fra1 · Hetzner · 2 vCPU`) with a green status dot, and a two-line dark mini-terminal ending in `● Live at my-app.pushify.dev — 47s` — the steps show the product instead of describing it. Security cards get staggered reveals and equal heights. All monochrome, derived from existing tokens; colors and fonts untouched.
+
 ## [0.2.0-beta.43] - 2026-07-05
 
 ### Changed
