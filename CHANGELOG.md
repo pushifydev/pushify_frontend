@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.41] - 2026-07-05
+
+### Changed
+- **⌘K now searches your actual resources.** The command palette was a static page list; typing now also searches **projects** (name/slug/framework), **servers** (name/IP/region) and **databases** (name/engine) and jumps straight to the matching detail page. Entity data loads only while the palette is open and shares the app's query cache; results are grouped (Projects / Servers / Databases / Actions / Pages) and capped at 6 per group.
+
 ## [0.2.0-beta.40] - 2026-07-05
 
 ### Added
