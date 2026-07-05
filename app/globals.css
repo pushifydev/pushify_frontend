@@ -1531,6 +1531,38 @@ html.dark .lp-page .lp-preview {
   }
 }
 
+/* Floating capsule navbar — elevation is SCRUBBED to scroll position (no threshold, no JS).
+   Only compositor-friendly properties animate: shadow, background alpha, border, transform. */
+.lp-page .lp-nav-capsule {
+  border-color: color-mix(in srgb, var(--lp-border) 72%, transparent);
+  background: color-mix(in srgb, var(--bg-primary) 78%, transparent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transform: translateY(0);
+}
+
+@keyframes lp-nav-elevate {
+  to {
+    border-color: var(--lp-border);
+    background: color-mix(in srgb, var(--bg-primary) 96%, transparent);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-4px);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .lp-page .lp-nav-capsule {
+    animation: lp-nav-elevate linear both;
+    animation-timeline: scroll();
+    animation-range: 0 160px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-page .lp-nav-capsule {
+    animation: none;
+  }
+}
+
 /* Marquee: pause on hover */
 .lp-page .animate-marquee:hover,
 .lp-page .animate-marquee-reverse:hover {
