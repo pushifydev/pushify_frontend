@@ -2,7 +2,8 @@
 
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
 import { useTranslation } from '@/hooks';
-import { Mail, MapPin, Globe, Github, Heart } from 'lucide-react';
+import { Mail, MapPin, Globe, Github, Heart, Rocket, Server, Database, Package, Code2, ShieldCheck, Eye } from 'lucide-react';
+import { Reveal } from '@/components/landing/Reveal';
 
 const content = {
   en: {
@@ -113,32 +114,43 @@ export default function AboutPage() {
 
   return (
     <MarketingShell>
-      <MarketingPageHero title={c.title} description={c.intro} />
+      <MarketingPageHero label={locale === 'tr' ? 'Hakkımızda' : 'About'} title={c.title} description={c.intro} />
 
       <div className="lp-container max-w-4xl pb-20 md:pb-24 space-y-8">
         <section className="lp-card p-8">
-          <h2 className="lp-section-title text-xl mb-4">{c.missionTitle}</h2>
+          <h2 className="text-xl font-semibold tracking-tight mb-4" style={{ color: 'var(--lp-ink)' }}>{c.missionTitle}</h2>
           <p className="lp-body">{c.mission}</p>
         </section>
 
         <section>
-          <h2 className="lp-section-title text-xl mb-6">{c.whatWeDoTitle}</h2>
+          <h2 className="text-xl font-semibold tracking-tight mb-6" style={{ color: 'var(--lp-ink)' }}>{c.whatWeDoTitle}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {c.items.map((item) => (
-              <div key={item.title} className="lp-card p-5">
-                <h3 className="font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
-                  {item.title}
-                </h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
-                  {item.desc}
-                </p>
-              </div>
-            ))}
+            {c.items.map((item, i) => {
+              const Icon = [Rocket, Server, Database, Package][i] ?? Rocket;
+              return (
+                <Reveal key={item.title} delay={i * 80} className="h-full">
+                  <div className="lp-card p-5 h-full">
+                    <span
+                      className="inline-flex w-9 h-9 items-center justify-center rounded-lg mb-3.5"
+                      style={{ background: 'var(--lp-btn)', color: 'var(--lp-btn-fg)' }}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </span>
+                    <h3 className="font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
+                      {item.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </section>
 
         <section className="lp-card p-8">
-          <h2 className="lp-section-title text-xl mb-6">{c.companyTitle}</h2>
+          <h2 className="text-xl font-semibold tracking-tight mb-6" style={{ color: 'var(--lp-ink)' }}>{c.companyTitle}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <InfoRow icon={<Globe className="w-5 h-5" />} label={c.web}>
               <a href="https://pushify.dev" className="hover:underline" style={{ color: 'var(--lp-ink)' }}>
@@ -166,18 +178,31 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className="lp-section-title text-xl mb-6">{c.valuesTitle}</h2>
-          <div className="space-y-4">
-            {c.values.map((v) => (
-              <div key={v.title} className="lp-card p-5">
-                <h3 className="font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
-                  {v.title}
-                </h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
-                  {v.desc}
-                </p>
-              </div>
-            ))}
+          <h2 className="text-xl font-semibold tracking-tight mb-6" style={{ color: 'var(--lp-ink)' }}>{c.valuesTitle}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {c.values.map((v, i) => {
+              const Icon = [Code2, ShieldCheck, Eye][i] ?? Code2;
+              return (
+                <Reveal key={v.title} delay={i * 90} className="h-full">
+                  <div className="lp-card p-5 h-full">
+                    <div className="flex items-center gap-3 mb-2.5">
+                      <span
+                        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                        style={{ background: 'var(--lp-btn)', color: 'var(--lp-btn-fg)' }}
+                      >
+                        <Icon className="w-4 h-4" />
+                      </span>
+                      <h3 className="font-semibold" style={{ color: 'var(--lp-ink)' }}>
+                        {v.title}
+                      </h3>
+                    </div>
+                    <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
+                      {v.desc}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </section>
 

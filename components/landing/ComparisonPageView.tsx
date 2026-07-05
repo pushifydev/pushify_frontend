@@ -128,7 +128,19 @@ export function ComparisonPageView(p: ComparisonPageViewProps) {
       <section className="lp-section">
         <div className="lp-container max-w-4xl">
           <LandingSectionHeader title={p.tableTitle} align="center" className="mx-auto text-center" />
-          <div className="lp-card overflow-hidden">
+          <div className="lp-card overflow-hidden relative">
+            {/* Spotlight on the Pushify column (1.5fr + 1fr + 1fr grid) */}
+            <div
+              aria-hidden="true"
+              className="absolute top-0 bottom-0 pointer-events-none"
+              style={{
+                left: '42.85%',
+                width: '28.57%',
+                background: 'color-mix(in srgb, var(--lp-ink) 4%, transparent)',
+                borderLeft: '1px solid var(--lp-border)',
+                borderRight: '1px solid var(--lp-border)',
+              }}
+            />
             <div
               className="grid grid-cols-[1.5fr_1fr_1fr] gap-2 px-5 py-4 text-sm font-medium border-b border-[var(--lp-border)]"
               style={{ color: 'var(--lp-muted)', background: 'var(--bg-tertiary)' }}
