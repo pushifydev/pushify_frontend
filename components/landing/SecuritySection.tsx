@@ -8,14 +8,16 @@ import { Reveal } from './Reveal';
 function SecurityCard({ icon: Icon, title, desc }: { icon: LucideIcon; title: string; desc: string }) {
   return (
     <div className="lp-card p-5 h-full hover:border-[var(--lp-muted)] transition-colors">
-      <div
-        className="w-9 h-9 rounded-lg flex items-center justify-center mb-3.5"
-        style={{ color: 'var(--accent-cyan)', background: 'color-mix(in srgb, var(--accent-cyan) 12%, transparent)' }}
-      >
-        <Icon className="w-4 h-4" />
+      <div className="flex items-center gap-3 mb-2.5">
+        <span
+          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+          style={{ background: 'var(--lp-btn)', color: 'var(--lp-btn-fg)' }}
+        >
+          <Icon className="w-4 h-4" />
+        </span>
+        <h4 className="text-sm font-semibold" style={{ color: 'var(--lp-ink)' }}>{title}</h4>
       </div>
-      <h4 className="text-sm font-semibold mb-1.5" style={{ color: 'var(--lp-ink)' }}>{title}</h4>
-      <p className="text-xs leading-relaxed" style={{ color: 'var(--lp-muted)' }}>{desc}</p>
+      <p className="text-[13px] leading-relaxed" style={{ color: 'var(--lp-body)' }}>{desc}</p>
     </div>
   );
 }

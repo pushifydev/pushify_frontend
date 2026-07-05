@@ -329,6 +329,7 @@ export const tr: TranslationKeys = {
     autoDetected: 'Otomatik algılandı',
     zeroConfig: 'Sıfır yapılandırma',
     frameworksSupported: 'framework destekleniyor',
+    frameworkDetectedChip: 'Framework otomatik algılandı — sıfır yapılandırma',
     // Features page hero
     platform: 'Platform',
     everythingYouNeedTo: 'Güvenle yayınlamak için',

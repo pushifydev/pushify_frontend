@@ -330,6 +330,7 @@ export interface TranslationKeys {
     autoDetected: string;
     zeroConfig: string;
     frameworksSupported: string;
+    frameworkDetectedChip: string;
     // Features page hero
     platform: string;
     everythingYouNeedTo: string;
@@ -2603,6 +2604,7 @@ export const en: TranslationKeys = {
     autoDetected: 'Auto-detected',
     zeroConfig: 'Zero config',
     frameworksSupported: 'frameworks supported',
+    frameworkDetectedChip: 'Framework auto-detected — zero config',
     // Features page hero
     platform: 'Platform',
     everythingYouNeedTo: 'Everything you need to',
