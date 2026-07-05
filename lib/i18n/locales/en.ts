@@ -465,6 +465,9 @@ export interface TranslationKeys {
     noVendorLockIn: string;
     // CTA section
     readyToLaunch: string;
+    selfHostOneLiner: string;
+    copyCommand: string;
+    copiedCommand: string;
     launch: string;
     ctaDescription: string;
     deployInSeconds: string;
@@ -2752,6 +2755,9 @@ export const en: TranslationKeys = {
     noVendorLockIn: 'No vendor lock-in',
     // CTA section
     readyToLaunch: 'Ready to',
+    selfHostOneLiner: 'Prefer your own hardware? Self-host the whole platform with one command:',
+    copyCommand: 'Copy',
+    copiedCommand: 'Copied',
     launch: 'launch',
     ctaDescription: 'Open-source, self-hostable, and free to get started.',
     deployInSeconds: 'Deploy in seconds on your own servers.',

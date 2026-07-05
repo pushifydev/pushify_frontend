@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.43] - 2026-07-05
+
+### Changed
+- **Landing lower sections polished to match the new hero.** "What is Pushify" pillars became icon cards with staggered reveals (matching How-it-works); the comparison table gained a **spotlight on the Pushify column** (tint + borders, bolder checks); the closing CTA sits on the dot-grid backdrop and now ends with the **real one-command self-host install** in a terminal-styled chip with a copy button (EN/TR i18n). Marketplace/Security/Site-builder cards inherit the new hover-lift automatically.
+
 ## [0.2.0-beta.42] - 2026-07-05
 
 ### Changed

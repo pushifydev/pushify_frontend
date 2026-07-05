@@ -481,6 +481,9 @@ export const tr: TranslationKeys = {
     noVendorLockIn: 'Satıcı bağımlılığı yok',
     // CTA section
     readyToLaunch: 'Yayına almaya',
+    selfHostOneLiner: 'Kendi donanımını mı tercih ediyorsun? Tüm platformu tek komutla kur:',
+    copyCommand: 'Kopyala',
+    copiedCommand: 'Kopyalandı',
     launch: 'hazır mısınız',
     ctaDescription: 'Açık kaynak, self-host edilebilir ve ücretsiz başlayın.',
     deployInSeconds: 'Kendi sunucularınızda saniyeler içinde dağıtın.',
