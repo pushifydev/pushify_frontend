@@ -14,8 +14,24 @@ export function LandingNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, setTheme } = useThemeStore();
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  // Condense the capsule once the page scrolls — quiet at top, elevated in motion.
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setScrolled(window.scrollY > 12));
+    };
+    raf = requestAnimationFrame(onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   const isDark =
     !mounted ||
@@ -62,12 +78,18 @@ export function LandingNavbar() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 pt-3 supports-[padding:max(0px)]:pt-[max(0.75rem,env(safe-area-inset-top))]"
+        className={`fixed top-0 left-0 right-0 z-50 transition-[padding] duration-300 ${scrolled ? 'pt-2' : 'pt-3'} supports-[padding:max(0px)]:pt-[max(0.5rem,env(safe-area-inset-top))]`}
       >
         <div className="lp-container">
           <div
-            className="flex items-center justify-between h-14 rounded-full border border-[var(--lp-border)] bg-[var(--bg-primary)]/85 backdrop-blur-md px-4 sm:px-5"
-            style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)' }}
+            className={`flex items-center justify-between rounded-full border border-[var(--lp-border)] backdrop-blur-md px-4 sm:px-5 transition-all duration-300 ${
+              scrolled ? 'h-12 bg-[var(--bg-primary)]/95' : 'h-14 bg-[var(--bg-primary)]/85'
+            }`}
+            style={{
+              boxShadow: scrolled
+                ? '0 8px 32px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05)'
+                : '0 4px 24px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+            }}
           >
           <Link href="/" className="flex items-center gap-2.5 shrink-0 min-w-0">
             <LogoMark size={28} />

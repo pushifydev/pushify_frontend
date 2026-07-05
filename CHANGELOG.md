@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.50] - 2026-07-06
+
+### Changed
+- **Navbar scroll animation + mobile audit.** The capsule navbar now reacts to scroll: quiet and airy at the top (h-14, soft shadow), it condenses smoothly on scroll (h-12, closer to the edge, more opaque, deeper shadow) with a 300ms transition — the rAF-throttled listener is passive, so scrolling stays smooth. A full 390px-wide sweep of the homepage (8 scroll depths, plus footer/CTA) confirmed the responsive layout is clean end-to-end; no fixes were needed.
+
 ## [0.2.0-beta.49] - 2026-07-05
 
 ### Changed
