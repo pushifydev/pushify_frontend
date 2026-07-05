@@ -3,10 +3,11 @@
 import { KeyRound, Container, ShieldCheck, Bug, Lock, FileClock, type LucideIcon } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { LandingSectionHeader } from './LandingSectionHeader';
+import { Reveal } from './Reveal';
 
 function SecurityCard({ icon: Icon, title, desc }: { icon: LucideIcon; title: string; desc: string }) {
   return (
-    <div className="lp-card p-5 hover:border-[var(--lp-muted)] transition-colors">
+    <div className="lp-card p-5 h-full hover:border-[var(--lp-muted)] transition-colors">
       <div
         className="w-9 h-9 rounded-lg flex items-center justify-center mb-3.5"
         style={{ color: 'var(--accent-cyan)', background: 'color-mix(in srgb, var(--accent-cyan) 12%, transparent)' }}
@@ -40,8 +41,10 @@ export function SecuritySection() {
           description={t('homepage', 'securitySubtitle')}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items.map((it) => (
-            <SecurityCard key={it.title} icon={it.icon} title={it.title} desc={it.desc} />
+          {items.map((it, i) => (
+            <Reveal key={it.title} delay={(i % 3) * 90} className="h-full">
+              <SecurityCard icon={it.icon} title={it.title} desc={it.desc} />
+            </Reveal>
           ))}
         </div>
       </div>
