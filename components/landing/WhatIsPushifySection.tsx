@@ -1,17 +1,18 @@
 'use client';
 
 import { useTranslation } from '@/hooks';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Code2, Server, Cloud, Package } from 'lucide-react';
 import { LandingSectionHeader } from './LandingSectionHeader';
+import { Reveal } from './Reveal';
 
 export function WhatIsPushifySection() {
   const { t } = useTranslation();
 
   const pillars = [
-    { titleKey: 'pillar1Title' as const, detailKey: 'pillar1Detail' as const },
-    { titleKey: 'pillar2Title' as const, detailKey: 'pillar2Detail' as const },
-    { titleKey: 'pillar3Title' as const, detailKey: 'pillar3Detail' as const },
-    { titleKey: 'pillar4Title' as const, detailKey: 'pillar4Detail' as const },
+    { titleKey: 'pillar1Title' as const, detailKey: 'pillar1Detail' as const, Icon: Code2 },
+    { titleKey: 'pillar2Title' as const, detailKey: 'pillar2Detail' as const, Icon: Server },
+    { titleKey: 'pillar3Title' as const, detailKey: 'pillar3Detail' as const, Icon: Cloud },
+    { titleKey: 'pillar4Title' as const, detailKey: 'pillar4Detail' as const, Icon: Package },
   ];
 
   return (
@@ -52,16 +53,24 @@ export function WhatIsPushifySection() {
           </aside>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-10 border-t border-[var(--lp-border)]">
-          {pillars.map((p) => (
-            <div key={p.titleKey}>
-              <h3 className="text-[0.9375rem] font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
-                {t('homepage', p.titleKey)}
-              </h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
-                {t('homepage', p.detailKey)}
-              </p>
-            </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+          {pillars.map((p, i) => (
+            <Reveal key={p.titleKey} delay={i * 100}>
+              <div className="lp-card p-5 h-full">
+                <span
+                  className="inline-flex w-9 h-9 items-center justify-center rounded-lg mb-3.5"
+                  style={{ background: 'var(--lp-btn)', color: 'var(--lp-btn-fg)' }}
+                >
+                  <p.Icon className="w-4 h-4" />
+                </span>
+                <h3 className="text-[0.9375rem] font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
+                  {t('homepage', p.titleKey)}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
+                  {t('homepage', p.detailKey)}
+                </p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>

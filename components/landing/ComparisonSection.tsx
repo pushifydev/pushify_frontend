@@ -57,7 +57,19 @@ export function ComparisonSection() {
           description={t('homepage', 'comparisonSubtitle')}
         />
 
-        <div className="lp-card overflow-hidden">
+        <div className="lp-card overflow-hidden relative">
+          {/* Spotlight on the Pushify column (md+ grid = 4 equal columns) */}
+          <div
+            aria-hidden="true"
+            className="hidden md:block absolute top-0 bottom-0 pointer-events-none"
+            style={{
+              left: '25%',
+              width: '25%',
+              background: 'color-mix(in srgb, var(--lp-ink) 4%, transparent)',
+              borderLeft: '1px solid var(--lp-border)',
+              borderRight: '1px solid var(--lp-border)',
+            }}
+          />
           <div
             className="hidden md:grid grid-cols-4 gap-4 px-6 py-4 text-sm font-medium border-b border-[var(--lp-border)]"
             style={{ color: 'var(--lp-muted)', background: 'var(--bg-tertiary)' }}
