@@ -21,3 +21,4 @@ export { CTASection } from './CTASection';
 export { LandingFooter } from './LandingFooter';
 export { Reveal } from './Reveal';
 export { DeployTerminal } from './DeployTerminal';
+export { ProductShowcaseSection } from './ProductShowcaseSection';

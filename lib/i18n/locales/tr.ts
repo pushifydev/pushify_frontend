@@ -483,6 +483,9 @@ export const tr: TranslationKeys = {
     // CTA section
     readyToLaunch: 'Yayına almaya',
     selfHostOneLiner: 'Kendi donanımını mı tercih ediyorsun? Tüm platformu tek komutla kur:',
+    showcaseEyebrow: 'Dashboard',
+    showcaseTitle: 'Her şey tek yerde.',
+    showcaseLead: 'Projeler, sunucular, veritabanları, loglar ve metrikler — tek temiz yüzey, sekme curcunası yok.',
     copyCommand: 'Kopyala',
     copiedCommand: 'Kopyalandı',
     launch: 'hazır mısınız',
