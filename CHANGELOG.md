@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.52] - 2026-07-06
+
+### Added
+- **Invoices in Billing.** New section on the Billing page (pairs with backend beta.50): your Stripe invoice history with number, date, status chip, amount, a hosted **View** link and **PDF** download. Hidden until the organization has invoices. EN/TR i18n.
+
 ## [0.2.0-beta.51] - 2026-07-06
 
 ### Added

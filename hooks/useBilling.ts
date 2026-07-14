@@ -14,6 +14,7 @@ import {
   createInfraTopUpSession,
   type UpdateBillingEmailInput,
   type CheckoutInput,
+  getInvoices,
 } from '@/lib/api';
 
 // Query Keys
@@ -22,6 +23,7 @@ export const billingKeys = {
   info: () => [...billingKeys.all, 'info'] as const,
   plans: () => [...billingKeys.all, 'plans'] as const,
   subscription: () => [...billingKeys.all, 'subscription'] as const,
+  invoices: () => [...billingKeys.all, 'invoices'] as const,
   infra: () => [...billingKeys.all, 'infra'] as const,
 };
 
@@ -157,5 +159,17 @@ export function useInfraTopUp() {
     onSuccess: (data) => {
       window.location.href = data.url;
     },
+  });
+}
+
+export function useInvoices() {
+  return useQuery({
+    queryKey: billingKeys.invoices(),
+    queryFn: async () => {
+      const result = await getInvoices();
+      if (result.error) throw new Error(result.error.message);
+      return result.data ?? [];
+    },
+    staleTime: 60_000,
   });
 }

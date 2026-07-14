@@ -21,6 +21,7 @@ import { STATUS_COLORS } from '@/lib/constants';
 import Link from 'next/link';
 import { SkeletonPageHeader, SkeletonBillingSummaryCard } from '@/components/Skeleton';
 import { InfraWalletSection } from './components/InfraWalletSection';
+import { InvoicesSection } from './components/InvoicesSection';
 import { BillingSection } from './components/BillingSection';
 import { UsageLimitsAlert, UsageLimitsSection } from './components/UsageLimitsSection';
 import { formatMessage } from '@/lib/i18n/format-message';
@@ -198,6 +199,8 @@ export default function BillingPage() {
       )}
 
       <InfraWalletSection />
+
+      <InvoicesSection />
 
       {billingInfo && <UsageLimitsAlert usage={billingInfo.usage} />}
 

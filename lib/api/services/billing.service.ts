@@ -277,3 +277,32 @@ export const billingService = {
   createInfraTopUpSession,
   confirmInfraTopUp,
 };
+
+// ============ Invoices ============
+
+export interface Invoice {
+  id: string;
+  number: string | null;
+  createdAt: string;
+  amountDueCents: number;
+  amountPaidCents: number;
+  currency: string;
+  status: string | null;
+  hostedInvoiceUrl: string | null;
+  invoicePdf: string | null;
+}
+
+export const getInvoices = async (): Promise<ApiResponse<Invoice[]>> => {
+  try {
+    const response = await api.get<{ data: Invoice[] }>('/billing/invoices');
+    return { data: response.data.data };
+  } catch (error) {
+    const axiosError = error as import('axios').AxiosError<{ error: ApiError }>;
+    return {
+      error: axiosError.response?.data?.error || {
+        code: 'NETWORK_ERROR',
+        message: 'Unable to connect to server',
+      },
+    };
+  }
+};

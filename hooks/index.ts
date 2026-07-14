@@ -147,6 +147,7 @@ export {
   useResumeSubscription,
   useInfraBilling,
   useInfraTopUp,
+  useInvoices,
 } from './useBilling';
 
 // Dashboard overview

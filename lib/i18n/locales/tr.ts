@@ -1472,6 +1472,9 @@ export const tr: TranslationKeys = {
     redirectingToDashboard: 'Dashboard\'a yönlendiriliyor…',
   },
   billing: {
+    invoicesTitle: 'Faturalar',
+    invoicesDesc: 'Stripe fatura geçmişiniz — görüntüleyin veya PDF indirin.',
+    invoiceView: 'Görüntüle',
     title: 'Faturalama & Kullanım',
     description: 'Mevcut planınızı, kullanım istatistiklerinizi görüntüleyin ve faturalama ayarlarını yönetin.',
     currentPlan: 'Mevcut Plan',
