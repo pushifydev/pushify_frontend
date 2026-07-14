@@ -13,6 +13,11 @@ Deploy apps, manage servers, databases, and domains — all from one dashboard.
 
 </div>
 
+<p align="center">
+  <img src=".github/assets/landing-hero.png" alt="Pushify — deploy to your own servers in seconds" width="100%" />
+</p>
+
+
 ## About the Project
 
 Pushify is an open-source platform that lets you deploy and manage your applications on your own servers. Connect your GitHub repos, provision servers, set up databases, configure domains — all through a clean, modern dashboard.

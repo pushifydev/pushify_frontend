@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0-beta.51] - 2026-07-06
+
+### Added
+- **SECURITY.md** — vulnerability disclosure policy (matching the backend's).
+- **Real product screenshots in the README** — the redesigned landing hero and the dashboard preview, captured at 2× from the live page, stored under `.github/assets/`.
+
 ## [0.2.0-beta.50] - 2026-07-06
 
 ### Changed
