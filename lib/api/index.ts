@@ -273,6 +273,8 @@ export {
   type UpdateBillingEmailInput,
   type CheckoutInput,
   type SubscriptionStatus,
+  getInvoices,
+  type Invoice,
 } from './services/billing.service';
 
 // Dashboard Functions

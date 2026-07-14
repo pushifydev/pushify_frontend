@@ -1448,6 +1448,9 @@ export interface TranslationKeys {
     redirectingToDashboard: string;
   };
   billing: {
+    invoicesTitle: string;
+    invoicesDesc: string;
+    invoiceView: string;
     title: string;
     description: string;
     currentPlan: string;
@@ -3749,6 +3752,9 @@ export const en: TranslationKeys = {
     redirectingToDashboard: 'Redirecting to dashboard…',
   },
   billing: {
+    invoicesTitle: 'Invoices',
+    invoicesDesc: 'Your Stripe invoice history — view or download as PDF.',
+    invoiceView: 'View',
     title: 'Billing & Usage',
     description: 'View your current plan, usage statistics, and manage billing settings.',
     currentPlan: 'Current Plan',
