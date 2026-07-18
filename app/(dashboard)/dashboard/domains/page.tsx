@@ -1,7 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, CreditCard, Globe, Loader2, RefreshCw, Search, X } from 'lucide-react';
+import Link from 'next/link';
+import {
+  ArrowRightLeft,
+  Check,
+  CreditCard,
+  Globe,
+  Loader2,
+  RefreshCw,
+  Search,
+  Settings2,
+  X,
+} from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useDomainSalesConfig,
@@ -9,6 +20,8 @@ import {
   useDomainPurchaseCheckout,
   useConfirmDomainPurchase,
   usePurchaseDomain,
+  useTransferQuote,
+  useStartTransfer,
   usePurchasedDomains,
   useProjects,
   useSetDomainAutoRenew,
@@ -35,11 +48,37 @@ export default function DomainsPage() {
   const autoRenewMutation = useSetDomainAutoRenew();
   const queryClient = useQueryClient();
 
+  const transferQuoteMutation = useTransferQuote();
+  const startTransferMutation = useStartTransfer();
+
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
   const [buyTarget, setBuyTarget] = useState<DomainSearchResult | null>(null);
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [years, setYears] = useState(1);
+  const [transferOpen, setTransferOpen] = useState(false);
+  const [transferDomain, setTransferDomain] = useState('');
+  const [transferAuth, setTransferAuth] = useState('');
+  const transferQuote = transferQuoteMutation.data;
+
+  const requestTransferQuote = async () => {
+    transferQuoteMutation.reset();
+    await transferQuoteMutation.mutateAsync(transferDomain.trim()).catch((err: Error) => {
+      toast.error(err.message);
+    });
+  };
+
+  const startTransfer = async () => {
+    await startTransferMutation.mutateAsync({
+      domainName: transferDomain.trim(),
+      authCode: transferAuth.trim(),
+    });
+    toast.success(t('domainSales', 'transferStartedToast'));
+    setTransferOpen(false);
+    setTransferDomain('');
+    setTransferAuth('');
+    transferQuoteMutation.reset();
+  };
 
   const search = useDomainSearch(query);
 
@@ -251,7 +290,17 @@ export default function DomainsPage() {
 
           {/* Purchased domains */}
           <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-            <h2 className="text-lg font-semibold mb-4">{t('domainSales', 'purchasedTitle')}</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">{t('domainSales', 'purchasedTitle')}</h2>
+              <button
+                onClick={() => setTransferOpen(true)}
+                className="btn btn-ghost h-8 text-xs"
+                style={{ border: '1px solid var(--border-subtle)' }}
+              >
+                <ArrowRightLeft className="w-3.5 h-3.5" />
+                {t('domainSales', 'transferBtn')}
+              </button>
+            </div>
             {purchasedLoading ? (
               <div className="text-sm text-[var(--text-secondary)]">…</div>
             ) : purchased.length === 0 ? (
@@ -274,8 +323,21 @@ export default function DomainsPage() {
                       <span className="text-xs text-[var(--text-muted)]">
                         {d.status === 'expired'
                           ? t('domainSales', 'expired')
-                          : `${t('domainSales', 'expires')}: ${dateFmt(d.expiresAt)}`}
+                          : d.status === 'transfer_pending'
+                            ? t('domainSales', 'transferPendingChip')
+                            : d.status === 'transfer_failed'
+                              ? t('domainSales', 'transferFailedChip')
+                              : `${t('domainSales', 'expires')}: ${dateFmt(d.expiresAt)}`}
                       </span>
+                      {d.status === 'active' && (
+                        <Link
+                          href={`/dashboard/domains/${encodeURIComponent(d.domainName)}`}
+                          className="btn btn-ghost h-7 text-xs"
+                        >
+                          <Settings2 className="w-3.5 h-3.5" />
+                          {t('domainSales', 'manage')}
+                        </Link>
+                      )}
                       {project && (
                         <span className="text-xs text-[var(--text-muted)]">
                           {t('domainSales', 'attachedProject')}: {project.name}
@@ -309,6 +371,101 @@ export default function DomainsPage() {
             )}
           </div>
         </>
+      )}
+
+      {/* Transfer-in */}
+      {transferOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+          onClick={() => !startTransferMutation.isPending && setTransferOpen(false)}
+        >
+          <div
+            className="w-full max-w-md p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-1">{t('domainSales', 'transferTitle')}</h3>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
+              {t('domainSales', 'transferDesc')}
+            </p>
+
+            <label className="block text-xs text-[var(--text-muted)] mb-1.5">
+              {t('domainSales', 'transferDomainLabel')}
+            </label>
+            <div className="flex gap-2 mb-4">
+              <input
+                value={transferDomain}
+                onChange={(e) => setTransferDomain(e.target.value)}
+                placeholder="mydomain.com"
+                className="flex-1 h-10 px-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)]"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              />
+              <button
+                onClick={requestTransferQuote}
+                disabled={transferQuoteMutation.isPending || transferDomain.trim().length < 4}
+                className="btn btn-ghost h-10 text-xs disabled:opacity-50"
+                style={{ border: '1px solid var(--border-subtle)' }}
+              >
+                {transferQuoteMutation.isPending ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  t('domainSales', 'transferGetQuote')
+                )}
+              </button>
+            </div>
+
+            {transferQuote && (
+              <>
+                <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+                  <span className="text-xs text-[var(--text-muted)]">
+                    {t('domainSales', 'transferPriceLabel')} · {transferQuote.domainName}
+                  </span>
+                  <span className="text-base font-bold" style={{ fontFamily: 'var(--font-mono)' }}>
+                    {formatUsd(transferQuote.retailCents)}
+                  </span>
+                </div>
+
+                <label className="block text-xs text-[var(--text-muted)] mb-1.5">
+                  {t('domainSales', 'transferAuthLabel')}
+                </label>
+                <input
+                  value={transferAuth}
+                  onChange={(e) => setTransferAuth(e.target.value)}
+                  className="w-full h-10 px-3 mb-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)]"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                />
+              </>
+            )}
+
+            <p className="text-[11px] text-[var(--text-muted)] mb-4">
+              {t('domainSales', 'transferNote')}
+            </p>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setTransferOpen(false)}
+                disabled={startTransferMutation.isPending}
+                className="btn btn-ghost h-10"
+              >
+                {t('common', 'cancel')}
+              </button>
+              <button
+                onClick={startTransfer}
+                disabled={
+                  startTransferMutation.isPending || !transferQuote || !transferAuth.trim()
+                }
+                className="btn btn-primary h-10 disabled:opacity-60"
+              >
+                {startTransferMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ArrowRightLeft className="w-4 h-4" />
+                )}
+                {t('domainSales', 'transferStartBtn')}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Purchase confirmation */}

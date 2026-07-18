@@ -114,3 +114,187 @@ export function useSetDomainAutoRenew() {
     },
   });
 }
+
+// ============ Domain management ============
+
+import {
+  addDomainEmailForwarding,
+  createDomainDns,
+  deleteDomainDns,
+  deleteDomainEmailForwarding,
+  getDomainAuthCode,
+  getDomainDetails,
+  getTransferQuote,
+  listDomainDns,
+  listDomainEmailForwarding,
+  publicSearchDomains,
+  setDomainLock,
+  setDomainNameservers,
+  startDomainTransfer,
+  updateDomainDns,
+  type DnsRecordInput,
+} from '@/lib/api';
+
+export const domainManageKeys = {
+  details: (d: string) => [...registrarDomainKeys.all, 'details', d] as const,
+  dns: (d: string) => [...registrarDomainKeys.all, 'dns', d] as const,
+  forwarding: (d: string) => [...registrarDomainKeys.all, 'forwarding', d] as const,
+  publicSearch: (q: string) => ['publicDomainSearch', q] as const,
+};
+
+export function useDomainDetails(domainName: string) {
+  return useQuery({
+    queryKey: domainManageKeys.details(domainName),
+    queryFn: async () => {
+      const result = await getDomainDetails(domainName);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!domainName,
+  });
+}
+
+export function useDomainDns(domainName: string, enabled = true) {
+  return useQuery({
+    queryKey: domainManageKeys.dns(domainName),
+    queryFn: async () => {
+      const result = await listDomainDns(domainName);
+      if (result.error) throw new Error(result.error.message);
+      return result.data ?? [];
+    },
+    enabled: !!domainName && enabled,
+  });
+}
+
+export function useDnsMutations(domainName: string) {
+  const queryClient = useQueryClient();
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: domainManageKeys.dns(domainName) });
+  const create = useMutation({
+    mutationFn: async (record: DnsRecordInput) => {
+      const result = await createDomainDns(domainName, record);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: invalidate,
+  });
+  const update = useMutation({
+    mutationFn: async ({ recordId, record }: { recordId: string; record: DnsRecordInput }) => {
+      const result = await updateDomainDns(domainName, recordId, record);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: invalidate,
+  });
+  const remove = useMutation({
+    mutationFn: async (recordId: string) => {
+      const result = await deleteDomainDns(domainName, recordId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: invalidate,
+  });
+  return { create, update, remove };
+}
+
+export function useDomainSettingsMutations(domainName: string) {
+  const queryClient = useQueryClient();
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: domainManageKeys.details(domainName) });
+  const lock = useMutation({
+    mutationFn: async (locked: boolean) => {
+      const result = await setDomainLock(domainName, locked);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: invalidate,
+  });
+  const nameservers = useMutation({
+    mutationFn: async (ns: string[]) => {
+      const result = await setDomainNameservers(domainName, ns);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: invalidate,
+  });
+  const authCode = useMutation({
+    mutationFn: async () => {
+      const result = await getDomainAuthCode(domainName);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: invalidate,
+  });
+  return { lock, nameservers, authCode };
+}
+
+export function useDomainForwarding(domainName: string, enabled = true) {
+  return useQuery({
+    queryKey: domainManageKeys.forwarding(domainName),
+    queryFn: async () => {
+      const result = await listDomainEmailForwarding(domainName);
+      if (result.error) throw new Error(result.error.message);
+      return result.data ?? [];
+    },
+    enabled: !!domainName && enabled,
+  });
+}
+
+export function useForwardingMutations(domainName: string) {
+  const queryClient = useQueryClient();
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: domainManageKeys.forwarding(domainName) });
+  const add = useMutation({
+    mutationFn: async (fwd: { emailBox: string; emailTo: string }) => {
+      const result = await addDomainEmailForwarding(domainName, fwd);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: invalidate,
+  });
+  const remove = useMutation({
+    mutationFn: async (emailBox: string) => {
+      const result = await deleteDomainEmailForwarding(domainName, emailBox);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: invalidate,
+  });
+  return { add, remove };
+}
+
+export function useTransferQuote() {
+  return useMutation({
+    mutationFn: async (domainName: string) => {
+      const result = await getTransferQuote(domainName);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+  });
+}
+
+export function useStartTransfer() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { domainName: string; authCode: string }) => {
+      const result = await startDomainTransfer(input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: registrarDomainKeys.list() }),
+  });
+}
+
+export function usePublicDomainSearch(query: string) {
+  return useQuery({
+    queryKey: domainManageKeys.publicSearch(query),
+    queryFn: async () => {
+      const result = await publicSearchDomains(query);
+      if (result.error) throw new Error(result.error.message);
+      return result.data ?? [];
+    },
+    enabled: query.trim().length >= 2,
+    staleTime: 60 * 1000,
+    retry: false,
+  });
+}

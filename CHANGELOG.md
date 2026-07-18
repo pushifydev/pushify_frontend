@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0-beta.55] - 2026-07-19
+
+### Added
+- **Domain management console** (pairs with backend beta.56). Every purchased domain now has a **Manage** page with three tabs: **DNS records** (add/delete A, AAAA, CNAME, MX, TXT, SRV, NS with TTL/priority), **Email forwarding** (`info@yourdomain → your inbox` aliases), and **Settings** — transfer-lock toggle, custom nameservers (point at Cloudflare etc.), and an ICANN-compliant **transfer-out** section that reveals the EPP/auth code (with copy button and security warning).
+- **Transfer a domain in.** New dialog on the Domains page: enter the domain, get the live price (includes 1-year renewal), paste the auth code from your current registrar, and start — paid from credits, auto-refunded if the transfer is rejected. Pending/failed transfers show as status chips on the list.
+- **Public `/domains` search page.** Marketing-site domain search (rate-limited, no login needed) showing live availability and prices, with a "Sign up to buy" CTA — a Vercel-style acquisition funnel. EN/TR i18n throughout.
+
 ## [0.2.0-beta.54] - 2026-07-19
 
 ### Added
