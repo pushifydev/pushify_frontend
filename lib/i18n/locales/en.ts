@@ -2318,6 +2318,7 @@ export interface TranslationKeys {
     totalLabel: string;
     payWithCard: string;
     checkoutSuccess: string;
+    checkoutFailedCredited: string;
   };
 }
 
@@ -4721,5 +4722,7 @@ export const en: TranslationKeys = {
     totalLabel: 'Total',
     payWithCard: 'Pay with card',
     checkoutSuccess: 'Payment received. Your domain is being registered — it will appear below shortly.',
+    checkoutFailedCredited:
+      'Registration hit a problem — your payment was saved as account credits. Try buying again with credits.',
   },
 };

@@ -2404,5 +2404,7 @@ export const tr: TranslationKeys = {
     totalLabel: 'Toplam',
     payWithCard: 'Kartla öde',
     checkoutSuccess: 'Ödeme alındı. Alan adın kaydediliyor — birazdan aşağıda görünecek.',
+    checkoutFailedCredited:
+      'Kayıt sırasında bir sorun oluştu — ödemen hesap kredisi olarak kaydedildi. Kredilerle tekrar satın almayı dene.',
   },
 };

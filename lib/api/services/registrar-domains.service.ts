@@ -111,6 +111,19 @@ export const createDomainPurchaseCheckout = async (
   }
 };
 
+export const confirmDomainPurchase = async (
+  sessionId: string
+): Promise<ApiResponse<{ fulfilled: boolean; alreadyProcessed: boolean; paymentStatus: string | null }>> => {
+  try {
+    const response = await api.post<{
+      data: { fulfilled: boolean; alreadyProcessed: boolean; paymentStatus: string | null };
+    }>('/domains/purchase/confirm', { sessionId });
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const setDomainAutoRenew = async (
   domainName: string,
   enabled: boolean

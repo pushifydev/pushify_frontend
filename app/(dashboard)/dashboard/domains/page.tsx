@@ -7,6 +7,7 @@ import {
   useDomainSalesConfig,
   useDomainSearch,
   useDomainPurchaseCheckout,
+  useConfirmDomainPurchase,
   usePurchaseDomain,
   usePurchasedDomains,
   useProjects,
@@ -30,6 +31,7 @@ export default function DomainsPage() {
   const { data: projects = [] } = useProjects();
   const purchaseMutation = usePurchaseDomain();
   const checkoutMutation = useDomainPurchaseCheckout();
+  const confirmMutation = useConfirmDomainPurchase();
   const autoRenewMutation = useSetDomainAutoRenew();
   const queryClient = useQueryClient();
 
@@ -41,21 +43,34 @@ export default function DomainsPage() {
 
   const search = useDomainSearch(query);
 
-  // Returning from Stripe Checkout — the webhook registers the domain asynchronously
+  // Returning from Stripe Checkout: confirm the session directly (works without
+  // webhook forwarding in local/dev; idempotent with the webhook in production).
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('domain_purchase') === 'success') {
+    if (params.get('domain_purchase') !== 'success') return;
+    const sessionId = params.get('session_id');
+    window.history.replaceState({}, '', window.location.pathname);
+
+    if (!sessionId) {
       toast.success(t('domainSales', 'checkoutSuccess'));
-      const refresh = () =>
-        queryClient.invalidateQueries({ queryKey: registrarDomainKeys.list() });
-      const t1 = setTimeout(refresh, 2500);
-      const t2 = setTimeout(refresh, 8000);
-      window.history.replaceState({}, '', window.location.pathname);
-      return () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
-      };
+      setTimeout(() => queryClient.invalidateQueries({ queryKey: registrarDomainKeys.list() }), 2500);
+      return;
     }
+
+    toast.info(t('domainSales', 'checkoutSuccess'));
+    confirmMutation
+      .mutateAsync(sessionId)
+      .then((result) => {
+        if (result.fulfilled || result.alreadyProcessed) {
+          toast.success(t('domainSales', 'purchaseSuccess'));
+        } else {
+          toast.warning(t('domainSales', 'checkoutFailedCredited'));
+        }
+      })
+      .catch((err: Error) => toast.error(err.message))
+      .finally(() =>
+        queryClient.invalidateQueries({ queryKey: registrarDomainKeys.list() })
+      );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -480,6 +480,7 @@ export {
   getPurchasedDomains,
   purchaseDomain,
   createDomainPurchaseCheckout,
+  confirmDomainPurchase,
   setDomainAutoRenew,
   type DomainSearchResult,
   type PurchasedDomain,
