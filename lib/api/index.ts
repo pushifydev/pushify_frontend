@@ -479,6 +479,7 @@ export {
   searchDomains,
   getPurchasedDomains,
   purchaseDomain,
+  createDomainPurchaseCheckout,
   setDomainAutoRenew,
   type DomainSearchResult,
   type PurchasedDomain,

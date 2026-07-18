@@ -2312,6 +2312,12 @@ export interface TranslationKeys {
     balanceAfter: string;
     walletNote: string;
     renewalIssue: string;
+    termLabel: string;
+    yearWord: string;
+    yearsWord: string;
+    totalLabel: string;
+    payWithCard: string;
+    checkoutSuccess: string;
   };
 }
 
@@ -4709,5 +4715,11 @@ export const en: TranslationKeys = {
     balanceAfter: 'Remaining credits',
     walletNote: 'Purchases are paid from your infrastructure credit balance.',
     renewalIssue: 'Last renewal attempt failed',
+    termLabel: 'Registration period',
+    yearWord: 'year',
+    yearsWord: 'years',
+    totalLabel: 'Total',
+    payWithCard: 'Pay with card',
+    checkoutSuccess: 'Payment received. Your domain is being registered — it will appear below shortly.',
   },
 };

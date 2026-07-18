@@ -1,18 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { Check, Globe, Loader2, RefreshCw, Search, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Check, CreditCard, Globe, Loader2, RefreshCw, Search, X } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   useDomainSalesConfig,
   useDomainSearch,
+  useDomainPurchaseCheckout,
   usePurchaseDomain,
   usePurchasedDomains,
   useProjects,
   useSetDomainAutoRenew,
   useTranslation,
+  registrarDomainKeys,
 } from '@/hooks';
 import type { DomainSearchResult } from '@/lib/api';
 import { toast } from 'sonner';
+
+const TERM_OPTIONS = [1, 2, 3, 5];
 
 function formatUsd(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
@@ -24,14 +29,52 @@ export default function DomainsPage() {
   const { data: purchased = [], isLoading: purchasedLoading } = usePurchasedDomains();
   const { data: projects = [] } = useProjects();
   const purchaseMutation = usePurchaseDomain();
+  const checkoutMutation = useDomainPurchaseCheckout();
   const autoRenewMutation = useSetDomainAutoRenew();
+  const queryClient = useQueryClient();
 
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
   const [buyTarget, setBuyTarget] = useState<DomainSearchResult | null>(null);
   const [selectedProject, setSelectedProject] = useState<string>('');
+  const [years, setYears] = useState(1);
 
   const search = useDomainSearch(query);
+
+  // Returning from Stripe Checkout — the webhook registers the domain asynchronously
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('domain_purchase') === 'success') {
+      toast.success(t('domainSales', 'checkoutSuccess'));
+      const refresh = () =>
+        queryClient.invalidateQueries({ queryKey: registrarDomainKeys.list() });
+      const t1 = setTimeout(refresh, 2500);
+      const t2 = setTimeout(refresh, 8000);
+      window.history.replaceState({}, '', window.location.pathname);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const totalCents = buyTarget?.priceCents
+    ? buyTarget.priceCents + (years - 1) * (buyTarget.renewalPriceCents ?? buyTarget.priceCents)
+    : 0;
+
+  const yearsLabel = (n: number) =>
+    `${n} ${n === 1 ? t('domainSales', 'yearWord') : t('domainSales', 'yearsWord')}`;
+
+  const payWithCard = async () => {
+    if (!buyTarget) return;
+    const result = await checkoutMutation.mutateAsync({
+      domainName: buyTarget.domainName,
+      projectId: selectedProject || undefined,
+      years,
+    });
+    window.location.href = result.url;
+  };
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +86,7 @@ export default function DomainsPage() {
     const result = await purchaseMutation.mutateAsync({
       domainName: buyTarget.domainName,
       projectId: selectedProject || undefined,
+      years,
     });
     toast.success(
       result.attached
@@ -177,6 +221,7 @@ export default function DomainsPage() {
                           onClick={() => {
                             setBuyTarget(r);
                             setSelectedProject('');
+                            setYears(1);
                           }}
                           className="btn btn-primary h-8 text-xs shrink-0"
                         >
@@ -271,12 +316,41 @@ export default function DomainsPage() {
             </p>
 
             <label className="block text-xs text-[var(--text-muted)] mb-1.5">
+              {t('domainSales', 'termLabel')}
+            </label>
+            <div className="flex gap-2 mb-4">
+              {TERM_OPTIONS.map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setYears(n)}
+                  className="flex-1 h-9 rounded-lg text-xs font-medium transition-colors"
+                  style={
+                    years === n
+                      ? {
+                          background: 'var(--accent-cyan)',
+                          color: '#fff',
+                          border: '1px solid var(--accent-cyan)',
+                        }
+                      : {
+                          background: 'var(--bg-tertiary)',
+                          color: 'var(--text-secondary)',
+                          border: '1px solid var(--border-subtle)',
+                        }
+                  }
+                >
+                  {yearsLabel(n)}
+                </button>
+              ))}
+            </div>
+
+            <label className="block text-xs text-[var(--text-muted)] mb-1.5">
               {t('domainSales', 'confirmAttach')}
             </label>
             <select
               value={selectedProject}
               onChange={(e) => setSelectedProject(e.target.value)}
-              className="w-full h-10 px-3 mb-5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none"
+              className="w-full h-10 px-3 mb-4 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none"
             >
               <option value="">{t('domainSales', 'confirmNoProject')}</option>
               {projects.map((p) => (
@@ -286,17 +360,39 @@ export default function DomainsPage() {
               ))}
             </select>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex items-center justify-between mb-5 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+              <span className="text-xs text-[var(--text-muted)]">
+                {t('domainSales', 'totalLabel')} · {yearsLabel(years)}
+              </span>
+              <span className="text-base font-bold" style={{ fontFamily: 'var(--font-mono)' }}>
+                {formatUsd(totalCents)}
+              </span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-end gap-2">
               <button
                 onClick={() => setBuyTarget(null)}
-                disabled={purchaseMutation.isPending}
+                disabled={purchaseMutation.isPending || checkoutMutation.isPending}
                 className="btn btn-ghost h-10"
               >
                 {t('common', 'cancel')}
               </button>
               <button
+                onClick={payWithCard}
+                disabled={purchaseMutation.isPending || checkoutMutation.isPending}
+                className="btn btn-ghost h-10 disabled:opacity-60"
+                style={{ border: '1px solid var(--border-subtle)' }}
+              >
+                {checkoutMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <CreditCard className="w-4 h-4" />
+                )}
+                {t('domainSales', 'payWithCard')}
+              </button>
+              <button
                 onClick={confirmPurchase}
-                disabled={purchaseMutation.isPending}
+                disabled={purchaseMutation.isPending || checkoutMutation.isPending}
                 className="btn btn-primary h-10 disabled:opacity-60"
               >
                 {purchaseMutation.isPending ? (
@@ -305,7 +401,7 @@ export default function DomainsPage() {
                     {t('domainSales', 'buying')}
                   </>
                 ) : (
-                  `${t('domainSales', 'confirmPay')} ${formatUsd(buyTarget.priceCents ?? 0)}`
+                  `${t('domainSales', 'confirmPay')} ${formatUsd(totalCents)}`
                 )}
               </button>
             </div>

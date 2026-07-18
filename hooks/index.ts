@@ -295,6 +295,7 @@ export {
   useDomainSearch,
   usePurchasedDomains,
   usePurchaseDomain,
+  useDomainPurchaseCheckout,
   useSetDomainAutoRenew,
   registrarDomainKeys,
 } from './useRegistrarDomains';

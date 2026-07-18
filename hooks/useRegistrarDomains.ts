@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  createDomainPurchaseCheckout,
   getDomainSalesConfig,
   getPurchasedDomains,
   purchaseDomain,
@@ -71,6 +72,16 @@ export function usePurchaseDomain() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: registrarDomainKeys.list() });
       queryClient.invalidateQueries({ queryKey: registrarDomainKeys.all });
+    },
+  });
+}
+
+export function useDomainPurchaseCheckout() {
+  return useMutation({
+    mutationFn: async (input: PurchaseDomainInput) => {
+      const result = await createDomainPurchaseCheckout(input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
     },
   });
 }

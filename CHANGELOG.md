@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.54] - 2026-07-19
+
+### Added
+- **Multi-year domain terms + pay by card** (pairs with backend beta.55). The purchase dialog now has a 1/2/3/5-year term selector with a live total (year 1 at registration price, later years at renewal price) and two payment options: **buy with credits** as before, or **Pay with card** — a Stripe Checkout redirect that registers the domain automatically after payment (returning to the Domains page shows a "being registered" toast and refreshes the list). EN/TR i18n.
+
 ## [0.2.0-beta.53] - 2026-07-18
 
 ### Added
