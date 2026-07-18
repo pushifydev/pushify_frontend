@@ -288,3 +288,13 @@ export {
   useCreateProjectVolume,
   useDeleteProjectVolume,
 } from './useProjectVolumes';
+
+// Domain sales (registrar)
+export {
+  useDomainSalesConfig,
+  useDomainSearch,
+  usePurchasedDomains,
+  usePurchaseDomain,
+  useSetDomainAutoRenew,
+  registrarDomainKeys,
+} from './useRegistrarDomains';

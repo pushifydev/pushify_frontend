@@ -1,0 +1,317 @@
+'use client';
+
+import { useState } from 'react';
+import { Check, Globe, Loader2, RefreshCw, Search, X } from 'lucide-react';
+import {
+  useDomainSalesConfig,
+  useDomainSearch,
+  usePurchaseDomain,
+  usePurchasedDomains,
+  useProjects,
+  useSetDomainAutoRenew,
+  useTranslation,
+} from '@/hooks';
+import type { DomainSearchResult } from '@/lib/api';
+import { toast } from 'sonner';
+
+function formatUsd(cents: number): string {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+export default function DomainsPage() {
+  const { t, locale } = useTranslation();
+  const { data: config, isLoading: configLoading } = useDomainSalesConfig();
+  const { data: purchased = [], isLoading: purchasedLoading } = usePurchasedDomains();
+  const { data: projects = [] } = useProjects();
+  const purchaseMutation = usePurchaseDomain();
+  const autoRenewMutation = useSetDomainAutoRenew();
+
+  const [input, setInput] = useState('');
+  const [query, setQuery] = useState('');
+  const [buyTarget, setBuyTarget] = useState<DomainSearchResult | null>(null);
+  const [selectedProject, setSelectedProject] = useState<string>('');
+
+  const search = useDomainSearch(query);
+
+  const submitSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setQuery(input.trim());
+  };
+
+  const confirmPurchase = async () => {
+    if (!buyTarget?.priceCents) return;
+    const result = await purchaseMutation.mutateAsync({
+      domainName: buyTarget.domainName,
+      projectId: selectedProject || undefined,
+    });
+    toast.success(
+      result.attached
+        ? t('domainSales', 'purchaseSuccessAttached')
+        : t('domainSales', 'purchaseSuccess'),
+      { description: `${t('domainSales', 'balanceAfter')}: ${formatUsd(result.balanceAfterCents)}` }
+    );
+    setBuyTarget(null);
+    setSelectedProject('');
+  };
+
+  const dateFmt = (iso: string) =>
+    new Date(iso).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+
+  return (
+    <div className="p-6 max-w-5xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold flex items-center gap-2.5">
+          <Globe className="w-6 h-6" style={{ color: 'var(--accent-cyan)' }} />
+          {t('domainSales', 'title')}
+        </h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">{t('domainSales', 'subtitle')}</p>
+      </div>
+
+      {!configLoading && config && !config.enabled ? (
+        <div className="p-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center">
+          <Globe className="w-8 h-8 mx-auto mb-3 text-[var(--text-muted)]" />
+          <h2 className="font-semibold mb-1">{t('domainSales', 'notEnabled')}</h2>
+          <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto">
+            {t('domainSales', 'notEnabledDesc')}
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Search */}
+          <form onSubmit={submitSearch} className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={t('domainSales', 'searchPlaceholder')}
+                className="w-full h-11 pl-9 pr-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)]"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={input.trim().length < 2 || search.isFetching}
+              className="btn btn-primary h-11 px-5 disabled:opacity-50"
+            >
+              {search.isFetching ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                t('domainSales', 'searchButton')
+              )}
+            </button>
+          </form>
+          <p className="text-xs text-[var(--text-muted)] -mt-6">{t('domainSales', 'walletNote')}</p>
+
+          {/* Results */}
+          {query && (
+            <div className="space-y-2">
+              {search.isFetching && (
+                <div className="p-4 text-sm text-[var(--text-secondary)] flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  {t('domainSales', 'searching')}
+                </div>
+              )}
+              {search.error && !search.isFetching && (
+                <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-sm text-red-400">
+                  {search.error.message}
+                </div>
+              )}
+              {!search.isFetching &&
+                (search.data ?? []).map((r) => (
+                  <div
+                    key={r.domainName}
+                    className="flex items-center gap-3 p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
+                  >
+                    {r.available ? (
+                      <Check className="w-4 h-4 shrink-0 text-emerald-500" />
+                    ) : (
+                      <X className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
+                    )}
+                    <span
+                      className="text-sm font-semibold truncate"
+                      style={{ fontFamily: 'var(--font-mono)' }}
+                    >
+                      {r.domainName}
+                    </span>
+                    <span
+                      className="text-[11px] px-2 py-0.5 rounded-full shrink-0"
+                      style={
+                        r.available
+                          ? {
+                              color: '#10b981',
+                              background: 'rgba(16,185,129,0.10)',
+                              border: '1px solid rgba(16,185,129,0.25)',
+                            }
+                          : {
+                              color: 'var(--text-muted)',
+                              background: 'var(--bg-tertiary)',
+                              border: '1px solid var(--border-subtle)',
+                            }
+                      }
+                    >
+                      {r.premium
+                        ? t('domainSales', 'premium')
+                        : r.available
+                          ? t('domainSales', 'available')
+                          : t('domainSales', 'unavailable')}
+                    </span>
+                    {r.available && r.priceCents !== null && (
+                      <>
+                        <span className="ml-auto text-sm font-semibold shrink-0">
+                          {formatUsd(r.priceCents)}
+                          <span className="text-xs text-[var(--text-muted)] font-normal">
+                            {t('domainSales', 'perYear')}
+                          </span>
+                        </span>
+                        {r.renewalPriceCents !== null && r.renewalPriceCents !== r.priceCents && (
+                          <span className="hidden sm:inline text-[11px] text-[var(--text-muted)] shrink-0">
+                            {t('domainSales', 'renewsAt')} {formatUsd(r.renewalPriceCents)}
+                          </span>
+                        )}
+                        <button
+                          onClick={() => {
+                            setBuyTarget(r);
+                            setSelectedProject('');
+                          }}
+                          className="btn btn-primary h-8 text-xs shrink-0"
+                        >
+                          {t('domainSales', 'buy')}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ))}
+            </div>
+          )}
+
+          {/* Purchased domains */}
+          <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+            <h2 className="text-lg font-semibold mb-4">{t('domainSales', 'purchasedTitle')}</h2>
+            {purchasedLoading ? (
+              <div className="text-sm text-[var(--text-secondary)]">…</div>
+            ) : purchased.length === 0 ? (
+              <p className="text-sm text-[var(--text-muted)]">{t('domainSales', 'purchasedEmpty')}</p>
+            ) : (
+              <div className="space-y-2">
+                {purchased.map((d) => {
+                  const project = projects.find((p) => p.id === d.projectId);
+                  return (
+                    <div
+                      key={d.id}
+                      className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]"
+                    >
+                      <span
+                        className="text-sm font-semibold"
+                        style={{ fontFamily: 'var(--font-mono)' }}
+                      >
+                        {d.domainName}
+                      </span>
+                      <span className="text-xs text-[var(--text-muted)]">
+                        {d.status === 'expired'
+                          ? t('domainSales', 'expired')
+                          : `${t('domainSales', 'expires')}: ${dateFmt(d.expiresAt)}`}
+                      </span>
+                      {project && (
+                        <span className="text-xs text-[var(--text-muted)]">
+                          {t('domainSales', 'attachedProject')}: {project.name}
+                        </span>
+                      )}
+                      {d.lastRenewalError && (
+                        <span className="text-[11px] text-amber-500">
+                          {t('domainSales', 'renewalIssue')}
+                        </span>
+                      )}
+                      <label className="sm:ml-auto flex items-center gap-2 text-xs cursor-pointer select-none">
+                        <RefreshCw className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                        {t('domainSales', 'autoRenew')}
+                        <input
+                          type="checkbox"
+                          checked={d.autoRenew}
+                          disabled={autoRenewMutation.isPending || d.status === 'expired'}
+                          onChange={(e) =>
+                            autoRenewMutation.mutate({
+                              domainName: d.domainName,
+                              enabled: e.target.checked,
+                            })
+                          }
+                          className="accent-[var(--accent-cyan)]"
+                        />
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Purchase confirmation */}
+      {buyTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+          onClick={() => !purchaseMutation.isPending && setBuyTarget(null)}
+        >
+          <div
+            className="w-full max-w-md p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-1">{t('domainSales', 'confirmTitle')}</h3>
+            <p className="text-sm mb-1 font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>
+              {buyTarget.domainName}
+            </p>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
+              {t('domainSales', 'confirmBody')}
+            </p>
+
+            <label className="block text-xs text-[var(--text-muted)] mb-1.5">
+              {t('domainSales', 'confirmAttach')}
+            </label>
+            <select
+              value={selectedProject}
+              onChange={(e) => setSelectedProject(e.target.value)}
+              className="w-full h-10 px-3 mb-5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none"
+            >
+              <option value="">{t('domainSales', 'confirmNoProject')}</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setBuyTarget(null)}
+                disabled={purchaseMutation.isPending}
+                className="btn btn-ghost h-10"
+              >
+                {t('common', 'cancel')}
+              </button>
+              <button
+                onClick={confirmPurchase}
+                disabled={purchaseMutation.isPending}
+                className="btn btn-primary h-10 disabled:opacity-60"
+              >
+                {purchaseMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    {t('domainSales', 'buying')}
+                  </>
+                ) : (
+                  `${t('domainSales', 'confirmPay')} ${formatUsd(buyTarget.priceCents ?? 0)}`
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
