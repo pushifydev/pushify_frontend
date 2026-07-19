@@ -2305,6 +2305,34 @@ export interface TranslationKeys {
     ctaBody: string;
     ctaButton: string;
   };
+  vsHeroku: {
+    eyebrow: string; h1: string; subtitle: string; ctaPrimary: string; ctaSecondary: string;
+    tldrTitle: string; tldrBody: string;
+    choosePushifyTitle: string; choosePushify1: string; choosePushify2: string; choosePushify3: string; choosePushify4: string;
+    chooseHerokuTitle: string; chooseHeroku1: string; chooseHeroku2: string; chooseHeroku3: string;
+    tableTitle: string; tableNote: string; colHeroku: string;
+    rowGitPush: string; rowFlatPricing: string; rowZeroOps: string; rowAddonEco: string;
+    diffTitle: string; diff1Title: string; diff1Body: string; diff2Title: string; diff2Body: string; diff3Title: string; diff3Body: string;
+    faqTitle: string; faq1Q: string; faq1A: string; faq2Q: string; faq2A: string; faq3Q: string; faq3A: string; faq4Q: string; faq4A: string;
+    ctaTitle: string; ctaBody: string; ctaButton: string;
+  };
+  alternatives: {
+    eyebrow: string; h1: string; subtitle: string; intro: string;
+    matrixTitle: string; matrixNote: string;
+    colPlatform: string; colLicense: string; colSelfHost: string; colManagedCloud: string; colFrom: string; colModel: string;
+    selfHostedTitle: string; managedTitle: string; bestFor: string;
+    coolifyBody: string; coolifyBest: string;
+    dokployBody: string; dokployBest: string;
+    caproverBody: string; caproverBest: string;
+    dokkuBody: string; dokkuBest: string;
+    herokuBody: string; herokuBest: string;
+    railwayBody: string; railwayBest: string;
+    renderBody: string; renderBest: string;
+    pushifyTitle: string; pushifyBody: string; pushifyBest: string;
+    howToChooseTitle: string; howToChoose1: string; howToChoose2: string; howToChoose3: string;
+    disclaimer: string;
+    ctaTitle: string; ctaBody: string; ctaButton: string;
+  };
   domainSales: {
     title: string;
     subtitle: string;
@@ -4776,6 +4804,125 @@ export const en: TranslationKeys = {
     ctaTitle: 'Launch your site today',
     ctaBody: 'Build it visually, publish it to your own server, and keep full control.',
     ctaButton: 'Start building free',
+  },
+  vsHeroku: {
+    eyebrow: 'Honest comparison',
+    h1: 'Pushify vs Heroku',
+    subtitle:
+      'Heroku invented git-push deployments. Pushify brings the same workflow to servers you own — with a free self-host option and flat server pricing. A spec sheet, not a pitch.',
+    ctaPrimary: 'Get started free',
+    ctaSecondary: 'View pricing',
+    tldrTitle: 'TL;DR',
+    tldrBody:
+      "Heroku is a fully managed platform: you never touch a server, and you pay per dyno — a Basic dyno is $7/mo, the smallest Postgres is $5/mo, so a small always-on app starts around $12/mo (the free tier was removed in November 2022; the $5 Eco plan sleeps after 30 minutes of inactivity). Pushify keeps Heroku's push-to-deploy feel but runs on infrastructure you control: self-host the whole platform for free, bring your own VPS, or let Pushify provision managed Hetzner servers at flat monthly prices. If you want zero server responsibility and a decade-old add-on ecosystem, Heroku is still excellent. If you want ownership and predictable bills, that's Pushify.",
+    choosePushifyTitle: 'Choose Pushify if…',
+    choosePushify1:
+      'You want predictable, flat server pricing instead of per-dyno, per-add-on billing that grows with every service you add.',
+    choosePushify2:
+      'You want your app and data on servers you own — self-host the platform for free, or bring any VPS.',
+    choosePushify3:
+      "You miss a real free tier: Pushify's self-host option costs nothing, and BYOS runs fine on a $5 VPS.",
+    choosePushify4:
+      'You want extras Heroku does not ship — a marketplace of self-hosted apps (Supabase, WordPress, n8n…), an AI assistant, a site builder, built-in domain purchasing.',
+    chooseHerokuTitle: 'Choose Heroku if…',
+    chooseHeroku1:
+      "You want a fully managed platform with zero server responsibility — Heroku's ops burden really is zero.",
+    chooseHeroku2:
+      'You rely on its mature ecosystem: 10+ years of add-ons, buildpacks and enterprise compliance options.',
+    chooseHeroku3:
+      'Your team already lives in Heroku pipelines and review apps, and migration cost outweighs the savings.',
+    tableTitle: 'Feature comparison',
+    tableNote:
+      'Based on publicly available information (Heroku pricing pages, July 2026). This may change — spot something out of date? Email us and we will fix it.',
+    colHeroku: 'Heroku',
+    rowGitPush: 'Git push deployments',
+    rowFlatPricing: 'Flat-rate server pricing',
+    rowZeroOps: 'Fully managed (zero server ops)',
+    rowAddonEco: '10+ year add-on ecosystem',
+    diffTitle: 'The three differences that matter',
+    diff1Title: 'Where your app runs',
+    diff1Body:
+      'Heroku runs everything on its own managed infrastructure — you cannot self-host it or bring a server. Pushify is the opposite: MIT-licensed, installable on your own machine with one command, and happy to deploy to any VPS you bring or to managed Hetzner servers it provisions for you.',
+    diff2Title: 'How the bill grows',
+    diff2Body:
+      'Heroku bills per dyno and per add-on: $7/mo for one always-on Basic dyno, $5/mo for the smallest Postgres, and every extra service adds its own line item. On Pushify a server has one flat monthly price, prorated hourly — run as many apps and databases on it as it can handle.',
+    diff3Title: 'What happened to free',
+    diff3Body:
+      "Heroku removed its free tier in November 2022; the closest thing today is the $5 Eco plan, whose dynos sleep after 30 minutes. Pushify's self-host option is genuinely free, and scale-to-zero on your own server is a feature, not a billing tier.",
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Is Pushify a good Heroku alternative?',
+    faq1A:
+      'If you want the git-push workflow without giving up server ownership, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Heroku\'s managed add-on ecosystem; you gain flat pricing and root access.',
+    faq2Q: 'How much cheaper is Pushify than Heroku, really?',
+    faq2A:
+      'A small always-on Heroku app with a database starts around $12/mo (Basic dyno $7 + Essential-0 Postgres $5). The same workload fits on one entry-level VPS: self-host Pushify on it for free, or use a managed server at a flat monthly price — with room for several more apps on the same box.',
+    faq3Q: 'Can I migrate an app from Heroku to Pushify?',
+    faq3A:
+      'Most Heroku apps are standard Node/Python/Ruby/PHP projects in git — connect the repo and Pushify detects the framework and builds it in Docker. Procfile-only setups may need a small start-command tweak, and add-ons map to Pushify databases or marketplace apps (Postgres, Redis, and more).',
+    faq4Q: 'Does Pushify have Heroku-style preview apps and scheduled jobs?',
+    faq4A:
+      'Yes — pull-request preview deployments, cron jobs, persistent volumes, health checks and live log streaming are built in.',
+    ctaTitle: 'Own your next deploy',
+    ctaBody: 'Ship with the workflow Heroku made famous — on servers that answer to you.',
+    ctaButton: 'Get started free',
+  },
+  alternatives: {
+    eyebrow: 'The landscape, honestly',
+    h1: 'Self-hosted PaaS & Heroku alternatives compared',
+    subtitle:
+      'Coolify, Dokploy, CapRover, Dokku, Railway, Render, Heroku — and where Pushify fits. Real licenses, real prices, no fake rankings.',
+    intro:
+      'Every tool below is genuinely good at something — we use several of them ourselves. This page states what each one is, what it costs, and who it fits best, based on public information. Where Pushify is weaker, the table says so.',
+    matrixTitle: 'At a glance',
+    matrixNote:
+      'Public information as of July 2026 — licenses and prices change. Spot an error? Email us and we will correct it.',
+    colPlatform: 'Platform',
+    colLicense: 'License',
+    colSelfHost: 'Self-host',
+    colManagedCloud: 'Managed cloud',
+    colFrom: 'Paid from',
+    colModel: 'Pricing model',
+    selfHostedTitle: 'Self-hosted platforms',
+    managedTitle: 'Managed-only platforms',
+    bestFor: 'Best for',
+    coolifyBody:
+      'The most popular self-hosted PaaS: Apache-2.0 licensed, free to self-host, with an optional managed cloud from $5/mo. Strong GUI, PR preview deployments, multi-server support and a very large community. v4 reached stable in early 2026 after a long beta.',
+    coolifyBest: 'Teams that want the biggest community and a mature GUI-first self-hosted platform.',
+    dokployBody:
+      'A fast-rising alternative (30k+ GitHub stars): free to self-host, with a managed option around $4.50/server/mo. Built on Docker Swarm, often described as lighter and snappier than Coolify. Note the license is source-available rather than a classic OSI license.',
+    dokployBest: 'Developers who want a light, quick UI on Docker Swarm and are fine with a source-available license.',
+    caproverBody:
+      'Free and MIT-licensed with no paid tier at all. Docker Swarm based with a one-click app catalog. Very stable and battle-tested, though development pace has slowed compared to Coolify and Dokploy.',
+    caproverBest: 'Homelabs and stability-first setups that value a zero-cost, proven tool over new features.',
+    dokkuBody:
+      "The original 'mini-Heroku', a decade old and MIT-licensed at the core. CLI-first — there is no web UI by default (Dokku Pro sells one). Single-server by design; scaling beyond one box means manual work.",
+    dokkuBest: 'Solo developers comfortable in a terminal who want the simplest possible single-server workflow.',
+    herokuBody:
+      'The managed platform that invented git-push deploys. Zero server responsibility and a 10+ year add-on ecosystem, but no self-hosting, and the free tier was removed in 2022 — a small always-on app with a database starts around $12/mo (Basic dyno $7 + smallest Postgres $5).',
+    herokuBest: 'Teams that want zero ops and enterprise compliance, and accept per-dyno pricing.',
+    railwayBody:
+      'A polished managed platform with usage-based billing: the Hobby plan is $5/mo including $5 of usage; a trial gives one-time $5 credit. No self-host option — your workloads run on Railway\'s infrastructure.',
+    railwayBest: 'Side projects and small teams that want a beautiful managed experience and accept usage-based bills.',
+    renderBody:
+      'A managed platform with a limited free tier (services sleep after 15 minutes) and always-on services from $7/mo each. In 2026 it moved to flat plan fees plus compute, dropping per-seat pricing. No self-host option.',
+    renderBest: 'Teams that want Heroku-style simplicity with a modern dashboard and predictable per-service prices.',
+    pushifyTitle: 'Where Pushify fits',
+    pushifyBody:
+      'Pushify is MIT-licensed and self-hostable free of charge, like Coolify or CapRover — but it also runs as a managed cloud that can provision Hetzner servers for you at flat monthly prices, or deploy to any VPS you bring. On top of deployments it bundles things the others treat as out of scope: managed databases with backups, a 24-app marketplace, PR previews, cron, volumes, scale-to-zero, an AI assistant, a no-code site builder and built-in domain purchasing. It is younger than every tool above — the community is smaller, and some integrations (for example a GitHub App) are still maturing.',
+    pushifyBest:
+      'Developers who want one tool to cover deploys, databases, domains and sites — self-hosted or managed — and accept a younger ecosystem.',
+    howToChooseTitle: 'How to actually choose',
+    howToChoose1:
+      'Want zero server responsibility? Pick a managed platform: Heroku, Railway or Render — or Pushify\'s managed cloud if you still want the option to leave.',
+    howToChoose2:
+      'Want maximum community and plugins on your own server? Coolify today, Dokploy if you prefer lighter and faster.',
+    howToChoose3:
+      'Want one platform for apps, databases, domains and sites with both self-host and managed modes? That is the gap Pushify was built for.',
+    disclaimer:
+      'This page reflects publicly available information and may go out of date. It intentionally contains no invented benchmarks, star counts or testimonials.',
+    ctaTitle: 'Try the newcomer',
+    ctaBody: 'Self-host Pushify with one command, or start free on the managed cloud.',
+    ctaButton: 'Get started free',
   },
   domainSales: {
     title: 'Domains',

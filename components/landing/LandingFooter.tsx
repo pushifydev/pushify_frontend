@@ -32,6 +32,8 @@ export function LandingFooter() {
       },
       { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },
       { label: t('vsVercel', 'h1'), href: '/vs/vercel' },
+      { label: t('vsHeroku', 'h1'), href: '/vs/heroku' },
+      { label: t('alternatives', 'h1'), href: '/alternatives' },
     ],
     [t('landing', 'company')]: [
       { label: t('legal', 'about'), href: '/about' },
