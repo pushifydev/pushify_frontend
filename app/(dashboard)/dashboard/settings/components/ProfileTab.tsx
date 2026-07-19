@@ -9,7 +9,9 @@ import { SettingsCard, SettingsField } from './SettingsCard';
 
 export function ProfileTab() {
   const { t } = useTranslation();
-  const { user } = useAuthStore();
+  const { user, checkAuth } = useAuthStore();
+  // OAuth-only accounts (Google/GitHub) have no password yet — they SET one here
+  const hasPassword = user?.hasPassword ?? true;
   const updateProfile = useUpdateProfile();
   const changePassword = useChangePassword();
 
@@ -54,17 +56,19 @@ export function ProfileTab() {
 
     // Server/mutation errors are surfaced by the global MutationCache toast.
     await changePassword.mutateAsync({
-      currentPassword,
+      ...(hasPassword ? { currentPassword } : {}),
       newPassword,
     });
     setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
     showSuccessToast('passwordChangedTitle', 'passwordChangedDesc');
+    // First password just set — refresh the user so hasPassword flips everywhere
+    if (!hasPassword) void checkAuth();
   };
 
   const isProfileChanged = name !== user?.name || avatarUrl !== (user?.avatarUrl || '');
-  const canChangePassword = currentPassword && newPassword && confirmPassword;
+  const canChangePassword = (!hasPassword || currentPassword) && newPassword && confirmPassword;
 
   return (
     <div className="space-y-5 animate-in fade-in duration-200">
@@ -124,19 +128,24 @@ export function ProfileTab() {
 
       {/* Change Password Card */}
       <SettingsCard
-        title={t('profile', 'changePassword')}
-        description={t('profile', 'changePasswordDesc')}
+        title={hasPassword ? t('profile', 'changePassword') : t('profile', 'setPassword')}
+        description={hasPassword ? t('profile', 'changePasswordDesc') : t('profile', 'setPasswordDesc')}
         footer={
           <button
             onClick={handleChangePassword}
             disabled={!canChangePassword || changePassword.isPending}
             className="btn btn-primary"
           >
-            {changePassword.isPending ? t('profile', 'updating') : t('profile', 'changePassword')}
+            {changePassword.isPending
+              ? t('profile', 'updating')
+              : hasPassword
+                ? t('profile', 'changePassword')
+                : t('profile', 'setPassword')}
           </button>
         }
       >
         <div className="space-y-4 max-w-md">
+          {hasPassword && (
           <SettingsField label={t('profile', 'currentPassword')} htmlFor="profile-current-password">
             <div className="relative">
               <input
@@ -157,6 +166,7 @@ export function ProfileTab() {
               </button>
             </div>
           </SettingsField>
+          )}
 
           <SettingsField
             label={t('profile', 'newPassword')}

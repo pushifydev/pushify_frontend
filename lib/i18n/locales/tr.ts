@@ -1294,6 +1294,9 @@ export const tr: TranslationKeys = {
     scopeMetricsRead: 'Metrikleri oku',
   },
   security: {
+    oauthCodeLabel: 'Doğrulayıcı veya yedek kod',
+    oauthCodeHint:
+      'Hesabın Google/GitHub ile giriş yapıyor ve şifresi yok; onaylamak için güncel 6 haneli doğrulayıcı kodunu veya yedek kodlarından birini gir.',
     title: 'Güvenlik',
     description: 'İki faktörlü kimlik doğrulama dahil hesap güvenlik ayarlarınızı yönetin.',
     twoFactor: 'İki Faktörlü Kimlik Doğrulama',
@@ -1333,6 +1336,9 @@ export const tr: TranslationKeys = {
     regeneratedSuccess: 'Yeni yedek kodlar oluşturuldu.',
   },
   profile: {
+    setPassword: 'Şifre belirle',
+    setPasswordDesc:
+      'Google/GitHub ile giriş yaptığın için hesabının henüz şifresi yok. Bir şifre belirlersen e-posta ile giriş ve şifreli onaylar da açılır.',
     title: 'Profil',
     description: 'Kişisel bilgilerinizi ve hesap ayarlarınızı yönetin.',
     personalInfo: 'Kişisel Bilgiler',

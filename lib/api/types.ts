@@ -25,6 +25,8 @@ export interface PaginatedResponse<T> {
 // ============ Auth Types ============
 
 export interface User {
+  /** false for OAuth-only accounts (no password set) */
+  hasPassword?: boolean;
   id: string;
   email: string;
   name: string;

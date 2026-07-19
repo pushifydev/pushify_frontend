@@ -1271,6 +1271,8 @@ export interface TranslationKeys {
     scopeMetricsRead: string;
   };
   security: {
+    oauthCodeLabel: string;
+    oauthCodeHint: string;
     title: string;
     description: string;
     twoFactor: string;
@@ -1310,6 +1312,8 @@ export interface TranslationKeys {
     regeneratedSuccess: string;
   };
   profile: {
+    setPassword: string;
+    setPasswordDesc: string;
     title: string;
     description: string;
     personalInfo: string;
@@ -3656,6 +3660,9 @@ export const en: TranslationKeys = {
     scopeMetricsRead: 'Read metrics',
   },
   security: {
+    oauthCodeLabel: 'Authenticator or backup code',
+    oauthCodeHint:
+      'Your account signs in with Google/GitHub and has no password, so confirm with a current 6-digit authenticator code or one of your backup codes.',
     title: 'Security',
     description: 'Manage your account security settings including two-factor authentication.',
     twoFactor: 'Two-Factor Authentication',
@@ -3695,6 +3702,9 @@ export const en: TranslationKeys = {
     regeneratedSuccess: 'New backup codes have been generated.',
   },
   profile: {
+    setPassword: 'Set password',
+    setPasswordDesc:
+      'You signed in with Google/GitHub, so your account has no password yet. Set one to also enable email login and password confirmations.',
     title: 'Profile',
     description: 'Manage your personal information and account settings.',
     personalInfo: 'Personal Information',

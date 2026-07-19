@@ -10,6 +10,7 @@ import {
   useDisable2FA,
   useRegenerateBackupCodes,
 } from '@/hooks';
+import { useAuthStore } from '@/stores/auth';
 import { TwoFactorSetupModal } from './TwoFactorSetupModal';
 import { TwoFactorDisableModal } from './TwoFactorDisableModal';
 import { RegenerateBackupCodesModal } from './RegenerateBackupCodesModal';
@@ -23,6 +24,9 @@ interface TwoFactorSetupData {
 
 export function SecurityTab() {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+  // Default true so older backends (no hasPassword field) keep the password flow
+  const hasPassword = user?.hasPassword ?? true;
 
   // 2FA hooks
   const { data: twoFactorStatus, isLoading: isLoading2FA } = use2FAStatus();
@@ -65,10 +69,10 @@ export function SecurityTab() {
     }
   };
 
-  const handleDisable = async (password: string) => {
+  const handleDisable = async (credentials: { password?: string; twoFactorCode?: string }) => {
     setError(null);
     try {
-      await disable2FA.mutateAsync(password);
+      await disable2FA.mutateAsync(credentials);
       setShowDisableModal(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to disable 2FA');
@@ -76,10 +80,13 @@ export function SecurityTab() {
     }
   };
 
-  const handleRegenerate = async (password: string): Promise<string[]> => {
+  const handleRegenerate = async (credentials: {
+    password?: string;
+    twoFactorCode?: string;
+  }): Promise<string[]> => {
     setError(null);
     try {
-      const result = await regenerateBackupCodes.mutateAsync(password);
+      const result = await regenerateBackupCodes.mutateAsync(credentials);
       return result.backupCodes;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to regenerate backup codes');
@@ -173,6 +180,7 @@ export function SecurityTab() {
         onDisable={handleDisable}
         isPending={disable2FA.isPending}
         error={error}
+        hasPassword={hasPassword}
       />
 
       <RegenerateBackupCodesModal
@@ -184,6 +192,7 @@ export function SecurityTab() {
         onRegenerate={handleRegenerate}
         isPending={regenerateBackupCodes.isPending}
         error={error}
+        hasPassword={hasPassword}
       />
     </div>
   );

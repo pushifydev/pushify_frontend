@@ -7,6 +7,7 @@ import {
   enable2fa,
   disable2fa,
   regenerateBackupCodes,
+  type TwoFactorCredentials,
   type TwoFactorSetup,
   type TwoFactorStatus,
 } from '@/lib/api/services/auth.service';
@@ -61,8 +62,8 @@ export function useDisable2FA() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (password: string) => {
-      const result = await disable2fa(password);
+    mutationFn: async (credentials: TwoFactorCredentials) => {
+      const result = await disable2fa(credentials);
       if (result.error) throw new Error(result.error.message);
       return result.data!;
     },
@@ -76,8 +77,8 @@ export function useRegenerateBackupCodes() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (password: string) => {
-      const result = await regenerateBackupCodes(password);
+    mutationFn: async (credentials: TwoFactorCredentials) => {
+      const result = await regenerateBackupCodes(credentials);
       if (result.error) throw new Error(result.error.message);
       return result.data!;
     },
