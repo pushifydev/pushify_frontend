@@ -121,7 +121,7 @@ export function LandingFooter() {
           style={{ color: 'var(--lp-muted)' }}
         >
           <p>
-            &copy; {new Date().getFullYear()} Pushify. {t('landing', 'openSourceUnderMit')}.
+            &copy; {new Date().getFullYear()} Pushify LLC. {t('landing', 'openSourceUnderMit')}.
           </p>
           <p>
             {t('landing', 'builtWithLove')} {t('landing', 'forDevelopers')}
