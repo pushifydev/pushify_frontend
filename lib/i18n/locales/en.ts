@@ -2319,6 +2319,49 @@ export interface TranslationKeys {
     payWithCard: string;
     checkoutSuccess: string;
     checkoutFailedCredited: string;
+    manage: string;
+    backToDomains: string;
+    tabDns: string;
+    tabForwarding: string;
+    tabSettings: string;
+    dnsAdd: string;
+    dnsHost: string;
+    dnsType: string;
+    dnsValue: string;
+    dnsTtl: string;
+    dnsPriority: string;
+    dnsEmpty: string;
+    lockTitle: string;
+    lockDesc: string;
+    nsTitle: string;
+    nsDesc: string;
+    nsSave: string;
+    authTitle: string;
+    authDesc: string;
+    authShow: string;
+    authWarn: string;
+    copied: string;
+    transferTitle: string;
+    transferDesc: string;
+    transferBtn: string;
+    transferDomainLabel: string;
+    transferAuthLabel: string;
+    transferGetQuote: string;
+    transferPriceLabel: string;
+    transferStartBtn: string;
+    transferStartedToast: string;
+    transferPendingChip: string;
+    transferFailedChip: string;
+    transferNote: string;
+    fwdTitle: string;
+    fwdDesc: string;
+    fwdAliasPh: string;
+    fwdDestPh: string;
+    fwdAdd: string;
+    fwdEmpty: string;
+    publicHeroTitle: string;
+    publicHeroDesc: string;
+    publicBuyCta: string;
   };
 }
 
@@ -4724,5 +4767,48 @@ export const en: TranslationKeys = {
     checkoutSuccess: 'Payment received. Your domain is being registered — it will appear below shortly.',
     checkoutFailedCredited:
       'Registration hit a problem — your payment was saved as account credits. Try buying again with credits.',
+    manage: 'Manage',
+    backToDomains: 'Back to domains',
+    tabDns: 'DNS records',
+    tabForwarding: 'Email forwarding',
+    tabSettings: 'Settings',
+    dnsAdd: 'Add record',
+    dnsHost: 'Host',
+    dnsType: 'Type',
+    dnsValue: 'Value',
+    dnsTtl: 'TTL',
+    dnsPriority: 'Priority',
+    dnsEmpty: 'No DNS records yet. Add your first record above.',
+    lockTitle: 'Transfer lock',
+    lockDesc: 'Keeps the domain locked against unauthorized transfers. Turn off only when moving away.',
+    nsTitle: 'Nameservers',
+    nsDesc: 'Point the domain at an external DNS provider (e.g. Cloudflare). One hostname per line, 2-6 entries. DNS records above stop applying when custom nameservers are set.',
+    nsSave: 'Save nameservers',
+    authTitle: 'Transfer out',
+    authDesc: 'You can move this domain to any registrar. Revealing the code unlocks the domain and emails a security notice to the account owner.',
+    authShow: 'Reveal auth (EPP) code',
+    authWarn: 'Anyone with this code can transfer the domain away. Keep it private.',
+    copied: 'Copied',
+    transferTitle: 'Transfer a domain in',
+    transferDesc: 'Move a domain you own at another registrar into Pushify. The price includes a 1-year renewal.',
+    transferBtn: 'Transfer in',
+    transferDomainLabel: 'Domain to transfer',
+    transferAuthLabel: 'Auth (EPP) code from your current registrar',
+    transferGetQuote: 'Get price',
+    transferPriceLabel: 'Transfer price',
+    transferStartBtn: 'Start transfer',
+    transferStartedToast: 'Transfer started. It usually completes in 5-7 days — we will email you.',
+    transferPendingChip: 'Transfer in progress',
+    transferFailedChip: 'Transfer failed (refunded)',
+    transferNote: 'Before starting: unlock the domain at your current registrar and get its auth/EPP code. Domains registered or transferred in the last 60 days cannot be transferred.',
+    fwdTitle: 'Email forwarding',
+    fwdDesc: 'Create aliases like info@yourdomain.com that forward to your real inbox.',
+    fwdAliasPh: 'alias (e.g. info)',
+    fwdDestPh: 'destination@example.com',
+    fwdAdd: 'Add forwarding',
+    fwdEmpty: 'No forwarding addresses yet.',
+    publicHeroTitle: 'Find your domain',
+    publicHeroDesc: 'Search, register, and connect a domain to your app in one place — DNS and SSL handled for you.',
+    publicBuyCta: 'Sign up to buy',
   },
 };

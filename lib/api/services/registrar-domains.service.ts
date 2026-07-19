@@ -18,7 +18,7 @@ export interface PurchasedDomain {
   projectId: string | null;
   domainName: string;
   registrar: string;
-  status: 'active' | 'expired';
+  status: 'active' | 'expired' | 'transfer_pending' | 'transfer_failed';
   years: number;
   purchasePriceCents: number;
   autoRenew: boolean;
@@ -133,6 +133,241 @@ export const setDomainAutoRenew = async (
       `/domains/${encodeURIComponent(domainName)}/auto-renew`,
       { enabled }
     );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+// ============ Domain management (DNS / transfer / settings / forwarding) ============
+
+export type DnsRecordType = 'A' | 'AAAA' | 'CNAME' | 'MX' | 'TXT' | 'SRV' | 'NS';
+
+export interface DomainDnsRecord {
+  id: string;
+  host: string;
+  fqdn: string;
+  type: DnsRecordType;
+  answer: string;
+  ttl?: number;
+  priority?: number;
+}
+
+export interface DnsRecordInput {
+  host: string;
+  type: DnsRecordType;
+  answer: string;
+  ttl?: number;
+  priority?: number;
+}
+
+export interface DomainDetails {
+  domain: PurchasedDomain;
+  locked: boolean | null;
+  nameservers: string[];
+}
+
+export interface DomainEmailForwarding {
+  emailBox: string;
+  emailTo: string;
+}
+
+export interface TransferQuote {
+  domainName: string;
+  retailCents: number;
+}
+
+export const getDomainDetails = async (
+  domainName: string
+): Promise<ApiResponse<DomainDetails>> => {
+  try {
+    const response = await api.get<{ data: DomainDetails }>(
+      `/domains/${encodeURIComponent(domainName)}/details`
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const listDomainDns = async (
+  domainName: string
+): Promise<ApiResponse<DomainDnsRecord[]>> => {
+  try {
+    const response = await api.get<{ data: DomainDnsRecord[] }>(
+      `/domains/${encodeURIComponent(domainName)}/dns`
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const createDomainDns = async (
+  domainName: string,
+  record: DnsRecordInput
+): Promise<ApiResponse<DomainDnsRecord>> => {
+  try {
+    const response = await api.post<{ data: DomainDnsRecord }>(
+      `/domains/${encodeURIComponent(domainName)}/dns`,
+      record
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const updateDomainDns = async (
+  domainName: string,
+  recordId: string,
+  record: DnsRecordInput
+): Promise<ApiResponse<DomainDnsRecord>> => {
+  try {
+    const response = await api.put<{ data: DomainDnsRecord }>(
+      `/domains/${encodeURIComponent(domainName)}/dns/${encodeURIComponent(recordId)}`,
+      record
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const deleteDomainDns = async (
+  domainName: string,
+  recordId: string
+): Promise<ApiResponse<{ deleted: boolean }>> => {
+  try {
+    const response = await api.delete<{ data: { deleted: boolean } }>(
+      `/domains/${encodeURIComponent(domainName)}/dns/${encodeURIComponent(recordId)}`
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const setDomainLock = async (
+  domainName: string,
+  locked: boolean
+): Promise<ApiResponse<{ locked: boolean }>> => {
+  try {
+    const response = await api.post<{ data: { locked: boolean } }>(
+      `/domains/${encodeURIComponent(domainName)}/lock`,
+      { locked }
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const setDomainNameservers = async (
+  domainName: string,
+  nameservers: string[]
+): Promise<ApiResponse<{ nameservers: string[] }>> => {
+  try {
+    const response = await api.post<{ data: { nameservers: string[] } }>(
+      `/domains/${encodeURIComponent(domainName)}/nameservers`,
+      { nameservers }
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getDomainAuthCode = async (
+  domainName: string
+): Promise<ApiResponse<{ authCode: string }>> => {
+  try {
+    const response = await api.post<{ data: { authCode: string } }>(
+      `/domains/${encodeURIComponent(domainName)}/auth-code`,
+      {}
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getTransferQuote = async (
+  domainName: string
+): Promise<ApiResponse<TransferQuote>> => {
+  try {
+    const response = await api.get<{ data: TransferQuote }>('/domains/transfer/quote', {
+      params: { domain: domainName },
+    });
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const startDomainTransfer = async (input: {
+  domainName: string;
+  authCode: string;
+}): Promise<ApiResponse<{ domain: PurchasedDomain; balanceAfterCents: number }>> => {
+  try {
+    const response = await api.post<{
+      data: { domain: PurchasedDomain; balanceAfterCents: number };
+    }>('/domains/transfer', input);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const listDomainEmailForwarding = async (
+  domainName: string
+): Promise<ApiResponse<DomainEmailForwarding[]>> => {
+  try {
+    const response = await api.get<{ data: DomainEmailForwarding[] }>(
+      `/domains/${encodeURIComponent(domainName)}/email-forwarding`
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const addDomainEmailForwarding = async (
+  domainName: string,
+  forwarding: DomainEmailForwarding
+): Promise<ApiResponse<DomainEmailForwarding>> => {
+  try {
+    const response = await api.post<{ data: DomainEmailForwarding }>(
+      `/domains/${encodeURIComponent(domainName)}/email-forwarding`,
+      forwarding
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const deleteDomainEmailForwarding = async (
+  domainName: string,
+  emailBox: string
+): Promise<ApiResponse<{ deleted: boolean }>> => {
+  try {
+    const response = await api.delete<{ data: { deleted: boolean } }>(
+      `/domains/${encodeURIComponent(domainName)}/email-forwarding/${encodeURIComponent(emailBox)}`
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const publicSearchDomains = async (
+  query: string
+): Promise<ApiResponse<DomainSearchResult[]>> => {
+  try {
+    const response = await api.get<{ data: DomainSearchResult[] }>('/domains/public-search', {
+      params: { q: query },
+    });
     return { data: response.data.data };
   } catch (error) {
     return handleError(error);
