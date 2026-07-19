@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
+import { buildAuthPath } from '@/lib/auth-redirect';
 import { Sidebar } from '@/components/sidebar';
 import { Header } from '@/components/header';
 import { WebSocketProvider } from '@/providers/WebSocketProvider';
@@ -26,7 +27,9 @@ export function DashboardShell({
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+      // Send the attempted URL along so login returns the user here, not /dashboard
+      const attempted = `${window.location.pathname}${window.location.search}`;
+      router.push(buildAuthPath('login', attempted === '/dashboard' ? null : attempted));
     }
   }, [isLoading, isAuthenticated, router]);
 

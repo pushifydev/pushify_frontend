@@ -14,7 +14,7 @@ import {
   AuthDivider,
   AuthPageHeader,
 } from '@/components/auth';
-import { saveAuthRedirect } from '@/lib/auth-redirect';
+import { buildAuthPath, consumeAuthRedirect, saveAuthRedirect, sanitizeRedirectPath } from '@/lib/auth-redirect';
 
 function LoginPageContent() {
   const router = useRouter();
@@ -41,10 +41,10 @@ function LoginPageContent() {
   }, [searchParams]);
 
   const getPostLoginRedirect = () => {
-    const redirect = searchParams.get('redirect');
-    if (redirect) return redirect;
-    const stored = typeof window !== 'undefined' ? sessionStorage.getItem('auth_post_login_redirect') : null;
-    if (stored?.startsWith('/')) return stored;
+    const fromQuery = sanitizeRedirectPath(searchParams.get('redirect'));
+    if (fromQuery) return fromQuery;
+    const stored = consumeAuthRedirect('');
+    if (stored) return stored;
     const pendingToken = sessionStorage.getItem('pending_invitation_token');
     if (pendingToken) {
       sessionStorage.removeItem('pending_invitation_token');
@@ -197,7 +197,7 @@ function LoginPageContent() {
       <p className="mt-8 text-center text-neutral-600 dark:text-neutral-400">
         {t('auth', 'dontHaveAccount')}{' '}
         <Link
-          href="/register"
+          href={buildAuthPath('register', searchParams.get('redirect'))}
           className="text-[var(--accent-cyan)] font-medium hover:opacity-80 transition-opacity"
         >
           {t('auth', 'signUp')}

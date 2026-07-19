@@ -82,6 +82,19 @@ export default function DomainsPage() {
 
   const search = useDomainSearch(query);
 
+  // Arriving from the public /domains page (or a post-auth redirect) with
+  // ?domain= — pre-fill and run the search so the user lands mid-purchase.
+  // The param stays in the URL on purpose: the auth shell can remount this page
+  // right after login (state resets), and keeping it makes the search re-apply
+  // on every mount — it also gives the page a shareable deep link.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const domain = params.get('domain')?.trim().toLowerCase();
+    if (!domain) return;
+    setInput(domain);
+    setQuery(domain);
+  }, []);
+
   // Returning from Stripe Checkout: confirm the session directly (works without
   // webhook forwarding in local/dev; idempotent with the webhook in production).
   useEffect(() => {
