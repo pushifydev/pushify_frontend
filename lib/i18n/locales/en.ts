@@ -1472,6 +1472,21 @@ export interface TranslationKeys {
     redirectingToDashboard: string;
   };
   billing: {
+    cancelSubscriptionLink: string;
+    cancelTitle: string;
+    cancelDesc: string;
+    cancelReasonLabel: string;
+    cancelReasonTooExpensive: string;
+    cancelReasonMissingFeatures: string;
+    cancelReasonBugs: string;
+    cancelReasonSwitched: string;
+    cancelReasonProjectEnded: string;
+    cancelReasonOther: string;
+    cancelCommentPh: string;
+    cancelKeep: string;
+    cancelConfirm: string;
+    cancelDoneTitle: string;
+    cancelDoneDesc: string;
     invoicesTitle: string;
     invoicesDesc: string;
     invoiceView: string;
@@ -3912,6 +3927,21 @@ export const en: TranslationKeys = {
     redirectingToDashboard: 'Redirecting to dashboard…',
   },
   billing: {
+    cancelSubscriptionLink: 'Cancel subscription',
+    cancelTitle: 'Cancel your subscription?',
+    cancelDesc: 'Your plan stays active until the end of the current billing period, then drops to Free. Your projects and data are not deleted.',
+    cancelReasonLabel: 'One question before you go — why are you cancelling?',
+    cancelReasonTooExpensive: "It's too expensive",
+    cancelReasonMissingFeatures: "It's missing features I need",
+    cancelReasonBugs: 'I ran into bugs or reliability issues',
+    cancelReasonSwitched: 'I switched to another platform',
+    cancelReasonProjectEnded: 'My project ended',
+    cancelReasonOther: 'Something else',
+    cancelCommentPh: 'Anything you want to add? (optional — a human reads these)',
+    cancelKeep: 'Keep my plan',
+    cancelConfirm: 'Cancel subscription',
+    cancelDoneTitle: 'Subscription cancelled',
+    cancelDoneDesc: 'Your plan stays active until the end of the billing period. Thanks for the feedback.',
     invoicesTitle: 'Invoices',
     invoicesDesc: 'Your Stripe invoice history — view or download as PDF.',
     invoiceView: 'View',

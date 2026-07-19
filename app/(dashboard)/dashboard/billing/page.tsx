@@ -22,6 +22,7 @@ import Link from 'next/link';
 import { SkeletonPageHeader, SkeletonBillingSummaryCard } from '@/components/Skeleton';
 import { InfraWalletSection } from './components/InfraWalletSection';
 import { InvoicesSection } from './components/InvoicesSection';
+import { CancelSubscriptionModal } from './components/CancelSubscriptionModal';
 import { BillingSection } from './components/BillingSection';
 import { UsageLimitsAlert, UsageLimitsSection } from './components/UsageLimitsSection';
 import { formatMessage } from '@/lib/i18n/format-message';
@@ -51,6 +52,7 @@ export default function BillingPage() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const { organization } = useAuthStore();
   const { data: billingInfo, isLoading } = useBillingInfo();
   const updateBillingEmail = useUpdateBillingEmail();
@@ -241,7 +243,19 @@ export default function BillingPage() {
             {t('billing', 'comparePlans')}
           </Link>
         </div>
+        {billingInfo && billingInfo.price > 0 && (
+          <div className="pt-4 mt-4 border-t border-[var(--border-subtle)]">
+            <button
+              onClick={() => setShowCancelModal(true)}
+              className="text-xs text-[var(--text-muted)] hover:text-red-400 transition-colors"
+            >
+              {t('billing', 'cancelSubscriptionLink')}
+            </button>
+          </div>
+        )}
       </div>
+
+      <CancelSubscriptionModal isOpen={showCancelModal} onClose={() => setShowCancelModal(false)} />
 
       {billingInfo && (
         <BillingSection

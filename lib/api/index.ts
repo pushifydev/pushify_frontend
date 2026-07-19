@@ -254,6 +254,8 @@ export {
   createPortalSession,
   getSubscriptionStatus,
   cancelSubscription,
+  sendCancellationFeedback,
+  type CancellationReason,
   resumeSubscription,
   getInfraBilling,
   createInfraTopUpSession,

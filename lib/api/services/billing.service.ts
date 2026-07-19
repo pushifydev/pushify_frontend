@@ -173,6 +173,29 @@ export const getSubscriptionStatus = async (): Promise<ApiResponse<SubscriptionS
   }
 };
 
+export type CancellationReason =
+  | 'too_expensive'
+  | 'missing_features'
+  | 'bugs'
+  | 'switched'
+  | 'project_ended'
+  | 'other';
+
+export const sendCancellationFeedback = async (input: {
+  reason: CancellationReason;
+  comment?: string;
+}): Promise<ApiResponse<{ recorded: boolean }>> => {
+  try {
+    const response = await api.post<{ data: { recorded: boolean } }>(
+      '/billing/cancellation-feedback',
+      input
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const cancelSubscription = async (): Promise<ApiResponse<void>> => {
   try {
     await api.post('/billing/cancel');
