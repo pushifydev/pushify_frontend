@@ -2398,5 +2398,13 @@ export const tr: TranslationKeys = {
     balanceAfter: 'Kalan kredi',
     walletNote: 'Satın alımlar altyapı kredi bakiyenden ödenir.',
     renewalIssue: 'Son yenileme denemesi başarısız oldu',
+    termLabel: 'Kayıt süresi',
+    yearWord: 'yıl',
+    yearsWord: 'yıl',
+    totalLabel: 'Toplam',
+    payWithCard: 'Kartla öde',
+    checkoutSuccess: 'Ödeme alındı. Alan adın kaydediliyor — birazdan aşağıda görünecek.',
+    checkoutFailedCredited:
+      'Kayıt sırasında bir sorun oluştu — ödemen hesap kredisi olarak kaydedildi. Kredilerle tekrar satın almayı dene.',
   },
 };

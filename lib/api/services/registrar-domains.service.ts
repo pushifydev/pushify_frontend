@@ -31,6 +31,8 @@ export interface PurchasedDomain {
 export interface PurchaseDomainInput {
   domainName: string;
   projectId?: string;
+  /** Registration term (default 1, max 5) */
+  years?: number;
 }
 
 export interface PurchaseDomainResult {
@@ -89,6 +91,33 @@ export const purchaseDomain = async (
 ): Promise<ApiResponse<PurchaseDomainResult>> => {
   try {
     const response = await api.post<{ data: PurchaseDomainResult }>('/domains/purchase', input);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const createDomainPurchaseCheckout = async (
+  input: PurchaseDomainInput
+): Promise<ApiResponse<{ url: string; amountCents: number }>> => {
+  try {
+    const response = await api.post<{ data: { url: string; amountCents: number } }>(
+      '/domains/purchase/checkout',
+      input
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const confirmDomainPurchase = async (
+  sessionId: string
+): Promise<ApiResponse<{ fulfilled: boolean; alreadyProcessed: boolean; paymentStatus: string | null }>> => {
+  try {
+    const response = await api.post<{
+      data: { fulfilled: boolean; alreadyProcessed: boolean; paymentStatus: string | null };
+    }>('/domains/purchase/confirm', { sessionId });
     return { data: response.data.data };
   } catch (error) {
     return handleError(error);
