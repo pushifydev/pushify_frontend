@@ -357,7 +357,8 @@ html.light .docs-callout-warning {
   color: var(--lp-body);
 }
 
-.docs-section-heading h1 {
+.docs-section-heading h1,
+.docs-section-heading h2 {
   font-size: 1.875rem;
   font-weight: 700;
   letter-spacing: -0.03em;

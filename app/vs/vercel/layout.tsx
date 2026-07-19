@@ -28,6 +28,8 @@ export default function VsVercelLayout({ children }: { children: React.ReactNode
         data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
+          datePublished: '2026-06-15',
+          dateModified: '2026-07-05',
           '@id': 'https://pushify.dev/vs/vercel#webpage',
           url: 'https://pushify.dev/vs/vercel',
           name: 'Pushify vs Vercel',

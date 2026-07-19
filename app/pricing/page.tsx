@@ -1,28 +1,24 @@
-'use client';
+import type { AvailablePlans } from '@/lib/api';
+import { PricingPageView } from './PricingPageView';
 
-import { MarketingShell, MarketingPageHero } from '@/components/landing';
-import { PricingSection } from '@/components/landing/PricingSection';
-import { useTranslation } from '@/hooks';
+// Prices must exist in the server-rendered HTML: AI crawlers and non-JS fetchers
+// never see client-fetched data, and /pricing is the page most quoted for cost
+// questions. Plans are fetched here (ISR, 1h) and seed the client query cache.
+export const revalidate = 3600;
 
-export default function PricingPage() {
-  const { t } = useTranslation();
+async function fetchPlans(): Promise<AvailablePlans | undefined> {
+  const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
+  try {
+    const res = await fetch(`${base}/billing/plans`, { next: { revalidate: 3600 } });
+    if (!res.ok) return undefined;
+    const json = (await res.json()) as { data?: AvailablePlans };
+    return json.data;
+  } catch {
+    return undefined;
+  }
+}
 
-  return (
-    <MarketingShell noPad>
-      <MarketingPageHero
-        label={t('landing', 'pricingBadge')}
-        title={
-          <>
-            {t('landing', 'simpleTransparent')}{' '}
-            <span style={{ color: 'var(--lp-muted)' }}>
-              {t('landing', 'transparentGradient')}
-            </span>{' '}
-            {t('landing', 'pricing').toLowerCase()}
-          </>
-        }
-        description={t('landing', 'pricingSubtitle')}
-      />
-      <PricingSection pageLayout />
-    </MarketingShell>
-  );
+export default async function PricingPage() {
+  const plans = await fetchPlans();
+  return <PricingPageView initialPlans={plans} />;
 }

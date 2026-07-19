@@ -160,6 +160,7 @@ export default function RootLayout({
                     '@type': 'AggregateOffer',
                     priceCurrency: 'USD',
                     lowPrice: '0',
+                    highPrice: '13',
                     offerCount: 5,
                     availability: 'https://schema.org/InStock',
                     url: 'https://pushify.dev/pricing',

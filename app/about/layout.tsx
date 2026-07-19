@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'About – Open-Source Cloud Deployment Platform',
   description:
-    'Pushify is an open-source cloud deployment platform. Learn our mission, team, and how we compare to proprietary PaaS tools.',
+    'Pushify is an open-source cloud deployment platform built for developers who want Vercel-style simplicity without vendor lock-in. Read our mission and values.',
   alternates: { canonical: '/about' },
   openGraph: {
-    title: 'About | Pushify',
+    title: 'About Pushify – Open-Source Cloud Deployment Platform',
     url: 'https://pushify.dev/about',
   },
 };

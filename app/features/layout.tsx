@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Features',
+  title: 'Features – Deploy, Databases, Marketplace & AI',
   description:
     'Deploy to your own servers in under 60 seconds. Git push deploys, marketplace apps, monitoring, teams, and open-source MIT license.',
   alternates: { canonical: '/features' },
   openGraph: {
-    title: 'Features | Pushify',
+    title: 'Features – Deploy, Databases, Marketplace & AI | Pushify',
     description: 'Open-source cloud deployment with zero config on your VPS.',
     url: 'https://pushify.dev/features',
   },

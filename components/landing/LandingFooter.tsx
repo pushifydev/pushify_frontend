@@ -11,6 +11,7 @@ export function LandingFooter() {
     [t('landing', 'product')]: [
       { label: t('landing', 'features'), href: '/features' },
       { label: t('landing', 'sites'), href: '/sites' },
+      { label: t('domainSales', 'title'), href: '/domains' },
       { label: t('landing', 'pricing'), href: '/pricing' },
       {
         label: t('landing', 'cli'),
@@ -99,7 +100,7 @@ export function LandingFooter() {
                         href={link.href}
                         target={isExternal ? '_blank' : undefined}
                         rel={isExternal ? 'noopener noreferrer' : undefined}
-                        className="text-sm inline-flex items-center gap-1 transition-colors hover:underline underline-offset-4"
+                        className="text-sm inline-flex items-center gap-1 py-1 transition-colors hover:underline underline-offset-4"
                         style={{ color: 'var(--lp-body)' }}
                       >
                         {link.label}

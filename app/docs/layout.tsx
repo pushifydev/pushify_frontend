@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: '/docs',
   },
   openGraph: {
-    title: 'API Documentation - Pushify',
+    title: 'API Documentation | Pushify',
     description: 'Complete REST API reference for Pushify cloud deployment platform.',
     url: 'https://pushify.dev/docs',
   },
@@ -28,6 +28,9 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
           description:
             'Pushify REST API reference: authentication, projects, deployments, servers, databases, webhooks, and CI/CD integration.',
           url: 'https://pushify.dev/docs',
+          image: 'https://pushify.dev/og-image.png',
+          datePublished: '2026-05-01',
+          dateModified: '2026-07-19',
           inLanguage: 'en',
           isPartOf: { '@id': 'https://pushify.dev/#website' },
           about: { '@id': 'https://pushify.dev/#software' },

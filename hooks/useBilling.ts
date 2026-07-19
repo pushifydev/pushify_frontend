@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+  type AvailablePlans,
   getBillingInfo,
   getAvailablePlans,
   updateBillingEmail,
@@ -40,7 +41,7 @@ export function useBillingInfo() {
   });
 }
 
-export function useAvailablePlans() {
+export function useAvailablePlans(initialData?: AvailablePlans) {
   return useQuery({
     queryKey: billingKeys.plans(),
     queryFn: async () => {
@@ -49,6 +50,8 @@ export function useAvailablePlans() {
       return result.data!;
     },
     staleTime: 1000 * 60 * 60, // Plans don't change often - cache for 1 hour
+    // Server-fetched plans (pricing page SSR) seed the cache so prices render into HTML
+    initialData,
   });
 }
 

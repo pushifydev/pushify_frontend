@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Pricing',
+  title: 'Pricing – Plans, Server Credits & Billing',
   description:
     'Platform subscription plus prepaid infrastructure credits for managed Hetzner servers. Hourly billing, payment failure policy, and BYOS explained.',
   alternates: { canonical: '/pricing' },
