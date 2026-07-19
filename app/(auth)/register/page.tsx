@@ -14,7 +14,7 @@ import {
   AuthDivider,
   AuthPageHeader,
 } from '@/components/auth';
-import { saveAuthRedirect } from '@/lib/auth-redirect';
+import { buildAuthPath, consumeAuthRedirect, saveAuthRedirect } from '@/lib/auth-redirect';
 
 function RegisterPageContent() {
   const router = useRouter();
@@ -54,7 +54,9 @@ function RegisterPageContent() {
         sessionStorage.removeItem('pending_invitation_token');
         router.push(`/accept-invitation?token=${pendingToken}`);
       } else {
-        router.push('/dashboard');
+        // Honor ?redirect= (saved to sessionStorage on mount) — e.g. domain
+        // purchase flows land back where the user started, not on /dashboard.
+        router.push(consumeAuthRedirect('/dashboard'));
       }
     }
   };
@@ -162,7 +164,7 @@ function RegisterPageContent() {
       <p className="mt-8 text-center text-neutral-600 dark:text-neutral-400">
         {t('auth', 'alreadyHaveAccount')}{' '}
         <Link
-          href="/login"
+          href={buildAuthPath('login', searchParams.get('redirect'))}
           className="text-[var(--accent-cyan)] font-medium hover:opacity-80 transition-opacity"
         >
           {t('auth', 'signIn')}

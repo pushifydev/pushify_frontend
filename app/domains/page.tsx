@@ -1,21 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Check, Loader2, Search, X } from 'lucide-react';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
 import { Reveal } from '@/components/landing/Reveal';
 import { usePublicDomainSearch, useTranslation } from '@/hooks';
+import { getAccessToken } from '@/lib/api/client';
+import { buildAuthPath } from '@/lib/auth-redirect';
 
 function formatUsd(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
+}
+
+/** Where the buy CTA ultimately lands: dashboard search pre-filled with the domain. */
+function purchasePath(domainName: string): string {
+  return `/dashboard/domains?domain=${encodeURIComponent(domainName)}`;
 }
 
 export default function PublicDomainsPage() {
   const { t } = useTranslation();
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
+  // Session check after mount (localStorage isn't available during SSR)
+  const [hasSession, setHasSession] = useState(false);
   const search = usePublicDomainSearch(query);
+
+  useEffect(() => {
+    setHasSession(!!getAccessToken());
+  }, []);
 
   return (
     <MarketingShell>
@@ -103,10 +116,14 @@ export default function PublicDomainsPage() {
                         </span>
                       </span>
                       <Link
-                        href={`/register?domain=${encodeURIComponent(r.domainName)}`}
+                        href={
+                          hasSession
+                            ? purchasePath(r.domainName)
+                            : buildAuthPath('register', purchasePath(r.domainName))
+                        }
                         className="lp-cta h-8 px-3 text-xs shrink-0"
                       >
-                        {t('domainSales', 'publicBuyCta')}
+                        {hasSession ? t('domainSales', 'buy') : t('domainSales', 'publicBuyCta')}
                         <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     </>

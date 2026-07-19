@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.57] - 2026-07-19
+
+### Fixed
+- **Post-auth redirect now works end-to-end (professional `?redirect=` structure).** Buying a domain from the public `/domains` page previously dumped users on the dashboard, losing the domain they picked — on both the login and logged-in paths. Now: the buy CTA is session-aware (logged-in users go straight to `/dashboard/domains?domain=<name>`; others to `/register?redirect=…`), registration finally **consumes** the saved redirect instead of hard-coding `/dashboard`, the login↔register cross-links carry the redirect along, and the dashboard auth guard captures the attempted URL so any deep link survives a login round-trip. A central `sanitizeRedirectPath` guard hardens every consumer against open redirects (absolute URLs, `//host`, backslash tricks, auth-page loops) — including the previously unsanitized login query param. The domains page pre-fills and auto-runs the search from `?domain=` (kept in the URL as a shareable deep link). Verified with an end-to-end browser test: register with a picked domain → land on the domains page, search pre-filled and running.
+
 ## [0.2.0-beta.56] - 2026-07-19
 
 ### Fixed (SEO audit follow-up)
