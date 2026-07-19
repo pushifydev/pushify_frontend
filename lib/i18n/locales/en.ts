@@ -1273,6 +1273,23 @@ export interface TranslationKeys {
   security: {
     oauthCodeLabel: string;
     oauthCodeHint: string;
+    statusOnTitle: string;
+    statusOnDesc: string;
+    statusOffTitle: string;
+    statusOffDesc: string;
+    benefitApps: string;
+    benefitBackup: string;
+    benefitEverywhere: string;
+    backupCodesHint: string;
+    signInTitle: string;
+    signInDesc: string;
+    methodPassword: string;
+    methodPasswordSet: string;
+    methodPasswordUnset: string;
+    methodSetAction: string;
+    methodSocial: string;
+    methodSocialDesc: string;
+    active: string;
     title: string;
     description: string;
     twoFactor: string;
@@ -3661,6 +3678,23 @@ export const en: TranslationKeys = {
   },
   security: {
     oauthCodeLabel: 'Authenticator or backup code',
+    statusOnTitle: 'Two-factor authentication is on',
+    statusOnDesc: 'A code from your authenticator app is required whenever you sign in.',
+    statusOffTitle: 'Two-factor authentication is off',
+    statusOffDesc: 'Add a second step at sign-in so a stolen password alone is never enough.',
+    benefitApps: 'Works with any authenticator app — Google Authenticator, 1Password, Authy',
+    benefitBackup: '10 single-use backup codes for when your phone is out of reach',
+    benefitEverywhere: 'Protects email sign-in on every device',
+    backupCodesHint: 'Lost your backup codes? Regenerate them — the old ones stop working immediately.',
+    signInTitle: 'Sign-in method',
+    signInDesc: 'How you access your Pushify account.',
+    methodPassword: 'Email & password',
+    methodPasswordSet: 'Password is set',
+    methodPasswordUnset: 'No password yet — you sign in with Google/GitHub',
+    methodSetAction: 'Set a password',
+    methodSocial: 'Social sign-in',
+    methodSocialDesc: 'Google / GitHub (OAuth)',
+    active: 'Active',
     oauthCodeHint:
       'Your account signs in with Google/GitHub and has no password, so confirm with a current 6-digit authenticator code or one of your backup codes.',
     title: 'Security',
