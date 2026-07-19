@@ -536,3 +536,49 @@ export const authService = {
   sendVerificationEmail,
   verifyEmail,
 };
+
+// ============ Notification preferences ============
+
+export interface NotificationPrefs {
+  deploymentAlerts: boolean;
+  securityAlerts: boolean;
+  weeklyDigest: boolean;
+  productUpdates: boolean;
+  /** Onboarding/lifecycle email sequence (maps to server-side opt-out) */
+  onboardingEmails: boolean;
+}
+
+export const getNotificationPrefs = async (): Promise<ApiResponse<NotificationPrefs>> => {
+  try {
+    const response = await api.get<{ data: NotificationPrefs }>('/auth/me/notification-prefs');
+    return { data: response.data.data };
+  } catch (error) {
+    const axiosError = error as AxiosError<{ error: ApiError }>;
+    return {
+      error: axiosError.response?.data?.error || {
+        code: 'NETWORK_ERROR',
+        message: 'Unable to connect to server',
+      },
+    };
+  }
+};
+
+export const updateNotificationPrefs = async (
+  input: Partial<NotificationPrefs>
+): Promise<ApiResponse<NotificationPrefs>> => {
+  try {
+    const response = await api.put<{ data: NotificationPrefs }>(
+      '/auth/me/notification-prefs',
+      input
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    const axiosError = error as AxiosError<{ error: ApiError }>;
+    return {
+      error: axiosError.response?.data?.error || {
+        code: 'NETWORK_ERROR',
+        message: 'Unable to connect to server',
+      },
+    };
+  }
+};
