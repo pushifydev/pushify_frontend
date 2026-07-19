@@ -1256,6 +1256,7 @@ export const tr: TranslationKeys = {
     memoryOf: '/',
   },
   apiKeys: {
+    listTitle: 'Anahtarların',
     title: 'API Anahtarları',
     description: 'CI/CD pipeline\'larından veya CLI araçlarından projelerinize programatik erişim için API anahtarları oluşturun.',
     rateLimitBanner: 'Organizasyon planınız her API anahtarı için dakikada {count} isteğe izin verir.',

@@ -1233,6 +1233,7 @@ export interface TranslationKeys {
     memoryOf: string;
   };
   apiKeys: {
+    listTitle: string;
     title: string;
     description: string;
     rateLimitBanner: string;
@@ -3641,6 +3642,7 @@ export const en: TranslationKeys = {
     memoryOf: 'of',
   },
   apiKeys: {
+    listTitle: 'Your keys',
     title: 'API Keys',
     description: 'Create API keys to access your projects programmatically from CI/CD pipelines or CLI tools.',
     rateLimitBanner: 'Your organization plan allows {count} API requests per minute for each API key.',
