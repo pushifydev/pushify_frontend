@@ -77,76 +77,56 @@ function SessionCard({
   const DeviceIcon = isMobile ? Smartphone : Monitor;
 
   return (
-    <div
-      className={`p-4 rounded-xl border ${
-        session.isCurrent
-          ? 'border-[var(--accent-cyan)]/30 bg-[var(--accent-cyan)]/5'
-          : 'border-[var(--border-subtle)] bg-[var(--bg-secondary)]'
-      }`}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <div
-            className={`p-3 rounded-xl ${
-              session.isCurrent
-                ? 'bg-[var(--accent-cyan)]/20'
-                : 'bg-[var(--bg-tertiary)]'
-            }`}
-          >
-            <DeviceIcon
-              className={`w-5 h-5 ${
-                session.isCurrent ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)]'
-              }`}
-            />
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">
-                {browser} on {os}
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-3.5 p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-tertiary)]/40">
+      <div className="flex items-center gap-3.5 min-w-0 flex-1">
+        <div className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+          <DeviceIcon className="w-4 h-4 text-[var(--text-secondary)]" />
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium text-[var(--text-primary)]">
+              {browser} on {os}
+            </span>
+            {session.isCurrent && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                {t('sessions', 'thisDevice')}
               </span>
-              {session.isCurrent && (
-                <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)]">
-                  {t('sessions', 'thisDevice')}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-4 text-sm text-[var(--text-secondary)]">
-              {session.ipAddress && (
-                <div className="flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5" />
-                  <span>{session.ipAddress}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5" />
-                <span>
-                  {t('sessions', 'lastActive')}: {getRelativeTime(session.createdAt)}
-                </span>
-              </div>
-            </div>
-            <div className="text-xs text-[var(--text-muted)]">
+            )}
+          </div>
+          <div className="flex items-center gap-3 flex-wrap text-xs text-[var(--text-muted)] mt-1">
+            {session.ipAddress && (
+              <span className="flex items-center gap-1">
+                <Globe className="w-3 h-3" />
+                {session.ipAddress}
+              </span>
+            )}
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {getRelativeTime(session.createdAt)}
+            </span>
+            <span>
               {t('sessions', 'signedIn')}: {formatShortDate(session.createdAt)}
-            </div>
+            </span>
           </div>
         </div>
-
-        {!session.isCurrent && (
-          <button
-            onClick={onTerminate}
-            disabled={isTerminating}
-            className="btn btn-secondary text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10"
-          >
-            {isTerminating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <>
-                <LogOut className="w-4 h-4" />
-                {t('sessions', 'terminate')}
-              </>
-            )}
-          </button>
-        )}
       </div>
+
+      {!session.isCurrent && (
+        <button
+          onClick={onTerminate}
+          disabled={isTerminating}
+          className="btn btn-secondary h-8 text-xs text-red-400 hover:text-red-300 hover:border-red-500/30 shrink-0 self-start sm:self-center"
+        >
+          {isTerminating ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <>
+              <LogOut className="w-3.5 h-3.5" />
+              {t('sessions', 'terminate')}
+            </>
+          )}
+        </button>
+      )}
     </div>
   );
 }
@@ -204,7 +184,7 @@ export function SessionsTab() {
 
       {/* Current Session */}
       {currentSession && (
-        <SettingsCard title={t('sessions', 'currentSession')} description={t('sessions', 'description')}>
+        <SettingsCard title={t('sessions', 'currentSession')}>
           <SessionCard
             session={currentSession}
             onTerminate={() => {}}
@@ -217,7 +197,7 @@ export function SessionsTab() {
       {/* Other Sessions */}
       <SettingsCard
         title={t('sessions', 'otherSessions')}
-        description={t('sessions', 'noOtherSessionsDesc')}
+        description={otherSessions.length === 0 ? t('sessions', 'noOtherSessionsDesc') : undefined}
         footer={
           otherSessions.length > 0 ? (
             <button
@@ -238,7 +218,7 @@ export function SessionsTab() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {otherSessions.map((session) => (
               <SessionCard
                 key={session.id}

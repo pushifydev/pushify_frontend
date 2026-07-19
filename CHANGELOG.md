@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0-beta.59] - 2026-07-19
+
+### Changed
+- **All settings tab contents brought into the quiet design language.** **Appearance**: the theme picker is now three miniature dashboard previews rendered in each theme's own colors (System = half dark / half light) with a small check badge — the option shows itself instead of an icon; language options became calm pills. **Sessions**: session rows match the settings row pattern (small icon plate, wrapped meta line), "This device" is a green chip instead of an accent-tinted card, and the "you're only signed in here" copy no longer shows above a list of other sessions. **API Keys**: rows get the same treatment plus a green **Active** chip, the duplicated card header was deduped ("Your keys"), and meta wraps properly on mobile.
+- **Settings navigation redesigned.** The tab rail is now grouped the way the content actually splits — **Account** (Profile, Appearance, Notifications) and **Access & security** (Security, Sessions, API Keys) with quiet uppercase eyebrows. The loud accent-tinted active state and rotating chevrons are gone: active is a calm neutral pill with the icon as the only accent. On mobile the rail becomes a horizontally scrollable chip strip that auto-centers the active tab (deep links like `?tab=security` land correctly). Verified in dark + light, desktop + 390px mobile.
+- **Security settings visual refresh.** The 2FA card grew a proper status header (shield icon plate — green when protected, muted when off) with plain-language state copy, and when 2FA is off, a quiet checklist of what enabling gets you (any authenticator app, 10 backup codes, every-device protection); when on, the footer hints how backup-code regeneration behaves. New **Sign-in method** card below shows how the account authenticates — password accounts see "Password is set · Active", Google/GitHub accounts see their social sign-in row plus a one-click **Set a password** shortcut to the Profile tab. Verified in both dark and Clean Pro light themes. EN/TR i18n.
+
 ## [0.2.0-beta.58] - 2026-07-19
 
 ### Fixed

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Key, Plus, Trash2, Clock, Shield } from 'lucide-react';
+import { Check, Key, Plus, Trash2, Clock, Shield } from 'lucide-react';
 import Link from 'next/link';
 import {
   useTranslation,
@@ -82,7 +82,7 @@ export function ApiKeysTab() {
       )}
 
       {/* API Keys List */}
-      <SettingsCard title={t('apiKeys', 'title')} description={t('apiKeys', 'description')}>
+      <SettingsCard title={t('apiKeys', 'listTitle')}>
         <div className="-mx-5 -mb-5 md:-mx-6 border-t border-[var(--border-subtle)]">
           {isLoading ? (
             <div className="divide-y divide-[var(--border-subtle)]">
@@ -178,34 +178,41 @@ function ApiKeyRow({ apiKey, isExpired, onRevoke }: ApiKeyRowProps) {
 
   return (
     <div
-      className={`p-5 bg-[var(--bg-secondary)] transition-opacity ${
+      className={`p-4 md:p-5 bg-[var(--bg-secondary)] transition-opacity ${
         !apiKey.isActive || isExpired ? 'opacity-60' : ''
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <div className="p-2.5 rounded-lg bg-[var(--bg-tertiary)]">
-            <Key className="w-5 h-5 text-[var(--text-muted)]" />
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-3.5 min-w-0 flex-1">
+          <div className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+            <Key className="w-4 h-4 text-[var(--text-secondary)]" />
           </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-semibold">{apiKey.name}</h3>
-              {isExpired && (
-                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">{apiKey.name}</h3>
+              {isExpired ? (
+                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-red-500/10 text-red-400 border border-red-500/20">
                   {t('apiKeys', 'expired')}
                 </span>
+              ) : (
+                apiKey.isActive && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                    <Check className="w-3 h-3" />
+                    {t('security', 'active')}
+                  </span>
+                )
               )}
             </div>
-            <div className="flex items-center gap-4 text-sm text-[var(--text-muted)]">
-              <code className="px-2 py-0.5 rounded bg-[var(--bg-tertiary)] font-mono text-xs">
+            <div className="flex items-center gap-3 flex-wrap text-xs text-[var(--text-muted)] mt-1">
+              <code className="px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] font-mono text-[11px]">
                 {apiKey.prefix}...
               </code>
-              <span className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5" />
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
                 {apiKey.lastUsedAt ? formatTimeAgo(apiKey.lastUsedAt, t) : t('apiKeys', 'never')}
               </span>
-              <span className="flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5" />
+              <span className="flex items-center gap-1">
+                <Shield className="w-3 h-3" />
                 {apiKey.scopes === '*'
                   ? t('apiKeys', 'allPermissions')
                   : `${apiKey.scopes.split(',').length} scopes`}
@@ -215,10 +222,10 @@ function ApiKeyRow({ apiKey, isExpired, onRevoke }: ApiKeyRowProps) {
         </div>
         <button
           onClick={onRevoke}
-          className="btn btn-secondary text-red-400 hover:text-red-300 hover:border-red-500/30 text-sm"
+          className="btn btn-secondary h-8 text-xs text-red-400 hover:text-red-300 hover:border-red-500/30 shrink-0 self-start sm:self-center"
           disabled={!apiKey.isActive}
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-3.5 h-3.5" />
           {t('apiKeys', 'revoke')}
         </button>
       </div>
