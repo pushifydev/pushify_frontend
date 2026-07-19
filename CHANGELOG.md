@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0-beta.60] - 2026-07-19
+
+### Changed
+- **Ship only the active language — the Turkish dictionary is now a lazy chunk.** Both full translation dictionaries (~4,400 lines each) were statically bundled into every page for every visitor. The bundle now contains only English; the Turkish dictionary loads on demand (once, then cached) when the locale is `tr`, with English fallback during the brief fetch and an automatic re-render when it lands. Homepage JS drops **1,518 → 1,408 KB raw** and the TR chunk is no longer referenced by any page's initial load — the same saving applies to every route, including the dashboard. Verified on a production build: EN default renders English, a stored `tr` preference renders Turkish end-to-end.
+- **Google Analytics moved fully off the critical path** (`lazyOnload` instead of `afterInteractive`) — it no longer competes with hydration for main-thread time during the INP-sensitive window.
+
 ## [0.2.0-beta.59] - 2026-07-19
 
 ### Changed

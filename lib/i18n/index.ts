@@ -1,5 +1,4 @@
 import { en, type TranslationKeys } from './locales/en';
-import { tr } from './locales/tr';
 
 // ============ Types ============
 
@@ -11,15 +10,32 @@ export type { TranslationKeys };
 
 // ============ Translations Map ============
 
-const translations: Record<SupportedLocale, TranslationKeys> = {
+// Only the default (en) dictionary ships in the bundle. The tr dictionary is a
+// separate lazy chunk (~300KB raw across both would otherwise load on EVERY page
+// for EVERY visitor) — it's fetched on demand when the locale is tr. Until it
+// arrives, lookups fall back to en; `loadLocale` resolves and the locale store
+// bumps `dictVersion` so subscribed components re-render with Turkish text.
+const translations: Partial<Record<SupportedLocale, TranslationKeys>> = {
   en,
-  tr,
 };
+
+let trPromise: Promise<void> | null = null;
+
+/** Ensure a locale's dictionary is in memory. Resolves immediately for en/loaded. */
+export const loadLocale = (locale: SupportedLocale): Promise<void> => {
+  if (locale !== 'tr' || translations.tr) return Promise.resolve();
+  trPromise ??= import('./locales/tr').then((m) => {
+    translations.tr = m.tr;
+  });
+  return trPromise;
+};
+
+export const isLocaleLoaded = (locale: SupportedLocale): boolean => !!translations[locale];
 
 // ============ Functions ============
 
 export const getTranslations = (locale: SupportedLocale): TranslationKeys => {
-  return translations[locale] || translations[DEFAULT_LOCALE];
+  return translations[locale] ?? translations[DEFAULT_LOCALE]!;
 };
 
 export const t = <C extends keyof TranslationKeys>(
@@ -27,7 +43,8 @@ export const t = <C extends keyof TranslationKeys>(
   category: C,
   key: keyof TranslationKeys[C]
 ): string => {
-  const categoryTranslations = translations[locale]?.[category];
+  // getTranslations falls back to en while a lazy dictionary is still loading
+  const categoryTranslations = getTranslations(locale)[category];
   if (!categoryTranslations) {
     return String(key);
   }
