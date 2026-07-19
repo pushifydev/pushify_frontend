@@ -91,6 +91,8 @@ export const tr: TranslationKeys = {
     emailNotVerifiedBannerDesc: 'Gelen kutunuzu doğrulama bağlantısı için kontrol edin veya yeni bir tane almak için Yeniden Gönder\'e tıklayın.',
   },
   navigation: {
+    settingsGroupAccount: 'Hesap',
+    settingsGroupAccess: 'Erişim ve Güvenlik',
     overview: 'Genel Bakış',
     projects: 'Projeler',
     activity: 'Aktivite',

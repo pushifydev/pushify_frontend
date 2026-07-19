@@ -1,21 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Key, Shield, Settings, ChevronRight, User, Palette, Monitor, Bell } from 'lucide-react';
+import { Key, Shield, Settings, User, Palette, Monitor, Bell } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { ProfileTab, AppearanceTab, SessionsTab, NotificationsTab, SecurityTab, ApiKeysTab } from './components';
 
 type SettingsTab = 'profile' | 'appearance' | 'sessions' | 'notifications' | 'security' | 'api-keys';
 
-const tabs: { id: SettingsTab; icon: React.ElementType; labelKey: 'profile' | 'appearance' | 'sessions' | 'notificationPrefs' | 'security' | 'apiKeys' }[] = [
-  { id: 'profile', icon: User, labelKey: 'profile' },
-  { id: 'appearance', icon: Palette, labelKey: 'appearance' },
-  { id: 'sessions', icon: Monitor, labelKey: 'sessions' },
-  { id: 'notifications', icon: Bell, labelKey: 'notificationPrefs' },
-  { id: 'security', icon: Shield, labelKey: 'security' },
-  { id: 'api-keys', icon: Key, labelKey: 'apiKeys' },
+interface TabDef {
+  id: SettingsTab;
+  icon: React.ElementType;
+  labelKey: 'profile' | 'appearance' | 'sessions' | 'notificationPrefs' | 'security' | 'apiKeys';
+}
+
+// Grouped like the content actually splits: identity/preferences vs. who-can-get-in
+const tabGroups: { groupKey: 'settingsGroupAccount' | 'settingsGroupAccess'; tabs: TabDef[] }[] = [
+  {
+    groupKey: 'settingsGroupAccount',
+    tabs: [
+      { id: 'profile', icon: User, labelKey: 'profile' },
+      { id: 'appearance', icon: Palette, labelKey: 'appearance' },
+      { id: 'notifications', icon: Bell, labelKey: 'notificationPrefs' },
+    ],
+  },
+  {
+    groupKey: 'settingsGroupAccess',
+    tabs: [
+      { id: 'security', icon: Shield, labelKey: 'security' },
+      { id: 'sessions', icon: Monitor, labelKey: 'sessions' },
+      { id: 'api-keys', icon: Key, labelKey: 'apiKeys' },
+    ],
+  },
 ];
+
+const allTabs = tabGroups.flatMap((g) => g.tabs);
 
 export default function SettingsPage() {
   const { t } = useTranslation();
@@ -28,6 +47,13 @@ export default function SettingsPage() {
     setActiveTab(tab);
     router.push(`/dashboard/settings?tab=${tab}`, { scroll: false });
   };
+
+  // Keep the active chip visible in the mobile tab strip (e.g. deep link to ?tab=security)
+  useEffect(() => {
+    document
+      .querySelector(`[data-settings-chip="${activeTab}"]`)
+      ?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+  }, [activeTab]);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] min-w-0 overflow-x-hidden">
@@ -50,32 +76,66 @@ export default function SettingsPage() {
 
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-8">
         <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-          {/* Sidebar Navigation */}
-          <nav className="md:w-64 shrink-0">
-            <div className="md:sticky md:top-24 flex md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0 md:space-y-1">
-              {tabs.map((tab) => {
+          {/* Mobile: flat scrollable chip row */}
+          <nav className="md:hidden -mx-4 px-4 overflow-x-auto">
+            <div className="flex gap-2 pb-1 w-max">
+              {allTabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
                 return (
                   <button
                     key={tab.id}
+                    data-settings-chip={tab.id}
                     onClick={() => handleTabChange(tab.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 md:px-4 md:py-3 rounded-lg text-left transition-all whitespace-nowrap ${
+                    className={`inline-flex items-center gap-2 px-3.5 h-9 rounded-full text-sm font-medium whitespace-nowrap border transition-colors ${
                       isActive
-                        ? 'bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] border border-[var(--accent-cyan)]/20'
-                        : 'text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]'
+                        ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-default)]'
+                        : 'text-[var(--text-secondary)] border-transparent hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Icon className="w-5 h-5" />
-                      <span className="font-medium">{t(tab.labelKey, 'title')}</span>
-                    </div>
-                    <ChevronRight
-                      className={`w-4 h-4 transition-transform hidden md:block ${isActive ? 'rotate-90' : ''}`}
-                    />
+                    <Icon className="w-4 h-4" />
+                    {t(tab.labelKey, 'title')}
                   </button>
                 );
               })}
+            </div>
+          </nav>
+
+          {/* Desktop: grouped rail */}
+          <nav className="hidden md:block md:w-56 shrink-0" aria-label={t('navigation', 'settings')}>
+            <div className="md:sticky md:top-24 space-y-6">
+              {tabGroups.map((group) => (
+                <div key={group.groupKey}>
+                  <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                    {t('navigation', group.groupKey)}
+                  </p>
+                  <div className="space-y-0.5">
+                    {group.tabs.map((tab) => {
+                      const Icon = tab.icon;
+                      const isActive = activeTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => handleTabChange(tab.id)}
+                          aria-current={isActive ? 'page' : undefined}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-colors ${
+                            isActive
+                              ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] font-medium border border-[var(--border-subtle)] shadow-sm'
+                              : 'text-[var(--text-secondary)] border border-transparent hover:bg-[var(--bg-secondary)]/60 hover:text-[var(--text-primary)]'
+                          }`}
+                        >
+                          <Icon
+                            className={`w-4 h-4 shrink-0 ${
+                              isActive ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)]'
+                            }`}
+                          />
+                          {t(tab.labelKey, 'title')}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           </nav>
 

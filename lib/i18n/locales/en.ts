@@ -92,6 +92,8 @@ export interface TranslationKeys {
     emailNotVerifiedBannerDesc: string;
   };
   navigation: {
+    settingsGroupAccount: string;
+    settingsGroupAccess: string;
     overview: string;
     projects: string;
     activity: string;
@@ -2476,6 +2478,8 @@ export const en: TranslationKeys = {
     emailNotVerifiedBannerDesc: 'Check your inbox for a verification link, or click Resend to get a new one.',
   },
   navigation: {
+    settingsGroupAccount: 'Account',
+    settingsGroupAccess: 'Access & security',
     overview: 'Overview',
     projects: 'Projects',
     activity: 'Activity',
