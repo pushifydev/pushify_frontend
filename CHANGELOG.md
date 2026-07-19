@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.62] - 2026-07-19
+
+### Added
+- **In-app cancellation with a one-question exit survey** (pairs with backend beta.58). Paid plans get a quiet "Cancel subscription" link under the Current Plan card; the dialog asks a single honest question (too expensive / missing features / bugs / switched / project ended / other + optional comment, "a human reads these"), records it best-effort, then cancels at period end with a clear "your data is not deleted" note. EN/TR i18n.
+
 ## [0.2.0-beta.61] - 2026-07-19
 
 ### Added
