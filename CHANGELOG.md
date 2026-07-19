@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.0-beta.61] - 2026-07-19
+
+### Added
+- **Three SEO growth pages, built on verified data only** (competitor facts checked against live public sources, July 2026 — no invented benchmarks, stars or testimonials; every page carries a "spot an error? email us" correction note):
+  - **`/vs/heroku`** — the existing honest-comparison template applied to Heroku: real pricing (free tier removed Nov 2022; $5 Eco sleeps after 30 min; $7 Basic dyno + $5 smallest Postgres ≈ $12/mo minimum), give-them-their-due rows (zero-ops, 10+ year add-on ecosystem), migration FAQ, FAQPage schema. EN/TR.
+  - **`/alternatives`** — the roundup-format hub the "coolify alternative / self-hosted heroku" SERPs actually reward: at-a-glance matrices (license, self-host, cloud, real starting prices, pricing model) for Coolify, Dokploy, CapRover, Dokku, Heroku, Railway, Render, plus honest per-tool reviews with "best for" verdicts — including Pushify's own weaknesses (younger ecosystem, smaller community) stated in its card. EN/TR, CollectionPage schema.
+  - **`/guides/deploy-nextjs`** — a genuine step-by-step tutorial for the 100%-tutorial "deploy nextjs own server" SERP: Node 22 via NodeSource, swap for 1 GB builds, PM2 with systemd startup, full nginx reverse-proxy config, certbot SSL and a redeploy script with its downtime trade-off explained — then the automated Pushify route. Fully static SSR, TechArticle schema.
+  - All three added to the sitemap and the footer's Resources column.
+
 ## [0.2.0-beta.60] - 2026-07-19
 
 ### Changed

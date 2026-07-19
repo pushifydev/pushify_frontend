@@ -2392,6 +2392,125 @@ export const tr: TranslationKeys = {
     ctaBody: 'Görsel olarak kur, kendi sunucuna yayınla ve tam kontrolü elinde tut.',
     ctaButton: 'Ücretsiz oluşturmaya başla',
   },
+  vsHeroku: {
+    eyebrow: 'Dürüst karşılaştırma',
+    h1: 'Pushify vs Heroku',
+    subtitle:
+      'Git-push ile deploy fikrini Heroku icat etti. Pushify aynı akışı sahibi olduğun sunuculara taşıyor — ücretsiz self-host seçeneği ve sabit sunucu fiyatlarıyla. Satış konuşması değil, teknik özet.',
+    ctaPrimary: 'Ücretsiz başla',
+    ctaSecondary: 'Fiyatları gör',
+    tldrTitle: 'Özet',
+    tldrBody:
+      "Heroku tamamen yönetilen bir platform: sunucuya hiç dokunmazsın ve dyno başına ödersin — Basic dyno ayda $7, en küçük Postgres $5; yani sürekli açık küçük bir uygulama yaklaşık $12/ay'dan başlar (ücretsiz katman Kasım 2022'de kaldırıldı; $5'lık Eco planındaki dyno'lar 30 dakika hareketsizlikte uyur). Pushify, Heroku'nun push-to-deploy hissini korur ama kontrolü sende olan altyapıda çalışır: platformu ücretsiz self-host et, kendi VPS'ini getir ya da Pushify'ın sabit aylık fiyatlı yönetilen Hetzner sunucularını kullan. Sıfır sunucu sorumluluğu ve on yıllık eklenti ekosistemi istiyorsan Heroku hâlâ mükemmel. Sahiplik ve öngörülebilir fatura istiyorsan Pushify.",
+    choosePushifyTitle: 'Şu durumda Pushify seç…',
+    choosePushify1:
+      'Her yeni servisle büyüyen dyno-başına/eklenti-başına faturalama yerine öngörülebilir, sabit sunucu fiyatı istiyorsan.',
+    choosePushify2:
+      'Uygulaman ve verin sahibi olduğun sunucularda dursun istiyorsan — platformu ücretsiz self-host et ya da herhangi bir VPS getir.',
+    choosePushify3:
+      "Gerçek bir ücretsiz seçenek özlüyorsan: Pushify'ın self-host seçeneği bedava, BYOS ise $5'lık bir VPS'te rahat çalışır.",
+    choosePushify4:
+      "Heroku'nun sunmadığı ekstraları istiyorsan — self-host uygulama marketi (Supabase, WordPress, n8n…), AI asistan, site kurucu, yerleşik alan adı satın alma.",
+    chooseHerokuTitle: 'Şu durumda Heroku seç…',
+    chooseHeroku1:
+      'Sıfır sunucu sorumluluğuyla tamamen yönetilen bir platform istiyorsan — Heroku\'da operasyon yükü gerçekten sıfırdır.',
+    chooseHeroku2:
+      'Olgun ekosistemine güveniyorsan: 10+ yıllık eklentiler, buildpack\'ler ve kurumsal uyumluluk seçenekleri.',
+    chooseHeroku3:
+      'Ekibin zaten Heroku pipeline ve review app akışında yaşıyorsa ve taşınma maliyeti tasarrufu aşıyorsa.',
+    tableTitle: 'Özellik karşılaştırması',
+    tableNote:
+      'Herkese açık bilgilere dayanır (Heroku fiyat sayfaları, Temmuz 2026). Değişmiş bir şey mi gördün? Bize yaz, düzeltelim.',
+    colHeroku: 'Heroku',
+    rowGitPush: 'Git push ile deploy',
+    rowFlatPricing: 'Sabit sunucu fiyatlandırması',
+    rowZeroOps: 'Tamamen yönetilen (sıfır sunucu işi)',
+    rowAddonEco: '10+ yıllık eklenti ekosistemi',
+    diffTitle: 'Fark yaratan üç nokta',
+    diff1Title: 'Uygulaman nerede çalışıyor',
+    diff1Body:
+      "Heroku her şeyi kendi yönetilen altyapısında çalıştırır — self-host edemez, sunucu getiremezsin. Pushify tam tersi: MIT lisanslı, tek komutla kendi makinene kurulur; getirdiğin herhangi bir VPS'e ya da senin için açtığı yönetilen Hetzner sunucularına deploy eder.",
+    diff2Title: 'Fatura nasıl büyüyor',
+    diff2Body:
+      "Heroku dyno ve eklenti başına faturalar: sürekli açık bir Basic dyno $7/ay, en küçük Postgres $5/ay ve her ek servis ayrı kalemdir. Pushify'da sunucunun tek bir sabit aylık fiyatı vardır (saatlik oranlanır) — üzerinde kaldırabildiği kadar uygulama ve veritabanı çalıştır.",
+    diff3Title: "Ücretsiz katmana ne oldu",
+    diff3Body:
+      "Heroku ücretsiz katmanını Kasım 2022'de kaldırdı; bugünkü en yakın şey, dyno'ları 30 dakikada uyuyan $5'lık Eco planı. Pushify'ın self-host seçeneği gerçekten ücretsiz; kendi sunucunda scale-to-zero ise bir faturalama katmanı değil, bir özellik.",
+    faqTitle: 'Sık sorulan sorular',
+    faq1Q: 'Pushify iyi bir Heroku alternatifi mi?',
+    faq1A:
+      "Git-push akışını sunucu sahipliğinden vazgeçmeden istiyorsan evet: Pushify 20+ framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişiyle yayınlar. Heroku'nun yönetilen eklenti ekosistemini kaybedersin; sabit fiyat ve root erişimi kazanırsın.",
+    faq2Q: 'Pushify, Heroku\'dan gerçekten ne kadar ucuz?',
+    faq2A:
+      "Veritabanlı, sürekli açık küçük bir Heroku uygulaması yaklaşık $12/ay'dan başlar (Basic dyno $7 + Essential-0 Postgres $5). Aynı iş yükü tek bir giriş seviyesi VPS'e sığar: üzerine Pushify'ı ücretsiz self-host et ya da sabit aylık fiyatlı yönetilen sunucu kullan — aynı makinede birkaç uygulamaya daha yer kalır.",
+    faq3Q: 'Heroku\'daki uygulamamı Pushify\'a taşıyabilir miyim?',
+    faq3A:
+      "Çoğu Heroku uygulaması git'teki standart Node/Python/Ruby/PHP projesidir — repoyu bağla, Pushify framework'ü algılayıp Docker'da derler. Sadece Procfile'a dayanan kurulumlar küçük bir start-komutu ayarı isteyebilir; eklentiler Pushify veritabanlarına veya market uygulamalarına karşılık gelir (Postgres, Redis…).",
+    faq4Q: 'Pushify\'da Heroku tarzı preview app ve zamanlanmış görev var mı?',
+    faq4A:
+      'Evet — pull-request önizleme deploy\'ları, cron görevleri, kalıcı diskler, sağlık kontrolleri ve canlı log akışı yerleşik olarak gelir.',
+    ctaTitle: 'Bir sonraki deploy\'unun sahibi ol',
+    ctaBody: 'Heroku\'nun meşhur ettiği akışla yayınla — sana hesap veren sunucularda.',
+    ctaButton: 'Ücretsiz başla',
+  },
+  alternatives: {
+    eyebrow: 'Manzara, dürüstçe',
+    h1: 'Self-host PaaS ve Heroku alternatifleri karşılaştırması',
+    subtitle:
+      'Coolify, Dokploy, CapRover, Dokku, Railway, Render, Heroku — ve Pushify nerede duruyor. Gerçek lisanslar, gerçek fiyatlar, sahte sıralama yok.',
+    intro:
+      'Aşağıdaki her araç bir konuda gerçekten iyi — birkaçını kendimiz de kullanıyoruz. Bu sayfa, herkese açık bilgilere dayanarak her birinin ne olduğunu, ne kadara mal olduğunu ve en çok kime uyduğunu söyler. Pushify\'ın zayıf olduğu yerde tablo bunu da söyler.',
+    matrixTitle: 'Tek bakışta',
+    matrixNote:
+      'Temmuz 2026 itibarıyla herkese açık bilgiler — lisanslar ve fiyatlar değişebilir. Hata mı gördün? Yaz, düzeltelim.',
+    colPlatform: 'Platform',
+    colLicense: 'Lisans',
+    colSelfHost: 'Self-host',
+    colManagedCloud: 'Yönetilen bulut',
+    colFrom: 'Ücretli başlangıç',
+    colModel: 'Fiyat modeli',
+    selfHostedTitle: 'Self-host platformlar',
+    managedTitle: 'Sadece yönetilen platformlar',
+    bestFor: 'En uygun',
+    coolifyBody:
+      "En popüler self-host PaaS: Apache-2.0 lisanslı, self-host ücretsiz; isteğe bağlı yönetilen bulut $5/ay'dan başlar. Güçlü arayüz, PR önizleme deploy'ları, çoklu sunucu desteği ve çok büyük bir topluluk. v4, uzun bir betadan sonra 2026 başında stable oldu.",
+    coolifyBest: 'En büyük topluluğu ve olgun, arayüz-öncelikli bir self-host platform isteyen ekipler.',
+    dokployBody:
+      "Hızla yükselen alternatif (30k+ GitHub yıldızı): self-host ücretsiz, yönetilen seçenek sunucu başına ~$4.50/ay. Docker Swarm üzerine kurulu; sıkça Coolify'dan daha hafif ve hızlı diye anılır. Not: lisansı klasik OSI lisansı değil, source-available.",
+    dokployBest: 'Docker Swarm üzerinde hafif, hızlı bir arayüz isteyen ve source-available lisansa takılmayan geliştiriciler.',
+    caproverBody:
+      "Tamamen ücretsiz ve MIT lisanslı; hiç ücretli katmanı yok. Docker Swarm tabanlı, tek tık uygulama kataloglu. Çok stabil ve kanıtlanmış; ancak geliştirme temposu Coolify ve Dokploy'a göre yavaşladı.",
+    caproverBest: 'Sıfır maliyetli, kanıtlanmış bir aracı yeni özelliklere tercih eden homelab ve istikrar odaklı kurulumlar.',
+    dokkuBody:
+      "Orijinal 'mini-Heroku': on yıllık, çekirdeği MIT lisanslı. CLI-öncelikli — varsayılan web arayüzü yok (Dokku Pro satıyor). Tasarımı gereği tek sunucu; bir kutunun ötesine ölçeklemek manuel iş demek.",
+    dokkuBest: 'Terminalde rahat olan ve mümkün olan en yalın tek-sunucu akışını isteyen solo geliştiriciler.',
+    herokuBody:
+      "Git-push deploy'u icat eden yönetilen platform. Sıfır sunucu sorumluluğu ve 10+ yıllık eklenti ekosistemi; ama self-host yok ve ücretsiz katman 2022'de kaldırıldı — veritabanlı, sürekli açık küçük bir uygulama yaklaşık $12/ay'dan başlar (Basic dyno $7 + en küçük Postgres $5).",
+    herokuBest: 'Sıfır operasyon ve kurumsal uyumluluk isteyen, dyno-başına fiyatlandırmayı kabul eden ekipler.',
+    railwayBody:
+      "Kullanım bazlı faturalamalı, cilalı bir yönetilen platform: Hobby planı $5/ay ($5'lık kullanım dahil); deneme, tek seferlik $5 kredi verir. Self-host seçeneği yok — iş yüklerin Railway'in altyapısında çalışır.",
+    railwayBest: 'Güzel bir yönetilen deneyim isteyen ve kullanım bazlı faturayı kabul eden yan projeler ve küçük ekipler.',
+    renderBody:
+      "Sınırlı ücretsiz katmanı olan (servisler 15 dakikada uyur) ve sürekli açık servisleri $7/ay/servisten başlayan yönetilen platform. 2026'da koltuk-başına ücreti bırakıp sabit plan + hesaplama modeline geçti. Self-host seçeneği yok.",
+    renderBest: 'Heroku sadeliğini modern bir panel ve servis başına öngörülebilir fiyatla isteyen ekipler.',
+    pushifyTitle: 'Pushify nerede duruyor',
+    pushifyBody:
+      "Pushify, Coolify veya CapRover gibi MIT lisanslı ve ücretsiz self-host edilebilir — ama aynı zamanda senin için sabit aylık fiyatla Hetzner sunucusu açabilen yönetilen bir bulut olarak da çalışır, ya da getirdiğin herhangi bir VPS'e deploy eder. Deploy'un üstüne, diğerlerinin kapsam dışı saydığı şeyleri paketler: yedekli yönetilen veritabanları, 24 uygulamalık market, PR önizlemeleri, cron, kalıcı diskler, scale-to-zero, AI asistan, kodsuz site kurucu ve yerleşik alan adı satın alma. Yukarıdaki her araçtan daha genç — topluluğu daha küçük ve bazı entegrasyonlar (örneğin GitHub App) hâlâ olgunlaşıyor.",
+    pushifyBest:
+      'Deploy, veritabanı, alan adı ve siteyi tek araçta isteyen — self-host veya yönetilen — ve daha genç bir ekosistemi kabul eden geliştiriciler.',
+    howToChooseTitle: 'Gerçekte nasıl seçmeli',
+    howToChoose1:
+      "Sıfır sunucu sorumluluğu mu istiyorsun? Yönetilen bir platform seç: Heroku, Railway ya da Render — ayrılma seçeneğini de istiyorsan Pushify'ın yönetilen bulutu.",
+    howToChoose2:
+      'Kendi sunucunda maksimum topluluk ve eklenti mi? Bugün Coolify; daha hafif ve hızlı istersen Dokploy.',
+    howToChoose3:
+      'Uygulama, veritabanı, alan adı ve site için hem self-host hem yönetilen modlu tek platform mu? Pushify tam bu boşluk için yapıldı.',
+    disclaimer:
+      'Bu sayfa herkese açık bilgileri yansıtır ve güncelliğini yitirebilir. Bilerek hiçbir uydurma benchmark, yıldız sayısı veya müşteri yorumu içermez.',
+    ctaTitle: 'Yeni geleni dene',
+    ctaBody: 'Pushify\'ı tek komutla self-host et ya da yönetilen bulutta ücretsiz başla.',
+    ctaButton: 'Ücretsiz başla',
+  },
   domainSales: {
     title: 'Alan Adları',
     subtitle: 'Alan adı ara, satın al ve projelerine otomatik bağla.',
