@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.63] - 2026-07-19
+
+### Changed
+- **Real company identity across the site.** The global Organization schema now carries `legalName: Pushify LLC`, the registered US address (30 N Gould St Ste N, Sheridan, WY) and the founder (M. Aziz Kurt) as structured data on every page. The About page's company card shows the legal entity, address and a Founder row with a short "why I built this" note (EN/TR), and the footer copyright reads Pushify LLC. Closes the audit's two biggest trust gaps: no named human and no legal entity anywhere on the site.
+
 ## [0.2.0-beta.62] - 2026-07-19
 
 ### Fixed

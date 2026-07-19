@@ -124,8 +124,21 @@ export default function RootLayout({
                   '@type': 'Organization',
                   '@id': 'https://pushify.dev/#organization',
                   name: 'Pushify',
+                  legalName: 'Pushify LLC',
                   url: 'https://pushify.dev',
                   logo: 'https://pushify.dev/logo-full.svg',
+                  founder: {
+                    '@type': 'Person',
+                    name: 'M. Aziz Kurt',
+                  },
+                  address: {
+                    '@type': 'PostalAddress',
+                    streetAddress: '30 N Gould St Ste N',
+                    addressLocality: 'Sheridan',
+                    addressRegion: 'WY',
+                    postalCode: '82801',
+                    addressCountry: 'US',
+                  },
                   sameAs: [
                     'https://github.com/pushifydev',
                     'https://www.npmjs.com/package/pushify-cli',

@@ -2,7 +2,7 @@
 
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
 import { useTranslation } from '@/hooks';
-import { Mail, MapPin, Globe, Github, Heart, Rocket, Server, Database, Package, Code2, ShieldCheck, Eye } from 'lucide-react';
+import { Mail, MapPin, Globe, Github, Heart, Rocket, Server, Database, Package, Code2, ShieldCheck, Eye, User } from 'lucide-react';
 import { Reveal } from '@/components/landing/Reveal';
 
 const content = {
@@ -23,8 +23,12 @@ const content = {
     companyTitle: 'Company Information',
     web: 'Web',
     email: 'Email',
-    location: 'Location',
-    locationValue: 'Remote-first · Global',
+    location: 'Address',
+    locationValue: 'Pushify LLC · 30 N Gould St Ste N, Sheridan, WY 82801, USA',
+    founderLabel: 'Founder',
+    founderName: 'M. Aziz Kurt',
+    founderNote:
+      'Pushify is built by M. Aziz Kurt, a developer who wanted Vercel-style deployments without giving up server ownership — and decided to build it in the open.',
     valuesTitle: 'Our Values',
     values: [
       {
@@ -60,8 +64,12 @@ const content = {
     companyTitle: 'Şirket Bilgileri',
     web: 'Web',
     email: 'E-posta',
-    location: 'Konum',
-    locationValue: 'Uzaktan · Küresel',
+    location: 'Adres',
+    locationValue: 'Pushify LLC · 30 N Gould St Ste N, Sheridan, WY 82801, ABD',
+    founderLabel: 'Kurucu',
+    founderName: 'M. Aziz Kurt',
+    founderNote:
+      'Pushify, sunucu sahipliğinden vazgeçmeden Vercel tarzı deploy isteyen ve bunu açık kaynak olarak inşa etmeye karar veren geliştirici M. Aziz Kurt tarafından geliştiriliyor.',
     valuesTitle: 'Değerlerimiz',
     values: [
       {
@@ -174,7 +182,13 @@ export default function AboutPage() {
             <InfoRow icon={<MapPin className="w-5 h-5" />} label={c.location}>
               {c.locationValue}
             </InfoRow>
+            <InfoRow icon={<User className="w-5 h-5" />} label={c.founderLabel}>
+              {c.founderName}
+            </InfoRow>
           </div>
+          <p className="text-sm leading-relaxed mt-6 pt-6 border-t" style={{ color: 'var(--lp-body)', borderColor: 'var(--lp-border)' }}>
+            {c.founderNote}
+          </p>
         </section>
 
         <section>
