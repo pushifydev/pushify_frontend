@@ -2,6 +2,9 @@
 
 ## [0.2.0-beta.62] - 2026-07-19
 
+### Fixed
+- **Modals now render through the global portal.** The cancellation dialog and the two domain dialogs (purchase, transfer-in) drew their own overlay inside the page tree, so an ancestor with a transform trapped the backdrop to one card instead of the whole screen. All three now use the shared portal-based `Modal` (renders to `document.body`, full-page blurred backdrop, ESC to close, scroll lock).
+
 ### Added
 - **In-app cancellation with a one-question exit survey** (pairs with backend beta.58). Paid plans get a quiet "Cancel subscription" link under the Current Plan card; the dialog asks a single honest question (too expensive / missing features / bugs / switched / project ended / other + optional comment, "a human reads these"), records it best-effort, then cancels at period end with a clear "your data is not deleted" note. EN/TR i18n.
 

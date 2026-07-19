@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertTriangle, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { Modal, ModalActions } from '@/components/Modal';
 import { useTranslation, useCancelSubscription } from '@/hooks';
 import { sendCancellationFeedback, type CancellationReason } from '@/lib/api';
 import { toast } from 'sonner';
@@ -44,8 +45,6 @@ export function CancelSubscriptionModal({
   const [reason, setReason] = useState<CancellationReason | null>(null);
   const [comment, setComment] = useState('');
 
-  if (!isOpen) return null;
-
   const handleCancel = async () => {
     if (!reason) return;
     // Survey is best-effort — a feedback hiccup must never block the cancel
@@ -62,23 +61,12 @@ export function CancelSubscriptionModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.5)' }}
-      onClick={() => !cancelSubscription.isPending && onClose()}
+    <Modal
+      isOpen={isOpen}
+      onClose={() => !cancelSubscription.isPending && onClose()}
+      title={t('billing', 'cancelTitle')}
+      description={t('billing', 'cancelDesc')}
     >
-      <div
-        className="w-full max-w-md p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-lg bg-red-500/15">
-            <AlertTriangle className="w-4 h-4 text-red-400" />
-          </div>
-          <h3 className="text-lg font-semibold">{t('billing', 'cancelTitle')}</h3>
-        </div>
-        <p className="text-sm text-[var(--text-secondary)] mb-5">{t('billing', 'cancelDesc')}</p>
-
         <p className="text-sm font-medium mb-2.5">{t('billing', 'cancelReasonLabel')}</p>
         <div className="space-y-1.5 mb-4">
           {REASONS.map((r) => (
@@ -111,7 +99,7 @@ export function CancelSubscriptionModal({
           className="w-full p-3 mb-5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)] resize-none"
         />
 
-        <div className="flex justify-end gap-2">
+        <ModalActions>
           <button
             onClick={onClose}
             disabled={cancelSubscription.isPending}
@@ -127,8 +115,7 @@ export function CancelSubscriptionModal({
             {cancelSubscription.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             {t('billing', 'cancelConfirm')}
           </button>
-        </div>
-      </div>
-    </div>
+        </ModalActions>
+    </Modal>
   );
 }

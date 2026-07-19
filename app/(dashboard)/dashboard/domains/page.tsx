@@ -29,6 +29,7 @@ import {
   registrarDomainKeys,
 } from '@/hooks';
 import type { DomainSearchResult } from '@/lib/api';
+import { Modal, ModalActions } from '@/components/Modal';
 import { toast } from 'sonner';
 
 const TERM_OPTIONS = [1, 2, 3, 5];
@@ -388,20 +389,12 @@ export default function DomainsPage() {
 
       {/* Transfer-in */}
       {transferOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.5)' }}
-          onClick={() => !startTransferMutation.isPending && setTransferOpen(false)}
+        <Modal
+          isOpen={transferOpen}
+          onClose={() => !startTransferMutation.isPending && setTransferOpen(false)}
+          title={t('domainSales', 'transferTitle')}
+          description={t('domainSales', 'transferDesc')}
         >
-          <div
-            className="w-full max-w-md p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-lg font-semibold mb-1">{t('domainSales', 'transferTitle')}</h3>
-            <p className="text-sm text-[var(--text-secondary)] mb-4">
-              {t('domainSales', 'transferDesc')}
-            </p>
-
             <label className="block text-xs text-[var(--text-muted)] mb-1.5">
               {t('domainSales', 'transferDomainLabel')}
             </label>
@@ -454,7 +447,7 @@ export default function DomainsPage() {
               {t('domainSales', 'transferNote')}
             </p>
 
-            <div className="flex justify-end gap-2">
+            <ModalActions>
               <button
                 onClick={() => setTransferOpen(false)}
                 disabled={startTransferMutation.isPending}
@@ -476,28 +469,20 @@ export default function DomainsPage() {
                 )}
                 {t('domainSales', 'transferStartBtn')}
               </button>
-            </div>
-          </div>
-        </div>
+            </ModalActions>
+        </Modal>
       )}
 
       {/* Purchase confirmation */}
       {buyTarget && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.5)' }}
-          onClick={() => !purchaseMutation.isPending && setBuyTarget(null)}
+        <Modal
+          isOpen={!!buyTarget}
+          onClose={() => !purchaseMutation.isPending && setBuyTarget(null)}
+          title={t('domainSales', 'confirmTitle')}
+          description={t('domainSales', 'confirmBody')}
         >
-          <div
-            className="w-full max-w-md p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-lg font-semibold mb-1">{t('domainSales', 'confirmTitle')}</h3>
-            <p className="text-sm mb-1 font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>
+            <p className="text-sm mb-4 font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>
               {buyTarget.domainName}
-            </p>
-            <p className="text-sm text-[var(--text-secondary)] mb-4">
-              {t('domainSales', 'confirmBody')}
             </p>
 
             <label className="block text-xs text-[var(--text-muted)] mb-1.5">
@@ -554,7 +539,7 @@ export default function DomainsPage() {
               </span>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-end gap-2">
+            <ModalActions>
               <button
                 onClick={() => setBuyTarget(null)}
                 disabled={purchaseMutation.isPending || checkoutMutation.isPending}
@@ -589,9 +574,8 @@ export default function DomainsPage() {
                   `${t('domainSales', 'confirmPay')} ${formatUsd(totalCents)}`
                 )}
               </button>
-            </div>
-          </div>
-        </div>
+            </ModalActions>
+        </Modal>
       )}
     </div>
   );
