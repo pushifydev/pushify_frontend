@@ -28,6 +28,8 @@ export default function VsCoolifyLayout({ children }: { children: React.ReactNod
         data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
+          datePublished: '2026-06-15',
+          dateModified: '2026-07-05',
           '@id': 'https://pushify.dev/vs/coolify#webpage',
           url: 'https://pushify.dev/vs/coolify',
           name: 'Pushify vs Coolify',

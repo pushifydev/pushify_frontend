@@ -19,7 +19,7 @@ import { useTranslation } from '@/hooks';
 import { useAvailablePlans } from '@/hooks/useBilling';
 import { LandingSectionHeader } from './LandingSectionHeader';
 import { BillingHowItWorksSection } from './BillingHowItWorksSection';
-import type { PlanType, PlanLimits } from '@/lib/api';
+import type { AvailablePlans, PlanType, PlanLimits } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
 
 const MAIN_TIERS: PlanType[] = ['hobby', 'pro', 'business'];
@@ -146,6 +146,8 @@ type PlanBundle = {
 
 interface PricingSectionProps {
   pageLayout?: boolean;
+  /** Server-fetched plans so prices are present in the SSR HTML (SEO/AI crawlers) */
+  initialPlans?: AvailablePlans;
 }
 
 function PlanCta({ href, isPopular, label }: { href: string; isPopular: boolean; label: string }) {
@@ -372,12 +374,12 @@ function PricingBanner({
   );
 }
 
-export function PricingSection({ pageLayout }: PricingSectionProps) {
+export function PricingSection({ pageLayout, initialPlans }: PricingSectionProps) {
   const { t } = useTranslation();
   const unlimitedLabel = t('billing', 'unlimited');
   const perMonthSuffix = t('billing', 'perMonth');
   const [isMonthly, setIsMonthly] = useState(true);
-  const { data: apiPlans, isLoading } = useAvailablePlans();
+  const { data: apiPlans, isLoading } = useAvailablePlans(initialPlans);
 
   if (isLoading || !apiPlans) {
     return (

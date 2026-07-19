@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0-beta.56] - 2026-07-19
+
+### Fixed (SEO audit follow-up)
+- **`/domains` was invisible to Google.** The page had no layout of its own, so it inherited the homepage's title, description and — critically — its canonical URL, telling Google it was a duplicate of `/`. It now has unique metadata, a self-referencing canonical, WebPage+Breadcrumb structured data, a sitemap entry, and nav + footer links (it was an orphan page reachable from nowhere).
+- **Prices are now in the server-rendered HTML on `/pricing`.** Plan prices previously existed only in the client-side data payload — AI crawlers and non-JS fetchers saw a pricing page with no prices. The page now fetches plans server-side (ISR, 1h) and seeds the client cache, so real dollar amounts render into the HTML; the interactive toggle still works as before. Title upgraded from generic "Pricing".
+- **`/docs` had 10 `<h1>` tags** — the 9 section headers are now `<h2>`, restoring a proper document outline for crawlers and AI section-extraction. Also: og:title separator aligned, TechArticle schema gains `image`/`datePublished`/`dateModified`.
+- **`/changelog` split for Core Web Vitals**: the page rendered 92 releases (~2,000 DOM nodes) in one document. It now shows the latest 30 with a link to the new `/changelog/archive`; CollectionPage + Breadcrumb structured data added.
+- **Sitemap `lastmod` was one identical build timestamp for all 19 URLs** — now per-route content dates (changelog keeps the build date, which is accurate for it).
+- **Titles/metas**: `/features` and `/about` got descriptive titles; `/about`'s meta no longer promises "team" content the page doesn't have.
+- **CSP was blocking Cloudflare Web Analytics** (`static.cloudflareinsights.com` beacon 100% of loads) — now allowlisted. `/vs/*` schema gains `datePublished`/`dateModified`; global AggregateOffer gains `highPrice`; footer links got larger tap targets (WCAG).
+
 ## [0.2.0-beta.55] - 2026-07-19
 
 ### Added

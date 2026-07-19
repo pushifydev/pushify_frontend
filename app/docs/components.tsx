@@ -158,9 +158,11 @@ export function EndpointCard({
 }
 
 export function SectionHeading({ title, description }: { title: string; description: string }) {
+  // h2, not h1 — the page's single h1 lives in IntroSection; 10 h1s flatten the
+  // document outline for crawlers and AI section-extractors.
   return (
     <div className="docs-section-heading mb-8">
-      <h1>{title}</h1>
+      <h2>{title}</h2>
       <p>{description}</p>
     </div>
   );
