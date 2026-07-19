@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.58] - 2026-07-19
+
+### Fixed
+- **Settings adapt to Google/GitHub accounts without a password** (pairs with backend beta.57). The 2FA disable and backup-code-regenerate dialogs now ask for a **6-digit authenticator code (or backup code)** instead of a password when the account has none, with an explanatory hint. The Profile tab's password card becomes **"Set password"** for these accounts — no current-password field — and flips back to the normal change-password form once one is set. EN/TR i18n.
+
 ## [0.2.0-beta.57] - 2026-07-19
 
 ### Fixed

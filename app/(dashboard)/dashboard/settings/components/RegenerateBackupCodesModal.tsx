@@ -8,9 +8,11 @@ import { useTranslation } from '@/hooks';
 interface RegenerateBackupCodesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onRegenerate: (password: string) => Promise<string[]>;
+  onRegenerate: (credentials: { password?: string; twoFactorCode?: string }) => Promise<string[]>;
   isPending: boolean;
   error: string | null;
+  /** OAuth-only accounts have no password — they confirm with a 2FA/backup code */
+  hasPassword: boolean;
 }
 
 export function RegenerateBackupCodesModal({
@@ -19,15 +21,20 @@ export function RegenerateBackupCodesModal({
   onRegenerate,
   isPending,
   error,
+  hasPassword,
 }: RegenerateBackupCodesModalProps) {
   const { t } = useTranslation();
   const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [newBackupCodes, setNewBackupCodes] = useState<string[] | null>(null);
   const [copiedBackupCodes, setCopiedBackupCodes] = useState(false);
 
+  const canSubmit = hasPassword ? !!password : code.trim().length >= 6;
+
   const handleClose = () => {
     setPassword('');
+    setCode('');
     setShowPassword(false);
     setNewBackupCodes(null);
     setCopiedBackupCodes(false);
@@ -35,11 +42,12 @@ export function RegenerateBackupCodesModal({
   };
 
   const handleSubmit = async () => {
-    if (!password) return;
-    const codes = await onRegenerate(password);
+    if (!canSubmit) return;
+    const codes = await onRegenerate(hasPassword ? { password } : { twoFactorCode: code.trim() });
     if (codes) {
       setNewBackupCodes(codes);
       setPassword('');
+      setCode('');
     }
   };
 
@@ -69,28 +77,49 @@ export function RegenerateBackupCodesModal({
             </AlertBox>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-              {t('security', 'enterPassword')}
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="input w-full pr-12"
-                autoComplete="current-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+          {hasPassword ? (
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                {t('security', 'enterPassword')}
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="input w-full pr-12"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                {t('security', 'oauthCodeLabel')}
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="123456"
+                className="input w-full"
+                autoComplete="one-time-code"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              />
+              <p className="text-xs text-[var(--text-muted)] mt-2">
+                {t('security', 'oauthCodeHint')}
+              </p>
+            </div>
+          )}
 
           <ModalActions>
             <button onClick={handleClose} className="btn btn-secondary">
@@ -98,7 +127,7 @@ export function RegenerateBackupCodesModal({
             </button>
             <button
               onClick={handleSubmit}
-              disabled={!password || isPending}
+              disabled={!canSubmit || isPending}
               className="btn btn-primary"
             >
               {isPending ? t('security', 'regenerating') : t('security', 'confirmRegenerate')}

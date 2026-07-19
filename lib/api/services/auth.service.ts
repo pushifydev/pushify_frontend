@@ -167,9 +167,11 @@ export const enable2fa = async (
   }
 };
 
-export const disable2fa = async (password: string): Promise<ApiResponse<{ message: string }>> => {
+export const disable2fa = async (
+  credentials: TwoFactorCredentials
+): Promise<ApiResponse<{ message: string }>> => {
   try {
-    const response = await api.post<{ message: string }>('/auth/2fa/disable', { password });
+    const response = await api.post<{ message: string }>('/auth/2fa/disable', credentials);
     return { data: response.data };
   } catch (error) {
     const axiosError = error as AxiosError<{ error: ApiError }>;
@@ -183,12 +185,13 @@ export const disable2fa = async (password: string): Promise<ApiResponse<{ messag
 };
 
 export const regenerateBackupCodes = async (
-  password: string
+  credentials: TwoFactorCredentials
 ): Promise<ApiResponse<{ backupCodes: string[] }>> => {
   try {
-    const response = await api.post<{ backupCodes: string[] }>('/auth/2fa/backup-codes/regenerate', {
-      password,
-    });
+    const response = await api.post<{ backupCodes: string[] }>(
+      '/auth/2fa/backup-codes/regenerate',
+      credentials
+    );
     return { data: response.data };
   } catch (error) {
     const axiosError = error as AxiosError<{ error: ApiError }>;
@@ -248,8 +251,15 @@ export const updateProfile = async (
 };
 
 export interface ChangePasswordInput {
-  currentPassword: string;
+  /** Omitted when an OAuth-only account sets its first password */
+  currentPassword?: string;
   newPassword: string;
+}
+
+/** Password accounts confirm with password; OAuth-only accounts with a 2FA/backup code */
+export interface TwoFactorCredentials {
+  password?: string;
+  twoFactorCode?: string;
 }
 
 export const changePassword = async (
