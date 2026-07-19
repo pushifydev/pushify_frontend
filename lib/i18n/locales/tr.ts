@@ -1418,6 +1418,8 @@ export const tr: TranslationKeys = {
     allOthersTerminated: 'Diğer tüm oturumlar kapatıldı',
   },
   notificationPrefs: {
+    onboardingEmails: 'Başlangıç e-postaları',
+    onboardingEmailsDesc: 'Alışırken birkaç tek seferlik ipucu — ilk deploy, alan adları, veritabanları.',
     title: 'Bildirimler',
     description: 'Bildirimleri nasıl ve ne zaman alacağınızı yapılandırın.',
     emailNotifications: 'E-posta Bildirimleri',

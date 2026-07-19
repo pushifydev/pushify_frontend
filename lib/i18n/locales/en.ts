@@ -1393,6 +1393,8 @@ export interface TranslationKeys {
     allOthersTerminated: string;
   };
   notificationPrefs: {
+    onboardingEmails: string;
+    onboardingEmailsDesc: string;
     title: string;
     description: string;
     emailNotifications: string;
@@ -3847,6 +3849,8 @@ export const en: TranslationKeys = {
     allOthersTerminated: 'All other sessions have been signed out',
   },
   notificationPrefs: {
+    onboardingEmails: 'Getting-started emails',
+    onboardingEmailsDesc: 'A few one-time tips while you settle in — first deploy, domains, databases.',
     title: 'Notifications',
     description: 'Configure how and when you receive notifications.',
     emailNotifications: 'Email Notifications',

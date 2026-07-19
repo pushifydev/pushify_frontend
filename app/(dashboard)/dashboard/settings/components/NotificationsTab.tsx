@@ -1,38 +1,32 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '@/hooks';
+import {
+  getNotificationPrefs,
+  updateNotificationPrefs,
+  type NotificationPrefs,
+} from '@/lib/api/services/auth.service';
 import { showSuccessToast } from '@/lib/toast-i18n';
 import { SettingsCard, SettingsRow } from './SettingsCard';
 
-interface NotificationPreferences {
-  deploymentAlerts: boolean;
-  securityAlerts: boolean;
-  weeklyDigest: boolean;
-  productUpdates: boolean;
-}
-
-const STORAGE_KEY = 'pushify_notification_prefs';
-
-const defaultPreferences: NotificationPreferences = {
-  deploymentAlerts: true,
-  securityAlerts: true,
-  weeklyDigest: false,
-  productUpdates: false,
-};
+const prefsKey = ['notificationPrefs'] as const;
 
 function Toggle({
   enabled,
   onChange,
+  disabled,
 }: {
   enabled: boolean;
   onChange: (value: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={() => onChange(!enabled)}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--accent-cyan)] focus:ring-offset-2 focus:ring-offset-[var(--bg-primary)] ${
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--accent-cyan)] focus:ring-offset-2 focus:ring-offset-[var(--bg-primary)] disabled:opacity-50 ${
         enabled ? 'bg-[var(--accent-cyan)]' : 'bg-[var(--bg-tertiary)]'
       }`}
     >
@@ -47,31 +41,47 @@ function Toggle({
 
 export function NotificationsTab() {
   const { t } = useTranslation();
-  const [preferences, setPreferences] = useState<NotificationPreferences>(defaultPreferences);
-  const [loaded, setLoaded] = useState(false);
+  const queryClient = useQueryClient();
 
-  // Load preferences from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setPreferences(JSON.parse(stored));
-      } catch {
-        // Use defaults if parsing fails
-      }
-    }
-    setLoaded(true);
-  }, []);
+  const { data: prefs, isLoading } = useQuery({
+    queryKey: prefsKey,
+    queryFn: async () => {
+      const result = await getNotificationPrefs();
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+  });
 
-  const handleChange = (key: keyof NotificationPreferences, value: boolean) => {
-    const newPreferences = { ...preferences, [key]: value };
-    setPreferences(newPreferences);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newPreferences));
-    showSuccessToast('notificationPrefsSavedTitle', 'notificationPrefsSavedDesc');
+  const mutation = useMutation({
+    mutationFn: async (input: Partial<NotificationPrefs>) => {
+      const result = await updateNotificationPrefs(input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(prefsKey, data);
+      showSuccessToast('notificationPrefsSavedTitle', 'notificationPrefsSavedDesc');
+    },
+  });
+
+  const handleChange = (key: keyof NotificationPrefs, value: boolean) => {
+    // Optimistic flip so the toggle feels instant; server response reconciles
+    queryClient.setQueryData(prefsKey, (prev: NotificationPrefs | undefined) =>
+      prev ? { ...prev, [key]: value } : prev
+    );
+    mutation.mutate({ [key]: value });
   };
 
-  if (!loaded) {
-    return null;
+  if (isLoading || !prefs) {
+    return (
+      <div className="space-y-5 animate-in fade-in duration-200">
+        <div>
+          <h2 className="text-xl font-semibold mb-1">{t('notificationPrefs', 'title')}</h2>
+          <p className="text-[var(--text-secondary)]">{t('notificationPrefs', 'description')}</p>
+        </div>
+        <div className="h-64 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] animate-pulse" />
+      </div>
+    );
   }
 
   return (
@@ -92,7 +102,7 @@ export function NotificationsTab() {
             description={t('notificationPrefs', 'deploymentAlertsDesc')}
             control={
               <Toggle
-                enabled={preferences.deploymentAlerts}
+                enabled={prefs.deploymentAlerts}
                 onChange={(value) => handleChange('deploymentAlerts', value)}
               />
             }
@@ -102,7 +112,7 @@ export function NotificationsTab() {
             description={t('notificationPrefs', 'securityAlertsDesc')}
             control={
               <Toggle
-                enabled={preferences.securityAlerts}
+                enabled={prefs.securityAlerts}
                 onChange={(value) => handleChange('securityAlerts', value)}
               />
             }
@@ -112,7 +122,7 @@ export function NotificationsTab() {
             description={t('notificationPrefs', 'weeklyDigestDesc')}
             control={
               <Toggle
-                enabled={preferences.weeklyDigest}
+                enabled={prefs.weeklyDigest}
                 onChange={(value) => handleChange('weeklyDigest', value)}
               />
             }
@@ -122,8 +132,18 @@ export function NotificationsTab() {
             description={t('notificationPrefs', 'productUpdatesDesc')}
             control={
               <Toggle
-                enabled={preferences.productUpdates}
+                enabled={prefs.productUpdates}
                 onChange={(value) => handleChange('productUpdates', value)}
+              />
+            }
+          />
+          <SettingsRow
+            title={t('notificationPrefs', 'onboardingEmails')}
+            description={t('notificationPrefs', 'onboardingEmailsDesc')}
+            control={
+              <Toggle
+                enabled={prefs.onboardingEmails}
+                onChange={(value) => handleChange('onboardingEmails', value)}
               />
             }
           />

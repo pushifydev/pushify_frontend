@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.64] - 2026-07-19
+
+### Changed
+- **Notification preferences moved from localStorage to the account** (pairs with backend beta.59). The Notifications tab now reads and saves through the API with optimistic toggles — settings finally follow you across browsers and devices, and the backend actually honors them (security alerts gate the new-sign-in email; Weekly Digest opts you into the new Monday summary). New **"Getting-started emails"** toggle controls the onboarding sequence from the same screen (same switch as the email unsubscribe link). EN/TR i18n.
+
 ## [0.2.0-beta.63] - 2026-07-19
 
 ### Changed
