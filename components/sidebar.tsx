@@ -23,6 +23,7 @@ import {
   Zap,
   Store,
   Sparkles,
+  Globe,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
@@ -56,6 +57,7 @@ export function Sidebar() {
     { href: '/dashboard/projects', icon: Folder, label: t('navigation', 'projects') },
     { href: '/dashboard/servers', icon: Server, label: t('navigation', 'servers') },
     { href: '/dashboard/databases', icon: Database, label: t('databases', 'title') },
+    { href: '/dashboard/domains', icon: Globe, label: t('domainSales', 'title') },
     { href: '/dashboard/sites', icon: Sparkles, label: t('siteStudio', 'navTitle') },
     { href: '/dashboard/marketplace', icon: Store, label: t('marketplace', 'title') },
   ];

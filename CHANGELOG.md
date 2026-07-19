@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0-beta.53] - 2026-07-18
+
+### Added
+- **Domains page** (`/dashboard/domains`, pairs with backend beta.54): search a name or keyword and see availability + prices across 10 popular TLDs, buy in one click (paid from infrastructure credits), and optionally **connect the domain to a project during checkout** — DNS records and SSL are set up automatically. Purchased domains list shows expiry, attached project, renewal problems, and a per-domain **auto-renew** toggle. New Domains item in the sidebar (Globe icon). When the platform has no registrar configured, the page shows a quiet "not enabled" note instead. EN/TR i18n.
+
 ## [0.2.0-beta.52] - 2026-07-06
 
 ### Added

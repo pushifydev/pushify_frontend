@@ -472,3 +472,16 @@ export type {
   ConnectDatabaseInput,
   DatabaseTypeInfo,
 } from './types';
+
+// Domain sales (registrar)
+export {
+  getDomainSalesConfig,
+  searchDomains,
+  getPurchasedDomains,
+  purchaseDomain,
+  setDomainAutoRenew,
+  type DomainSearchResult,
+  type PurchasedDomain,
+  type PurchaseDomainInput,
+  type PurchaseDomainResult,
+} from './services/registrar-domains.service';

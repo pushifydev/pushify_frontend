@@ -2281,6 +2281,38 @@ export interface TranslationKeys {
     ctaBody: string;
     ctaButton: string;
   };
+  domainSales: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    searchButton: string;
+    searching: string;
+    notEnabled: string;
+    notEnabledDesc: string;
+    available: string;
+    unavailable: string;
+    premium: string;
+    perYear: string;
+    renewsAt: string;
+    buy: string;
+    buying: string;
+    confirmTitle: string;
+    confirmBody: string;
+    confirmAttach: string;
+    confirmNoProject: string;
+    confirmPay: string;
+    purchasedTitle: string;
+    purchasedEmpty: string;
+    expires: string;
+    expired: string;
+    autoRenew: string;
+    attachedProject: string;
+    purchaseSuccess: string;
+    purchaseSuccessAttached: string;
+    balanceAfter: string;
+    walletNote: string;
+    renewalIssue: string;
+  };
 }
 
 export const en: TranslationKeys = {
@@ -4644,5 +4676,38 @@ export const en: TranslationKeys = {
     ctaTitle: 'Launch your site today',
     ctaBody: 'Build it visually, publish it to your own server, and keep full control.',
     ctaButton: 'Start building free',
+  },
+  domainSales: {
+    title: 'Domains',
+    subtitle: 'Search, buy, and auto-connect a custom domain to your projects.',
+    searchPlaceholder: 'myapp or myapp.com',
+    searchButton: 'Search',
+    searching: 'Searching…',
+    notEnabled: 'Domain purchasing is not enabled',
+    notEnabledDesc:
+      'This Pushify installation has no domain registrar configured. Self-hosting? Set REGISTRAR_PROVIDER in the backend environment.',
+    available: 'Available',
+    unavailable: 'Taken',
+    premium: 'Premium',
+    perYear: '/yr',
+    renewsAt: 'renews at',
+    buy: 'Buy',
+    buying: 'Buying…',
+    confirmTitle: 'Buy domain',
+    confirmBody: 'The price is charged from your infrastructure credits.',
+    confirmAttach: 'Connect to project (DNS + SSL automatic)',
+    confirmNoProject: "Don't connect to a project yet",
+    confirmPay: 'Buy for',
+    purchasedTitle: 'Your domains',
+    purchasedEmpty: 'No domains yet. Search above to register your first domain.',
+    expires: 'Expires',
+    expired: 'Expired',
+    autoRenew: 'Auto-renew',
+    attachedProject: 'Project',
+    purchaseSuccess: 'Domain registered successfully.',
+    purchaseSuccessAttached: 'Domain registered and connected to your project.',
+    balanceAfter: 'Remaining credits',
+    walletNote: 'Purchases are paid from your infrastructure credit balance.',
+    renewalIssue: 'Last renewal attempt failed',
   },
 };
