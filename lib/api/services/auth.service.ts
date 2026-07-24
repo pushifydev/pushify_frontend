@@ -9,7 +9,21 @@ export interface TwoFactorRequired {
   twoFactorToken: string;
 }
 
-export type LoginResponse = AuthResponse | TwoFactorRequired;
+/**
+ * Present when an OAuth login was started by the mobile app. The web callback page is
+ * only a bridge in that case: it hands the session to the app over this deep link
+ * instead of entering the dashboard.
+ */
+export interface MobileHandoff {
+  appRedirect: string;
+  accessToken?: string;
+  refreshToken?: string;
+  twoFactorToken?: string;
+}
+
+export type LoginResponse = (AuthResponse | TwoFactorRequired) & {
+  mobileHandoff?: MobileHandoff;
+};
 
 export interface TwoFactorSetup {
   secret: string;
@@ -395,9 +409,11 @@ export const githubLoginCallback = async (
 ): Promise<ApiResponse<LoginResponse>> => {
   try {
     const response = await api.post<
-      | { data: AuthResponse; accessToken: string; refreshToken: string }
-      | { requiresTwoFactor: true; twoFactorToken: string }
+      | { data: AuthResponse; accessToken: string; refreshToken: string; appRedirect?: string }
+      | { requiresTwoFactor: true; twoFactorToken: string; appRedirect?: string }
     >('/auth/github/login-callback', { code, state });
+
+    const appRedirect = response.data.appRedirect;
 
     // 2FA-enabled account: no tokens yet — surface the challenge to the caller
     if ('requiresTwoFactor' in response.data) {
@@ -405,11 +421,21 @@ export const githubLoginCallback = async (
         data: {
           requiresTwoFactor: true,
           twoFactorToken: response.data.twoFactorToken,
+          ...(appRedirect
+            ? { mobileHandoff: { appRedirect, twoFactorToken: response.data.twoFactorToken } }
+            : {}),
         },
       };
     }
 
     const { data, accessToken, refreshToken } = response.data;
+
+    // Mobile flow: this browser is a throwaway bridge, so don't leave a web session
+    // behind in it — the tokens travel to the app over the deep link instead.
+    if (appRedirect) {
+      return { data: { ...data, mobileHandoff: { appRedirect, accessToken, refreshToken } } };
+    }
+
     setTokens(accessToken, refreshToken);
 
     return { data };
@@ -447,9 +473,11 @@ export const googleLoginCallback = async (
 ): Promise<ApiResponse<LoginResponse>> => {
   try {
     const response = await api.post<
-      | { data: AuthResponse; accessToken: string; refreshToken: string }
-      | { requiresTwoFactor: true; twoFactorToken: string }
+      | { data: AuthResponse; accessToken: string; refreshToken: string; appRedirect?: string }
+      | { requiresTwoFactor: true; twoFactorToken: string; appRedirect?: string }
     >('/auth/google/login-callback', { code, state });
+
+    const appRedirect = response.data.appRedirect;
 
     // 2FA-enabled account: no tokens yet — surface the challenge to the caller
     if ('requiresTwoFactor' in response.data) {
@@ -457,11 +485,21 @@ export const googleLoginCallback = async (
         data: {
           requiresTwoFactor: true,
           twoFactorToken: response.data.twoFactorToken,
+          ...(appRedirect
+            ? { mobileHandoff: { appRedirect, twoFactorToken: response.data.twoFactorToken } }
+            : {}),
         },
       };
     }
 
     const { data, accessToken, refreshToken } = response.data;
+
+    // Mobile flow: this browser is a throwaway bridge, so don't leave a web session
+    // behind in it — the tokens travel to the app over the deep link instead.
+    if (appRedirect) {
+      return { data: { ...data, mobileHandoff: { appRedirect, accessToken, refreshToken } } };
+    }
+
     setTokens(accessToken, refreshToken);
 
     return { data };

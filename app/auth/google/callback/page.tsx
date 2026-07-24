@@ -35,9 +35,11 @@ function GoogleCallbackContent() {
         return;
       }
 
-      // Verify state matches what we stored
+      // Verify state matches what we stored. The mobile flow opens this page in a
+      // throwaway in-app browser that never stored one, so only enforce the match
+      // when an entry exists — the backend validates the one-time state regardless.
       const storedState = localStorage.getItem('google_oauth_state');
-      if (storedState !== state) {
+      if (storedState && storedState !== state) {
         setStatus('error');
         setErrorMessage('Invalid state parameter');
         return;
@@ -56,6 +58,20 @@ function GoogleCallbackContent() {
         }
 
         if (result.data) {
+          // Started from the mobile app: return the session over the deep link and
+          // stop — this browser is only a bridge and never enters the dashboard.
+          const handoff = result.data.mobileHandoff;
+          if (handoff) {
+            const params = new URLSearchParams();
+            if (handoff.accessToken) params.set('accessToken', handoff.accessToken);
+            if (handoff.refreshToken) params.set('refreshToken', handoff.refreshToken);
+            if (handoff.twoFactorToken) params.set('twoFactorToken', handoff.twoFactorToken);
+            setStatus('success');
+            // Fragment, not query: keeps tokens out of server logs and Referer headers.
+            window.location.replace(`${handoff.appRedirect}#${params.toString()}`);
+            return;
+          }
+
           // 2FA-enabled account: hand the challenge to the existing 2FA form on /login
           if ('requiresTwoFactor' in result.data) {
             useAuthStore.setState({
