@@ -36,23 +36,28 @@ function GitHubCallbackContent() {
         return;
       }
 
-      // Verify state (connect flow used sessionStorage briefly; login uses localStorage)
+      // Verify state (connect flow used sessionStorage briefly; login uses localStorage).
+      // A mobile login opens this page in a throwaway in-app browser that stored
+      // neither, so only enforce the match when an entry exists — the backend
+      // validates the one-time state server-side regardless.
       const storedState =
         localStorage.getItem('github_oauth_state') ??
         sessionStorage.getItem('github_oauth_state');
-      if (!storedState || storedState !== state) {
+      if (storedState && storedState !== state) {
         setStatus('error');
         setErrorMessage('Invalid state parameter');
         return;
       }
 
       const intent = localStorage.getItem('github_oauth_intent');
+      // No markers at all means the flow began outside this browser: mobile login.
+      const isLoginIntent = intent === 'login' || (!intent && !storedState);
       localStorage.removeItem('github_oauth_state');
       localStorage.removeItem('github_oauth_intent');
       sessionStorage.removeItem('github_oauth_state');
 
       // Handle login intent
-      if (intent === 'login') {
+      if (isLoginIntent) {
         try {
           const result = await githubLoginCallback(code, state);
 
@@ -63,6 +68,20 @@ function GitHubCallbackContent() {
           }
 
           if (result.data) {
+            // Started from the mobile app: return the session over the deep link and
+            // stop — this browser is only a bridge and never enters the dashboard.
+            const handoff = result.data.mobileHandoff;
+            if (handoff) {
+              const params = new URLSearchParams();
+              if (handoff.accessToken) params.set('accessToken', handoff.accessToken);
+              if (handoff.refreshToken) params.set('refreshToken', handoff.refreshToken);
+              if (handoff.twoFactorToken) params.set('twoFactorToken', handoff.twoFactorToken);
+              setStatus('success');
+              // Fragment, not query: keeps tokens out of server logs and Referer headers.
+              window.location.replace(`${handoff.appRedirect}#${params.toString()}`);
+              return;
+            }
+
             // 2FA-enabled account: hand the challenge to the existing 2FA form on /login
             if ('requiresTwoFactor' in result.data) {
               useAuthStore.setState({
