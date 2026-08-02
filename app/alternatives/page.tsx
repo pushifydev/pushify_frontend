@@ -182,6 +182,12 @@ export default function AlternativesPage() {
                 <Link href="/vs/heroku" className="lp-cta-ghost h-9 px-4 text-sm">
                   {t('vsHeroku', 'h1')}
                 </Link>
+                <Link href="/vs/railway" className="lp-cta-ghost h-9 px-4 text-sm">
+                  {t('vsRailway', 'h1')}
+                </Link>
+                <Link href="/vs/render" className="lp-cta-ghost h-9 px-4 text-sm">
+                  {t('vsRender', 'h1')}
+                </Link>
               </div>
             </article>
           </Reveal>

@@ -1410,6 +1410,16 @@ export interface TranslationKeys {
     saved: string;
   };
   team: {
+    projectAccessTitle: string;
+    projectAccessDescription: string;
+    accessAllProjects: string;
+    accessSelectedProjects: string;
+    accessAll: string;
+    accessProjectsWord: string;
+    noProjectsYet: string;
+    noProjectsSelectedWarning: string;
+    saveAccess: string;
+    cancel: string;
     title: string;
     description: string;
     members: string;
@@ -2329,6 +2339,41 @@ export interface TranslationKeys {
     chooseHerokuTitle: string; chooseHeroku1: string; chooseHeroku2: string; chooseHeroku3: string;
     tableTitle: string; tableNote: string; colHeroku: string;
     rowGitPush: string; rowFlatPricing: string; rowZeroOps: string; rowAddonEco: string;
+    diffTitle: string; diff1Title: string; diff1Body: string; diff2Title: string; diff2Body: string; diff3Title: string; diff3Body: string;
+    faqTitle: string; faq1Q: string; faq1A: string; faq2Q: string; faq2A: string; faq3Q: string; faq3A: string; faq4Q: string; faq4A: string;
+    ctaTitle: string; ctaBody: string; ctaButton: string;
+  };
+  workers: {
+    title: string; description: string;
+    addWorker: string; editWorker: string; deleteWorker: string;
+    name: string; namePlaceholder: string; nameHint: string;
+    command: string; commandPlaceholder: string; commandHint: string;
+    save: string; create: string; cancel: string;
+    empty: string; emptyHint: string;
+    deleteConfirmTitle: string; deleteConfirmMessage: string;
+    viewLogs: string; recentLogs: string; refreshLogs: string; loadingLogs: string; noLogs: string;
+    enable: string; disable: string; refreshStatus: string;
+    stateRunning: string; stateStopped: string; stateDisabled: string; statePendingDeploy: string;
+    deployNote: string;
+  };
+  vsRailway: {
+    eyebrow: string; h1: string; subtitle: string; ctaPrimary: string; ctaSecondary: string;
+    tldrTitle: string; tldrBody: string;
+    choosePushifyTitle: string; choosePushify1: string; choosePushify2: string; choosePushify3: string; choosePushify4: string;
+    chooseRailwayTitle: string; chooseRailway1: string; chooseRailway2: string; chooseRailway3: string;
+    tableTitle: string; tableNote: string; colRailway: string;
+    rowFlatPricing: string; rowUsageBilling: string; rowZeroOps: string; rowPreviewEnvs: string;
+    diffTitle: string; diff1Title: string; diff1Body: string; diff2Title: string; diff2Body: string; diff3Title: string; diff3Body: string;
+    faqTitle: string; faq1Q: string; faq1A: string; faq2Q: string; faq2A: string; faq3Q: string; faq3A: string; faq4Q: string; faq4A: string;
+    ctaTitle: string; ctaBody: string; ctaButton: string;
+  };
+  vsRender: {
+    eyebrow: string; h1: string; subtitle: string; ctaPrimary: string; ctaSecondary: string;
+    tldrTitle: string; tldrBody: string;
+    choosePushifyTitle: string; choosePushify1: string; choosePushify2: string; choosePushify3: string; choosePushify4: string;
+    chooseRenderTitle: string; chooseRender1: string; chooseRender2: string; chooseRender3: string;
+    tableTitle: string; tableNote: string; colRender: string;
+    rowZeroOps: string; rowUnlimitedApps: string; rowCron: string; rowAutoscale: string;
     diffTitle: string; diff1Title: string; diff1Body: string; diff2Title: string; diff2Body: string; diff3Title: string; diff3Body: string;
     faqTitle: string; faq1Q: string; faq1A: string; faq2Q: string; faq2A: string; faq3Q: string; faq3A: string; faq4Q: string; faq4A: string;
     ctaTitle: string; ctaBody: string; ctaButton: string;
@@ -3866,6 +3911,17 @@ export const en: TranslationKeys = {
     saved: 'Notification preferences saved!',
   },
   team: {
+    projectAccessTitle: 'Project access',
+    projectAccessDescription:
+      'Choose which projects this member can see and work on. Owners and admins always have access to every project.',
+    accessAllProjects: 'All projects',
+    accessSelectedProjects: 'Only selected projects',
+    accessAll: 'All projects',
+    accessProjectsWord: 'projects',
+    noProjectsYet: 'No projects in this workspace yet.',
+    noProjectsSelectedWarning: 'No projects selected — this member will not see any projects.',
+    saveAccess: 'Save access',
+    cancel: 'Cancel',
     title: 'Team',
     description: 'Manage your team members and organization settings.',
     members: 'Members',
@@ -4898,6 +4954,163 @@ export const en: TranslationKeys = {
       'Yes — pull-request preview deployments, cron jobs, persistent volumes, health checks and live log streaming are built in.',
     ctaTitle: 'Own your next deploy',
     ctaBody: 'Ship with the workflow Heroku made famous — on servers that answer to you.',
+    ctaButton: 'Get started free',
+  },
+  workers: {
+    title: 'Workers',
+    description:
+      'Worker processes run from the same built image as your app with their own start command — queue consumers, schedulers, background jobs.',
+    addWorker: 'Add worker',
+    editWorker: 'Edit worker',
+    deleteWorker: 'Delete worker',
+    name: 'Name',
+    namePlaceholder: 'queue',
+    nameHint: 'Lowercase letters, digits and hyphens (max 40 chars). Cannot be changed later.',
+    command: 'Start command',
+    commandPlaceholder: 'node dist/worker.js',
+    commandHint: 'Runs inside your app image, with the same environment variables and volumes.',
+    save: 'Save',
+    create: 'Create',
+    cancel: 'Cancel',
+    empty: 'No worker processes yet',
+    emptyHint: 'Add one here, or declare workers in pushify.yaml — they start on the next deploy.',
+    deleteConfirmTitle: 'Delete worker?',
+    deleteConfirmMessage: 'The worker container will be stopped and removed.',
+    viewLogs: 'View logs',
+    recentLogs: 'Recent logs',
+    refreshLogs: 'Refresh logs',
+    loadingLogs: 'Loading logs…',
+    noLogs: 'No log output yet.',
+    enable: 'Enable',
+    disable: 'Disable',
+    refreshStatus: 'Refresh status',
+    stateRunning: 'running',
+    stateStopped: 'stopped',
+    stateDisabled: 'disabled',
+    statePendingDeploy: 'starts on next deploy',
+    deployNote:
+      'New and re-enabled workers start on the next deploy. Disabling stops the container immediately.',
+  },
+  vsRailway: {
+    eyebrow: 'Honest comparison',
+    h1: 'Pushify vs Railway',
+    subtitle:
+      'Railway is a polished managed cloud with usage-based billing. Pushify brings a similar git-push experience to servers you own, at flat monthly prices. A spec sheet, not a pitch.',
+    ctaPrimary: 'Get started free',
+    ctaSecondary: 'View pricing',
+    tldrTitle: 'TL;DR',
+    tldrBody:
+      "Railway runs your apps on its own cloud and meters what you use: the Hobby plan is $5/mo (including $5 of usage), Pro starts at $20 per seat, and CPU/RAM are billed on top as you consume them. There is no self-host option and no way to bring your own server. Pushify flips that model: the platform deploys to infrastructure you control — self-host it for free, bring any VPS, or use managed Hetzner servers at flat monthly prices — so the bill is a server price, not a meter. If you want a beautiful zero-ops cloud and metered billing suits your workload, Railway is genuinely good. If you want ownership and a bill you can predict, that's Pushify.",
+    choosePushifyTitle: 'Choose Pushify if…',
+    choosePushify1:
+      'You want a bill that never surprises you: a server has one flat monthly price, and a traffic spike changes your latency, not your invoice.',
+    choosePushify2:
+      'You want your apps and data on servers you own — self-host the platform, bring any VPS, or use managed servers with root access.',
+    choosePushify3:
+      'You want a real free path: self-hosting Pushify costs nothing, and bring-your-own-server runs fine on a $5 VPS.',
+    choosePushify4:
+      'You want extras Railway does not ship — a marketplace of self-hosted apps (Supabase, WordPress, n8n…), an AI assistant, a site builder, built-in domain purchasing.',
+    chooseRailwayTitle: 'Choose Railway if…',
+    chooseRailway1:
+      'You want fully managed, multi-region infrastructure and never want to think about a server — Railway’s ops burden is zero.',
+    chooseRailway2:
+      'Your workload is small or spiky and metered billing works in your favor — you pay for what you consume, not for an always-on box.',
+    chooseRailway3:
+      'You value its template ecosystem and collaborative dashboard, and your team is already productive there.',
+    tableTitle: 'Feature comparison',
+    tableNote:
+      'Based on publicly available information (Railway pricing pages, August 2026). This may change — spot something out of date? Email us and we will fix it.',
+    colRailway: 'Railway',
+    rowFlatPricing: 'Flat-rate server pricing',
+    rowUsageBilling: 'Usage-based (metered) billing',
+    rowZeroOps: 'Fully managed (zero server ops)',
+    rowPreviewEnvs: 'PR preview environments',
+    diffTitle: 'The three differences that matter',
+    diff1Title: 'Where your app runs',
+    diff1Body:
+      'Railway runs everything on its own managed cloud — you cannot self-host the platform or attach your own machine. Pushify is the opposite: install it on your own hardware with one command, bring any VPS over SSH, or let it provision managed Hetzner servers for you.',
+    diff2Title: 'How the bill grows',
+    diff2Body:
+      'Railway meters resources: a subscription plus per-second CPU and memory charges, and Pro seats at $20 each. Pushify charges a flat monthly price per server, prorated hourly — run as many apps and databases on it as it can handle, and the price stays the same.',
+    diff3Title: 'What you can walk away with',
+    diff3Body:
+      'On Railway, leaving means re-platforming: configs, networking and databases live in their cloud. Pushify deploys plain Docker containers to servers you can SSH into — if you ever stop using Pushify, your apps, data and servers are still yours, still running.',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Is Pushify a good Railway alternative?',
+    faq1A:
+      'If you like Railway’s git-push workflow but want it on servers you own, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Railway’s managed multi-region cloud; you gain flat pricing and root access.',
+    faq2Q: 'How does pricing actually compare?',
+    faq2A:
+      'Railway is metered: $5/mo Hobby includes $5 of usage, then CPU and memory bill as you consume them, and Pro adds $20 per seat. Pushify has no metering — self-host for free, or run a managed server at one flat monthly price and fit several apps and databases on the same box.',
+    faq3Q: 'Can I migrate an app from Railway to Pushify?',
+    faq3A:
+      'Most Railway apps are standard git repos — connect the repo and Pushify detects the framework and builds it in Docker. Railway databases map to Pushify managed databases, volumes to persistent volumes, and cron schedules to built-in cron jobs.',
+    faq4Q: 'Does Pushify have Railway-style preview environments and cron jobs?',
+    faq4A:
+      'Yes — pull-request preview deployments with GitHub/GitLab comments, cron jobs, persistent volumes, health checks and live log streaming are built in.',
+    ctaTitle: 'A bill you can predict',
+    ctaBody: 'Keep the git-push workflow — swap the meter for a flat-priced server you own.',
+    ctaButton: 'Get started free',
+  },
+  vsRender: {
+    eyebrow: 'Honest comparison',
+    h1: 'Pushify vs Render',
+    subtitle:
+      'Render is a solid managed PaaS with fixed per-service pricing. Pushify offers the same predictability on servers you own — with per-server, not per-service, economics. A spec sheet, not a pitch.',
+    ctaPrimary: 'Get started free',
+    ctaSecondary: 'View pricing',
+    tldrTitle: 'TL;DR',
+    tldrBody:
+      "Render hosts your services on its own cloud at fixed instance prices: static sites are free, web services start around $7/mo, and every app, worker and database is its own line item. Free web services spin down when idle and wake with a delay. There is no self-host or bring-your-own-server option. Pushify deploys to infrastructure you control — self-host for free, bring any VPS, or use flat-priced managed Hetzner servers — and one server runs as many apps as it can handle for one price. If you want zero server responsibility with predictable pricing, Render is a fine choice. If you want that predictability plus ownership, that's Pushify.",
+    choosePushifyTitle: 'Choose Pushify if…',
+    choosePushify1:
+      'You run more than a couple of services: on Render each app, worker and database is a separate monthly charge; on Pushify one flat-priced server hosts them all.',
+    choosePushify2:
+      'You want your apps and data on servers you own — self-host the platform, bring any VPS, or use managed servers with root access.',
+    choosePushify3:
+      'You want always-on without a fee: nothing on your own server ever spins down unless you enable scale-to-zero yourself — it is a feature, not a billing tier.',
+    choosePushify4:
+      'You want extras Render does not ship — a marketplace of self-hosted apps (Supabase, WordPress, n8n…), an AI assistant, a site builder, built-in domain purchasing.',
+    chooseRenderTitle: 'Choose Render if…',
+    chooseRender1:
+      'You want a fully managed platform with zero server responsibility, and per-service pricing is fine at your scale.',
+    chooseRender2:
+      'You need managed autoscaling and a global CDN for static sites out of the box.',
+    chooseRender3:
+      'Your team already runs on Render and the migration cost outweighs the savings.',
+    tableTitle: 'Feature comparison',
+    tableNote:
+      'Based on publicly available information (Render pricing pages, August 2026). This may change — spot something out of date? Email us and we will fix it.',
+    colRender: 'Render',
+    rowZeroOps: 'Fully managed (zero server ops)',
+    rowUnlimitedApps: 'Many apps on one server, one price',
+    rowCron: 'Cron jobs',
+    rowAutoscale: 'Managed autoscaling',
+    diffTitle: 'The three differences that matter',
+    diff1Title: 'Where your app runs',
+    diff1Body:
+      'Render runs everything on its own managed cloud — there is no self-host option and no way to bring a server. Pushify installs on your own hardware with one command, attaches any VPS over SSH, or provisions managed Hetzner servers for you.',
+    diff2Title: 'Per-service vs per-server pricing',
+    diff2Body:
+      'Render prices each service separately: a web service, a background worker and a database are three line items, every month. Pushify prices the server: one flat monthly cost, prorated hourly, and you run whatever fits on it — five apps on one box cost the same as one.',
+    diff3Title: 'What free actually means',
+    diff3Body:
+      'Render’s free web services spin down when idle and wake with a cold-start delay. Pushify’s free path is self-hosting: the platform costs nothing on your own hardware, stays always-on, and scale-to-zero is something you opt into per project, not a tier you are placed in.',
+    faqTitle: 'Frequently asked questions',
+    faq1Q: 'Is Pushify a good Render alternative?',
+    faq1A:
+      'If you like Render’s simplicity but want server ownership and per-server pricing, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose managed autoscaling; you gain root access and a flat bill.',
+    faq2Q: 'How does pricing actually compare?',
+    faq2A:
+      'On Render a small always-on app with a database is typically two line items starting around $7/mo each. On Pushify the same workload fits on one entry-level VPS — self-host for free, or use a flat-priced managed server — with room for several more apps on the same box.',
+    faq3Q: 'Can I migrate an app from Render to Pushify?',
+    faq3A:
+      'Most Render apps are standard git repos — connect the repo and Pushify detects the framework and builds it in Docker. Render databases map to Pushify managed databases, cron jobs to built-in cron, and persistent disks to persistent volumes.',
+    faq4Q: 'Does Pushify have Render-style previews, cron jobs and persistent disks?',
+    faq4A:
+      'Yes — pull-request preview deployments, cron jobs, persistent volumes, health checks and live log streaming are built in.',
+    ctaTitle: 'Predictable pricing, on your servers',
+    ctaBody: 'Keep the simplicity — add ownership, root access and per-server economics.',
     ctaButton: 'Get started free',
   },
   alternatives: {

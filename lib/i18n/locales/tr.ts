@@ -1435,6 +1435,17 @@ export const tr: TranslationKeys = {
     saved: 'Bildirim tercihleri kaydedildi!',
   },
   team: {
+    projectAccessTitle: 'Proje erişimi',
+    projectAccessDescription:
+      'Bu üyenin hangi projeleri görüp üzerinde çalışabileceğini seç. Sahip ve yöneticiler her zaman tüm projelere erişir.',
+    accessAllProjects: 'Tüm projeler',
+    accessSelectedProjects: 'Sadece seçili projeler',
+    accessAll: 'Tüm projeler',
+    accessProjectsWord: 'proje',
+    noProjectsYet: 'Bu çalışma alanında henüz proje yok.',
+    noProjectsSelectedWarning: 'Hiç proje seçilmedi — bu üye hiçbir projeyi göremeyecek.',
+    saveAccess: 'Erişimi kaydet',
+    cancel: 'İptal',
     title: 'Takım',
     description: 'Takım üyelerinizi ve organizasyon ayarlarınızı yönetin.',
     members: 'Üyeler',
@@ -2468,6 +2479,163 @@ export const tr: TranslationKeys = {
       'Evet — pull-request önizleme deploy\'ları, cron görevleri, kalıcı diskler, sağlık kontrolleri ve canlı log akışı yerleşik olarak gelir.',
     ctaTitle: 'Bir sonraki deploy\'unun sahibi ol',
     ctaBody: 'Heroku\'nun meşhur ettiği akışla yayınla — sana hesap veren sunucularda.',
+    ctaButton: 'Ücretsiz başla',
+  },
+  workers: {
+    title: 'Worker’lar',
+    description:
+      'Worker süreçleri, uygulamanla aynı imajdan kendi başlatma komutuyla çalışır — kuyruk tüketicileri, zamanlayıcılar, arka plan işleri.',
+    addWorker: 'Worker ekle',
+    editWorker: 'Worker düzenle',
+    deleteWorker: 'Worker sil',
+    name: 'İsim',
+    namePlaceholder: 'queue',
+    nameHint: 'Küçük harf, rakam ve tire (en fazla 40 karakter). Sonradan değiştirilemez.',
+    command: 'Başlatma komutu',
+    commandPlaceholder: 'node dist/worker.js',
+    commandHint: 'Uygulama imajının içinde, aynı ortam değişkenleri ve disklerle çalışır.',
+    save: 'Kaydet',
+    create: 'Oluştur',
+    cancel: 'İptal',
+    empty: 'Henüz worker süreci yok',
+    emptyHint: 'Buradan ekle ya da pushify.yaml içinde tanımla — bir sonraki deploy’da başlar.',
+    deleteConfirmTitle: 'Worker silinsin mi?',
+    deleteConfirmMessage: 'Worker konteyneri durdurulup kaldırılacak.',
+    viewLogs: 'Logları gör',
+    recentLogs: 'Son loglar',
+    refreshLogs: 'Logları yenile',
+    loadingLogs: 'Loglar yükleniyor…',
+    noLogs: 'Henüz log çıktısı yok.',
+    enable: 'Etkinleştir',
+    disable: 'Devre dışı bırak',
+    refreshStatus: 'Durumu yenile',
+    stateRunning: 'çalışıyor',
+    stateStopped: 'durdu',
+    stateDisabled: 'devre dışı',
+    statePendingDeploy: 'sonraki deploy’da başlar',
+    deployNote:
+      'Yeni ve yeniden etkinleştirilen worker’lar bir sonraki deploy’da başlar. Devre dışı bırakmak konteyneri hemen durdurur.',
+  },
+  vsRailway: {
+    eyebrow: 'Dürüst karşılaştırma',
+    h1: 'Pushify vs Railway',
+    subtitle:
+      'Railway, kullandıkça öde faturalandırmalı, cilalı bir yönetilen bulut. Pushify benzer git-push deneyimini sabit aylık fiyatlarla, senin sahip olduğun sunuculara getiriyor. Satış konuşması değil, teknik döküm.',
+    ctaPrimary: 'Ücretsiz başla',
+    ctaSecondary: 'Fiyatları gör',
+    tldrTitle: 'Özet',
+    tldrBody:
+      "Railway uygulamalarını kendi bulutunda çalıştırır ve kullandığını ölçer: Hobby planı $5/ay ($5 kullanım dahil), Pro koltuk başı $20'dan başlar, CPU/RAM tükettikçe üstüne faturalanır. Self-host seçeneği ve kendi sunucunu bağlama imkânı yoktur. Pushify bu modeli tersine çevirir: platform senin kontrolündeki altyapıya deploy eder — ücretsiz self-host et, herhangi bir VPS getir ya da sabit aylık fiyatlı yönetilen Hetzner sunucuları kullan — fatura bir sayaç değil, bir sunucu fiyatıdır. Sıfır operasyonlu şık bir bulut istiyorsan ve ölçülen faturalandırma iş yüküne uyuyorsa Railway gerçekten iyi. Sahiplik ve öngörülebilir fatura istiyorsan, o Pushify.",
+    choosePushifyTitle: 'Şu durumda Pushify seç…',
+    choosePushify1:
+      'Seni asla şaşırtmayan bir fatura istiyorsun: sunucunun tek bir sabit aylık fiyatı var; trafik patlaması faturanı değil, gecikmeni değiştirir.',
+    choosePushify2:
+      'Uygulamaların ve verilerin sahip olduğun sunucularda dursun istiyorsun — platformu self-host et, herhangi bir VPS getir ya da root erişimli yönetilen sunucu kullan.',
+    choosePushify3:
+      "Gerçek bir ücretsiz yol istiyorsun: Pushify'ı self-host etmek hiçbir şey tutmaz, kendi sunucunu getirmek $5'lık bir VPS'te bile rahat çalışır.",
+    choosePushify4:
+      "Railway'de olmayan ekstraları istiyorsun — self-host uygulama marketi (Supabase, WordPress, n8n…), yapay zekâ asistanı, site kurucu, yerleşik alan adı satın alma.",
+    chooseRailwayTitle: 'Şu durumda Railway seç…',
+    chooseRailway1:
+      "Tamamen yönetilen, çok bölgeli altyapı istiyorsun ve sunucu diye bir şey düşünmek istemiyorsun — Railway'in operasyon yükü gerçekten sıfır.",
+    chooseRailway2:
+      'İş yükün küçük ya da dalgalı ve ölçülen faturalandırma lehine işliyor — sürekli açık bir makine için değil, tükettiğin için ödüyorsun.',
+    chooseRailway3:
+      'Şablon ekosistemine ve ortak çalışmaya uygun paneline değer veriyorsun, ekibin orada zaten üretken.',
+    tableTitle: 'Özellik karşılaştırması',
+    tableNote:
+      'Kamuya açık bilgilere dayanır (Railway fiyat sayfaları, Ağustos 2026). Değişmiş olabilir — güncel olmayan bir şey mi gördün? Bize yaz, düzeltelim.',
+    colRailway: 'Railway',
+    rowFlatPricing: 'Sabit sunucu fiyatlandırması',
+    rowUsageBilling: 'Kullandıkça öde (ölçülen) faturalandırma',
+    rowZeroOps: 'Tamamen yönetilen (sıfır sunucu operasyonu)',
+    rowPreviewEnvs: 'PR önizleme ortamları',
+    diffTitle: 'Fark yaratan üç şey',
+    diff1Title: 'Uygulaman nerede çalışır',
+    diff1Body:
+      "Railway her şeyi kendi yönetilen bulutunda çalıştırır — platformu self-host edemez, kendi makineni bağlayamazsın. Pushify tam tersi: tek komutla kendi donanımına kur, SSH ile herhangi bir VPS bağla ya da senin için yönetilen Hetzner sunucuları açsın.",
+    diff2Title: 'Fatura nasıl büyür',
+    diff2Body:
+      "Railway kaynakları ölçer: abonelik artı saniye bazında CPU ve bellek ücretleri, Pro'da koltuk başı $20. Pushify sunucu başına sabit aylık fiyat alır, saatlik oranlanır — makinenin kaldırdığı kadar uygulama ve veritabanı çalıştır, fiyat aynı kalır.",
+    diff3Title: 'Giderken yanında ne götürürsün',
+    diff3Body:
+      "Railway'den ayrılmak yeniden platform kurmak demek: konfigürasyonlar, ağ ve veritabanları onların bulutunda yaşar. Pushify, SSH ile girebildiğin sunuculara düz Docker konteynerleri deploy eder — bir gün Pushify'ı bıraksan bile uygulamaların, verilerin ve sunucuların senin, çalışmaya devam eder.",
+    faqTitle: 'Sık sorulan sorular',
+    faq1Q: 'Pushify iyi bir Railway alternatifi mi?',
+    faq1A:
+      "Railway'in git-push akışını sevip kendi sunucularında istiyorsan, evet: Pushify 20+ framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişlerle deploy eder. Railway'in yönetilen çok bölgeli bulutunu kaybedersin; sabit fiyat ve root erişimi kazanırsın.",
+    faq2Q: 'Fiyatlar gerçekte nasıl karşılaştırılır?',
+    faq2A:
+      "Railway ölçer: $5/ay Hobby'ye $5 kullanım dahildir, sonrası CPU ve bellek tükettikçe faturalanır, Pro koltuk başı $20 ekler. Pushify'da sayaç yok — ücretsiz self-host et ya da tek sabit aylık fiyatlı yönetilen sunucuda birkaç uygulama ve veritabanını aynı makineye sığdır.",
+    faq3Q: 'Railway\'deki uygulamamı Pushify\'a taşıyabilir miyim?',
+    faq3A:
+      "Çoğu Railway uygulaması standart bir git reposudur — repoyu bağla, Pushify framework'ü algılayıp Docker'da derler. Railway veritabanları Pushify yönetilen veritabanlarına, volume'lar kalıcı disklere, cron zamanlamaları yerleşik cron görevlerine karşılık gelir.",
+    faq4Q: 'Pushify\'da Railway tarzı önizleme ortamları ve cron var mı?',
+    faq4A:
+      'Evet — GitHub/GitLab yorumlu pull-request önizleme deploy\'ları, cron görevleri, kalıcı diskler, sağlık kontrolleri ve canlı log akışı yerleşik olarak gelir.',
+    ctaTitle: 'Öngörebildiğin bir fatura',
+    ctaBody: 'Git-push akışını koru — sayacı, sahibi olduğun sabit fiyatlı bir sunucuyla değiştir.',
+    ctaButton: 'Ücretsiz başla',
+  },
+  vsRender: {
+    eyebrow: 'Dürüst karşılaştırma',
+    h1: 'Pushify vs Render',
+    subtitle:
+      'Render, servis başına sabit fiyatlı, sağlam bir yönetilen PaaS. Pushify aynı öngörülebilirliği senin sahip olduğun sunucularda sunuyor — servis başına değil, sunucu başına ekonomiyle. Satış konuşması değil, teknik döküm.',
+    ctaPrimary: 'Ücretsiz başla',
+    ctaSecondary: 'Fiyatları gör',
+    tldrTitle: 'Özet',
+    tldrBody:
+      "Render servislerini kendi bulutunda sabit fiyatlarla barındırır: statik siteler ücretsizdir, web servisleri yaklaşık $7/ay'dan başlar ve her uygulama, worker ve veritabanı ayrı bir fatura kalemidir. Ücretsiz web servisleri boşta kalınca uykuya geçer, gecikmeyle uyanır. Self-host ya da kendi sunucunu getirme seçeneği yoktur. Pushify senin kontrolündeki altyapıya deploy eder — ücretsiz self-host et, VPS getir ya da sabit fiyatlı yönetilen Hetzner sunucuları kullan — ve bir sunucu, kaldırabildiği kadar uygulamayı tek fiyata çalıştırır. Sıfır sunucu sorumluluğu ve öngörülebilir fiyat istiyorsan Render iyi bir seçim. Aynı öngörülebilirliğin yanına sahiplik de istiyorsan, o Pushify.",
+    choosePushifyTitle: 'Şu durumda Pushify seç…',
+    choosePushify1:
+      "Birkaç servisten fazlasını çalıştırıyorsun: Render'da her uygulama, worker ve veritabanı ayrı bir aylık ücret; Pushify'da sabit fiyatlı tek sunucu hepsini barındırır.",
+    choosePushify2:
+      'Uygulamaların ve verilerin sahip olduğun sunucularda dursun istiyorsun — platformu self-host et, herhangi bir VPS getir ya da root erişimli yönetilen sunucu kullan.',
+    choosePushify3:
+      'Ücret ödemeden sürekli açık kalmak istiyorsun: kendi sunucunda hiçbir şey sen istemedikçe uykuya geçmez — scale-to-zero bir faturalandırma katmanı değil, kendi açtığın bir özelliktir.',
+    choosePushify4:
+      "Render'da olmayan ekstraları istiyorsun — self-host uygulama marketi (Supabase, WordPress, n8n…), yapay zekâ asistanı, site kurucu, yerleşik alan adı satın alma.",
+    chooseRenderTitle: 'Şu durumda Render seç…',
+    chooseRender1:
+      'Sıfır sunucu sorumluluğu olan, tamamen yönetilen bir platform istiyorsun ve senin ölçeğinde servis başına fiyatlandırma sorun değil.',
+    chooseRender2:
+      'Kutudan çıktığı gibi yönetilen otomatik ölçekleme ve statik siteler için global CDN gerekiyor.',
+    chooseRender3:
+      "Ekibin zaten Render'da çalışıyor ve taşınma maliyeti kazançtan büyük.",
+    tableTitle: 'Özellik karşılaştırması',
+    tableNote:
+      'Kamuya açık bilgilere dayanır (Render fiyat sayfaları, Ağustos 2026). Değişmiş olabilir — güncel olmayan bir şey mi gördün? Bize yaz, düzeltelim.',
+    colRender: 'Render',
+    rowZeroOps: 'Tamamen yönetilen (sıfır sunucu operasyonu)',
+    rowUnlimitedApps: 'Tek sunucuda çok uygulama, tek fiyat',
+    rowCron: 'Cron görevleri',
+    rowAutoscale: 'Yönetilen otomatik ölçekleme',
+    diffTitle: 'Fark yaratan üç şey',
+    diff1Title: 'Uygulaman nerede çalışır',
+    diff1Body:
+      "Render her şeyi kendi yönetilen bulutunda çalıştırır — self-host seçeneği ve sunucu bağlama imkânı yoktur. Pushify tek komutla kendi donanımına kurulur, SSH ile herhangi bir VPS'i bağlar ya da senin için yönetilen Hetzner sunucuları açar.",
+    diff2Title: 'Servis başına mı, sunucu başına mı',
+    diff2Body:
+      'Render her servisi ayrı fiyatlandırır: bir web servisi, bir background worker ve bir veritabanı her ay üç ayrı kalemdir. Pushify sunucuyu fiyatlandırır: tek sabit aylık ücret, saatlik oranlanır — makineye ne sığıyorsa çalıştırırsın; tek makinede beş uygulama da tek uygulamayla aynı fiyattır.',
+    diff3Title: 'Ücretsiz gerçekte ne demek',
+    diff3Body:
+      "Render'ın ücretsiz web servisleri boşta kalınca uykuya geçer ve soğuk başlangıç gecikmesiyle uyanır. Pushify'ın ücretsiz yolu self-host: platform kendi donanımında hiçbir şey tutmaz, sürekli açık kalır; scale-to-zero ise yerleştirildiğin bir katman değil, proje bazında kendi açtığın bir tercihtir.",
+    faqTitle: 'Sık sorulan sorular',
+    faq1Q: 'Pushify iyi bir Render alternatifi mi?',
+    faq1A:
+      "Render'ın sadeliğini sevip sunucu sahipliği ve sunucu başına fiyat istiyorsan, evet: Pushify 20+ framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişlerle deploy eder. Yönetilen otomatik ölçeklemeyi kaybedersin; root erişimi ve sabit bir fatura kazanırsın.",
+    faq2Q: 'Fiyatlar gerçekte nasıl karşılaştırılır?',
+    faq2A:
+      "Render'da veritabanlı, sürekli açık küçük bir uygulama genellikle her biri yaklaşık $7/ay'dan başlayan iki fatura kalemidir. Pushify'da aynı iş yükü tek bir giriş seviyesi VPS'e sığar — ücretsiz self-host et ya da sabit fiyatlı yönetilen sunucu kullan — aynı makinede birkaç uygulamaya daha yer kalır.",
+    faq3Q: 'Render\'daki uygulamamı Pushify\'a taşıyabilir miyim?',
+    faq3A:
+      "Çoğu Render uygulaması standart bir git reposudur — repoyu bağla, Pushify framework'ü algılayıp Docker'da derler. Render veritabanları Pushify yönetilen veritabanlarına, cron görevleri yerleşik cron'a, kalıcı diskler kalıcı volume'lara karşılık gelir.",
+    faq4Q: 'Pushify\'da Render tarzı önizleme, cron ve kalıcı disk var mı?',
+    faq4A:
+      'Evet — pull-request önizleme deploy\'ları, cron görevleri, kalıcı diskler, sağlık kontrolleri ve canlı log akışı yerleşik olarak gelir.',
+    ctaTitle: 'Öngörülebilir fiyat, kendi sunucularında',
+    ctaBody: 'Sadeliği koru — üstüne sahiplik, root erişimi ve sunucu başına ekonomi ekle.',
     ctaButton: 'Ücretsiz başla',
   },
   alternatives: {
