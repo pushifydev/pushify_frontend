@@ -156,6 +156,21 @@ export {
   type CreateProjectVolumeInput,
 } from './services/volumes.service';
 
+// Project Workers (worker processes)
+export {
+  getProjectWorkers,
+  getProjectWorkerStatuses,
+  createProjectWorker,
+  updateProjectWorker,
+  deleteProjectWorker,
+  getProjectWorkerLogs,
+  type ProjectWorker,
+  type WorkerStatusMap,
+  type CreateWorkerInput,
+  type UpdateWorkerInput,
+  type WorkerLogsResult,
+} from './services/project-workers.service';
+
 // Project Logs (explorer)
 export {
   searchProjectLogs,
@@ -225,6 +240,7 @@ export {
   getMembers,
   addMember,
   updateMemberRole,
+  updateMemberProjectAccess,
   removeMember,
   getInvitations,
   sendInvitation,
@@ -239,6 +255,7 @@ export {
   type UpdateOrganizationInput,
   type AddMemberInput,
   type UpdateMemberRoleInput,
+  type UpdateMemberProjectAccessInput,
   type OrganizationInvitation,
   type InvitationInfo,
   type InvitationStatus,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Users, Plus, Trash2, Shield, User, Eye, Crown, Mail, X, Clock } from 'lucide-react';
+import { Users, Plus, Trash2, Shield, User, Eye, Crown, Mail, X, Clock, FolderLock } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useOrganization, useOrganizationMembers, useOrganizationInvitations, useRevokeInvitation } from '@/hooks';
 import { useAuthStore } from '@/stores/auth';
@@ -10,6 +10,7 @@ import {
   RemoveMemberModal,
   ChangeRoleDropdown,
   OrganizationSettingsSection,
+  ProjectAccessModal,
 } from './components';
 import { formatShortDate } from '@/lib/formatters';
 import { ROLE_COLORS, STATUS_COLORS } from '@/lib/constants';
@@ -33,6 +34,7 @@ export default function TeamPage() {
 
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [removeMember, setRemoveMember]       = useState<OrganizationMember | null>(null);
+  const [accessMember, setAccessMember]       = useState<OrganizationMember | null>(null);
   const [revokingId, setRevokingId]           = useState<string | null>(null);
 
   const isLoading       = orgLoading || membersLoading;
@@ -181,6 +183,27 @@ export default function TeamPage() {
                   )}
                 </div>
 
+                {/* Project access (member/viewer only — owner/admin always see everything) */}
+                {(member.role === 'member' || member.role === 'viewer') && (
+                  <div className="shrink-0">
+                    <button
+                      onClick={() => canManage && setAccessMember(member)}
+                      disabled={!canManage}
+                      className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium transition-colors disabled:cursor-default"
+                      style={{
+                        background: 'var(--hover-overlay)',
+                        color: member.restrictedAccess ? 'var(--status-warning)' : 'var(--text-secondary)',
+                      }}
+                      title={t('team', 'projectAccessTitle')}
+                    >
+                      <FolderLock className="w-3 h-3" />
+                      {member.restrictedAccess
+                        ? `${member.projectIds.length} ${t('team', 'accessProjectsWord')}`
+                        : t('team', 'accessAll')}
+                    </button>
+                  </div>
+                )}
+
                 {/* Remove */}
                 <div className="w-7 shrink-0">
                   {canManage && (
@@ -314,6 +337,7 @@ export default function TeamPage() {
           memberId={removeMember.user.id}
         />
       )}
+      <ProjectAccessModal member={accessMember} onClose={() => setAccessMember(null)} />
     </div>
   );
 }

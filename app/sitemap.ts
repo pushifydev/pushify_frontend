@@ -17,6 +17,8 @@ const CONTENT_DATES: Record<string, string> = {
   '/vs/coolify': '2026-07-05',
   '/vs/vercel': '2026-07-05',
   '/vs/heroku': '2026-07-19',
+  '/vs/railway': '2026-08-02',
+  '/vs/render': '2026-08-02',
   '/alternatives': '2026-07-19',
   '/guides/deploy-nextjs': '2026-07-19',
   '/privacy': '2026-05-01',

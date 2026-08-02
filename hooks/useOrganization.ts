@@ -9,6 +9,7 @@ import {
   getMembers,
   addMember,
   updateMemberRole,
+  updateMemberProjectAccess,
   removeMember,
   getInvitations,
   sendInvitation,
@@ -17,6 +18,7 @@ import {
   type UpdateOrganizationInput,
   type AddMemberInput,
   type UpdateMemberRoleInput,
+  type UpdateMemberProjectAccessInput,
   type SendInvitationInput,
 } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
@@ -125,6 +127,27 @@ export function useUpdateMemberRole() {
   return useMutation({
     mutationFn: async ({ userId, input }: { userId: string; input: UpdateMemberRoleInput }) => {
       const result = await updateMemberRole(userId, input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: organizationKeys.members() });
+    },
+  });
+}
+
+export function useUpdateMemberProjectAccess() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      userId,
+      input,
+    }: {
+      userId: string;
+      input: UpdateMemberProjectAccessInput;
+    }) => {
+      const result = await updateMemberProjectAccess(userId, input);
       if (result.error) throw new Error(result.error.message);
       return result.data;
     },
