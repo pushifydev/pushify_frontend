@@ -18,7 +18,7 @@ import {
   ChevronRight,
   Copy,
   Check,
-  Bell, ScrollText} from 'lucide-react';
+  Bell, ScrollText, Cpu } from 'lucide-react';
 import { DeploymentLogsModal } from '@/components/DeploymentLogsModal';
 import { ContainerLogsModal } from '@/components/ContainerLogsModal';
 import { HistoricalLogsModal } from '@/components/HistoricalLogsModal';
@@ -29,6 +29,7 @@ import {
   DomainsTab,
   NotificationsTab,
   ScheduledTasksTab,
+  WorkersTab,
   LogsTab,
   SettingsTab,
 } from './components';
@@ -61,9 +62,9 @@ import { useConfirm } from '@/hooks/useConfirm';
 import { type ProjectStatus } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
 
-type Tab = 'overview' | 'deployments' | 'logs' | 'environment' | 'domains' | 'cron' | 'notifications' | 'settings';
+type Tab = 'overview' | 'deployments' | 'logs' | 'environment' | 'domains' | 'cron' | 'workers' | 'notifications' | 'settings';
 
-const VALID_TABS: Tab[] = ['overview', 'deployments', 'logs', 'environment', 'domains', 'cron', 'notifications', 'settings'];
+const VALID_TABS: Tab[] = ['overview', 'deployments', 'logs', 'environment', 'domains', 'cron', 'workers', 'notifications', 'settings'];
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -206,6 +207,7 @@ export default function ProjectDetailPage() {
     { id: 'environment', label: t('projectDetail', 'environment'), icon: <Key className="w-4 h-4" /> },
     { id: 'domains', label: t('projectDetail', 'domains'), icon: <Globe className="w-4 h-4" /> },
     { id: 'cron', label: t('cron', 'title'), icon: <Clock className="w-4 h-4" /> },
+    { id: 'workers', label: t('workers', 'title'), icon: <Cpu className="w-4 h-4" /> },
     { id: 'notifications', label: t('notifications', 'title'), icon: <Bell className="w-4 h-4" /> },
     { id: 'settings', label: t('projectDetail', 'settings'), icon: <Settings className="w-4 h-4" /> },
   ];
@@ -489,6 +491,7 @@ export default function ProjectDetailPage() {
           />
         )}
         {activeTab === 'cron' && <ScheduledTasksTab projectId={projectId} t={t} />}
+        {activeTab === 'workers' && <WorkersTab projectId={projectId} t={t} />}
         {activeTab === 'notifications' && (
           <NotificationsTab projectId={projectId} t={t} />
         )}

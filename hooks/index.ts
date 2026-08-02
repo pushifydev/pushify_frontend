@@ -283,6 +283,16 @@ export {
 } from './useScheduledTasks';
 
 export {
+  projectWorkerKeys,
+  useProjectWorkers,
+  useProjectWorkerStatuses,
+  useProjectWorkerLogs,
+  useCreateProjectWorker,
+  useUpdateProjectWorker,
+  useDeleteProjectWorker,
+} from './useProjectWorkers';
+
+export {
   projectVolumeKeys,
   useProjectVolumes,
   useCreateProjectVolume,

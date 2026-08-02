@@ -30,6 +30,8 @@ export interface OrganizationMember {
   organizationId: string;
   userId: string;
   role: MemberRole;
+  restrictedAccess: boolean;
+  projectIds: string[];
   joinedAt: string;
   createdAt: string;
   user: {
@@ -38,6 +40,11 @@ export interface OrganizationMember {
     name: string;
     avatarUrl: string | null;
   };
+}
+
+export interface UpdateMemberProjectAccessInput {
+  restricted: boolean;
+  projectIds?: string[];
 }
 
 export interface UpdateOrganizationInput {
@@ -194,6 +201,21 @@ export const updateMemberRole = async (
   try {
     const response = await api.patch<{ data: OrganizationMember; message: string }>(
       `/organizations/members/${userId}`,
+      input
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const updateMemberProjectAccess = async (
+  userId: string,
+  input: UpdateMemberProjectAccessInput
+): Promise<ApiResponse<OrganizationMember>> => {
+  try {
+    const response = await api.put<{ data: OrganizationMember; message: string }>(
+      `/organizations/members/${userId}/project-access`,
       input
     );
     return { data: response.data.data };
