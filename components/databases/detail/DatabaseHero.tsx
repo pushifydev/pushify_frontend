@@ -1,6 +1,7 @@
 'use client';
 
-import { HardDrive } from 'lucide-react';
+import Link from 'next/link';
+import { HardDrive, Table2 } from 'lucide-react';
 import type { Database } from '@/lib/api';
 import { STATUS_COLORS, DATABASE_STATUS_COLORS, DB_TYPE_COLORS, DB_TYPE_LABELS } from '@/lib/constants';
 import { panelStyle, type T } from './_shared';
@@ -12,6 +13,7 @@ export function DatabaseHero({
   onStop,
   onRestart,
   actionsPending,
+  studioHref,
 }: {
   database: Database;
   t: T;
@@ -19,6 +21,8 @@ export function DatabaseHero({
   onStop: () => void;
   onRestart: () => void;
   actionsPending: { start: boolean; stop: boolean; restart: boolean };
+  /** set only for engines the data browser supports, and only while the database is running */
+  studioHref?: string | null;
 }) {
   const accent = DATABASE_STATUS_COLORS[database.status] ?? STATUS_COLORS.neutral;
   const typeColor = DB_TYPE_COLORS[database.type] ?? STATUS_COLORS.cyan;
@@ -62,6 +66,12 @@ export function DatabaseHero({
             />
             {t('databases', database.status as 'running')}
           </span>
+          {studioHref && (
+            <Link href={studioHref} className="btn btn-secondary text-sm py-1.5">
+              <Table2 className="w-3.5 h-3.5" />
+              {t('databases', 'studioOpen')}
+            </Link>
+          )}
           {database.status === 'stopped' && (
             <button
               type="button"

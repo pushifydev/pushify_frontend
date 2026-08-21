@@ -111,6 +111,11 @@ export default function DatabaseDetailPage() {
       <DatabaseHero
         database={database}
         t={t}
+        studioHref={
+          isRunning
+            ? `/dashboard/databases/${databaseId}/studio`
+            : null
+        }
         onStart={async () => {
           try {
             await startDatabase.mutateAsync(databaseId);

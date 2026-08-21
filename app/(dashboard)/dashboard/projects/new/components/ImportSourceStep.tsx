@@ -38,6 +38,8 @@ type ImportSourceStepProps = Pick<
   | 'githubStatus'
   | 'isLoadingGitHubStatus'
   | 'githubConnect'
+  | 'githubAppInstall'
+  | 'appInstallations'
   | 'githubBusy'
   | 'handleDisconnectGithub'
   | 'handleChangeGithubAccount'
@@ -87,6 +89,8 @@ export function ImportSourceStep({
   githubStatus,
   isLoadingGitHubStatus,
   githubConnect,
+  githubAppInstall,
+  appInstallations,
   githubBusy,
   handleDisconnectGithub,
   handleChangeGithubAccount,
@@ -231,23 +235,50 @@ export function ImportSourceStep({
               <Github className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-4" />
               <h3 className="font-semibold mb-2">{t('newProject', 'githubIntegration')}</h3>
               <p className="text-sm text-[var(--text-muted)] mb-4">{t('newProject', 'githubIntegrationDesc')}</p>
-              <button
-                onClick={() => githubConnect.mutate()}
-                disabled={githubConnect.isPending}
-                className="btn btn-primary"
-              >
-                {githubConnect.isPending ? (
+              <div className="flex flex-col items-center gap-2">
+                {appInstallations?.configured && (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    {t('newProject', 'connecting')}
-                  </>
-                ) : (
-                  <>
-                    <Github className="w-4 h-4" />
-                    {t('newProject', 'connectGithubBtn')}
+                    <button
+                      onClick={() => githubAppInstall.mutate()}
+                      disabled={githubAppInstall.isPending}
+                      className="btn btn-primary"
+                    >
+                      {githubAppInstall.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          {t('newProject', 'connecting')}
+                        </>
+                      ) : (
+                        <>
+                          <Github className="w-4 h-4" />
+                          {t('newProject', 'githubAppInstall')}
+                        </>
+                      )}
+                    </button>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      {t('newProject', 'githubAppRecommended')}
+                    </p>
                   </>
                 )}
-              </button>
+
+                <button
+                  onClick={() => githubConnect.mutate()}
+                  disabled={githubConnect.isPending}
+                  className={appInstallations?.configured ? 'btn btn-ghost text-sm' : 'btn btn-primary'}
+                >
+                  {githubConnect.isPending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {t('newProject', 'connecting')}
+                    </>
+                  ) : (
+                    <>
+                      <Github className="w-4 h-4" />
+                      {t('newProject', 'connectGithubBtn')}
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">

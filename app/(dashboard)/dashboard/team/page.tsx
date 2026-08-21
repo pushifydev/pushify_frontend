@@ -1,9 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Users, Plus, Trash2, Shield, User, Eye, Crown, Mail, X, Clock, FolderLock } from 'lucide-react';
+import { Users, Plus, Trash2, Shield, User, Eye, Crown, Mail, X, Clock, FolderLock, Table2 } from 'lucide-react';
 import { useTranslation } from '@/hooks';
-import { useOrganization, useOrganizationMembers, useOrganizationInvitations, useRevokeInvitation } from '@/hooks';
+import {
+  useOrganization,
+  useOrganizationMembers,
+  useOrganizationInvitations,
+  useRevokeInvitation,
+  useUpdateMemberStudioAccess,
+} from '@/hooks';
 import { useAuthStore } from '@/stores/auth';
 import {
   InviteMemberModal,
@@ -14,7 +20,7 @@ import {
 } from './components';
 import { formatShortDate } from '@/lib/formatters';
 import { ROLE_COLORS, STATUS_COLORS } from '@/lib/constants';
-import type { OrganizationMember, MemberRole } from '@/lib/api';
+import type { OrganizationMember, MemberRole, StudioAccess } from '@/lib/api';
 import { Skeleton, SkeletonPageHeader, SkeletonTeamPanel } from '@/components/Skeleton';
 
 const roleIcons: Record<MemberRole, typeof Shield> = {
@@ -31,6 +37,7 @@ export default function TeamPage() {
   const { data: members = [], isLoading: membersLoading } = useOrganizationMembers();
   const { data: invitations = [], isLoading: invitationsLoading } = useOrganizationInvitations();
   const revokeInvitation = useRevokeInvitation();
+  const updateStudioAccess = useUpdateMemberStudioAccess();
 
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [removeMember, setRemoveMember]       = useState<OrganizationMember | null>(null);
@@ -182,6 +189,30 @@ export default function TeamPage() {
                     </span>
                   )}
                 </div>
+
+                {/* Data-browser access (member/viewer only — owner/admin always have write) */}
+                {(member.role === 'member' || member.role === 'viewer') && (
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    <Table2 className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
+                    <select
+                      value={member.studioAccess ?? 'none'}
+                      onChange={(e) =>
+                        updateStudioAccess.mutate({
+                          userId: member.userId,
+                          access: e.target.value as StudioAccess,
+                        })
+                      }
+                      disabled={!canManage || updateStudioAccess.isPending}
+                      className="input text-xs py-1"
+                      title={t('team', 'studioAccessTitle')}
+                      style={{ minWidth: 118 }}
+                    >
+                      <option value="none">{t('team', 'studioAccessNone')}</option>
+                      <option value="read">{t('team', 'studioAccessRead')}</option>
+                      <option value="write">{t('team', 'studioAccessWrite')}</option>
+                    </select>
+                  </div>
+                )}
 
                 {/* Project access (member/viewer only — owner/admin always see everything) */}
                 {(member.role === 'member' || member.role === 'viewer') && (

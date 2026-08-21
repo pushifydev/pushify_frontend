@@ -25,12 +25,16 @@ export interface OrganizationDetails {
   updatedAt: string;
 }
 
+export type StudioAccess = 'none' | 'read' | 'write';
+
 export interface OrganizationMember {
   id: string;
   organizationId: string;
   userId: string;
   role: MemberRole;
   restrictedAccess: boolean;
+  /** data-browser permission; owners and admins always have full access regardless */
+  studioAccess: StudioAccess;
   projectIds: string[];
   joinedAt: string;
   createdAt: string;
@@ -217,6 +221,21 @@ export const updateMemberProjectAccess = async (
     const response = await api.put<{ data: OrganizationMember; message: string }>(
       `/organizations/members/${userId}/project-access`,
       input
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const updateMemberStudioAccess = async (
+  userId: string,
+  access: StudioAccess
+): Promise<ApiResponse<{ studioAccess: StudioAccess }>> => {
+  try {
+    const response = await api.put<{ data: { studioAccess: StudioAccess } }>(
+      `/organizations/members/${userId}/studio-access`,
+      { access }
     );
     return { data: response.data.data };
   } catch (error) {

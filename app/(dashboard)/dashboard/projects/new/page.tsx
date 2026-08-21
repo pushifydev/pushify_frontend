@@ -320,6 +320,8 @@ export default function NewProjectPage() {
             githubStatus={importSource.githubStatus}
             isLoadingGitHubStatus={importSource.isLoadingGitHubStatus}
             githubConnect={importSource.githubConnect}
+            githubAppInstall={importSource.githubAppInstall}
+            appInstallations={importSource.appInstallations}
             githubBusy={importSource.githubBusy}
             handleDisconnectGithub={importSource.handleDisconnectGithub}
             handleChangeGithubAccount={importSource.handleChangeGithubAccount}

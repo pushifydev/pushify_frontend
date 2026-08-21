@@ -4,6 +4,10 @@ import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tansta
 import {
   getGitHubStatus,
   getGitHubAuthUrl,
+  getGitHubAppInstallUrl,
+  getGitHubAppInstallations,
+  getGitHubAppRepositories,
+  completeGitHubAppSetup,
   connectGitHub,
   disconnectGitHub,
   getGitHubRepos,
@@ -116,6 +120,63 @@ export function useFrameworkDetection(owner: string, repo: string, branch?: stri
 /**
  * Initiate GitHub OAuth flow
  */
+/** Installations the organisation has, and whether the platform even has an App configured. */
+export function useGitHubAppInstallations(enabled = true) {
+  return useQuery({
+    queryKey: [...githubKeys.all, 'app-installations'] as const,
+    queryFn: async () => {
+      const result = await getGitHubAppInstallations();
+      if (result.error) throw new Error(result.error.message);
+      return result.data ?? { configured: false, installations: [] };
+    },
+    enabled,
+    staleTime: 60_000,
+  });
+}
+
+export function useGitHubAppRepositories(installationId: number | null) {
+  return useQuery({
+    queryKey: [...githubKeys.all, 'app-repositories', installationId] as const,
+    queryFn: async () => {
+      const result = await getGitHubAppRepositories(installationId!);
+      if (result.error) throw new Error(result.error.message);
+      return result.data ?? [];
+    },
+    enabled: !!installationId,
+    staleTime: 60_000,
+  });
+}
+
+/** Sends the browser to GitHub's installation screen. */
+export function useGitHubAppInstall() {
+  return useMutation({
+    mutationFn: async () => {
+      const result = await getGitHubAppInstallUrl();
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: (data) => {
+      if (data?.url) window.location.href = data.url;
+    },
+  });
+}
+
+/** Links the finished installation to the organisation once GitHub redirects back. */
+export function useGitHubAppSetup() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ installationId, state }: { installationId: number; state: string }) => {
+      const result = await completeGitHubAppSetup(installationId, state);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: githubKeys.all });
+    },
+  });
+}
+
 export function useGitHubConnect() {
   const queryClient = useQueryClient();
 
