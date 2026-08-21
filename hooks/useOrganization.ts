@@ -10,6 +10,7 @@ import {
   addMember,
   updateMemberRole,
   updateMemberProjectAccess,
+  updateMemberStudioAccess,
   removeMember,
   getInvitations,
   sendInvitation,
@@ -20,6 +21,7 @@ import {
   type UpdateMemberRoleInput,
   type UpdateMemberProjectAccessInput,
   type SendInvitationInput,
+  type StudioAccess,
 } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 
@@ -127,6 +129,22 @@ export function useUpdateMemberRole() {
   return useMutation({
     mutationFn: async ({ userId, input }: { userId: string; input: UpdateMemberRoleInput }) => {
       const result = await updateMemberRole(userId, input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: organizationKeys.members() });
+    },
+  });
+}
+
+/** Data-browser permission for one member (owner/admin only). */
+export function useUpdateMemberStudioAccess() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ userId, access }: { userId: string; access: StudioAccess }) => {
+      const result = await updateMemberStudioAccess(userId, access);
       if (result.error) throw new Error(result.error.message);
       return result.data;
     },

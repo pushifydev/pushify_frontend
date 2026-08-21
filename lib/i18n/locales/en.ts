@@ -847,6 +847,13 @@ export interface TranslationKeys {
     deleteProjectConfirm: string;
   };
   newProject: {
+    githubAppLinking: string;
+    githubAppLinked: string;
+    githubAppMissingInstallation: string;
+    githubAppInstall: string;
+    githubAppManage: string;
+    githubAppRecommended: string;
+    githubAppActive: string;
     title: string;
     subtitle: string;
     importSource: string;
@@ -1416,6 +1423,10 @@ export interface TranslationKeys {
     accessSelectedProjects: string;
     accessAll: string;
     accessProjectsWord: string;
+    studioAccessTitle: string;
+    studioAccessNone: string;
+    studioAccessRead: string;
+    studioAccessWrite: string;
     noProjectsYet: string;
     noProjectsSelectedWarning: string;
     saveAccess: string;
@@ -1944,6 +1955,189 @@ export interface TranslationKeys {
     resetPasswordConfirm: string;
     resettingPassword: string;
     passwordResetSuccess: string;
+    studioNoValues: string;
+    studioCancelQuery: string;
+    studioQueryCancelled: string;
+    studioQueryGone: string;
+    studioImportCsv: string;
+    studioImport: string;
+    studioChooseCsv: string;
+    studioCsvHasHeader: string;
+    studioCsvEmptyAsNull: string;
+    studioCsvSkipColumn: string;
+    studioCsvNoMapping: string;
+    studioCsvEmpty: string;
+    studioCsvMalformed: string;
+    studioRowsImported: string;
+    studioNewCollection: string;
+    studioCreateCollection: string;
+    studioDropCollection: string;
+    studioDropCollectionConfirm: string;
+    studioNoCollections: string;
+    studioSelectCollection: string;
+    studioDocuments: string;
+    studioNoDocuments: string;
+    studioNewDocument: string;
+    studioEditDocument: string;
+    studioInvalidJson: string;
+    studioDeleteDocumentsTitle: string;
+    studioDeleteDocumentsConfirm: string;
+    studioCollectionCreated: string;
+    studioCollectionDropped: string;
+    studioDocumentInserted: string;
+    studioDocumentUpdated: string;
+    studioDocumentsDeleted: string;
+    studioNoKeys: string;
+    studioKeysTotal: string;
+    studioSelectKey: string;
+    studioKeyMissing: string;
+    studioNoExpiry: string;
+    studioSetTtl: string;
+    studioTtlSeconds: string;
+    studioTtlUpdated: string;
+    studioValueUpdated: string;
+    studioValueTruncated: string;
+    studioEmptyValue: string;
+    studioScanEnd: string;
+    studioDeleteKeysTitle: string;
+    studioDeleteKeysConfirm: string;
+    studioKeysDeleted: string;
+    studioIndexes: string;
+    studioNoIndexes: string;
+    studioCreateIndex: string;
+    studioDropIndex: string;
+    studioIndexColumns: string;
+    studioIndexColumnsRequired: string;
+    studioIndexNamePlaceholder: string;
+    studioIndexCreated: string;
+    studioIndexDropped: string;
+    studioTabPerformance: string;
+    studioPerformanceSubtitle: string;
+    studioSlowQueries: string;
+    studioNoSlowQueries: string;
+    studioSlowQueriesUnavailable: string;
+    studioRunningQueries: string;
+    studioNoRunningQueries: string;
+    studioRunningUnavailable: string;
+    studioQueryColumn: string;
+    studioCalls: string;
+    studioTotalTime: string;
+    studioMeanTime: string;
+    studioOpenInConsole: string;
+    studioSearchSchema: string;
+    studioInsertName: string;
+    studioSchemaTruncated: string;
+    studioExplain: string;
+    studioFormat: string;
+    studioFormatFailed: string;
+    studioClear: string;
+    studioSelectionHint: string;
+    studioTabResult: string;
+    studioTabMessages: string;
+    studioTabHistory: string;
+    studioNoMessages: string;
+    studioNoHistory: string;
+    studioClearHistory: string;
+    studioLoadQuery: string;
+    studioViewValue: string;
+    studioCopyValue: string;
+    studioNewTable: string;
+    studioNewTableDesc: string;
+    studioTableName: string;
+    studioTableNameRequired: string;
+    studioColumns: string;
+    studioColumnName: string;
+    studioColumnNameRequired: string;
+    studioColumnLength: string;
+    studioColumnScale: string;
+    studioColumnDefault: string;
+    studioAddColumn: string;
+    studioDropColumn: string;
+    studioCreateTable: string;
+    studioUnique: string;
+    studioAutoIncrement: string;
+    studioStructure: string;
+    studioRenameTable: string;
+    studioDangerZone: string;
+    studioTruncateTable: string;
+    studioDropTable: string;
+    studioTruncateConfirm: string;
+    studioDropTableConfirm: string;
+    studioTableCreated: string;
+    studioTableDropped: string;
+    studioTableTruncated: string;
+    studioTableRenamed: string;
+    studioColumnAdded: string;
+    studioColumnDropped: string;
+    // Data browser (studio)
+    studioTitle: string;
+    studioSubtitle: string;
+    studioOpen: string;
+    studioOpenHint: string;
+    studioUnsupportedEngine: string;
+    studioMustBeRunning: string;
+    studioTables: string;
+    studioSearchTables: string;
+    studioNoTables: string;
+    studioNoTablesDesc: string;
+    studioNoMatchingTables: string;
+    studioView: string;
+    studioRowsLabel: string;
+    studioSelectTable: string;
+    studioSelectTableDesc: string;
+    studioNoRows: string;
+    studioNoRowsDesc: string;
+    studioAddRow: string;
+    studioEditRow: string;
+    studioNewRow: string;
+    studioDeleteSelected: string;
+    studioDeleteRowsTitle: string;
+    studioDeleteRowsConfirm: string;
+    studioRowsDeleted: string;
+    studioRowSaved: string;
+    studioReadOnlyTable: string;
+    studioReadOnlyView: string;
+    studioColumnNotEditable: string;
+    studioPrimaryKey: string;
+    studioNullable: string;
+    studioSetNull: string;
+    studioDefaultValue: string;
+    studioFilters: string;
+    studioAddFilter: string;
+    studioClearFilters: string;
+    studioFilterValue: string;
+    studioApply: string;
+    studioRefresh: string;
+    studioPageInfo: string;
+    studioTotalRows: string;
+    studioTotalRowsCapped: string;
+    studioTotalRowsEstimated: string;
+    studioSqlConsole: string;
+    studioSqlPlaceholder: string;
+    studioRunQuery: string;
+    studioRunning: string;
+    studioReadOnlyMode: string;
+    studioWriteMode: string;
+    studioWriteModeHint: string;
+    studioWriteModeConfirmTitle: string;
+    studioWriteModeConfirmBody: string;
+    studioQueryStats: string;
+    studioQueryTruncated: string;
+    studioQueryEmpty: string;
+    studioAffectedRows: string;
+    studioTabData: string;
+    studioTabSql: string;
+    studioOpEq: string;
+    studioOpNeq: string;
+    studioOpGt: string;
+    studioOpGte: string;
+    studioOpLt: string;
+    studioOpLte: string;
+    studioOpContains: string;
+    studioOpStartsWith: string;
+    studioOpEndsWith: string;
+    studioOpIsNull: string;
+    studioOpIsNotNull: string;
     newCredentials: string;
   };
   marketplace: {
@@ -3342,6 +3536,13 @@ export const en: TranslationKeys = {
     deleteProjectConfirm: 'Are you sure you want to delete this project? This action cannot be undone.',
   },
   newProject: {
+    githubAppLinking: 'Linking your GitHub App installation…',
+    githubAppLinked: 'GitHub App linked for',
+    githubAppMissingInstallation: 'GitHub did not send an installation id back',
+    githubAppInstall: 'Install GitHub App',
+    githubAppManage: 'Manage installation',
+    githubAppRecommended: 'Repository access that outlives whoever set it up',
+    githubAppActive: 'Connected through the GitHub App',
     title: 'New Project',
     subtitle: 'Deploy your application in minutes',
     importSource: 'Import Source',
@@ -3918,6 +4119,10 @@ export const en: TranslationKeys = {
     accessSelectedProjects: 'Only selected projects',
     accessAll: 'All projects',
     accessProjectsWord: 'projects',
+    studioAccessTitle: 'Data browser access',
+    studioAccessNone: 'No data access',
+    studioAccessRead: 'Read data',
+    studioAccessWrite: 'Edit data',
     noProjectsYet: 'No projects in this workspace yet.',
     noProjectsSelectedWarning: 'No projects selected — this member will not see any projects.',
     saveAccess: 'Save access',
@@ -4469,6 +4674,189 @@ export const en: TranslationKeys = {
     resetPasswordConfirm: 'Are you sure you want to reset the database password? This will generate a new password and update your connection string.',
     resettingPassword: 'Resetting password...',
     passwordResetSuccess: 'Password reset successfully. New credentials are shown below.',
+    studioNoValues: 'Nothing to save — change a field first',
+    studioCancelQuery: 'Cancel',
+    studioQueryCancelled: 'Query cancelled',
+    studioQueryGone: 'That query already finished',
+    studioImportCsv: 'Import CSV',
+    studioImport: 'Import',
+    studioChooseCsv: 'Choose a CSV file',
+    studioCsvHasHeader: 'First row is a header',
+    studioCsvEmptyAsNull: 'Empty cells become NULL',
+    studioCsvSkipColumn: '— skip —',
+    studioCsvNoMapping: 'Map at least one column',
+    studioCsvEmpty: 'This file has no rows',
+    studioCsvMalformed: 'The file ends inside an unclosed quote — the last row may be wrong',
+    studioRowsImported: 'Rows imported',
+    studioNewCollection: 'New collection',
+    studioCreateCollection: 'Create collection',
+    studioDropCollection: 'Delete collection',
+    studioDropCollectionConfirm: 'The collection and every document in it will be permanently deleted.',
+    studioNoCollections: 'No collections yet',
+    studioSelectCollection: 'Select a collection',
+    studioDocuments: 'documents',
+    studioNoDocuments: 'No documents match',
+    studioNewDocument: 'New document',
+    studioEditDocument: 'Edit document',
+    studioInvalidJson: 'This is not valid JSON',
+    studioDeleteDocumentsTitle: 'Delete documents',
+    studioDeleteDocumentsConfirm: 'The selected documents will be permanently deleted.',
+    studioCollectionCreated: 'Collection created',
+    studioCollectionDropped: 'Collection deleted',
+    studioDocumentInserted: 'Document added',
+    studioDocumentUpdated: 'Document updated',
+    studioDocumentsDeleted: 'Documents deleted',
+    studioNoKeys: 'No keys match',
+    studioKeysTotal: 'keys',
+    studioSelectKey: 'Select a key',
+    studioKeyMissing: 'This key no longer exists',
+    studioNoExpiry: 'no expiry',
+    studioSetTtl: 'Set',
+    studioTtlSeconds: 'TTL (seconds)',
+    studioTtlUpdated: 'Expiry updated',
+    studioValueUpdated: 'Value updated',
+    studioValueTruncated: 'preview truncated',
+    studioEmptyValue: 'This key is empty',
+    studioScanEnd: 'end of scan',
+    studioDeleteKeysTitle: 'Delete keys',
+    studioDeleteKeysConfirm: 'The selected keys will be permanently deleted.',
+    studioKeysDeleted: 'Keys deleted',
+    studioIndexes: 'Indexes',
+    studioNoIndexes: 'No indexes',
+    studioCreateIndex: 'Create index',
+    studioDropIndex: 'Delete index',
+    studioIndexColumns: 'Columns (order matters)',
+    studioIndexColumnsRequired: 'Pick at least one column',
+    studioIndexNamePlaceholder: 'Index name (optional)',
+    studioIndexCreated: 'Index created',
+    studioIndexDropped: 'Index deleted',
+    studioTabPerformance: 'Performance',
+    studioPerformanceSubtitle: 'Where this database is spending its time',
+    studioSlowQueries: 'Slowest queries',
+    studioNoSlowQueries: 'No query statistics recorded yet',
+    studioSlowQueriesUnavailable: 'Query statistics are not enabled on this database',
+    studioRunningQueries: 'Running now',
+    studioNoRunningQueries: 'Nothing is running',
+    studioRunningUnavailable: 'This user cannot see other sessions',
+    studioQueryColumn: 'Query',
+    studioCalls: 'Calls',
+    studioTotalTime: 'Total',
+    studioMeanTime: 'Average',
+    studioOpenInConsole: 'Open in the SQL console',
+    studioSearchSchema: 'Search schema...',
+    studioInsertName: 'Insert into the editor',
+    studioSchemaTruncated: 'Showing the first 500 tables',
+    studioExplain: 'Explain',
+    studioFormat: 'Format',
+    studioFormatFailed: 'Could not format this query',
+    studioClear: 'Clear',
+    studioSelectionHint: 'Select text to run only that part · ⌘↵ runs',
+    studioTabResult: 'Result',
+    studioTabMessages: 'Messages',
+    studioTabHistory: 'History',
+    studioNoMessages: 'No messages',
+    studioNoHistory: 'No queries yet',
+    studioClearHistory: 'Clear history',
+    studioLoadQuery: 'Load into the editor',
+    studioViewValue: 'View full value',
+    studioCopyValue: 'Copy',
+    studioNewTable: 'New table',
+    studioNewTableDesc: 'Define the columns of a new table',
+    studioTableName: 'Table name',
+    studioTableNameRequired: 'Table name is required',
+    studioColumns: 'Columns',
+    studioColumnName: 'Column name',
+    studioColumnNameRequired: 'Every column needs a name',
+    studioColumnLength: 'Length',
+    studioColumnScale: 'Scale',
+    studioColumnDefault: 'Default',
+    studioAddColumn: 'Add column',
+    studioDropColumn: 'Delete column',
+    studioCreateTable: 'Create table',
+    studioUnique: 'Unique',
+    studioAutoIncrement: 'Auto-increment',
+    studioStructure: 'Structure',
+    studioRenameTable: 'Rename table',
+    studioDangerZone: 'These actions cannot be undone',
+    studioTruncateTable: 'Empty table',
+    studioDropTable: 'Delete table',
+    studioTruncateConfirm: 'Every row in this table will be deleted. The table itself stays.',
+    studioDropTableConfirm: 'The table and all of its data will be permanently deleted.',
+    studioTableCreated: 'Table created',
+    studioTableDropped: 'Table deleted',
+    studioTableTruncated: 'Table emptied',
+    studioTableRenamed: 'Table renamed',
+    studioColumnAdded: 'Column added',
+    studioColumnDropped: 'Column deleted',
+    // Data browser (studio)
+    studioTitle: 'Data Browser',
+    studioSubtitle: 'Browse and edit the data in this database',
+    studioOpen: 'Data Browser',
+    studioOpenHint: 'Browse tables, edit rows, run SQL',
+    studioUnsupportedEngine: 'The data browser supports PostgreSQL and MySQL only',
+    studioMustBeRunning: 'Start the database to browse its data',
+    studioTables: 'Tables',
+    studioSearchTables: 'Search tables...',
+    studioNoTables: 'No tables yet',
+    studioNoTablesDesc: 'This database has no tables. Create one from the SQL console.',
+    studioNoMatchingTables: 'No tables match your search',
+    studioView: 'View',
+    studioRowsLabel: 'rows',
+    studioSelectTable: 'Select a table',
+    studioSelectTableDesc: 'Pick a table on the left to see its rows.',
+    studioNoRows: 'No rows',
+    studioNoRowsDesc: 'This table is empty or your filters match nothing.',
+    studioAddRow: 'Add row',
+    studioEditRow: 'Edit row',
+    studioNewRow: 'New row',
+    studioDeleteSelected: 'Delete selected',
+    studioDeleteRowsTitle: 'Delete rows',
+    studioDeleteRowsConfirm: 'The selected rows will be permanently deleted. This cannot be undone.',
+    studioRowsDeleted: 'Rows deleted',
+    studioRowSaved: 'Row saved',
+    studioReadOnlyTable: 'Read-only: this table has no primary key, so rows cannot be edited safely.',
+    studioReadOnlyView: 'Read-only: views cannot be edited.',
+    studioColumnNotEditable: 'Binary column — shown as a preview and not editable',
+    studioPrimaryKey: 'Primary key',
+    studioNullable: 'Nullable',
+    studioSetNull: 'Set NULL',
+    studioDefaultValue: 'Use default',
+    studioFilters: 'Filters',
+    studioAddFilter: 'Add filter',
+    studioClearFilters: 'Clear',
+    studioFilterValue: 'Value',
+    studioApply: 'Apply',
+    studioRefresh: 'Refresh',
+    studioPageInfo: 'Page',
+    studioTotalRows: 'rows total',
+    studioTotalRowsCapped: 'rows+ (capped)',
+    studioTotalRowsEstimated: 'rows (estimated)',
+    studioSqlConsole: 'SQL Console',
+    studioSqlPlaceholder: 'SELECT * FROM users LIMIT 20',
+    studioRunQuery: 'Run',
+    studioRunning: 'Running...',
+    studioReadOnlyMode: 'Read-only',
+    studioWriteMode: 'Write mode',
+    studioWriteModeHint: 'Write mode lets a query modify or drop data. Use with care.',
+    studioWriteModeConfirmTitle: 'Enable write mode?',
+    studioWriteModeConfirmBody: 'Queries will be able to insert, update, delete and drop. There is no undo.',
+    studioQueryStats: 'rows in',
+    studioQueryTruncated: 'Showing the first 500 rows',
+    studioQueryEmpty: 'Query returned no rows',
+    studioAffectedRows: 'affected rows',
+    studioTabData: 'Data',
+    studioTabSql: 'SQL',
+    studioOpEq: 'equals',
+    studioOpNeq: 'not equals',
+    studioOpGt: 'greater than',
+    studioOpGte: 'greater or equal',
+    studioOpLt: 'less than',
+    studioOpLte: 'less or equal',
+    studioOpContains: 'contains',
+    studioOpStartsWith: 'starts with',
+    studioOpEndsWith: 'ends with',
+    studioOpIsNull: 'is null',
+    studioOpIsNotNull: 'is not null',
     newCredentials: 'New Credentials',
   },
   marketplace: {

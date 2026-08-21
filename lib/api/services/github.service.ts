@@ -139,9 +139,86 @@ export const detectFramework = async (
 
 // ============ Export as namespace ============
 
+
+// ============ GitHub App ============
+
+export interface GitHubAppInstallation {
+  installationId: number;
+  accountLogin: string;
+  accountType: string | null;
+  repositorySelection: string | null;
+  suspended: boolean;
+}
+
+export interface GitHubAppRepository {
+  id: number;
+  fullName: string;
+  private: boolean;
+  defaultBranch: string;
+  htmlUrl: string;
+}
+
+export const getGitHubAppInstallUrl = async (): Promise<
+  ApiResponse<{ url: string | null; configured: boolean }>
+> => {
+  try {
+    const response = await api.get<{ data: { url: string | null; configured: boolean } }>(
+      '/integrations/github/app/install-url'
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const completeGitHubAppSetup = async (
+  installationId: number,
+  state: string
+): Promise<ApiResponse<{ installationId: number; accountLogin: string }>> => {
+  try {
+    const response = await api.post<{ data: { installationId: number; accountLogin: string } }>(
+      '/integrations/github/app/setup',
+      { installationId, state }
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getGitHubAppInstallations = async (): Promise<
+  ApiResponse<{ configured: boolean; installations: GitHubAppInstallation[] }>
+> => {
+  try {
+    const response = await api.get<{
+      data: { configured: boolean; installations: GitHubAppInstallation[] };
+    }>('/integrations/github/app/installations');
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getGitHubAppRepositories = async (
+  installationId: number
+): Promise<ApiResponse<GitHubAppRepository[]>> => {
+  try {
+    const response = await api.get<{ data: GitHubAppRepository[] }>(
+      `/integrations/github/app/installations/${installationId}/repositories`
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const githubService = {
   getStatus: getGitHubStatus,
   getAuthUrl: getGitHubAuthUrl,
+  getAppInstallUrl: getGitHubAppInstallUrl,
+  completeAppSetup: completeGitHubAppSetup,
+  getAppInstallations: getGitHubAppInstallations,
+  getAppRepositories: getGitHubAppRepositories,
   connect: connectGitHub,
   disconnect: disconnectGitHub,
   getRepos: getGitHubRepos,

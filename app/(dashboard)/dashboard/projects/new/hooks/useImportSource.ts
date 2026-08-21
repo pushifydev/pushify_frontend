@@ -5,6 +5,8 @@ import {
   useTranslation,
   useGitHubStatus,
   useGitHubConnect,
+  useGitHubAppInstall,
+  useGitHubAppInstallations,
   useGitHubDisconnect,
   useGitHubRepos,
   useGitHubBranches,
@@ -42,6 +44,9 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
   // GitHub hooks
   const { data: githubStatus, isLoading: isLoadingGitHubStatus } = useGitHubStatus();
   const githubConnect = useGitHubConnect();
+  // The App is the preferred path; the hook reports whether the platform has one configured.
+  const { data: appInstallations } = useGitHubAppInstallations();
+  const githubAppInstall = useGitHubAppInstall();
   const githubDisconnect = useGitHubDisconnect();
   const githubBusy = githubConnect.isPending || githubDisconnect.isPending;
 
@@ -206,6 +211,8 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
     githubStatus,
     isLoadingGitHubStatus,
     githubConnect,
+    githubAppInstall,
+    appInstallations,
     githubBusy,
     handleDisconnectGithub,
     handleChangeGithubAccount,

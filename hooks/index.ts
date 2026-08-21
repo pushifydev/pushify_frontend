@@ -65,6 +65,10 @@ export {
   useGitHubConnect,
   useGitHubCallback,
   useGitHubDisconnect,
+  useGitHubAppInstallations,
+  useGitHubAppRepositories,
+  useGitHubAppInstall,
+  useGitHubAppSetup,
 } from './useGitHub';
 
 // GitLab
@@ -132,6 +136,7 @@ export {
   useSendInvitation,
   useRevokeInvitation,
   useAcceptInvitation,
+  useUpdateMemberStudioAccess,
 } from './useOrganization';
 
 // Billing
@@ -205,6 +210,43 @@ export {
   useRestoreDatabaseBackup,
   useDeleteDatabaseBackup,
 } from './useDatabases';
+
+// Database studio (data browser)
+export {
+  studioKeys,
+  useStudioTables,
+  useStudioSchemaMap,
+  useStudioRows,
+  useInsertStudioRow,
+  useUpdateStudioRow,
+  useDeleteStudioRows,
+  useRunStudioQuery,
+  useCreateStudioTable,
+  useDropStudioTable,
+  useTruncateStudioTable,
+  useRenameStudioTable,
+  useAddStudioColumn,
+  useDropStudioColumn,
+  useStudioIndexes,
+  useCreateStudioIndex,
+  useDropStudioIndex,
+  useStudioPerformance,
+  useImportStudioRows,
+  useCancelStudioQuery,
+  nosqlKeys,
+  useMongoCollections,
+  useMongoDocuments,
+  useCreateMongoCollection,
+  useDropMongoCollection,
+  useInsertMongoDocument,
+  useReplaceMongoDocument,
+  useDeleteMongoDocuments,
+  useRedisKeys,
+  useRedisKey,
+  useDeleteRedisKeys,
+  useSetRedisExpiry,
+  useSetRedisStringValue,
+} from './useDatabaseStudio';
 
 // WebSocket Real-time Events
 export {

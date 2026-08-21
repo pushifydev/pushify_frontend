@@ -462,3 +462,268 @@ export interface DatabaseBackup {
   completedAt: string | null;
   expiresAt: string | null;
 }
+
+// ============ Database Studio (data browser) Types ============
+
+export type StudioEngine = 'postgresql' | 'mysql';
+
+export interface StudioTable {
+  schema: string;
+  name: string;
+  kind: 'table' | 'view';
+  rowEstimate: number;
+  sizeBytes: number | null;
+  hasPrimaryKey: boolean;
+}
+
+export interface StudioTypeInfo {
+  name: string;
+  hasLength?: boolean;
+  hasScale?: boolean;
+  autoIncrementable?: boolean;
+}
+
+export interface StudioTableList {
+  engine: StudioEngine;
+  defaultSchema: string;
+  tables: StudioTable[];
+  columnTypes: StudioTypeInfo[];
+  /** what the signed-in user may do here; write actions are hidden when this is 'read' */
+  access: 'read' | 'write';
+}
+
+export interface StudioColumn {
+  name: string;
+  dataType: string;
+  isNullable: boolean;
+  defaultValue: string | null;
+  isPrimaryKey: boolean;
+  editable: boolean;
+  ordinal: number;
+}
+
+export type StudioFilterOperator =
+  | 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte'
+  | 'contains' | 'startsWith' | 'endsWith' | 'isNull' | 'isNotNull';
+
+export interface StudioFilter {
+  column: string;
+  operator: StudioFilterOperator;
+  value?: string;
+}
+
+export interface StudioRows {
+  schema: string;
+  name: string;
+  kind: 'table' | 'view';
+  columns: StudioColumn[];
+  primaryKey: string[];
+  editable: boolean;
+  rows: Record<string, unknown>[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalCapped: boolean;
+  /** true when `total` is the planner's estimate rather than a counted value */
+  totalEstimated: boolean;
+}
+
+export interface StudioRowsQuery {
+  schema?: string;
+  table: string;
+  page?: number;
+  pageSize?: number;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
+  filters?: StudioFilter[];
+}
+
+export interface StudioMutationResult {
+  affected: number;
+}
+
+export interface StudioInsertInput {
+  schema?: string;
+  table: string;
+  values: Record<string, unknown>;
+}
+
+export interface StudioUpdateInput extends StudioInsertInput {
+  pk: Record<string, unknown>;
+}
+
+export interface StudioDeleteInput {
+  schema?: string;
+  table: string;
+  pks: Record<string, unknown>[];
+}
+
+export interface StudioQueryResult {
+  columns: string[];
+  rows: Record<string, unknown>[];
+  rowCount: number;
+  truncated: boolean;
+  message: string | null;
+  durationMs: number;
+  readOnly: boolean;
+  command: string | null;
+  affected: number | null;
+}
+
+export interface StudioSchemaTable {
+  schema: string;
+  name: string;
+  kind: 'table' | 'view';
+  columns: { name: string; dataType: string }[];
+}
+
+export interface StudioSchemaMap {
+  engine: StudioEngine;
+  defaultSchema: string;
+  tables: StudioSchemaTable[];
+  truncated: boolean;
+}
+
+// ============ Database Studio schema (DDL) Types ============
+
+export interface StudioColumnDefinition {
+  name: string;
+  type: string;
+  length?: number | null;
+  scale?: number | null;
+  nullable?: boolean;
+  primaryKey?: boolean;
+  autoIncrement?: boolean;
+  unique?: boolean;
+  defaultValue?: string | null;
+}
+
+export interface StudioCreateTableInput {
+  schema?: string;
+  name: string;
+  columns: StudioColumnDefinition[];
+}
+
+export interface StudioTableTarget {
+  schema?: string;
+  table: string;
+}
+
+export interface StudioRenameTableInput extends StudioTableTarget {
+  newName: string;
+}
+
+export interface StudioAddColumnInput extends StudioTableTarget {
+  column: StudioColumnDefinition;
+}
+
+export interface StudioDropColumnInput extends StudioTableTarget {
+  column: string;
+}
+
+// ============ Database Studio indexes & performance ============
+
+export interface StudioIndex {
+  name: string;
+  columns: string[];
+  isUnique: boolean;
+  isPrimary: boolean;
+  method: string | null;
+  definition: string | null;
+  sizeBytes: number | null;
+}
+
+export interface StudioCreateIndexInput {
+  schema?: string;
+  table: string;
+  name?: string;
+  columns: string[];
+  unique?: boolean;
+  method?: string;
+}
+
+export interface StudioDropIndexInput {
+  schema?: string;
+  table: string;
+  name: string;
+}
+
+export interface StudioSlowQuery {
+  id: string;
+  query: string;
+  calls: number;
+  totalMs: number;
+  meanMs: number;
+  rows: number;
+}
+
+export interface StudioRunningQuery {
+  id: string;
+  user: string | null;
+  state: string | null;
+  runningMs: number | null;
+  query: string | null;
+}
+
+export interface StudioPerformance {
+  engine: StudioEngine;
+  slowQueries: { available: boolean; hint: string | null; items: StudioSlowQuery[] };
+  running: { available: boolean; hint: string | null; items: StudioRunningQuery[] };
+}
+
+// ============ Database Studio: MongoDB & Redis ============
+
+export interface MongoCollection {
+  name: string;
+  type: string;
+  count: number;
+}
+
+export interface MongoDocumentsPage {
+  documents: Record<string, unknown>[];
+  total: number;
+  totalCapped: boolean;
+  page: number;
+  pageSize: number;
+}
+
+export interface MongoDocumentsQuery {
+  collection: string;
+  filter?: string;
+  sort?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export type RedisKeyType = 'string' | 'list' | 'set' | 'zset' | 'hash' | 'stream' | 'none';
+
+export interface RedisKeySummary {
+  name: string;
+  type: RedisKeyType;
+  ttl: number;
+}
+
+export interface RedisScanPage {
+  cursor: string;
+  keys: RedisKeySummary[];
+  keyCount: number;
+}
+
+export interface RedisKeyValue {
+  name: string;
+  type: RedisKeyType;
+  ttl: number;
+  size: number;
+  truncated: boolean;
+  value?: string;
+  items?: string[];
+  entries?: { field: string; value: string }[];
+}
+
+export interface StudioImportInput {
+  schema?: string;
+  table: string;
+  columns: string[];
+  rows: (string | null)[][];
+  emptyAsNull?: boolean;
+}
