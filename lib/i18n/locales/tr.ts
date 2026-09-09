@@ -1735,6 +1735,7 @@ export const tr: TranslationKeys = {
     deleteConfirm: 'Bu sunucuyu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
     sync: 'Senkronize Et',
     syncing: 'Senkronize ediliyor...',
+    viewCards: 'Kartlar',
     viewMap: 'Harita',
     mapNoCoords: 'Konum verisi yok',
     mapNoCoordsDesc: 'Hetzner sunucularını senkronize edin veya kart görünümünü kullanın.',
