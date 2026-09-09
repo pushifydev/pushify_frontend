@@ -10,6 +10,7 @@ import { Header } from '@/components/header';
 import { WebSocketProvider } from '@/providers/WebSocketProvider';
 import { EmailVerificationBanner } from '@/components/EmailVerificationBanner';
 import { CommandPalette } from '@/components/CommandPalette';
+import { KeyboardShortcuts } from '@/components/KeyboardShortcuts';
 import { AiAssistantSheet } from '@/components/AiAssistantSheet';
 
 export function DashboardShell({
@@ -49,6 +50,7 @@ export function DashboardShell({
     <WebSocketProvider>
       <div className="dash-app min-h-screen bg-[var(--bg-primary)]">
         <CommandPalette />
+        <KeyboardShortcuts />
         <AiAssistantSheet />
         <Sidebar />
         <div className={`transition-all duration-300 ${collapsed ? 'md:pl-17' : 'md:pl-60'}`}>

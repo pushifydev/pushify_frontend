@@ -5,7 +5,10 @@ export const metadata: Metadata = {
   title: 'Changelog',
   description:
     'Every Pushify release — new features, fixes and improvements across the platform, API and dashboard.',
-  alternates: { canonical: '/changelog' },
+  alternates: {
+    canonical: '/changelog',
+    types: { 'application/rss+xml': 'https://pushify.dev/changelog/rss.xml' },
+  },
   openGraph: {
     title: 'Changelog | Pushify',
     url: 'https://pushify.dev/changelog',

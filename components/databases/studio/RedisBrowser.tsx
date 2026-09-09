@@ -326,7 +326,7 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                   </button>
                 </div>
               ) : value.entries && value.entries.length > 0 ? (
-                <table className="w-full text-sm border-collapse">
+                <div className="overflow-x-auto"><table className="w-full text-sm border-collapse">
                   <tbody>
                     {value.entries.map((entry, index) => (
                       <tr key={`${entry.field}-${index}`} style={{ borderBottom: '1px solid var(--glass-border)' }}>
@@ -339,7 +339,7 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                </table></div>
               ) : value.items && value.items.length > 0 ? (
                 <ul className="space-y-1">
                   {value.items.map((item, index) => (

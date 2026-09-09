@@ -11,6 +11,7 @@ export function LandingFooter() {
     [t('landing', 'product')]: [
       { label: t('landing', 'features'), href: '/features' },
       { label: t('landing', 'sites'), href: '/sites' },
+      { label: t('landing', 'apps'), href: '/apps' },
       { label: t('domainSales', 'title'), href: '/domains' },
       { label: t('landing', 'pricing'), href: '/pricing' },
       {
@@ -21,6 +22,7 @@ export function LandingFooter() {
     ],
     [t('landing', 'resources')]: [
       { label: t('branding', 'documentation'), href: '/docs' },
+      { label: 'pushify.yaml', href: '/pushify-yaml' },
       {
         label: t('branding', 'github'),
         href: 'https://github.com/pushifydev',
@@ -30,6 +32,7 @@ export function LandingFooter() {
         label: t('landing', 'changelog'),
         href: '/changelog',
       },
+      { label: 'Status', href: '/status' },
       { label: t('landing', 'blog'), href: '/blog' },
       { label: t('landing', 'deployButton'), href: '/deploy-button' },
       { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },

@@ -33,7 +33,7 @@ const content = {
     tipTitle: 'Good to know',
     tips: [
       'Private repositories work too — the visitor connects their own GitHub account in the wizard.',
-      'Ship a pushify.yaml in the repo to pin build settings, cron jobs, volumes and workers for everyone who deploys it.',
+      'Ship a pushify.yaml in the repo to pin build settings, cron jobs, volumes and workers for everyone who deploys it — see the reference at pushify.dev/pushify-yaml.',
       'The badge is a static SVG; hotlink it or copy it into your repo.',
     ],
     copy: 'Copy',
@@ -62,7 +62,7 @@ const content = {
     tipTitle: 'Bilmekte fayda var',
     tips: [
       'Özel repolar da çalışır — ziyaretçi sihirbazda kendi GitHub hesabını bağlar.',
-      'Repoya bir pushify.yaml koyarsanız build ayarları, cron, volume ve worker’lar herkes için sabitlenir.',
+      'Repoya bir pushify.yaml koyarsanız build ayarları, cron, volume ve worker’lar herkes için sabitlenir — referans: pushify.dev/pushify-yaml.',
       'Rozet statik bir SVG; doğrudan linkleyebilir ya da reponuza kopyalayabilirsiniz.',
     ],
     copy: 'Kopyala',

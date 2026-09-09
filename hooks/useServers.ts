@@ -7,6 +7,7 @@ import {
   listServers,
   getServer,
   getServerHealth,
+  getServerContainers,
   createServer,
   deleteServer,
   startServer,
@@ -87,6 +88,20 @@ export function useServerHealth(serverId: string, enabled = true) {
     },
     enabled: !!serverId && enabled,
     staleTime: 60_000,
+  });
+}
+
+export function useServerContainers(serverId: string, enabled = true) {
+  return useQuery({
+    queryKey: [...serverKeys.detail(serverId), 'containers'],
+    queryFn: async () => {
+      const result = await getServerContainers(serverId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: !!serverId && enabled,
+    refetchInterval: 30_000,
+    staleTime: 15_000,
   });
 }
 
