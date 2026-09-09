@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { listBlogPosts } from '@/lib/blog';
 
 /**
  * Per-route lastModified reflects when the CONTENT meaningfully changed, not the
@@ -32,7 +33,7 @@ const CONTENT_DATES: Record<string, string> = {
   '/deploy/laravel': '2026-06-20',
 };
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://pushify.dev';
 
   // changefreq and priority are intentionally omitted — Google ignores both.
@@ -43,6 +44,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Changelog genuinely updates with every release — build time is accurate here.
   entries.push({ url: `${base}/changelog`, lastModified: new Date() });
+
+  // Blog: posts carry their publish date; the index tracks the newest post.
+  const posts = await listBlogPosts();
+  if (posts.length > 0) {
+    entries.push({ url: `${base}/blog`, lastModified: new Date(posts[0].date) });
+    for (const post of posts) {
+      entries.push({ url: `${base}/blog/${post.slug}`, lastModified: new Date(post.date) });
+    }
+  }
 
   return entries;
 }
