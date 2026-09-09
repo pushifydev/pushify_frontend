@@ -19,6 +19,7 @@ import {
   getDatabaseBackups,
   createDatabaseBackup,
   restoreDatabaseBackup,
+  verifyDatabaseBackup,
   deleteDatabaseBackup,
   type CreateDatabaseInput,
   type UpdateDatabaseInput,
@@ -273,6 +274,21 @@ export function useRestoreDatabaseBackup(databaseId: string) {
   return useMutation({
     mutationFn: async (backupId: string) => {
       const result = await restoreDatabaseBackup(databaseId, backupId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: databaseKeys.backups(databaseId) });
+    },
+  });
+}
+
+export function useVerifyDatabaseBackup(databaseId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (backupId: string) => {
+      const result = await verifyDatabaseBackup(databaseId, backupId);
       if (result.error) throw new Error(result.error.message);
       return result.data;
     },

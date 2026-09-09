@@ -248,6 +248,20 @@ export const createDatabaseBackup = async (
   }
 };
 
+export const verifyDatabaseBackup = async (
+  databaseId: string,
+  backupId: string
+): Promise<ApiResponse<{ message: string }>> => {
+  try {
+    const response = await api.post<{ message: string }>(
+      `/databases/${databaseId}/backups/${backupId}/verify`
+    );
+    return { data: response.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const restoreDatabaseBackup = async (
   databaseId: string,
   backupId: string
@@ -815,6 +829,7 @@ export const databasesService = {
   getBackups: getDatabaseBackups,
   createBackup: createDatabaseBackup,
   restoreBackup: restoreDatabaseBackup,
+  verifyBackup: verifyDatabaseBackup,
   deleteBackup: deleteDatabaseBackup,
   downloadBackup: downloadDatabaseBackup,
   getStudioTables,

@@ -31,6 +31,7 @@ export function LandingFooter() {
         href: '/changelog',
       },
       { label: t('landing', 'blog'), href: '/blog' },
+      { label: t('landing', 'deployButton'), href: '/deploy-button' },
       { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },
       { label: t('vsVercel', 'h1'), href: '/vs/vercel' },
       { label: t('vsHeroku', 'h1'), href: '/vs/heroku' },

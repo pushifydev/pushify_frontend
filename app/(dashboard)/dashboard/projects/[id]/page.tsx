@@ -415,6 +415,7 @@ export default function ProjectDetailPage() {
         {activeTab === 'deployments' && (
           <DeploymentsTab
             deployments={deployments}
+            gitRepoUrl={project?.gitRepoUrl}
             formatTimeAgo={formatTimeAgo}
             getStatusBadge={getStatusBadge}
             onCancel={(id) => cancelDeployment.mutate(id)}

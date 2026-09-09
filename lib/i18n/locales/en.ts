@@ -492,6 +492,7 @@ export interface TranslationKeys {
     changelog: string;
     blog: string;
     partners: string;
+    deployButton: string;
     contact: string;
     product: string;
     resources: string;
@@ -703,6 +704,12 @@ export interface TranslationKeys {
     rollback: string;
     rollbackToVersion: string;
     rollbackQuickHint: string;
+    diffBuild: string;
+    diffFaster: string;
+    diffSlower: string;
+    diffSameCommit: string;
+    diffNewCommit: string;
+    diffCompare: string;
     rollbackConfirmTitle: string;
     rollbackConfirmDesc: string;
     rollbackToLastGood: string;
@@ -1927,6 +1934,15 @@ export interface TranslationKeys {
     retentionDays: string;
     lastBackup: string;
     backupHistory: string;
+    backupVerify: string;
+    backupVerifying: string;
+    backupVerified: string;
+    backupVerifyFailed: string;
+    backupVerifySkipped: string;
+    backupNeverVerified: string;
+    backupVerifiedSummary: string;
+    backupVerifyHint: string;
+    backupVerifyStarted: string;
     createBackup: string;
     noBackups: string;
     noBackupsDesc: string;
@@ -3182,6 +3198,7 @@ export const en: TranslationKeys = {
     changelog: 'Changelog',
     blog: 'Blog',
     partners: 'Partners',
+    deployButton: 'Deploy button',
     contact: 'Contact',
     product: 'Product',
     resources: 'Resources',
@@ -3394,6 +3411,12 @@ export const en: TranslationKeys = {
     rollback: 'Rollback',
     rollbackToVersion: 'Restore this version',
     rollbackQuickHint: 'Instant rollback (existing image, no rebuild)',
+    diffBuild: 'Build {seconds}',
+    diffFaster: '{delta} faster than previous',
+    diffSlower: '{delta} slower than previous',
+    diffSameCommit: 'Same commit as the previous deploy',
+    diffNewCommit: 'New commit since {from}',
+    diffCompare: 'Compare {from}…{to}',
     rollbackConfirmTitle: 'Restore this deployment?',
     rollbackConfirmDesc:
       'This starts a new deploy from commit {commit} on branch {branch}. Your app will switch to this version.',
@@ -4649,6 +4672,15 @@ export const en: TranslationKeys = {
     retentionDays: 'Retention: {days} days',
     lastBackup: 'Last backup',
     backupHistory: 'Backup History',
+    backupVerify: 'Test restore',
+    backupVerifying: 'Testing restore…',
+    backupVerified: 'Restore-tested',
+    backupVerifyFailed: 'Restore failed',
+    backupVerifySkipped: 'Not tested',
+    backupNeverVerified: 'No backup has been restore-tested yet',
+    backupVerifiedSummary: 'Latest backup restore-tested {date} — {tables} tables, {rows} {unit}',
+    backupVerifyHint: 'Weekly, the latest backup is restored into a throwaway container on your server and counted. Your live database is never touched.',
+    backupVerifyStarted: 'Restore test started — results appear in a few minutes',
     createBackup: 'Create Backup',
     noBackups: 'No backups yet',
     noBackupsDesc: 'Create a manual backup or enable automatic backups.',
