@@ -24,6 +24,7 @@ import {
   Store,
   Sparkles,
   Globe,
+  ArrowUpRight,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
@@ -111,10 +112,11 @@ export function Sidebar() {
     const usage = billingInfo.usage.deploymentsThisMonth;
     const pct = usage.unlimited ? 18 : Math.min((usage.used / usage.limit) * 100, 100);
     const isHigh = !usage.unlimited && pct >= 80;
+    const isFree = billingInfo.plan === 'free';
 
     return (
       <Link
-        href="/dashboard/billing"
+        href={isFree ? '/dashboard/billing/plans' : '/dashboard/billing'}
         className="block rounded-lg p-3 mx-1 mb-1.5 border border-[var(--border-subtle)] bg-[var(--bg-tertiary)] hover:border-[var(--border-default)] transition-colors"
       >
         <div className="flex items-center justify-between mb-2.5">
@@ -139,6 +141,12 @@ export function Sidebar() {
             }}
           />
         </div>
+        {isFree && (
+          <div className="flex items-center gap-1 mt-2.5 text-[11px] font-medium text-[var(--text-secondary)]">
+            {t('billing', 'usageUpgradeCta')}
+            <ArrowUpRight className="w-3 h-3" />
+          </div>
+        )}
       </Link>
     );
   };

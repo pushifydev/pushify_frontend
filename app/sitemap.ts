@@ -15,6 +15,7 @@ const CONTENT_DATES: Record<string, string> = {
   '/open-source': '2026-07-05',
   '/docs': '2026-07-19',
   '/about': '2026-07-19',
+  '/partners': '2026-09-09',
   '/vs/coolify': '2026-07-05',
   '/vs/vercel': '2026-07-05',
   '/vs/heroku': '2026-07-19',

@@ -38,6 +38,7 @@ export function LandingFooter() {
     ],
     [t('landing', 'company')]: [
       { label: t('legal', 'about'), href: '/about' },
+      { label: t('landing', 'partners'), href: '/partners' },
       { label: t('landing', 'contact'), href: 'mailto:support@pushify.dev' },
     ],
     [t('legal', 'legal')]: [
