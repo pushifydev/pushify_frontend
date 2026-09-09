@@ -32,23 +32,28 @@ export function InvoicesSection() {
   if (isLoading || invoices.length === 0) return null;
 
   return (
-    <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-      <h3 className="text-lg font-semibold flex items-center gap-2 mb-1">
-        <Receipt className="w-4 h-4" />
-        {t('billing', 'invoicesTitle')}
-      </h3>
-      <p className="text-sm text-[var(--text-secondary)] mb-4">{t('billing', 'invoicesDesc')}</p>
+    <section className="dash-panel p-5 sm:p-6">
+      <div className="dash-panel-header">
+        <div className="dash-panel-title min-w-0">
+          <Receipt className="w-4 h-4 shrink-0 text-[var(--text-secondary)]" />
+          <span className="truncate">{t('billing', 'invoicesTitle')}</span>
+        </div>
+      </div>
 
-      <div className="space-y-2">
+      <ul className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
         {invoices.map((inv) => (
-          <div
+          <li
             key={inv.id}
-            className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]"
+            className="grid grid-cols-[1fr_auto] sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto_auto_auto] items-center gap-x-4 gap-y-1 py-2.5"
+            style={{ borderColor: 'var(--border-subtle)' }}
           >
-            <span className="text-sm font-medium" style={{ fontFamily: 'var(--font-mono)' }}>
+            <span
+              className="text-sm truncate tabular-nums"
+              style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
+            >
               {inv.number ?? inv.id.slice(0, 12)}
             </span>
-            <span className="text-xs text-[var(--text-muted)]">
+            <span className="text-xs tabular-nums sm:order-none order-3 col-span-2 sm:col-span-1 text-[var(--text-muted)]">
               {new Date(inv.createdAt).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', {
                 year: 'numeric',
                 month: 'short',
@@ -56,15 +61,18 @@ export function InvoicesSection() {
               })}
             </span>
             <span
-              className="text-[11px] px-2 py-0.5 rounded-full w-fit"
+              className="hidden sm:inline-flex text-[11px] px-2 py-0.5 rounded-full w-fit justify-self-start"
               style={statusStyle(inv.status)}
             >
               {inv.status ?? '—'}
             </span>
-            <span className="sm:ml-auto text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>
+            <span
+              className="text-sm font-medium tabular-nums text-right justify-self-end"
+              style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
+            >
               {formatAmount(inv.amountPaidCents || inv.amountDueCents, inv.currency)}
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-0.5 col-span-2 sm:col-span-1 justify-self-start sm:justify-self-end">
               {inv.hostedInvoiceUrl && (
                 <a
                   href={inv.hostedInvoiceUrl}
@@ -83,9 +91,9 @@ export function InvoicesSection() {
                 </a>
               )}
             </span>
-          </div>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   );
 }

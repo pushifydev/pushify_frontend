@@ -1620,6 +1620,8 @@ export interface TranslationKeys {
     infraTopUpSuccess: string;
     infraTopUpPending: string;
     infraTopUpCancelled: string;
+    billingStatusActive: string;
+    nextRenewal: string;
     billingStatusPastDueTitle: string;
     billingStatusPastDueDesc: string;
     billingStatusSuspendedTitle: string;
@@ -4332,6 +4334,8 @@ export const en: TranslationKeys = {
     infraTopUpPending:
       'Payment received. Credits will appear once Stripe confirms the payment (refresh in a moment).',
     infraTopUpCancelled: 'Credit top-up was cancelled.',
+    billingStatusActive: 'Active',
+    nextRenewal: 'Next renewal',
     billingStatusPastDueTitle: 'Platform payment past due',
     billingStatusPastDueDesc:
       'Stripe could not charge your subscription. Update your payment method to create servers, projects, and deployments.',

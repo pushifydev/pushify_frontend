@@ -11,6 +11,14 @@ function formatUsd(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
+function StripLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-1.5 text-[var(--text-muted)]">
+      {children}
+    </p>
+  );
+}
+
 export function InfraWalletSection() {
   const { t } = useTranslation();
   const { data, isLoading } = useInfraBilling();
@@ -29,18 +37,23 @@ export function InfraWalletSection() {
   const { wallet, transactions } = data;
 
   return (
-    <div className="dash-panel p-4 sm:p-6 space-y-5">
+    <section className="dash-panel p-5 sm:p-6">
+      <div className="dash-panel-header">
+        <div className="dash-panel-title min-w-0">
+          <Wallet className="w-4 h-4 shrink-0 text-[var(--text-secondary)]" />
+          <span className="truncate">{t('billing', 'infraWalletTitle')}</span>
+        </div>
+        <Link href="/dashboard/servers/new" className="dash-link flex items-center gap-1 shrink-0">
+          {t('servers', 'newServer')}
+          <ArrowUpRight className="w-3 h-3" />
+        </Link>
+      </div>
+
       {wallet.isLowBalance && (
-        <div
-          className="rounded-lg p-3 flex gap-2 items-start text-sm"
-          style={{
-            background: 'color-mix(in srgb, var(--status-warning) 12%, transparent)',
-            border: '1px solid color-mix(in srgb, var(--status-warning) 35%, transparent)',
-          }}
-        >
+        <div className="dash-callout dash-callout-attention mb-4">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--status-warning)' }} />
-          <div className="space-y-1">
-            <p style={{ color: 'var(--text-primary)' }}>
+          <div className="space-y-1 min-w-0">
+            <p className="text-sm" style={{ color: 'var(--text-primary)' }}>
               {formatMessage(t('billing', 'infraLowBalanceWarning'), {
                 balance: wallet.balanceUsd,
               })}
@@ -55,37 +68,30 @@ export function InfraWalletSection() {
           </div>
         </div>
       )}
-      <div className="flex items-start gap-3">
-        <div
-          className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-          style={{ background: 'var(--dash-accent-bg)' }}
-        >
-          <Wallet className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <h2 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
-            {t('billing', 'infraWalletTitle')}
-          </h2>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-            {t('billing', 'infraWalletDesc')}
-          </p>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
-          <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-            {t('billing', 'infraBalance')}
-          </p>
-          <p className="text-2xl font-bold tabular-nums" style={{ color: 'var(--text-primary)' }}>
+      {/* Balance ledger strip: balance · burn · top-up */}
+      <div
+        className="grid grid-cols-1 sm:grid-cols-[auto_auto_1fr] gap-4 sm:gap-0 rounded-lg p-4"
+        style={{ background: 'var(--bg-tertiary)' }}
+      >
+        <div className="min-w-0 sm:pr-6">
+          <StripLabel>{t('billing', 'infraBalance')}</StripLabel>
+          <p
+            className="text-[1.75rem] leading-none font-semibold tabular-nums"
+            style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
+          >
             {wallet.balanceUsd}
           </p>
         </div>
-        <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
-          <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-            {t('billing', 'infraEstimatedBurn')}
-          </p>
-          <p className="text-lg font-semibold tabular-nums" style={{ color: 'var(--text-primary)' }}>
+        <div
+          className="min-w-0 sm:px-6 sm:border-l border-t sm:border-t-0 pt-4 sm:pt-0"
+          style={{ borderColor: 'var(--border-subtle)' }}
+        >
+          <StripLabel>{t('billing', 'infraEstimatedBurn')}</StripLabel>
+          <p
+            className="text-sm font-medium tabular-nums"
+            style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
+          >
             {formatUsd(wallet.estimatedMonthlyBurnCents)}
             {t('billing', 'infraPerMonth')}
           </p>
@@ -94,43 +100,32 @@ export function InfraWalletSection() {
           </p>
         </div>
         <div
-          className={cn(
-            'rounded-lg p-4 flex flex-col justify-between relative',
-            topUp.isPending && 'pointer-events-none',
-          )}
-          style={{ background: 'var(--bg-tertiary)' }}
+          className="min-w-0 sm:pl-6 sm:border-l border-t sm:border-t-0 pt-4 sm:pt-0"
+          style={{ borderColor: 'var(--border-subtle)' }}
         >
-          {topUp.isPending && (
-            <div
-              className="absolute inset-0 rounded-lg flex items-center justify-center z-10"
-              style={{ background: 'color-mix(in srgb, var(--bg-tertiary) 88%, transparent)' }}
-              aria-hidden
-            />
-          )}
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {t('billing', 'infraTopUpHint')}
-          </p>
-          <div className="flex flex-wrap gap-2 mt-3 relative z-[1]">
+          <StripLabel>{t('billing', 'infraTopUpHint')}</StripLabel>
+          <div className="flex flex-wrap gap-2">
             {wallet.topUpAmountsCents.map((amount: number) => {
-              const isLoading = topUp.isPending && topUp.variables === amount;
+              const isAmountLoading = topUp.isPending && topUp.variables === amount;
               return (
                 <button
                   key={amount}
                   type="button"
                   disabled={topUp.isPending}
-                  aria-busy={isLoading}
+                  aria-busy={isAmountLoading}
                   onClick={() => topUp.mutate(amount)}
                   className={cn(
-                    'inline-flex items-center justify-center gap-1.5 min-w-[4.5rem] px-3 py-1.5 rounded-md text-sm font-medium transition-opacity',
-                    topUp.isPending && !isLoading && 'opacity-50',
+                    'inline-flex items-center justify-center gap-1.5 min-w-[4.25rem] px-3 py-1.5 rounded-md text-sm font-medium tabular-nums transition-colors',
+                    topUp.isPending && !isAmountLoading && 'opacity-50',
                   )}
                   style={{
+                    fontFamily: 'var(--font-mono)',
                     background: 'var(--bg-secondary)',
                     border: '1px solid var(--border-subtle)',
                     color: 'var(--text-primary)',
                   }}
                 >
-                  {isLoading ? (
+                  {isAmountLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
                   ) : (
                     <>+{formatUsd(amount)}</>
@@ -141,7 +136,7 @@ export function InfraWalletSection() {
           </div>
           {topUp.isPending && (
             <p
-              className="text-xs mt-3 flex items-center gap-2 relative z-[1]"
+              className="text-xs mt-2 flex items-center gap-2"
               style={{ color: 'var(--text-secondary)' }}
               role="status"
             >
@@ -153,23 +148,28 @@ export function InfraWalletSection() {
       </div>
 
       {transactions.length > 0 && (
-        <div>
-          <h3 className="text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+        <div className="dash-subpanel">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-2 text-[var(--text-muted)]">
             {t('billing', 'infraTransactions')}
-          </h3>
-          <ul className="space-y-2 max-h-48 overflow-y-auto">
+          </p>
+          <ul className="max-h-48 overflow-y-auto divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
             {transactions.map((tx: InfraWalletTransaction) => (
               <li
                 key={tx.id}
-                className="flex items-center justify-between text-sm py-2 px-3 rounded-lg"
-                style={{ background: 'var(--bg-tertiary)' }}
+                className="flex items-center justify-between gap-3 text-sm py-2"
+                style={{ borderColor: 'var(--border-subtle)' }}
               >
-                <span style={{ color: 'var(--text-secondary)' }}>{tx.description || tx.type}</span>
+                <span className="truncate" style={{ color: 'var(--text-secondary)' }}>
+                  {tx.description || tx.type}
+                </span>
                 <span
-                  className="font-mono tabular-nums"
-                  style={{ color: tx.amountCents >= 0 ? 'var(--accent-green)' : 'var(--text-primary)' }}
+                  className="tabular-nums shrink-0"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    color: tx.amountCents >= 0 ? 'var(--accent-green)' : 'var(--text-primary)',
+                  }}
                 >
-                  {tx.amountCents >= 0 ? '+' : ''}
+                  {tx.amountCents >= 0 ? '+' : '−'}
                   {formatUsd(Math.abs(tx.amountCents))}
                 </span>
               </li>
@@ -177,15 +177,6 @@ export function InfraWalletSection() {
           </ul>
         </div>
       )}
-
-      <Link
-        href="/dashboard/servers/new"
-        className="inline-flex items-center gap-1 text-sm font-medium"
-        style={{ color: 'var(--accent-cyan)' }}
-      >
-        {t('servers', 'newServer')}
-        <ArrowUpRight className="w-3.5 h-3.5" />
-      </Link>
-    </div>
+    </section>
   );
 }

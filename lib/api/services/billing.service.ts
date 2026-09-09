@@ -49,6 +49,8 @@ export interface BillingInfo {
   price: number;
   billingStatus: BillingStatus;
   billingEmail: string | null;
+  /** ISO date the current paid period renews/ends (null on free or before first charge) */
+  currentPeriodEnd: string | null;
   /** Per API key, per minute (-1 = unlimited) */
   apiRequestsPerMinute: number;
   usage: UsageStats;
