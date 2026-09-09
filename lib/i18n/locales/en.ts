@@ -492,6 +492,7 @@ export interface TranslationKeys {
     changelog: string;
     blog: string;
     partners: string;
+    deployButton: string;
     contact: string;
     product: string;
     resources: string;
@@ -3182,6 +3183,7 @@ export const en: TranslationKeys = {
     changelog: 'Changelog',
     blog: 'Blog',
     partners: 'Partners',
+    deployButton: 'Deploy button',
     contact: 'Contact',
     product: 'Product',
     resources: 'Resources',

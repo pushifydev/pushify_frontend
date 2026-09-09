@@ -83,6 +83,21 @@ export default function NewProjectPage() {
     frameworkDetection,
   } = importSource;
 
+  // "Deploy to Pushify" button entry (/new?repo=…): prefill the git source so the
+  // visitor lands on a wizard that already knows what to build. /new has already
+  // validated the URL; this only trusts https.
+  useEffect(() => {
+    const repo = searchParams.get('repo');
+    if (!repo || !repo.startsWith('https://')) return;
+    importSource.setSourceType('git');
+    importSource.setRepositoryUrl(repo);
+    const branch = searchParams.get('branch');
+    if (branch) importSource.setGitBranch(branch);
+    const tail = repo.replace(/\/+$/, '').split('/').pop()?.replace(/\.git$/, '');
+    if (tail) setProjectName((current) => current || tail);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   const steps: { id: Step; label: string; icon: React.ReactNode }[] = [
     { id: 'source', label: t('newProject', 'importSource'), icon: <GitBranch className="w-4 h-4" /> },
     { id: 'configure', label: t('newProject', 'configure'), icon: <Settings className="w-4 h-4" /> },

@@ -508,6 +508,7 @@ export const tr: TranslationKeys = {
     changelog: 'Değişiklik Günlüğü',
     blog: 'Blog',
     partners: 'İş Ortaklığı',
+    deployButton: 'Deploy butonu',
     contact: 'İletişim',
     product: 'Ürün',
     resources: 'Kaynaklar',
