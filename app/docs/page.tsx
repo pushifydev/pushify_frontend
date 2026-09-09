@@ -91,36 +91,24 @@ function DocsPageContent() {
       <LandingNavbar />
 
       <div className="pt-14 md:pt-16">
+      {/* Mobile-only strip: just the nav trigger + page name. On desktop the
+          sidebar carries the title and actions so the landing navbar stands alone. */}
       <header
-        className="sticky top-14 md:top-16 z-40 border-b backdrop-blur-xl"
+        className="lg:hidden sticky top-14 md:top-16 z-40 border-b backdrop-blur-xl"
         style={{ borderColor: 'var(--lp-border)', background: 'color-mix(in srgb, var(--bg-primary) 92%, transparent)' }}
       >
-        <div className="lp-container flex items-center justify-between gap-4 h-12">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setMobileNav(true)}
-              className="lg:hidden p-1.5 -ml-1.5 rounded-md hover:opacity-70"
-              style={{ color: 'var(--lp-muted)' }}
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            <span className="text-sm font-medium" style={{ color: 'var(--lp-muted)' }}>
-              {c.shell.title}
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="text-sm hidden sm:block hover:opacity-80 transition-opacity"
-              style={{ color: 'var(--lp-muted)' }}
-            >
-              {c.shell.dashboard}
-            </Link>
-            <Link href="/dashboard/settings" className="lp-cta text-sm py-2 px-4 h-auto min-h-0">
-              {c.shell.getApiKey}
-            </Link>
-          </div>
+        <div className="lp-container flex items-center gap-3 h-12">
+          <button
+            type="button"
+            onClick={() => setMobileNav(true)}
+            className="p-1.5 -ml-1.5 rounded-md hover:opacity-70"
+            style={{ color: 'var(--lp-muted)' }}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <span className="text-sm font-medium" style={{ color: 'var(--lp-muted)' }}>
+            {c.shell.title}
+          </span>
         </div>
       </header>
 
@@ -133,7 +121,7 @@ function DocsPageContent() {
         )}
 
         <aside
-          className={`fixed lg:sticky top-14 md:top-28 left-0 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] lg:h-[calc(100vh-7rem)] w-72 lg:w-64 border-r lg:border-0 z-50 lg:z-0 transition-transform lg:translate-x-0 shrink-0 ${
+          className={`fixed lg:sticky top-14 md:top-28 lg:top-16 left-0 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] w-72 lg:w-64 border-r lg:border-0 z-50 lg:z-0 transition-transform lg:translate-x-0 shrink-0 ${
             mobileNav ? 'translate-x-0' : '-translate-x-full'
           }`}
           style={{ background: 'var(--bg-primary)', borderColor: 'var(--lp-border)' }}
@@ -150,6 +138,13 @@ function DocsPageContent() {
                 <X className="w-5 h-5" />
               </button>
             </div>
+
+            <p
+              className="hidden lg:block px-3 mb-4 text-[11px] font-semibold uppercase tracking-[0.08em]"
+              style={{ color: 'var(--lp-muted)' }}
+            >
+              {c.shell.title}
+            </p>
 
             <div className="relative mb-5">
               <Search
@@ -190,8 +185,20 @@ function DocsPageContent() {
               ))}
             </nav>
 
-            <div className="pt-4 mt-4" style={{ borderTop: '1px solid var(--lp-border)' }}>
-              <div className="flex items-center gap-2 px-3 docs-muted-sm">
+            <div className="pt-4 mt-4 space-y-2" style={{ borderTop: '1px solid var(--lp-border)' }}>
+              <Link
+                href="/dashboard/settings"
+                className="lp-cta w-full text-sm py-2 px-4 h-auto min-h-0"
+              >
+                {c.shell.getApiKey}
+              </Link>
+              <Link
+                href="/dashboard"
+                className="docs-nav-item justify-center text-center"
+              >
+                {c.shell.dashboard}
+              </Link>
+              <div className="flex items-center gap-2 px-3 pt-1 docs-muted-sm">
                 <Gauge className="w-3.5 h-3.5" />
                 <span>{c.shell.apiVersion}</span>
               </div>
@@ -201,7 +208,7 @@ function DocsPageContent() {
 
         <main
           id="docs-main"
-          className="flex-1 min-w-0 px-4 sm:px-6 lg:px-10 py-8 lg:py-10 scroll-mt-[6.5rem] md:scroll-mt-28"
+          className="flex-1 min-w-0 px-4 sm:px-6 lg:px-10 py-8 lg:py-10 scroll-mt-[6.5rem] md:scroll-mt-28 lg:scroll-mt-20"
         >
           {/* All sections are rendered into the HTML (crawlable); only the
               active one is shown. Inactive sections are hidden, not unmounted. */}
