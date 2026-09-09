@@ -4,6 +4,7 @@ import {
   Clock,
   ExternalLink,
   FileText,
+  GitCompare,
   History,
   Rocket,
   RotateCcw,
@@ -15,12 +16,78 @@ import {
   canRollbackToDeployment,
   findLastGoodDeployment,
 } from '@/lib/deployment-utils';
+import { deploymentDiff, formatSeconds, type DeploymentDiff } from '@/lib/deployment-diff';
 import { formatMessage } from '@/lib/i18n/format-message';
 import { useDeployments, useTranslation } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
 
+/** One quiet line: build time vs the previous deploy, and what code moved. */
+function DeploymentDiffLine({
+  diff,
+  t,
+}: {
+  diff: DeploymentDiff;
+  t: ReturnType<typeof useTranslation>['t'];
+}) {
+  const parts: React.ReactNode[] = [];
+
+  if (diff.buildSeconds !== null) {
+    let build = formatMessage(t('projectDetail', 'diffBuild'), { seconds: formatSeconds(diff.buildSeconds) });
+    if (diff.buildDeltaSeconds !== null && diff.buildDeltaSeconds !== 0) {
+      const abs = formatSeconds(Math.abs(diff.buildDeltaSeconds));
+      build += ` · ${formatMessage(
+        t('projectDetail', diff.buildDeltaSeconds < 0 ? 'diffFaster' : 'diffSlower'),
+        { delta: abs },
+      )}`;
+    }
+    parts.push(
+      <span
+        key="build"
+        style={{
+          color:
+            diff.buildDeltaSeconds !== null && diff.buildDeltaSeconds > 30
+              ? 'var(--status-warning)'
+              : 'var(--text-muted)',
+        }}
+      >
+        {build}
+      </span>,
+    );
+  }
+
+  if (diff.sameCommit) {
+    parts.push(<span key="same">{t('projectDetail', 'diffSameCommit')}</span>);
+  } else if (diff.compareUrl && diff.fromSha && diff.toSha) {
+    parts.push(
+      <a
+        key="compare"
+        href={diff.compareUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 hover:underline underline-offset-2 text-[var(--text-secondary)]"
+      >
+        <GitCompare className="w-3 h-3 shrink-0" />
+        {formatMessage(t('projectDetail', 'diffCompare'), { from: diff.fromSha, to: diff.toSha })}
+      </a>,
+    );
+  } else if (diff.fromSha && diff.toSha) {
+    parts.push(
+      <span key="new">{formatMessage(t('projectDetail', 'diffNewCommit'), { from: diff.fromSha })}</span>,
+    );
+  }
+
+  if (parts.length === 0) return null;
+
+  return (
+    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tabular-nums mb-3 text-[var(--text-muted)]">
+      {parts}
+    </p>
+  );
+}
+
 export function DeploymentsTab({
   deployments,
+  gitRepoUrl,
   formatTimeAgo,
   getStatusBadge,
   onCancel,
@@ -31,6 +98,7 @@ export function DeploymentsTab({
   t,
 }: {
   deployments: ReturnType<typeof useDeployments>['data'];
+  gitRepoUrl?: string | null;
   formatTimeAgo: (date: string, t?: any) => string;
   getStatusBadge: (status: string) => string;
   onCancel: (id: string) => void;
@@ -80,7 +148,7 @@ export function DeploymentsTab({
           <li>{t('projectDetail', 'logsHelpHistorical')}</li>
         </ul>
       </div>
-      {deployments.map((deployment) => (
+      {deployments.map((deployment, index) => (
         <div
           key={deployment.id}
           className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] min-w-0 overflow-hidden"
@@ -192,6 +260,10 @@ export function DeploymentsTab({
           {deployment.commitMessage && (
             <p className="text-sm text-[var(--text-secondary)] mb-3">{deployment.commitMessage}</p>
           )}
+          {(() => {
+            const diff = deploymentDiff(deployment, deployments[index + 1], gitRepoUrl);
+            return diff ? <DeploymentDiffLine diff={diff} t={t} /> : null;
+          })()}
           <DeploymentTimeline deployment={deployment} />
           <div className="flex items-center gap-4 text-xs text-[var(--text-muted)] mt-3">
             <span className="flex items-center gap-1">

@@ -704,6 +704,12 @@ export interface TranslationKeys {
     rollback: string;
     rollbackToVersion: string;
     rollbackQuickHint: string;
+    diffBuild: string;
+    diffFaster: string;
+    diffSlower: string;
+    diffSameCommit: string;
+    diffNewCommit: string;
+    diffCompare: string;
     rollbackConfirmTitle: string;
     rollbackConfirmDesc: string;
     rollbackToLastGood: string;
@@ -3396,6 +3402,12 @@ export const en: TranslationKeys = {
     rollback: 'Rollback',
     rollbackToVersion: 'Restore this version',
     rollbackQuickHint: 'Instant rollback (existing image, no rebuild)',
+    diffBuild: 'Build {seconds}',
+    diffFaster: '{delta} faster than previous',
+    diffSlower: '{delta} slower than previous',
+    diffSameCommit: 'Same commit as the previous deploy',
+    diffNewCommit: 'New commit since {from}',
+    diffCompare: 'Compare {from}…{to}',
     rollbackConfirmTitle: 'Restore this deployment?',
     rollbackConfirmDesc:
       'This starts a new deploy from commit {commit} on branch {branch}. Your app will switch to this version.',

@@ -721,6 +721,12 @@ export const tr: TranslationKeys = {
     rollback: 'Geri Al',
     rollbackToVersion: 'Bu sürüme dön',
     rollbackQuickHint: 'Anında geri al (mevcut imaj, yeniden build yok)',
+    diffBuild: 'Build {seconds}',
+    diffFaster: 'öncekinden {delta} hızlı',
+    diffSlower: 'öncekinden {delta} yavaş',
+    diffSameCommit: 'Önceki deploy ile aynı commit',
+    diffNewCommit: '{from} sonrası yeni commit',
+    diffCompare: 'Karşılaştır {from}…{to}',
     rollbackConfirmTitle: 'Bu dağıtıma geri dönülsün mü?',
     rollbackConfirmDesc:
       '{branch} dalındaki {commit} commit\'i ile yeni bir dağıtım başlatılır. Uygulama bu sürüme geçer.',
