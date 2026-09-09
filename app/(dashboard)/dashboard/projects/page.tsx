@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
+  LayoutGrid,
+  List,
   GitBranch,
   Plus,
   Search,
@@ -61,12 +63,107 @@ export default function ProjectsPage() {
     setDeleteTarget(null);
   };
 
+  // Cards for a handful of projects, a dense table once there are many — remembered per browser.
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('projects:view');
+      if (saved === 'table' || saved === 'cards') setViewMode(saved);
+    } catch {}
+  }, []);
+  const changeView = (mode: 'cards' | 'table') => {
+    setViewMode(mode);
+    try { localStorage.setItem('projects:view', mode); } catch {}
+  };
+
   const filteredProjects = projects.filter((project) => {
     const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || project.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
+
+  const renderTable = () => (
+    <div className="dash-panel p-0 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[640px]">
+          <thead>
+            <tr className="text-[11px] uppercase tracking-[0.06em]" style={{ color: 'var(--text-muted)' }}>
+              <th className="text-left font-medium px-4 py-2.5">{t('projects', 'title')}</th>
+              <th className="text-left font-medium px-3 py-2.5">{t('projects', 'status')}</th>
+              <th className="text-left font-medium px-3 py-2.5 hidden md:table-cell">Framework</th>
+              <th className="text-left font-medium px-3 py-2.5 hidden lg:table-cell">URL</th>
+              <th className="text-right font-medium px-3 py-2.5 whitespace-nowrap">{t('projects', 'updated')}</th>
+              <th className="px-3 py-2.5" aria-label="actions" />
+            </tr>
+          </thead>
+          <tbody className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {filteredProjects.map((project) => {
+              const accent = PROJECT_STATUS_COLORS[project.status] ?? 'var(--text-muted)';
+              return (
+                <tr key={project.id} className="group hover:bg-[var(--hover-overlay)] transition-colors" style={{ borderColor: 'var(--border-subtle)' }}>
+                  <td className="px-4 py-2.5 min-w-0">
+                    <Link href={`/dashboard/projects/${project.id}`} className="font-medium hover:underline underline-offset-4 truncate block max-w-[260px]" style={{ color: 'var(--text-primary)' }}>
+                      {project.name}
+                    </Link>
+                  </td>
+                  <td className="px-3 py-2.5 whitespace-nowrap">
+                    <span className="inline-flex items-center gap-1.5 text-xs capitalize" style={{ color: 'var(--text-secondary)' }}>
+                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: accent }} />
+                      {project.status}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5 hidden md:table-cell">
+                    {project.framework ? (
+                      <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--bg-tertiary)', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{project.framework}</span>
+                    ) : (
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 hidden lg:table-cell min-w-0">
+                    {project.productionUrl ? (
+                      <a href={project.productionUrl} target="_blank" rel="noopener noreferrer" className="text-xs truncate block max-w-[260px] hover:underline underline-offset-4" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                        {project.productionUrl.replace('https://', '')}
+                      </a>
+                    ) : (
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-right text-xs whitespace-nowrap tabular-nums" style={{ color: 'var(--text-muted)' }}>
+                    {formatTimeAgo(project.updatedAt, t)}
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center justify-end gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity">
+                      {project.productionUrl && (
+                        <a href={project.productionUrl} target="_blank" rel="noopener noreferrer" className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} title={t('projects', 'visitSite')}>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      <Link href={`/dashboard/projects/${project.id}?tab=settings`} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} title={t('common', 'settings')}>
+                        <Settings className="w-3.5 h-3.5" />
+                      </Link>
+                      {project.status === 'active' ? (
+                        <button type="button" onClick={() => handleStatusChange(project.id, 'paused')} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} title={t('projects', 'pause')}>
+                          <Pause className="w-3.5 h-3.5" />
+                        </button>
+                      ) : (
+                        <button type="button" onClick={() => handleStatusChange(project.id, 'active')} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} title={t('projects', 'resume')}>
+                          <Play className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      <button type="button" onClick={() => handleDeleteClick(project)} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--status-error)]/10" style={{ color: 'var(--text-muted)' }} title={t('common', 'delete')}>
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 
   return (
     <div className="dash-page max-w-5xl space-y-6 animate-slide-in">
@@ -117,6 +214,25 @@ export default function ProjectsPage() {
             </button>
           ))}
         </div>
+
+        <div className="flex gap-1 shrink-0 rounded-lg p-0.5" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}>
+          {([['cards', LayoutGrid, t('projects', 'viewCards')], ['table', List, t('projects', 'viewTable')]] as const).map(([mode, Icon, label]) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => changeView(mode)}
+              className="w-8 h-8 rounded-md flex items-center justify-center transition-colors"
+              style={{
+                background: viewMode === mode ? 'var(--dash-accent-bg)' : 'transparent',
+                color: viewMode === mode ? 'var(--accent-cyan)' : 'var(--text-muted)',
+              }}
+              title={label}
+              aria-pressed={viewMode === mode}
+            >
+              <Icon className="w-4 h-4" />
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Content */}
@@ -142,6 +258,8 @@ export default function ProjectsPage() {
             </Link>
           )}
         </div>
+      ) : viewMode === 'table' ? (
+        renderTable()
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredProjects.map((project) => {

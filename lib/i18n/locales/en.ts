@@ -224,6 +224,10 @@ export interface TranslationKeys {
     paused: string;
     inactive: string;
     noProjectsFound: string;
+    viewCards: string;
+    viewTable: string;
+    updated: string;
+    status: string;
     noProjectsYet: string;
     adjustCriteria: string;
     createProjectDesc: string;
@@ -1814,6 +1818,11 @@ export interface TranslationKeys {
     autoSnapshotDesc: string;
     autoSnapshotLastRun: string;
     serverHealthTitle: string;
+    containersTitle: string;
+    containersTotals: string;
+    containersEmpty: string;
+    containersFailed: string;
+    containersHint: string;
     healthScan: string;
     healthScanFailed: string;
     diskUsage: string;
@@ -2915,6 +2924,10 @@ export const en: TranslationKeys = {
     paused: 'Paused',
     inactive: 'Inactive',
     noProjectsFound: 'No projects found',
+    viewCards: 'Cards',
+    viewTable: 'Table',
+    updated: 'Updated',
+    status: 'Status',
     noProjectsYet: 'No projects yet',
     adjustCriteria: 'Try adjusting your search or filter criteria',
     createProjectDesc: 'Create your first project to start deploying your applications',
@@ -4549,6 +4562,11 @@ export const en: TranslationKeys = {
       'Creates a snapshot every 7 days when the server is running. Oldest snapshots are removed when you exceed your plan limit.',
     autoSnapshotLastRun: 'Last automatic snapshot: {date}',
     serverHealthTitle: 'Deployment host health',
+    containersTitle: 'What’s running here',
+    containersTotals: '{count} containers · {cpu}% CPU · {mem} MB RAM',
+    containersEmpty: 'No Pushify containers reported in the last 5 minutes.',
+    containersFailed: 'Could not load container usage.',
+    containersHint: 'Share = this app’s slice of everything Pushify runs on this server. Refreshes every 30 seconds.',
     healthScan: 'Scan now',
     healthScanFailed: 'Could not scan the server. Check SSH access.',
     diskUsage: 'Disk',

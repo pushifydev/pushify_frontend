@@ -2,6 +2,7 @@
 
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
 import { PricingSection } from '@/components/landing/PricingSection';
+import { PricingCalculator } from '@/components/landing/PricingCalculator';
 import { useTranslation } from '@/hooks';
 import type { AvailablePlans } from '@/lib/api';
 
@@ -23,7 +24,10 @@ export function PricingPageView({ initialPlans }: { initialPlans?: AvailablePlan
         }
         description={t('landing', 'pricingSubtitle')}
       />
-      <PricingSection pageLayout initialPlans={initialPlans} />
+      <div id="plans">
+        <PricingSection pageLayout initialPlans={initialPlans} />
+      </div>
+      <PricingCalculator />
     </MarketingShell>
   );
 }

@@ -19,6 +19,7 @@ const CONTENT_DATES: Record<string, string> = {
   '/partners': '2026-09-09',
   '/deploy-button': '2026-09-09',
   '/pushify-yaml': '2026-09-10',
+  '/status': '2026-09-10',
   '/vs/coolify': '2026-07-05',
   '/vs/vercel': '2026-07-05',
   '/vs/heroku': '2026-07-19',

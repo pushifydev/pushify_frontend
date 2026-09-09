@@ -182,6 +182,37 @@ export const getServerHealth = async (
   }
 };
 
+export interface ServerContainerUsage {
+  projectId: string;
+  projectName: string;
+  projectSlug: string;
+  containerName: string;
+  status: string;
+  cpuPercent: number;
+  memoryUsageMb: number;
+  memoryLimitMb: number;
+  memoryPercent: number;
+  cpuShare: number;
+  memoryShare: number;
+}
+
+export interface ServerContainersReport {
+  recordedAt: string | null;
+  totals: { cpuPercent: number; memoryUsageMb: number };
+  containers: ServerContainerUsage[];
+}
+
+export const getServerContainers = async (
+  serverId: string
+): Promise<ApiResponse<ServerContainersReport>> => {
+  try {
+    const response = await api.get<{ data: ServerContainersReport }>(`/servers/${serverId}/containers`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const createServer = async (input: CreateServerInput): Promise<ApiResponse<Server>> => {
   try {
     const response = await api.post<{ data: Server }>('/servers', input);

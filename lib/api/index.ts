@@ -330,6 +330,7 @@ export {
   listServers,
   getServer,
   getServerHealth,
+  getServerContainers,
   createServer,
   deleteServer,
   startServer,

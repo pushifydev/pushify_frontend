@@ -32,6 +32,7 @@ export function LandingFooter() {
         label: t('landing', 'changelog'),
         href: '/changelog',
       },
+      { label: 'Status', href: '/status' },
       { label: t('landing', 'blog'), href: '/blog' },
       { label: t('landing', 'deployButton'), href: '/deploy-button' },
       { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },
