@@ -4,13 +4,11 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import {
-  CreditCard,
   Sparkles,
-  Mail,
   Check,
   X,
   AlertTriangle,
-  Key,
+  ArrowUpRight,
 } from 'lucide-react';
 import { useTranslation, useBillingInfo, useUpdateBillingEmail, billingKeys } from '@/hooks';
 import { confirmInfraTopUp } from '@/lib/api';
@@ -23,7 +21,6 @@ import { SkeletonPageHeader, SkeletonBillingSummaryCard } from '@/components/Ske
 import { InfraWalletSection } from './components/InfraWalletSection';
 import { InvoicesSection } from './components/InvoicesSection';
 import { CancelSubscriptionModal } from './components/CancelSubscriptionModal';
-import { BillingSection } from './components/BillingSection';
 import { UsageLimitsAlert, UsageLimitsSection } from './components/UsageLimitsSection';
 import { formatMessage } from '@/lib/i18n/format-message';
 import type { UsageLimitKey, UsageStats } from '@/lib/api/services/billing.service';
@@ -48,8 +45,17 @@ const planAccents: Record<PlanType, string> = {
   enterprise: STATUS_COLORS.green,
 };
 
+/** Uppercase micro-label used across the ledger strip */
+function LedgerLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-1.5 text-[var(--text-muted)]">
+      {children}
+    </p>
+  );
+}
+
 export default function BillingPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -95,17 +101,14 @@ export default function BillingPage() {
 
   const [billingEmail, setBillingEmail]   = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
-  const [emailSuccess, setEmailSuccess]   = useState(false);
   const [emailError, setEmailError]       = useState<string | null>(null);
 
   const handleUpdateEmail = async () => {
     setEmailError(null);
-    setEmailSuccess(false);
     try {
       await updateBillingEmail.mutateAsync({ billingEmail: billingEmail.trim() });
-      setEmailSuccess(true);
       setShowEmailForm(false);
-      setTimeout(() => setEmailSuccess(false), 3000);
+      toast.success(t('billing', 'emailUpdated'));
     } catch (err) {
       setEmailError(err instanceof Error ? err.message : t('billing', 'emailUpdateFailed'));
     }
@@ -113,7 +116,7 @@ export default function BillingPage() {
 
   if (isLoading) {
     return (
-      <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
+      <div className="dash-page max-w-4xl space-y-5 animate-slide-in">
         <SkeletonPageHeader />
         {[1, 2, 3].map((i) => (
           <SkeletonBillingSummaryCard key={i} />
@@ -123,11 +126,24 @@ export default function BillingPage() {
   }
 
   const planAccent = billingInfo ? planAccents[billingInfo.plan] : STATUS_COLORS.neutral;
+  const isPaid = !!billingInfo && billingInfo.price > 0;
+  const statusOk = billingInfo?.billingStatus === 'active';
+  const renewalDate = billingInfo?.currentPeriodEnd
+    ? new Date(billingInfo.currentPeriodEnd).toLocaleDateString(
+        locale === 'tr' ? 'tr-TR' : 'en-US',
+        { year: 'numeric', month: 'short', day: 'numeric' },
+      )
+    : null;
+
+  const featureEntries = billingInfo
+    ? (Object.entries(billingInfo.features) as [keyof typeof billingInfo.features, boolean][])
+    : [];
 
   return (
-    <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
+    <div className="dash-page max-w-4xl space-y-5 animate-slide-in">
 
       <div>
+        <p className="dash-eyebrow mb-1">{organization?.name || t('billing', 'personalOrganization')}</p>
         <h1 className="text-xl font-semibold tracking-tight">{t('billing', 'title')}</h1>
         <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
           {t('billing', 'description')}
@@ -135,8 +151,8 @@ export default function BillingPage() {
       </div>
 
       {billingInfo?.billingStatus === 'past_due' && (
-        <div className="dash-panel dash-callout-attention p-4 flex gap-3 items-start">
-          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: STATUS_COLORS.orange }} />
+        <div className="dash-callout dash-callout-attention">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: STATUS_COLORS.orange }} />
           <div className="space-y-1 min-w-0">
             <p className="font-medium text-sm">{t('billing', 'billingStatusPastDueTitle')}</p>
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -151,13 +167,13 @@ export default function BillingPage() {
 
       {billingInfo?.billingStatus === 'suspended' && (
         <div
-          className="rounded-xl p-4 flex gap-3 items-start"
+          className="dash-callout"
           style={{
-            background: `${STATUS_COLORS.error}14`,
-            border: `1px solid ${STATUS_COLORS.error}44`,
+            background: `${STATUS_COLORS.error}0F`,
+            borderColor: `${STATUS_COLORS.error}3D`,
           }}
         >
-          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: STATUS_COLORS.error }} />
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: STATUS_COLORS.error }} />
           <div className="space-y-1 min-w-0">
             <p className="font-medium text-sm">{t('billing', 'billingStatusSuspendedTitle')}</p>
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -170,9 +186,188 @@ export default function BillingPage() {
         </div>
       )}
 
+      {billingInfo && <UsageLimitsAlert usage={billingInfo.usage} />}
+
+      {/* ── Plan summary — the page's anchor ─────────────────────────────── */}
+      <section
+        className="dash-card p-5 sm:p-6"
+        style={{
+          borderWidth: '2px 1px 1px 1px',
+          borderTopColor: planAccent,
+          borderRadius: 12,
+        }}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <div className="min-w-0">
+            <LedgerLabel>{t('billing', 'currentPlan')}</LedgerLabel>
+            <div className="flex items-baseline gap-2.5 flex-wrap">
+              <span className="text-[1.75rem] leading-none font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+                {billingInfo?.planName || t('billing', 'free')}
+              </span>
+              {isPaid && (
+                <span
+                  className="text-sm tabular-nums"
+                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}
+                >
+                  ${billingInfo!.price}
+                  {t('billing', 'perMonth')}
+                </span>
+              )}
+            </div>
+            <p className="flex items-center gap-1.5 text-sm mt-2.5" style={{ color: 'var(--text-secondary)' }}>
+              <span
+                className="dash-status-dot"
+                style={{ background: statusOk ? STATUS_COLORS.success : STATUS_COLORS.warning }}
+                aria-hidden
+              />
+              {statusOk
+                ? t('billing', 'billingStatusActive')
+                : billingInfo?.billingStatus === 'past_due'
+                  ? t('billing', 'billingStatusPastDueTitle')
+                  : t('billing', 'billingStatusSuspendedTitle')}
+            </p>
+          </div>
+          <Link href="/dashboard/billing/plans" className="btn btn-primary shrink-0 w-full sm:w-auto justify-center">
+            {t('billing', 'comparePlans')}
+          </Link>
+        </div>
+
+        {/* Ledger strip — email · renewal · API limit */}
+        <div
+          className="mt-5 pt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 border-t"
+          style={{ borderColor: 'var(--border-subtle)' }}
+        >
+          <div className="min-w-0 sm:pr-5">
+            <LedgerLabel>{t('billing', 'billingEmail')}</LedgerLabel>
+            <div className="flex items-center gap-2 min-w-0">
+              <p
+                className="text-sm truncate tabular-nums"
+                style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
+                title={billingInfo?.billingEmail || undefined}
+              >
+                {billingInfo?.billingEmail || '—'}
+              </p>
+              {!showEmailForm && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBillingEmail(billingInfo?.billingEmail || '');
+                    setEmailError(null);
+                    setShowEmailForm(true);
+                  }}
+                  className="text-xs font-medium shrink-0 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                >
+                  {t('common', 'edit')}
+                </button>
+              )}
+            </div>
+          </div>
+          <div
+            className="min-w-0 sm:px-5 sm:border-l border-t sm:border-t-0 pt-4 sm:pt-0"
+            style={{ borderColor: 'var(--border-subtle)' }}
+          >
+            <LedgerLabel>{t('billing', 'nextRenewal')}</LedgerLabel>
+            <p
+              className="text-sm tabular-nums"
+              style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
+            >
+              {isPaid && renewalDate ? renewalDate : '—'}
+            </p>
+          </div>
+          <div
+            className="min-w-0 sm:pl-5 sm:border-l border-t sm:border-t-0 pt-4 sm:pt-0"
+            style={{ borderColor: 'var(--border-subtle)' }}
+          >
+            <LedgerLabel>{t('billing', 'apiRateLimit')}</LedgerLabel>
+            <p
+              className="text-sm tabular-nums"
+              style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
+            >
+              {billingInfo
+                ? billingInfo.apiRequestsPerMinute === -1
+                  ? t('billing', 'unlimited')
+                  : formatMessage(t('billing', 'apiRateLimitValue'), {
+                      count: String(billingInfo.apiRequestsPerMinute),
+                    })
+                : '—'}
+            </p>
+          </div>
+        </div>
+
+        {showEmailForm && (
+          <div className="mt-4 pt-4 border-t space-y-2" style={{ borderColor: 'var(--border-subtle)' }}>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="email"
+                value={billingEmail}
+                onChange={e => setBillingEmail(e.target.value)}
+                placeholder={t('billing', 'billingEmailPlaceholder')}
+                className="input flex-1"
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={handleUpdateEmail}
+                disabled={!billingEmail.trim() || updateBillingEmail.isPending}
+                className="btn btn-primary shrink-0"
+              >
+                {updateBillingEmail.isPending ? t('billing', 'updating') : t('common', 'save')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEmailForm(false);
+                  setEmailError(null);
+                }}
+                className="btn btn-secondary shrink-0"
+              >
+                {t('common', 'cancel')}
+              </button>
+            </div>
+            {emailError && (
+              <p className="text-xs flex items-center gap-1.5" style={{ color: STATUS_COLORS.error }}>
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                {emailError}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Plan features as quiet chips + cancel link */}
+        {billingInfo && (
+          <div
+            className="mt-4 pt-4 border-t flex flex-wrap items-center gap-x-4 gap-y-2"
+            style={{ borderColor: 'var(--border-subtle)' }}
+          >
+            {featureEntries.map(([key, enabled]) => (
+              <span
+                key={key}
+                className="inline-flex items-center gap-1.5 text-xs"
+                style={{ color: enabled ? 'var(--text-secondary)' : 'var(--text-muted)' }}
+              >
+                {enabled ? (
+                  <Check className="w-3.5 h-3.5 shrink-0" style={{ color: STATUS_COLORS.success }} />
+                ) : (
+                  <X className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                )}
+                {t('billing', key)}
+              </span>
+            ))}
+            {isPaid && (
+              <button
+                onClick={() => setShowCancelModal(true)}
+                className="ml-auto text-xs text-[var(--text-muted)] hover:text-red-400 transition-colors"
+              >
+                {t('billing', 'cancelSubscriptionLink')}
+              </button>
+            )}
+          </div>
+        )}
+      </section>
+
       {billingInfo?.grandfather?.active && billingInfo.grandfather.until && (
-        <div className="dash-panel p-4 flex gap-3 items-start border border-[var(--accent-cyan)]/30 bg-[var(--accent-cyan)]/5">
-          <Sparkles className="w-5 h-5 shrink-0 text-[var(--accent-cyan)] mt-0.5" />
+        <div className="dash-callout" style={{ borderColor: 'color-mix(in srgb, var(--accent-cyan) 30%, transparent)', background: 'color-mix(in srgb, var(--accent-cyan) 5%, transparent)' }}>
+          <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-[var(--accent-cyan)]" />
           <div className="min-w-0 space-y-2">
             <p className="text-sm text-[var(--text-secondary)]">
               {formatMessage(t('billing', 'grandfatherBanner'), {
@@ -200,236 +395,13 @@ export default function BillingPage() {
         </div>
       )}
 
-      <InfraWalletSection />
-
-      <InvoicesSection />
-
-      {billingInfo && <UsageLimitsAlert usage={billingInfo.usage} />}
-
-      {/* Current Plan */}
-      <div className="dash-card p-4 sm:p-6 space-y-0">
-        <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: `${planAccent}18` }}
-            >
-              <CreditCard className="w-5 h-5" style={{ color: planAccent }} />
-            </div>
-            <div>
-              <p
-                className="text-xs uppercase tracking-wide mb-1"
-                style={{ color: 'var(--text-muted)' }}
-              >
-                {t('billing', 'currentPlan')}
-              </p>
-              <div className="flex items-baseline gap-2 flex-wrap">
-                <span className="text-2xl font-bold tabular-nums" style={{ color: 'var(--text-primary)' }}>
-                  {billingInfo?.planName || t('billing', 'free')}
-                </span>
-                {billingInfo && billingInfo.price > 0 && (
-                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    ${billingInfo.price}
-                    {t('billing', 'perMonth')}
-                  </span>
-                )}
-              </div>
-              <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-                {organization?.name || t('billing', 'personalOrganization')}
-              </p>
-            </div>
-          </div>
-          <Link href="/dashboard/billing/plans" className="btn btn-primary shrink-0">
-            {t('billing', 'comparePlans')}
-          </Link>
-        </div>
-        {billingInfo && billingInfo.price > 0 && (
-          <div className="pt-4 mt-4 border-t border-[var(--border-subtle)]">
-            <button
-              onClick={() => setShowCancelModal(true)}
-              className="text-xs text-[var(--text-muted)] hover:text-red-400 transition-colors"
-            >
-              {t('billing', 'cancelSubscriptionLink')}
-            </button>
-          </div>
-        )}
-      </div>
-
       <CancelSubscriptionModal isOpen={showCancelModal} onClose={() => setShowCancelModal(false)} />
 
-      {billingInfo && (
-        <BillingSection
-          icon={Key}
-          title={t('billing', 'apiRateLimit')}
-          description={t('billing', 'apiRateLimitHint')}
-          action={
-            <Link
-              href="/dashboard/settings?tab=api-keys"
-              className="btn btn-secondary text-xs shrink-0 hidden sm:inline-flex"
-            >
-              {t('apiKeys', 'title')}
-            </Link>
-          }
-        >
-          <div
-            className="rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-            style={{ background: 'var(--bg-tertiary)' }}
-          >
-            <p className="text-2xl font-bold tabular-nums" style={{ color: 'var(--text-primary)' }}>
-              {billingInfo.apiRequestsPerMinute === -1
-                ? t('billing', 'unlimited')
-                : t('billing', 'apiRateLimitValue').replace(
-                    '{count}',
-                    String(billingInfo.apiRequestsPerMinute)
-                  )}
-            </p>
-            <Link
-              href="/dashboard/settings?tab=api-keys"
-              className="btn btn-secondary text-xs shrink-0 sm:hidden"
-            >
-              {t('apiKeys', 'title')}
-            </Link>
-          </div>
-        </BillingSection>
-      )}
+      <InfraWalletSection />
 
       {billingInfo && <UsageLimitsSection usage={billingInfo.usage} />}
 
-      {billingInfo && (
-        <BillingSection
-          icon={Sparkles}
-          iconColor="var(--accent-purple)"
-          title={t('billing', 'features')}
-          description={t('billing', 'featuresDescription')}
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {(Object.entries(billingInfo.features) as [keyof typeof billingInfo.features, boolean][]).map(([key, enabled]) => (
-              <div
-                key={key}
-                className="rounded-lg p-4 flex items-center gap-3"
-                style={{ background: 'var(--bg-tertiary)' }}
-              >
-                <div
-                  className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
-                  style={{
-                    background: enabled ? 'rgba(34,197,94,0.12)' : 'var(--bg-secondary)',
-                    border: enabled ? '1px solid rgba(34,197,94,0.25)' : '1px solid var(--glass-border)',
-                  }}
-                >
-                  {enabled ? (
-                    <Check className="w-4 h-4" style={{ color: STATUS_COLORS.success }} />
-                  ) : (
-                    <X className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                  )}
-                </div>
-                <span
-                  className="text-sm font-medium"
-                  style={{ color: enabled ? 'var(--text-primary)' : 'var(--text-muted)' }}
-                >
-                  {t('billing', key)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </BillingSection>
-      )}
-
-      <BillingSection
-        icon={Mail}
-        iconColor="#60a5fa"
-        title={t('billing', 'billingEmail')}
-        description={t('billing', 'billingEmailDesc')}
-      >
-        {emailError && (
-          <div
-            className="px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
-            style={{
-              background: 'rgba(239,68,68,0.08)',
-              border: '1px solid rgba(239,68,68,0.2)',
-              color: STATUS_COLORS.pink,
-            }}
-          >
-            <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-            {emailError}
-          </div>
-        )}
-
-        {emailSuccess && (
-          <div
-            className="px-3 py-2 rounded-lg flex items-center gap-2 text-sm"
-            style={{
-              background: 'rgba(34,197,94,0.08)',
-              border: '1px solid rgba(34,197,94,0.2)',
-              color: STATUS_COLORS.success,
-            }}
-          >
-            <Check className="w-3.5 h-3.5 shrink-0" />
-            {t('billing', 'emailUpdated')}
-          </div>
-        )}
-
-        {!showEmailForm ? (
-          <div
-            className="rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-            style={{ background: 'var(--bg-tertiary)' }}
-          >
-            <div className="min-w-0">
-              <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-                {t('billing', 'billingEmailCurrent')}
-              </p>
-              <p
-                className="text-lg font-medium truncate"
-                style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
-              >
-                {billingInfo?.billingEmail || '—'}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setBillingEmail(billingInfo?.billingEmail || '');
-                setShowEmailForm(true);
-              }}
-              className="btn btn-primary shrink-0"
-            >
-              {t('billing', 'updateEmail')}
-            </button>
-          </div>
-        ) : (
-          <div className="rounded-lg p-4 space-y-3" style={{ background: 'var(--bg-tertiary)' }}>
-            <p className="text-xs uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
-              {t('billing', 'billingEmailNew')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="email"
-                value={billingEmail}
-                onChange={e => setBillingEmail(e.target.value)}
-                placeholder={t('billing', 'billingEmailPlaceholder')}
-                className="input flex-1"
-              />
-              <button
-                type="button"
-                onClick={handleUpdateEmail}
-                disabled={!billingEmail.trim() || updateBillingEmail.isPending}
-                className="btn btn-primary shrink-0"
-              >
-                {updateBillingEmail.isPending ? t('billing', 'updating') : t('common', 'save')}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowEmailForm(false);
-                  setEmailError(null);
-                }}
-                className="btn btn-secondary shrink-0"
-              >
-                {t('common', 'cancel')}
-              </button>
-            </div>
-          </div>
-        )}
-      </BillingSection>
+      <InvoicesSection />
 
     </div>
   );

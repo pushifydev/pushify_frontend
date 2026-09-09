@@ -1662,6 +1662,8 @@ export const tr: TranslationKeys = {
     infraTopUpPending:
       'Ödeme alındı. Stripe onayından sonra krediler görünecek (birkaç saniye sonra sayfayı yenileyin).',
     infraTopUpCancelled: 'Kredi yüklemesi iptal edildi.',
+    billingStatusActive: 'Aktif',
+    nextRenewal: 'Sonraki yenileme',
     billingStatusPastDueTitle: 'Platform ödemesi gecikmiş',
     billingStatusPastDueDesc:
       'Abonelik ödemesi alınamadı. Sunucu, proje ve dağıtım oluşturmak için ödeme yönteminizi güncelleyin.',

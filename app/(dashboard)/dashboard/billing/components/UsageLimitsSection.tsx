@@ -32,7 +32,6 @@ import {
 import { formatMessage } from '@/lib/i18n/format-message';
 import { STATUS_COLORS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { BillingSection } from './BillingSection';
 
 const USAGE_ICONS: Record<keyof UsageStats, LucideIcon> = {
   servers: Server,
@@ -135,21 +134,18 @@ export function UsageLimitsSection({ usage }: { usage: UsageStats }) {
   const unlimitedLabel = t('billing', 'unlimited');
 
   return (
-    <BillingSection
-      icon={TrendingUp}
-      title={t('billing', 'usage')}
-      description={t('billing', 'usageDescription')}
-      action={
-        <Link
-          href="/dashboard/billing/plans"
-          className="text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-secondary)] inline-flex items-center gap-1 shrink-0"
-        >
+    <section className="dash-panel p-5 sm:p-6">
+      <div className="dash-panel-header">
+        <div className="dash-panel-title min-w-0">
+          <TrendingUp className="w-4 h-4 shrink-0 text-[var(--text-secondary)]" />
+          <span className="truncate">{t('billing', 'usage')}</span>
+        </div>
+        <Link href="/dashboard/billing/plans" className="dash-link flex items-center gap-1 shrink-0">
           {t('billing', 'comparePlans')}
           <ArrowUpRight className="w-3 h-3" />
         </Link>
-      }
-    >
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {USAGE_DISPLAY_ORDER.map((key) => {
           const item = usage[key];
           const Icon = USAGE_ICONS[key];
@@ -161,7 +157,7 @@ export function UsageLimitsSection({ usage }: { usage: UsageStats }) {
             <div
               key={key}
               className={cn(
-                'rounded-lg p-4 border border-transparent',
+                'rounded-lg p-3.5 border border-transparent',
                 level === 'danger' && 'border-[var(--status-error)]/25',
                 level === 'warning' && 'border-[var(--status-warning)]/20',
               )}
@@ -196,7 +192,10 @@ export function UsageLimitsSection({ usage }: { usage: UsageStats }) {
                 )}
               </div>
 
-              <p className="text-lg font-semibold tabular-nums text-[var(--text-primary)] mb-2">
+              <p
+                className="text-base font-semibold tabular-nums text-[var(--text-primary)] mb-2"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >
                 {item.used}
                 <span className="text-sm font-normal text-[var(--text-muted)]">
                   {' '}
@@ -241,6 +240,6 @@ export function UsageLimitsSection({ usage }: { usage: UsageStats }) {
           );
         })}
       </div>
-    </BillingSection>
+    </section>
   );
 }
