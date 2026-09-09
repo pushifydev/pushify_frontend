@@ -507,6 +507,7 @@ export const tr: TranslationKeys = {
     cli: 'CLI',
     changelog: 'Değişiklik Günlüğü',
     blog: 'Blog',
+    partners: 'İş Ortaklığı',
     contact: 'İletişim',
     product: 'Ürün',
     resources: 'Kaynaklar',

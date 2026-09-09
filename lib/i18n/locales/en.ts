@@ -491,6 +491,7 @@ export interface TranslationKeys {
     cli: string;
     changelog: string;
     blog: string;
+    partners: string;
     contact: string;
     product: string;
     resources: string;
@@ -3180,6 +3181,7 @@ export const en: TranslationKeys = {
     cli: 'CLI',
     changelog: 'Changelog',
     blog: 'Blog',
+    partners: 'Partners',
     contact: 'Contact',
     product: 'Product',
     resources: 'Resources',
