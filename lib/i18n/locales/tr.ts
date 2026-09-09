@@ -509,6 +509,7 @@ export const tr: TranslationKeys = {
     blog: 'Blog',
     partners: 'İş Ortaklığı',
     deployButton: 'Deploy butonu',
+    apps: 'Uygulamalar',
     contact: 'İletişim',
     product: 'Ürün',
     resources: 'Kaynaklar',

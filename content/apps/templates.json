@@ -1,0 +1,1093 @@
+{
+  "generatedAt": "2026-09-09T20:10:18.752Z",
+  "templates": [
+    {
+      "id": "supabase",
+      "name": "Supabase",
+      "description": "Open-source Firebase alternative with PostgreSQL, Auth, Realtime, Storage, and Edge Functions",
+      "longDescription": "Supabase is a complete open-source Firebase alternative. It provides:\n\n- **PostgreSQL Database** with automatic API generation\n- **Authentication** with email, social, and magic link login\n- **Realtime** subscriptions to database changes\n- **Storage** for files with automatic image transformation\n- **Edge Functions** for server-side TypeScript functions\n- **Studio** dashboard for managing your data\n\nThis deployment includes all 9 Supabase services orchestrated via Docker Compose, ready for production use.",
+      "icon": "Database",
+      "category": "database",
+      "tags": [
+        "backend",
+        "database",
+        "auth",
+        "realtime",
+        "storage",
+        "firebase-alternative"
+      ],
+      "website": "https://supabase.com",
+      "documentation": "https://supabase.com/docs/guides/self-hosting",
+      "deploymentType": "docker-compose",
+      "dockerImage": null,
+      "port": 8000,
+      "healthCheckPath": "/",
+      "minMemoryMb": 6144,
+      "minDiskGb": 15,
+      "requiresDatabase": null,
+      "appVersion": "2024.03",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "POSTGRES_PASSWORD",
+          "label": "PostgreSQL Password",
+          "description": "Master password for the Supabase database",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "JWT_SECRET",
+          "label": "JWT Secret",
+          "description": "Secret used to sign JWT tokens (min 32 chars)",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "ANON_KEY",
+          "label": "Anonymous API Key",
+          "description": "Public anonymous key for client-side requests",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "SERVICE_ROLE_KEY",
+          "label": "Service Role Key",
+          "description": "Service role key with full database access (keep secret!)",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "SECRET_KEY_BASE",
+          "label": "Secret Key Base",
+          "description": "Base secret for Realtime service",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "DASHBOARD_USERNAME",
+          "label": "Studio Username",
+          "description": "Username for accessing the Supabase Studio dashboard",
+          "required": true,
+          "type": "text",
+          "default": "supabase",
+          "generated": false
+        },
+        {
+          "key": "DASHBOARD_PASSWORD",
+          "label": "Studio Password",
+          "description": "Password for accessing the Supabase Studio dashboard",
+          "required": true,
+          "type": "password",
+          "generated": true
+        }
+      ]
+    },
+    {
+      "id": "appwrite",
+      "name": "Appwrite",
+      "description": "Open-source backend-as-a-service — Auth, Database, Storage, Functions",
+      "longDescription": "Appwrite is an open-source backend platform for building Web, Mobile, and Flutter apps.\n\n- **Authentication** — Email/password, OAuth2, magic URLs, phone, anonymous\n- **Database** — Document-based with SQL-like queries\n- **Storage** — File storage with image processing\n- **Functions** — Serverless cloud functions in 15+ languages\n- **Realtime** — WebSocket subscriptions to any resource\n- **Messaging** — Push notifications, SMS, email\n- **GEO & Localization** — Built-in i18n support\n\nUsed by **30,000+** developers worldwide.",
+      "icon": "Database",
+      "category": "database",
+      "tags": [
+        "baas",
+        "firebase-alternative",
+        "auth",
+        "storage",
+        "functions"
+      ],
+      "website": "https://appwrite.io",
+      "documentation": "https://appwrite.io/docs/advanced/self-hosting",
+      "deploymentType": "docker-compose",
+      "dockerImage": null,
+      "port": 80,
+      "healthCheckPath": "/v1/health",
+      "minMemoryMb": 2048,
+      "minDiskGb": 10,
+      "requiresDatabase": null,
+      "appVersion": "1.5",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "APPWRITE_ADMIN_EMAIL",
+          "label": "Admin Email",
+          "description": "Email for the Appwrite Console root user",
+          "required": true,
+          "type": "email",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "pocketbase",
+      "name": "PocketBase",
+      "description": "Open-source backend in a single file — Realtime, Auth, File Storage, REST API",
+      "longDescription": "PocketBase is an open source backend consisting of:\n\n- Embedded **SQLite** database with realtime subscriptions\n- Built-in **Auth** management with multiple providers\n- Convenient **Admin Dashboard** UI\n- Simple **REST-ish API** for managing your data\n- **File storage** with image transformations\n\nShips as a single executable file — no external dependencies. Perfect for SaaS,\nmobile apps, and rapid prototyping.\n\n**After deploy:** Visit `/_/` (e.g. http://your-host:port/_/) to create your\nfirst superuser via the setup wizard. The env vars are stored for reference\nbut the first admin must be created through the web UI.",
+      "icon": "Database",
+      "category": "database",
+      "tags": [
+        "backend",
+        "sqlite",
+        "realtime",
+        "auth",
+        "firebase-alternative"
+      ],
+      "website": "https://pocketbase.io",
+      "documentation": "https://pocketbase.io/docs/",
+      "deploymentType": "single-container",
+      "dockerImage": "ghcr.io/muchobien/pocketbase:latest",
+      "port": 8090,
+      "healthCheckPath": "/api/health",
+      "minMemoryMb": 256,
+      "minDiskGb": 1,
+      "requiresDatabase": null,
+      "appVersion": "0.22",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "POCKETBASE_ADMIN_EMAIL",
+          "label": "Admin Email",
+          "description": "Email for the initial superuser account",
+          "required": true,
+          "type": "email",
+          "generated": false
+        },
+        {
+          "key": "POCKETBASE_ADMIN_PASSWORD",
+          "label": "Admin Password",
+          "description": "Password for the initial superuser (must be at least 10 characters)",
+          "required": true,
+          "type": "password",
+          "generated": true
+        }
+      ]
+    },
+    {
+      "id": "hasura",
+      "name": "Hasura",
+      "description": "Instant realtime GraphQL APIs on your data, with built-in authorization",
+      "longDescription": "Hasura is an open-source engine that gives you instant GraphQL & REST APIs\nwith authorization & event triggers — over Postgres, MS SQL Server, BigQuery, MySQL, and more.\n\n- **Instant GraphQL & REST APIs** on your database\n- **Granular authorization** with role-based access\n- **Real-time subscriptions** out of the box\n- **Event triggers** for serverless workflows\n- **Schema stitching** & remote schemas\n- **Caching** for high-performance APIs\n- **Console UI** for managing schema, permissions, and metadata",
+      "icon": "Zap",
+      "category": "devtools",
+      "tags": [
+        "graphql",
+        "rest",
+        "api",
+        "realtime",
+        "backend"
+      ],
+      "website": "https://hasura.io",
+      "documentation": "https://hasura.io/docs/",
+      "deploymentType": "single-container",
+      "dockerImage": "hasura/graphql-engine:v2.40.0",
+      "port": 8080,
+      "healthCheckPath": "/healthz",
+      "minMemoryMb": 1024,
+      "minDiskGb": 2,
+      "requiresDatabase": {
+        "type": "postgresql",
+        "version": "16"
+      },
+      "appVersion": "2.40",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "HASURA_GRAPHQL_ADMIN_SECRET",
+          "label": "Admin Secret",
+          "description": "Secret for accessing the Hasura console and admin APIs",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "HASURA_GRAPHQL_ENABLE_CONSOLE",
+          "label": "Enable Console",
+          "description": "Enable the web console at /console",
+          "required": false,
+          "type": "text",
+          "default": "true",
+          "generated": false
+        },
+        {
+          "key": "HASURA_GRAPHQL_DEV_MODE",
+          "label": "Dev Mode",
+          "description": "Show detailed error messages (set false for production)",
+          "required": false,
+          "type": "text",
+          "default": "false",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "directus",
+      "name": "Directus",
+      "description": "Open-source headless CMS and instant REST + GraphQL API for any SQL database",
+      "longDescription": "Directus is an Open Data Platform built to democratize the database. It provides\neveryone on your team, regardless of technical skill, equal access to data and digital file\nasset management.\n\n- **Headless CMS** with a beautiful no-code admin app\n- **Instant REST + GraphQL API** for any SQL database\n- **File library** with image transformations\n- **Roles & permissions** with granular access control\n- **Webhooks & flows** for automation\n- **Real-time updates** via subscriptions\n- **Multi-language** content management",
+      "icon": "FileText",
+      "category": "cms",
+      "tags": [
+        "cms",
+        "headless",
+        "graphql",
+        "rest",
+        "admin"
+      ],
+      "website": "https://directus.io",
+      "documentation": "https://docs.directus.io",
+      "deploymentType": "single-container",
+      "dockerImage": "directus/directus:11",
+      "port": 8055,
+      "healthCheckPath": "/server/health",
+      "minMemoryMb": 1024,
+      "minDiskGb": 5,
+      "requiresDatabase": {
+        "type": "postgresql",
+        "version": "16"
+      },
+      "appVersion": "11",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "ADMIN_EMAIL",
+          "label": "Admin Email",
+          "description": "Email for the initial admin user",
+          "required": true,
+          "type": "email",
+          "generated": false
+        },
+        {
+          "key": "ADMIN_PASSWORD",
+          "label": "Admin Password",
+          "description": "Password for the initial admin user",
+          "required": true,
+          "type": "password",
+          "generated": true
+        }
+      ]
+    },
+    {
+      "id": "nocodb",
+      "name": "NocoDB",
+      "description": "Open-source Airtable alternative — turn any database into a smart spreadsheet",
+      "longDescription": "NocoDB is an open-source Airtable alternative. It works on top of any\nrelational database (MySQL, PostgreSQL, SQL Server, SQLite, MariaDB) and provides a\nspreadsheet-like UI to manage data.\n\n- **Spreadsheet UI** for any SQL database\n- **REST + GraphQL APIs** auto-generated\n- **Roles & permissions** with granular access\n- **Form, Gallery, Kanban, Grid** views\n- **Webhooks & Zapier** integrations\n- **Collaborative** real-time editing\n- 50K+ stars on GitHub",
+      "icon": "Database",
+      "category": "cms",
+      "tags": [
+        "airtable-alternative",
+        "no-code",
+        "spreadsheet",
+        "database-ui"
+      ],
+      "website": "https://nocodb.com",
+      "documentation": "https://docs.nocodb.com",
+      "deploymentType": "single-container",
+      "dockerImage": "nocodb/nocodb:latest",
+      "port": 8080,
+      "healthCheckPath": "/api/v1/health",
+      "minMemoryMb": 512,
+      "minDiskGb": 2,
+      "requiresDatabase": {
+        "type": "postgresql",
+        "version": "16"
+      },
+      "appVersion": "latest",
+      "featured": true,
+      "envVars": []
+    },
+    {
+      "id": "meilisearch",
+      "name": "Meilisearch",
+      "description": "Lightning-fast, open-source search engine — Algolia alternative",
+      "longDescription": "Meilisearch is a powerful, fast, open-source, easy to use, and deploy search engine.\nBoth searching and indexing are highly customizable. Features such as typo tolerance, filters,\nand synonyms are provided out-of-the-box.\n\n- **Sub-50ms response times** for most queries\n- **Typo-tolerant** search with smart corrections\n- **Faceted search** and filtering\n- **Geo-search** support\n- **Multi-tenant** with API key management\n- Used in production by **Louis Vuitton, OpenAI, Lacoste**",
+      "icon": "Search",
+      "category": "devtools",
+      "tags": [
+        "search",
+        "algolia-alternative",
+        "full-text"
+      ],
+      "website": "https://www.meilisearch.com",
+      "documentation": "https://www.meilisearch.com/docs",
+      "deploymentType": "single-container",
+      "dockerImage": "getmeili/meilisearch:v1.10",
+      "port": 7700,
+      "healthCheckPath": "/health",
+      "minMemoryMb": 512,
+      "minDiskGb": 2,
+      "requiresDatabase": null,
+      "appVersion": "1.10",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "MEILI_MASTER_KEY",
+          "label": "Master Key",
+          "description": "Master API key for protected access (min 16 chars)",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "MEILI_ENV",
+          "label": "Environment",
+          "description": "Set to \"production\" for prod, \"development\" for dev (enables web UI)",
+          "required": false,
+          "type": "text",
+          "default": "production",
+          "generated": false
+        },
+        {
+          "key": "MEILI_NO_ANALYTICS",
+          "label": "Disable Analytics",
+          "description": "Disable telemetry sent to Meilisearch",
+          "required": false,
+          "type": "text",
+          "default": "true",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "typesense",
+      "name": "Typesense",
+      "description": "Open-source, typo-tolerant search engine optimized for instant search",
+      "longDescription": "Typesense is an open-source, typo-tolerant search engine optimized for\ninstant (typically sub-50ms) search-as-you-type experiences and developer productivity.\n\n- **Typo-tolerant** search with built-in fuzzy matching\n- **Faceted search** and dynamic filtering\n- **Geo-search** with radius queries\n- **Synonyms** and curated results\n- **Vector search** for semantic search\n- **Multi-tenancy** with scoped API keys\n- Easy to use **REST API**",
+      "icon": "Search",
+      "category": "devtools",
+      "tags": [
+        "search",
+        "algolia-alternative",
+        "vector",
+        "instant-search"
+      ],
+      "website": "https://typesense.org",
+      "documentation": "https://typesense.org/docs/",
+      "deploymentType": "single-container",
+      "dockerImage": "typesense/typesense:0.25.2",
+      "port": 8108,
+      "healthCheckPath": "/health",
+      "minMemoryMb": 512,
+      "minDiskGb": 2,
+      "requiresDatabase": null,
+      "appVersion": "0.25",
+      "featured": false,
+      "envVars": [
+        {
+          "key": "TYPESENSE_API_KEY",
+          "label": "API Key",
+          "description": "Master API key for accessing Typesense",
+          "required": true,
+          "type": "password",
+          "generated": true
+        }
+      ]
+    },
+    {
+      "id": "wordpress",
+      "name": "WordPress",
+      "description": "The most popular open-source CMS powering 40% of the web.",
+      "longDescription": "WordPress is a free and open-source content management system. It is the most popular website builder, powering over 40% of all websites on the internet. Features include themes, plugins, a visual editor, and a robust REST API.",
+      "icon": "FileText",
+      "category": "cms",
+      "tags": [
+        "blog",
+        "website",
+        "cms",
+        "php"
+      ],
+      "website": "https://wordpress.org",
+      "documentation": "https://developer.wordpress.org",
+      "deploymentType": "single-container",
+      "dockerImage": "wordpress:6.4-apache",
+      "port": 80,
+      "healthCheckPath": "/",
+      "minMemoryMb": 256,
+      "minDiskGb": 2,
+      "requiresDatabase": {
+        "type": "mysql",
+        "version": "8.0"
+      },
+      "appVersion": "6.4",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "WORDPRESS_DB_USER",
+          "label": "Database User",
+          "description": "MySQL database user",
+          "required": true,
+          "type": "text",
+          "default": "wordpress",
+          "generated": false
+        },
+        {
+          "key": "WORDPRESS_DB_PASSWORD",
+          "label": "Database Password",
+          "description": "MySQL database password",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "WORDPRESS_DB_NAME",
+          "label": "Database Name",
+          "description": "MySQL database name",
+          "required": true,
+          "type": "text",
+          "default": "wordpress",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "ghost",
+      "name": "Ghost",
+      "description": "Professional publishing platform for blogs, newsletters, and paid subscriptions.",
+      "longDescription": "Ghost is a powerful open-source publishing platform for professional bloggers and publishers. Built on Node.js, it features a modern editor, built-in SEO, native newsletters, memberships, and paid subscriptions out of the box.",
+      "icon": "Pen",
+      "category": "cms",
+      "tags": [
+        "blog",
+        "newsletter",
+        "publishing",
+        "nodejs"
+      ],
+      "website": "https://ghost.org",
+      "documentation": "https://ghost.org/docs",
+      "deploymentType": "single-container",
+      "dockerImage": "ghost:5-alpine",
+      "port": 2368,
+      "healthCheckPath": "/ghost/api/v4/admin/site/",
+      "minMemoryMb": 256,
+      "minDiskGb": 2,
+      "requiresDatabase": null,
+      "appVersion": "5.82",
+      "featured": false,
+      "envVars": [
+        {
+          "key": "url",
+          "label": "Site URL",
+          "description": "Public URL of your Ghost site",
+          "required": true,
+          "type": "url",
+          "generated": false
+        },
+        {
+          "key": "database__client",
+          "label": "DB Client",
+          "description": "Database client",
+          "required": false,
+          "type": "text",
+          "default": "sqlite3",
+          "generated": false
+        },
+        {
+          "key": "database__connection__filename",
+          "label": "DB Path",
+          "description": "SQLite database path",
+          "required": false,
+          "type": "text",
+          "default": "/var/lib/ghost/content/data/ghost.db",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "strapi",
+      "name": "Strapi",
+      "description": "Open-source headless CMS with customizable API and admin panel.",
+      "longDescription": "Strapi is the leading open-source headless CMS. It enables developers to build, deploy, and manage content APIs quickly. Features include a customizable admin panel, role-based access, REST & GraphQL APIs, and plugin system.",
+      "icon": "Layers",
+      "category": "cms",
+      "tags": [
+        "headless-cms",
+        "api",
+        "graphql",
+        "nodejs"
+      ],
+      "website": "https://strapi.io",
+      "documentation": "https://docs.strapi.io",
+      "deploymentType": "single-container",
+      "dockerImage": "elestio/strapi-development:latest",
+      "port": 1337,
+      "healthCheckPath": "/_health",
+      "minMemoryMb": 1024,
+      "minDiskGb": 5,
+      "requiresDatabase": {
+        "type": "postgresql",
+        "version": "16"
+      },
+      "appVersion": "4.25",
+      "featured": false,
+      "envVars": []
+    },
+    {
+      "id": "nextcloud",
+      "name": "NextCloud",
+      "description": "Self-hosted productivity platform — files, calendar, contacts, and more",
+      "longDescription": "Nextcloud is a content collaboration platform that enables you to access, share,\nand collaborate across your devices.\n\n- **File sync & share** — Google Drive / Dropbox alternative\n- **Calendar & Contacts** — replace Google Calendar/Contacts\n- **Photos** — automatic uploads from mobile\n- **Office suite** — collaborative editing (Collabora/OnlyOffice)\n- **Talk** — video calls and chat\n- **End-to-end encryption** support\n- **400+ apps** in the marketplace\n- Used by **Deutsche Bahn, EU Commission, ownCloud**",
+      "icon": "HardDrive",
+      "category": "storage",
+      "tags": [
+        "cloud-storage",
+        "file-share",
+        "collaboration",
+        "google-drive-alternative"
+      ],
+      "website": "https://nextcloud.com",
+      "documentation": "https://docs.nextcloud.com",
+      "deploymentType": "single-container",
+      "dockerImage": "nextcloud:29-apache",
+      "port": 80,
+      "healthCheckPath": "/status.php",
+      "minMemoryMb": 1024,
+      "minDiskGb": 10,
+      "requiresDatabase": {
+        "type": "postgresql",
+        "version": "16"
+      },
+      "appVersion": "29",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "NEXTCLOUD_ADMIN_USER",
+          "label": "Admin Username",
+          "description": "Username for the initial admin account",
+          "required": true,
+          "type": "text",
+          "default": "admin",
+          "generated": false
+        },
+        {
+          "key": "NEXTCLOUD_ADMIN_PASSWORD",
+          "label": "Admin Password",
+          "description": "Password for the initial admin account (min 10 characters recommended)",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "NEXTCLOUD_TRUSTED_DOMAINS",
+          "label": "Trusted Domains",
+          "description": "Space-separated list of domains allowed to access Nextcloud (use * for any)",
+          "required": false,
+          "type": "text",
+          "default": "*",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "calcom",
+      "name": "Cal.com",
+      "description": "Open-source Calendly alternative — schedule meetings without back-and-forth emails",
+      "longDescription": "Cal.com is the open-source alternative to Calendly. Self-host a beautiful\nscheduling tool that connects to all your calendars and integrates with the apps you love.\n\n- **Beautiful booking pages** — public scheduling links\n- **Calendar integrations** — Google, Outlook, iCloud, Office 365\n- **Video conferencing** — Zoom, Google Meet, Daily.co built-in\n- **Custom forms** — collect info during booking\n- **Team scheduling** — round-robin, collective, managed events\n- **Workflows** — automated reminders, follow-ups\n- **Embed everywhere** — inline, popup, or redirect\n- 30K+ stars on GitHub",
+      "icon": "Clock",
+      "category": "automation",
+      "tags": [
+        "scheduling",
+        "calendar",
+        "calendly-alternative",
+        "meetings"
+      ],
+      "website": "https://cal.com",
+      "documentation": "https://cal.com/docs/self-hosting",
+      "deploymentType": "docker-compose",
+      "dockerImage": null,
+      "port": 3000,
+      "healthCheckPath": "/api/health",
+      "minMemoryMb": 2048,
+      "minDiskGb": 5,
+      "requiresDatabase": null,
+      "appVersion": "latest",
+      "featured": true,
+      "envVars": []
+    },
+    {
+      "id": "code-server",
+      "name": "code-server",
+      "description": "VS Code in your browser — full IDE accessible from anywhere",
+      "longDescription": "code-server is VS Code running on a remote server, accessible through the browser.\n\n- **Full VS Code** experience — extensions, themes, settings sync\n- **Code from anywhere** — iPad, Chromebook, low-power devices\n- **Consistent dev environment** across machines\n- **Long-running tasks** keep running when you close the browser\n- **Test your apps** in the same network as your servers\n- 70K+ stars on GitHub\n- Made by **Coder** (the people behind VS Code's remote extension protocol)",
+      "icon": "Terminal",
+      "category": "devtools",
+      "tags": [
+        "ide",
+        "vscode",
+        "editor",
+        "remote-development"
+      ],
+      "website": "https://github.com/coder/code-server",
+      "documentation": "https://coder.com/docs/code-server",
+      "deploymentType": "single-container",
+      "dockerImage": "codercom/code-server:latest",
+      "port": 8080,
+      "healthCheckPath": "/healthz",
+      "minMemoryMb": 1024,
+      "minDiskGb": 5,
+      "requiresDatabase": null,
+      "appVersion": "latest",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "PASSWORD",
+          "label": "Login Password",
+          "description": "Password for accessing your code-server instance",
+          "required": true,
+          "type": "password",
+          "generated": true
+        }
+      ]
+    },
+    {
+      "id": "vaultwarden",
+      "name": "Vaultwarden",
+      "description": "Self-hosted Bitwarden — secure password manager for individuals and teams",
+      "longDescription": "Vaultwarden is an unofficial Bitwarden compatible server written in Rust,\nformerly known as bitwarden_rs. Lighter than the official server and works with all\nofficial Bitwarden clients (web, desktop, mobile, browser extensions).\n\n- **End-to-end encrypted** password vault\n- **All Bitwarden clients** work out of the box\n- **2FA / TOTP** built-in authenticator\n- **Organizations** for team password sharing\n- **Send** secure file/text sharing\n- **Lightweight** — runs on as little as 64MB RAM",
+      "icon": "Lock",
+      "category": "devtools",
+      "tags": [
+        "security",
+        "password-manager",
+        "bitwarden",
+        "self-hosted"
+      ],
+      "website": "https://github.com/dani-garcia/vaultwarden",
+      "documentation": "https://github.com/dani-garcia/vaultwarden/wiki",
+      "deploymentType": "single-container",
+      "dockerImage": "vaultwarden/server:latest",
+      "port": 80,
+      "healthCheckPath": "/alive",
+      "minMemoryMb": 256,
+      "minDiskGb": 1,
+      "requiresDatabase": null,
+      "appVersion": "latest",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "ADMIN_TOKEN",
+          "label": "Admin Token",
+          "description": "Token for accessing /admin panel — keep secret!",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "SIGNUPS_ALLOWED",
+          "label": "Allow Public Signups",
+          "description": "Set to \"false\" after creating your account to prevent strangers from registering",
+          "required": false,
+          "type": "text",
+          "default": "true",
+          "generated": false
+        },
+        {
+          "key": "DOMAIN",
+          "label": "Domain",
+          "description": "Public URL where Vaultwarden is reachable (e.g. https://vault.yourdomain.com)",
+          "required": false,
+          "type": "url",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "n8n",
+      "name": "n8n",
+      "description": "Workflow automation tool with 400+ integrations. Self-hosted alternative to Zapier.",
+      "longDescription": "n8n is a free and open-source workflow automation tool. It connects your apps, services, and APIs to automate tasks without writing code. With 400+ integrations and a visual workflow builder, n8n is the self-hosted alternative to Zapier and Make.",
+      "icon": "Zap",
+      "category": "automation",
+      "tags": [
+        "automation",
+        "workflow",
+        "integrations",
+        "no-code"
+      ],
+      "website": "https://n8n.io",
+      "documentation": "https://docs.n8n.io",
+      "deploymentType": "single-container",
+      "dockerImage": "n8nio/n8n:latest",
+      "port": 5678,
+      "healthCheckPath": "/healthz",
+      "minMemoryMb": 256,
+      "minDiskGb": 1,
+      "requiresDatabase": null,
+      "appVersion": "1.64",
+      "featured": true,
+      "envVars": [
+        {
+          "key": "N8N_BASIC_AUTH_ACTIVE",
+          "label": "Enable Auth",
+          "description": "Enable basic authentication",
+          "required": false,
+          "type": "text",
+          "default": "true",
+          "generated": false
+        },
+        {
+          "key": "N8N_BASIC_AUTH_USER",
+          "label": "Auth User",
+          "description": "Basic auth username",
+          "required": true,
+          "type": "text",
+          "default": "admin",
+          "generated": false
+        },
+        {
+          "key": "N8N_BASIC_AUTH_PASSWORD",
+          "label": "Auth Password",
+          "description": "Basic auth password",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "N8N_ENCRYPTION_KEY",
+          "label": "Encryption Key",
+          "description": "Key for encrypting credentials",
+          "required": true,
+          "type": "text",
+          "generated": true
+        },
+        {
+          "key": "WEBHOOK_URL",
+          "label": "Webhook URL",
+          "description": "External URL for webhooks",
+          "required": false,
+          "type": "url",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "uptime-kuma",
+      "name": "Uptime Kuma",
+      "description": "Self-hosted monitoring tool like Uptime Robot. Beautiful status pages included.",
+      "longDescription": "Uptime Kuma is a self-hosted monitoring tool. Monitor HTTP, TCP, DNS, and more with a beautiful UI. Features include status pages, notifications via 90+ services (Telegram, Discord, Slack, Email), and multi-language support.",
+      "icon": "Activity",
+      "category": "monitoring",
+      "tags": [
+        "monitoring",
+        "uptime",
+        "status-page",
+        "alerts"
+      ],
+      "website": "https://uptime.kuma.pet",
+      "documentation": "https://github.com/louislam/uptime-kuma/wiki",
+      "deploymentType": "single-container",
+      "dockerImage": "louislam/uptime-kuma:latest",
+      "port": 3001,
+      "healthCheckPath": "/",
+      "minMemoryMb": 128,
+      "minDiskGb": 1,
+      "requiresDatabase": null,
+      "appVersion": "1.23",
+      "featured": true,
+      "envVars": []
+    },
+    {
+      "id": "gitea",
+      "name": "Gitea",
+      "description": "Lightweight self-hosted Git service. GitHub/GitLab alternative.",
+      "longDescription": "Gitea is a painless self-hosted Git service. It is lightweight, easy to install, and runs great on minimal hardware. Features include repositories, issues, pull requests, CI/CD (Gitea Actions), packages, and wikis.",
+      "icon": "GitBranch",
+      "category": "devtools",
+      "tags": [
+        "git",
+        "repository",
+        "ci-cd",
+        "code-hosting"
+      ],
+      "website": "https://gitea.io",
+      "documentation": "https://docs.gitea.com",
+      "deploymentType": "single-container",
+      "dockerImage": "gitea/gitea:latest",
+      "port": 3000,
+      "healthCheckPath": "/api/healthz",
+      "minMemoryMb": 128,
+      "minDiskGb": 2,
+      "requiresDatabase": null,
+      "appVersion": "1.21",
+      "featured": false,
+      "envVars": [
+        {
+          "key": "GITEA__database__DB_TYPE",
+          "label": "DB Type",
+          "description": "Database type (sqlite3, postgres, mysql)",
+          "required": false,
+          "type": "text",
+          "default": "sqlite3",
+          "generated": false
+        },
+        {
+          "key": "GITEA__server__ROOT_URL",
+          "label": "Root URL",
+          "description": "Public URL of your Gitea instance",
+          "required": false,
+          "type": "url",
+          "generated": false
+        },
+        {
+          "key": "GITEA__security__SECRET_KEY",
+          "label": "Secret Key",
+          "description": "Global secret key",
+          "required": true,
+          "type": "text",
+          "generated": true
+        }
+      ]
+    },
+    {
+      "id": "portainer",
+      "name": "Portainer",
+      "description": "Container management UI for Docker. Visualize and manage your containers.",
+      "longDescription": "Portainer is a lightweight management UI that allows you to easily manage Docker environments. It provides a web-based interface for managing containers, images, volumes, and networks without needing to use the CLI.",
+      "icon": "Container",
+      "category": "devtools",
+      "tags": [
+        "docker",
+        "containers",
+        "management",
+        "ui"
+      ],
+      "website": "https://www.portainer.io",
+      "documentation": "https://docs.portainer.io",
+      "deploymentType": "single-container",
+      "dockerImage": "portainer/portainer-ce:latest",
+      "port": 9000,
+      "healthCheckPath": "/api/status",
+      "minMemoryMb": 64,
+      "minDiskGb": 1,
+      "requiresDatabase": null,
+      "appVersion": "2.19",
+      "featured": false,
+      "envVars": []
+    },
+    {
+      "id": "minio",
+      "name": "MinIO",
+      "description": "High-performance S3-compatible object storage. Self-hosted AWS S3 alternative.",
+      "longDescription": "MinIO is a high-performance, S3-compatible object storage system. It is designed for large-scale AI/ML, data lake, and backup workloads. MinIO is software-defined and runs on any cloud or on-premises infrastructure.",
+      "icon": "HardDrive",
+      "category": "storage",
+      "tags": [
+        "s3",
+        "object-storage",
+        "backup",
+        "cloud-native"
+      ],
+      "website": "https://min.io",
+      "documentation": "https://min.io/docs/minio/linux/index.html",
+      "deploymentType": "single-container",
+      "dockerImage": "minio/minio:latest",
+      "port": 9000,
+      "healthCheckPath": "/minio/health/live",
+      "minMemoryMb": 256,
+      "minDiskGb": 10,
+      "requiresDatabase": null,
+      "appVersion": "2024-01",
+      "featured": false,
+      "envVars": [
+        {
+          "key": "MINIO_ROOT_USER",
+          "label": "Root User",
+          "description": "Admin username (min 3 chars)",
+          "required": true,
+          "type": "text",
+          "default": "admin",
+          "generated": false
+        },
+        {
+          "key": "MINIO_ROOT_PASSWORD",
+          "label": "Root Password",
+          "description": "Admin password (min 8 chars)",
+          "required": true,
+          "type": "password",
+          "generated": true
+        }
+      ]
+    },
+    {
+      "id": "umami",
+      "name": "Umami",
+      "description": "Privacy-friendly, open-source Google Analytics alternative",
+      "longDescription": "Umami is a simple, fast, privacy-focused alternative to Google Analytics.\n\n- **No cookies** — no GDPR / cookie banner needed\n- **Privacy-first** — anonymized data, no personal info\n- **Lightweight tracker** (~2KB script)\n- **Beautiful dashboards** with realtime data\n- **Multi-site** support from a single instance\n- **Custom events** and goals tracking\n- **Open source** with 22K+ stars",
+      "icon": "BarChart3",
+      "category": "analytics",
+      "tags": [
+        "analytics",
+        "privacy",
+        "google-analytics-alternative",
+        "gdpr"
+      ],
+      "website": "https://umami.is",
+      "documentation": "https://umami.is/docs/",
+      "deploymentType": "single-container",
+      "dockerImage": "ghcr.io/umami-software/umami:postgresql-latest",
+      "port": 3000,
+      "healthCheckPath": "/api/heartbeat",
+      "minMemoryMb": 512,
+      "minDiskGb": 2,
+      "requiresDatabase": {
+        "type": "postgresql",
+        "version": "16"
+      },
+      "appVersion": "latest",
+      "featured": true,
+      "envVars": []
+    },
+    {
+      "id": "plausible",
+      "name": "Plausible Analytics",
+      "description": "Privacy-friendly web analytics. Simple, lightweight Google Analytics alternative.",
+      "longDescription": "Plausible Analytics is a lightweight and open-source web analytics tool. It does not use cookies, is fully compliant with GDPR, CCPA, and PECR, and the script is less than 1KB. A privacy-friendly alternative to Google Analytics.",
+      "icon": "BarChart3",
+      "category": "analytics",
+      "tags": [
+        "analytics",
+        "privacy",
+        "web-analytics",
+        "gdpr"
+      ],
+      "website": "https://plausible.io",
+      "documentation": "https://plausible.io/docs",
+      "deploymentType": "single-container",
+      "dockerImage": "ghcr.io/plausible/community-edition:v2",
+      "port": 8000,
+      "healthCheckPath": "/api/health",
+      "minMemoryMb": 512,
+      "minDiskGb": 5,
+      "requiresDatabase": {
+        "type": "postgresql"
+      },
+      "appVersion": "2.1",
+      "featured": false,
+      "envVars": [
+        {
+          "key": "BASE_URL",
+          "label": "Base URL",
+          "description": "Public URL of your Plausible instance",
+          "required": true,
+          "type": "url",
+          "generated": false
+        },
+        {
+          "key": "SECRET_KEY_BASE",
+          "label": "Secret Key",
+          "description": "Secret key for sessions (min 64 chars)",
+          "required": true,
+          "type": "text",
+          "generated": true
+        },
+        {
+          "key": "DATABASE_URL",
+          "label": "Database URL",
+          "description": "PostgreSQL connection string",
+          "required": true,
+          "type": "text",
+          "generated": false
+        },
+        {
+          "key": "CLICKHOUSE_DATABASE_URL",
+          "label": "ClickHouse URL",
+          "description": "ClickHouse connection string",
+          "required": true,
+          "type": "text",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "postgresql",
+      "name": "PostgreSQL",
+      "description": "The most advanced open-source relational database.",
+      "longDescription": "PostgreSQL is a powerful, open-source object-relational database system with over 35 years of active development. It has earned a strong reputation for reliability, feature robustness, and performance.",
+      "icon": "Database",
+      "category": "database",
+      "tags": [
+        "database",
+        "sql",
+        "relational",
+        "acid"
+      ],
+      "website": "https://www.postgresql.org",
+      "documentation": "https://www.postgresql.org/docs/",
+      "deploymentType": "single-container",
+      "dockerImage": "postgres:16-alpine",
+      "port": 5432,
+      "healthCheckPath": "/",
+      "minMemoryMb": 128,
+      "minDiskGb": 2,
+      "requiresDatabase": null,
+      "appVersion": "16",
+      "featured": false,
+      "envVars": [
+        {
+          "key": "POSTGRES_USER",
+          "label": "Username",
+          "description": "Superuser username",
+          "required": true,
+          "type": "text",
+          "default": "postgres",
+          "generated": false
+        },
+        {
+          "key": "POSTGRES_PASSWORD",
+          "label": "Password",
+          "description": "Superuser password",
+          "required": true,
+          "type": "password",
+          "generated": true
+        },
+        {
+          "key": "POSTGRES_DB",
+          "label": "Database",
+          "description": "Default database name",
+          "required": false,
+          "type": "text",
+          "default": "postgres",
+          "generated": false
+        }
+      ]
+    },
+    {
+      "id": "redis",
+      "name": "Redis",
+      "description": "In-memory data store for caching, sessions, queues, and real-time applications.",
+      "longDescription": "Redis is an open-source, in-memory data structure store used as a database, cache, message broker, and streaming engine. It supports data structures such as strings, hashes, lists, sets, sorted sets, bitmaps, and more.",
+      "icon": "Database",
+      "category": "database",
+      "tags": [
+        "cache",
+        "database",
+        "in-memory",
+        "key-value"
+      ],
+      "website": "https://redis.io",
+      "documentation": "https://redis.io/docs",
+      "deploymentType": "single-container",
+      "dockerImage": "redis:7-alpine",
+      "port": 6379,
+      "healthCheckPath": "/",
+      "minMemoryMb": 64,
+      "minDiskGb": 1,
+      "requiresDatabase": null,
+      "appVersion": "7.2",
+      "featured": false,
+      "envVars": [
+        {
+          "key": "REDIS_PASSWORD",
+          "label": "Password",
+          "description": "Redis server password (optional)",
+          "required": false,
+          "type": "password",
+          "generated": true
+        }
+      ]
+    }
+  ]
+}

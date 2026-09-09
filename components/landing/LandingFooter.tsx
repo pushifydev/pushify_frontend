@@ -11,6 +11,7 @@ export function LandingFooter() {
     [t('landing', 'product')]: [
       { label: t('landing', 'features'), href: '/features' },
       { label: t('landing', 'sites'), href: '/sites' },
+      { label: t('landing', 'apps'), href: '/apps' },
       { label: t('domainSales', 'title'), href: '/domains' },
       { label: t('landing', 'pricing'), href: '/pricing' },
       {
