@@ -1696,7 +1696,6 @@ export interface TranslationKeys {
     deleteConfirm: string;
     sync: string;
     syncing: string;
-    viewCards: string;
     viewMap: string;
     mapNoCoords: string;
     mapNoCoordsDesc: string;
@@ -1978,7 +1977,6 @@ export interface TranslationKeys {
     deleteBackupConfirm: string;
     // Info
     created: string;
-    updated: string;
     // Password reset
     resetPassword: string;
     resetPasswordConfirm: string;
@@ -4434,7 +4432,6 @@ export const en: TranslationKeys = {
     deleteConfirm: 'Are you sure you want to delete this server? This action cannot be undone.',
     sync: 'Sync',
     syncing: 'Syncing...',
-    viewCards: 'Cards',
     viewMap: 'Map',
     mapNoCoords: 'No geolocation data yet',
     mapNoCoordsDesc: 'Sync Hetzner servers to load datacenter coordinates, or use the card view.',
