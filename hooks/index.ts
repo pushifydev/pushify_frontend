@@ -208,6 +208,7 @@ export {
   useDatabaseBackups,
   useCreateDatabaseBackup,
   useRestoreDatabaseBackup,
+  useVerifyDatabaseBackup,
   useDeleteDatabaseBackup,
 } from './useDatabases';
 

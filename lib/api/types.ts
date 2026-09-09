@@ -448,6 +448,17 @@ export interface DatabaseTypeInfo {
 export type BackupType = 'automatic' | 'manual';
 export type BackupStatus = 'creating' | 'completed' | 'failed' | 'restoring' | 'restored' | 'deleted';
 
+/** Result of restoring the backup into a throwaway container (see backend lib/backup-verify). */
+export interface BackupVerification {
+  status: 'verifying' | 'verified' | 'failed' | 'skipped';
+  checkedAt: string;
+  durationMs?: number;
+  tables?: number;
+  rows?: number;
+  unit?: 'rows' | 'documents' | 'keys';
+  error?: string;
+}
+
 export interface DatabaseBackup {
   id: string;
   databaseId: string;
@@ -456,7 +467,7 @@ export interface DatabaseBackup {
   status: BackupStatus;
   sizeMb: number | null;
   filePath: string | null;
-  metadata: Record<string, unknown>;
+  metadata: { verification?: BackupVerification } & Record<string, unknown>;
   errorMessage: string | null;
   startedAt: string;
   completedAt: string | null;

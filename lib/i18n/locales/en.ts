@@ -1934,6 +1934,15 @@ export interface TranslationKeys {
     retentionDays: string;
     lastBackup: string;
     backupHistory: string;
+    backupVerify: string;
+    backupVerifying: string;
+    backupVerified: string;
+    backupVerifyFailed: string;
+    backupVerifySkipped: string;
+    backupNeverVerified: string;
+    backupVerifiedSummary: string;
+    backupVerifyHint: string;
+    backupVerifyStarted: string;
     createBackup: string;
     noBackups: string;
     noBackupsDesc: string;
@@ -4663,6 +4672,15 @@ export const en: TranslationKeys = {
     retentionDays: 'Retention: {days} days',
     lastBackup: 'Last backup',
     backupHistory: 'Backup History',
+    backupVerify: 'Test restore',
+    backupVerifying: 'Testing restore…',
+    backupVerified: 'Restore-tested',
+    backupVerifyFailed: 'Restore failed',
+    backupVerifySkipped: 'Not tested',
+    backupNeverVerified: 'No backup has been restore-tested yet',
+    backupVerifiedSummary: 'Latest backup restore-tested {date} — {tables} tables, {rows} {unit}',
+    backupVerifyHint: 'Weekly, the latest backup is restored into a throwaway container on your server and counted. Your live database is never touched.',
+    backupVerifyStarted: 'Restore test started — results appear in a few minutes',
     createBackup: 'Create Backup',
     noBackups: 'No backups yet',
     noBackupsDesc: 'Create a manual backup or enable automatic backups.',

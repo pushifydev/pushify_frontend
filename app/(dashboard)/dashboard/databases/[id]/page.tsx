@@ -17,6 +17,7 @@ import {
   useDatabaseBackups,
   useCreateDatabaseBackup,
   useRestoreDatabaseBackup,
+  useVerifyDatabaseBackup,
   useDeleteDatabaseBackup,
   useBackupStatusEvents,
   useTranslation,
@@ -62,6 +63,7 @@ export default function DatabaseDetailPage() {
   const { data: backups = [], isLoading: backupsLoading } = useDatabaseBackups(databaseId);
   const createBackup = useCreateDatabaseBackup(databaseId);
   const restoreBackup = useRestoreDatabaseBackup(databaseId);
+  const verifyBackup = useVerifyDatabaseBackup(databaseId);
   const deleteBackup = useDeleteDatabaseBackup(databaseId);
 
   useBackupStatusEvents(databaseId);
@@ -210,6 +212,14 @@ export default function DatabaseDetailPage() {
             createPending={createBackup.isPending}
             canCreate={isRunning}
             onRestore={setRestoreBackupId}
+            onVerify={async (id) => {
+              try {
+                await verifyBackup.mutateAsync(id);
+                toast.success(t('databases', 'backupVerifyStarted'));
+              } catch (e) {
+                toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
+              }
+            }}
             onDownload={async (id) => {
               try {
                 await downloadDatabaseBackup(databaseId, id);
