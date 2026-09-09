@@ -3276,7 +3276,7 @@ export const en: TranslationKeys = {
     rowPricing: 'Starting price',
     rowFreeTier: 'Generous free tier',
     pricingFromVercel: 'From $20/mo',
-    pricingPushify: 'Free / $10+',
+    pricingPushify: 'Free / $15+',
     pricingCoolify: 'Free (self-hosted)',
     // FAQ
     faqEyebrow: 'FAQ',

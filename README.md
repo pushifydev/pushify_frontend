@@ -24,7 +24,7 @@ Pushify is an open-source platform that lets you deploy and manage your applicat
 
 No vendor lock-in. Your servers, your data, your rules.
 
-This repository contains the **frontend dashboard** built with Next.js 15. For the backend API, see [pushify-backend](https://github.com/pushify-dev/pushify-backend).
+This repository contains the **frontend dashboard** built with Next.js 15. For the backend API, see [pushify_backend](https://github.com/pushifydev/pushify_backend).
 
 ## Features
 
@@ -48,13 +48,13 @@ This repository contains the **frontend dashboard** built with Next.js 15. For t
 ### Prerequisites
 
 - Node.js 18+
-- [Pushify Backend](https://github.com/pushify-dev/pushify-backend) running
+- [Pushify Backend](https://github.com/pushifydev/pushify_backend) running
 
 ### Setup
 
 ```bash
-git clone https://github.com/pushify-dev/pushify.git
-cd pushify
+git clone https://github.com/pushifydev/pushify_frontend.git
+cd pushify_frontend
 npm install
 cp .env.example .env
 npm run dev

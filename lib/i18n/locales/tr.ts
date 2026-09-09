@@ -605,7 +605,7 @@ export const tr: TranslationKeys = {
     rowPricing: 'Başlangıç fiyatı',
     rowFreeTier: 'Cömert ücretsiz plan',
     pricingFromVercel: '$20/ay\'dan',
-    pricingPushify: 'Ücretsiz / $10+',
+    pricingPushify: 'Ücretsiz / $15+',
     pricingCoolify: 'Ücretsiz (self-host)',
     // FAQ
     faqEyebrow: 'SSS',
