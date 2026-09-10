@@ -18,6 +18,7 @@ import {
   type GitHubBranch,
   type FrameworkDetection,
 } from '@/lib/api';
+import { safeStorage } from '@/lib/safe-storage';
 
 // Query Keys
 export const githubKeys = {
@@ -189,8 +190,8 @@ export function useGitHubConnect() {
     onSuccess: (data) => {
       // Must match auth/github/callback (localStorage; login flow uses same keys)
       if (data) {
-        localStorage.setItem('github_oauth_state', data.state);
-        localStorage.removeItem('github_oauth_intent');
+        safeStorage.set('github_oauth_state', data.state);
+        safeStorage.remove('github_oauth_intent');
         sessionStorage.removeItem('github_oauth_state');
         window.location.href = data.url;
       }

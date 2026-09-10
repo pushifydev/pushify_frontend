@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { getGithubLoginUrl, getGoogleLoginUrl } from '@/lib/api';
 import { saveAuthRedirect } from '@/lib/auth-redirect';
+import { safeStorage } from '@/lib/safe-storage';
 
 function GithubIcon() {
   return (
@@ -51,8 +52,8 @@ export function SocialAuthButtons() {
     const result = await getGithubLoginUrl();
     if (result.error || !result.data) return;
 
-    localStorage.setItem('github_oauth_state', result.data.state);
-    localStorage.setItem('github_oauth_intent', 'login');
+    safeStorage.set('github_oauth_state', result.data.state);
+    safeStorage.set('github_oauth_intent', 'login');
     window.location.href = result.data.url;
   };
 
@@ -61,7 +62,7 @@ export function SocialAuthButtons() {
     const result = await getGoogleLoginUrl();
     if (result.error || !result.data) return;
 
-    localStorage.setItem('google_oauth_state', result.data.state);
+    safeStorage.set('google_oauth_state', result.data.state);
     window.location.href = result.data.url;
   };
 

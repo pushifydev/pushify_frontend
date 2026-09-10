@@ -14,6 +14,7 @@ import {
   type GitLabBranch,
   type GitLabFrameworkDetection,
 } from '@/lib/api/services/gitlab.service';
+import { safeStorage } from '@/lib/safe-storage';
 
 export const gitlabKeys = {
   all: ['gitlab'] as const,
@@ -103,7 +104,7 @@ export function useGitLabConnect() {
     },
     onSuccess: (data) => {
       if (data) {
-        localStorage.setItem('gitlab_oauth_state', data.state);
+        safeStorage.set('gitlab_oauth_state', data.state);
         window.location.href = data.url;
       }
     },
