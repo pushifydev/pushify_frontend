@@ -67,7 +67,7 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
     if (first) setSelectedAppInstallationId(first.installationId);
   }, [installations, selectedAppInstallationId]);
 
-  const { data: appRepos, isLoading: isLoadingAppRepos } = useGitHubAppRepositories(
+  const { data: appRepos, isLoading: isLoadingAppRepos, error: appReposError } = useGitHubAppRepositories(
     useAppPicker ? selectedAppInstallationId : null,
   );
   const filteredAppRepos = (appRepos ?? []).filter((repo) =>
@@ -262,6 +262,7 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
     setAppRepoSearchQuery,
     filteredAppRepos,
     isLoadingAppRepos,
+    appReposError,
     githubBusy,
     handleDisconnectGithub,
     handleChangeGithubAccount,

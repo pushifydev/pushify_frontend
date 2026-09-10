@@ -349,6 +349,7 @@ export default function NewProjectPage() {
             setAppRepoSearchQuery={importSource.setAppRepoSearchQuery}
             filteredAppRepos={importSource.filteredAppRepos}
             isLoadingAppRepos={importSource.isLoadingAppRepos}
+            appReposError={importSource.appReposError}
             githubBusy={importSource.githubBusy}
             handleDisconnectGithub={importSource.handleDisconnectGithub}
             handleChangeGithubAccount={importSource.handleChangeGithubAccount}

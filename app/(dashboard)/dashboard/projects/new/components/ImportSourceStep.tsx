@@ -52,6 +52,7 @@ type ImportSourceStepProps = Pick<
   | 'setAppRepoSearchQuery'
   | 'filteredAppRepos'
   | 'isLoadingAppRepos'
+  | 'appReposError'
   | 'githubBusy'
   | 'handleDisconnectGithub'
   | 'handleChangeGithubAccount'
@@ -115,6 +116,7 @@ export function ImportSourceStep({
   setAppRepoSearchQuery,
   filteredAppRepos,
   isLoadingAppRepos,
+  appReposError,
   githubBusy,
   handleDisconnectGithub,
   handleChangeGithubAccount,
@@ -329,6 +331,10 @@ export function ImportSourceStep({
                   <div className="p-6 text-center">
                     <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-purple)] mx-auto mb-2" />
                     <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'loadingRepos')}</p>
+                  </div>
+                ) : appReposError ? (
+                  <div className="p-6 text-center text-sm text-[var(--status-error)]">
+                    {appReposError instanceof Error ? appReposError.message : String(appReposError)}
                   </div>
                 ) : filteredAppRepos.length === 0 ? (
                   <div className="p-6 text-center text-sm text-[var(--text-muted)]">
