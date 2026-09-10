@@ -222,7 +222,7 @@ export default function DatabaseDetailPage() {
             }}
             onDownload={async (id) => {
               try {
-                await downloadDatabaseBackup(databaseId, id);
+                await downloadDatabaseBackup(databaseId, id, backups.find((b) => b.id === id)?.name);
               } catch (e) {
                 toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
               }

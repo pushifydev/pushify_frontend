@@ -147,7 +147,7 @@ export function HealthCheckSection({
                 <input
                   type="number"
                   value={intervalSeconds}
-                  onChange={(e) => { setIntervalSeconds(Number(e.target.value)); setHasChanges(true); }}
+                  onChange={(e) => { setIntervalSeconds(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
                   min={10}
                   max={300}
                   className="input w-24 text-sm"
@@ -166,7 +166,7 @@ export function HealthCheckSection({
                 <input
                   type="number"
                   value={timeoutSeconds}
-                  onChange={(e) => { setTimeoutSeconds(Number(e.target.value)); setHasChanges(true); }}
+                  onChange={(e) => { setTimeoutSeconds(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
                   min={1}
                   max={60}
                   className="input w-24 text-sm"
@@ -184,7 +184,7 @@ export function HealthCheckSection({
               <input
                 type="number"
                 value={unhealthyThreshold}
-                onChange={(e) => { setUnhealthyThreshold(Number(e.target.value)); setHasChanges(true); }}
+                onChange={(e) => { setUnhealthyThreshold(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
                 min={1}
                 max={10}
                 className="input w-24 text-sm"

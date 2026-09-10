@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { type SupportedLocale, DEFAULT_LOCALE, detectBrowserLocale, loadLocale } from '@/lib/i18n';
+import { safeStorage } from '@/lib/safe-storage';
 
 interface LocaleState {
   locale: SupportedLocale;
@@ -51,7 +52,7 @@ export const useLocaleStore = create<LocaleState>()(
 
 // Initialize with browser locale if no stored preference
 if (typeof window !== 'undefined') {
-  const stored = localStorage.getItem('pushify-locale');
+  const stored = safeStorage.get('pushify-locale');
   if (!stored) {
     const browserLocale = detectBrowserLocale();
     useLocaleStore.getState().setLocale(browserLocale);
