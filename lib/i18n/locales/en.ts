@@ -864,6 +864,13 @@ export interface TranslationKeys {
     githubAppLinked: string;
     githubAppMissingInstallation: string;
     githubAppInstall: string;
+    githubAppInstalledOn: string;
+    githubAppAllRepos: string;
+    githubAppSelectedRepos: string;
+    githubAppAddAccount: string;
+    githubAppUseOAuth: string;
+    githubAppUsePicker: string;
+    githubAppNoRepos: string;
     githubAppManage: string;
     githubAppRecommended: string;
     githubAppActive: string;
@@ -3582,6 +3589,13 @@ export const en: TranslationKeys = {
     githubAppLinked: 'GitHub App linked for',
     githubAppMissingInstallation: 'GitHub did not send an installation id back',
     githubAppInstall: 'Install GitHub App',
+    githubAppInstalledOn: 'GitHub App installed on',
+    githubAppAllRepos: 'all repositories',
+    githubAppSelectedRepos: 'selected repositories',
+    githubAppAddAccount: 'Add another account',
+    githubAppUseOAuth: 'Use my GitHub account instead',
+    githubAppUsePicker: 'Use GitHub App repositories',
+    githubAppNoRepos: 'This installation can’t reach any repositories yet — add some on GitHub.',
     githubAppManage: 'Manage installation',
     githubAppRecommended: 'Repository access that outlives whoever set it up',
     githubAppActive: 'Connected through the GitHub App',

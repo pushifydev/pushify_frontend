@@ -7,6 +7,7 @@ import {
   useGitHubConnect,
   useGitHubAppInstall,
   useGitHubAppInstallations,
+  useGitHubAppRepositories,
   useGitHubDisconnect,
   useGitHubRepos,
   useGitHubBranches,
@@ -21,6 +22,7 @@ import {
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/lib/api';
 import type { GitHubRepo, GitLabRepo } from '@/lib/api';
+import type { GitHubAppRepository } from '@/lib/api/services/github.service';
 
 interface UseImportSourceArgs {
   projectName: string;
@@ -47,6 +49,41 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
   // The App is the preferred path; the hook reports whether the platform has one configured.
   const { data: appInstallations } = useGitHubAppInstallations();
   const githubAppInstall = useGitHubAppInstall();
+
+  // ── GitHub App repo picker ──
+  // Installations are org-scoped and outlive the person who set them up, so when one
+  // exists it is the default source of repositories; OAuth stays available as a fallback.
+  const [selectedAppInstallationId, setSelectedAppInstallationId] = useState<number | null>(null);
+  const [selectedAppRepo, setSelectedAppRepo] = useState<GitHubAppRepository | null>(null);
+  const [appRepoSearchQuery, setAppRepoSearchQuery] = useState('');
+  const [preferOAuthPicker, setPreferOAuthPicker] = useState(false);
+  const installations = appInstallations?.installations ?? [];
+  const hasAppInstallation = installations.length > 0;
+  const useAppPicker = hasAppInstallation && !preferOAuthPicker;
+
+  useEffect(() => {
+    if (selectedAppInstallationId !== null) return;
+    const first = installations.find((i) => !i.suspended) ?? installations[0];
+    if (first) setSelectedAppInstallationId(first.installationId);
+  }, [installations, selectedAppInstallationId]);
+
+  const { data: appRepos, isLoading: isLoadingAppRepos } = useGitHubAppRepositories(
+    useAppPicker ? selectedAppInstallationId : null,
+  );
+  const filteredAppRepos = (appRepos ?? []).filter((repo) =>
+    repo.fullName.toLowerCase().includes(appRepoSearchQuery.toLowerCase()),
+  );
+
+  const selectAppRepo = (repo: GitHubAppRepository) => {
+    setSelectedAppRepo(repo);
+    setSelectedRepo(null);
+    setRepositoryUrl(repo.htmlUrl);
+    setGitBranch(repo.defaultBranch || 'main');
+    if (!projectName) {
+      const name = repo.fullName.split('/').pop() ?? '';
+      setProjectName(name.toLowerCase().replace(/[^a-z0-9-]/g, '-'));
+    }
+  };
   const githubDisconnect = useGitHubDisconnect();
   const githubBusy = githubConnect.isPending || githubDisconnect.isPending;
 
@@ -213,6 +250,18 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
     githubConnect,
     githubAppInstall,
     appInstallations,
+    hasAppInstallation,
+    useAppPicker,
+    setPreferOAuthPicker,
+    installations,
+    selectedAppInstallationId,
+    setSelectedAppInstallationId,
+    selectedAppRepo,
+    selectAppRepo,
+    appRepoSearchQuery,
+    setAppRepoSearchQuery,
+    filteredAppRepos,
+    isLoadingAppRepos,
     githubBusy,
     handleDisconnectGithub,
     handleChangeGithubAccount,
