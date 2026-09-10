@@ -311,6 +311,7 @@ export const tr: TranslationKeys = {
     heroTitleLead: 'Kendi sunucularınıza',
     heroTitleEm: 'saniyeler içinde dağıtın',
     getStartedFree: 'Ücretsiz Başlayın',
+    openDashboard: 'Panele git',
     viewOnGithub: 'GitHub\'da Görüntüle',
     edgeLocations: 'Her VPS · Her bölge',
     deployTime: 'Dağıtım Süresi',

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ArrowRight, Menu, X, Github, Sun, Moon, ExternalLink } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from '@/hooks';
+import { useSignedIn } from '@/hooks/useSignedIn';
 import { LogoMark } from '@/components/logo';
 import { useThemeStore } from '@/stores/theme';
 
@@ -13,6 +14,7 @@ export function LandingNavbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, setTheme } = useThemeStore();
+  const signedIn = useSignedIn();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -120,17 +122,26 @@ export function LandingNavbar() {
             >
               <Github className="w-4 h-4" />
             </a>
-            <Link
-              href="/login"
-              className="text-sm font-medium px-3 py-2 transition-colors"
-              style={{ color: 'var(--lp-body)' }}
-            >
-              {t('auth', 'signIn')}
-            </Link>
-            <Link href="/register" className="lp-cta h-9 px-4 text-sm inline-flex">
-              {t('auth', 'signUp')}
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            {signedIn ? (
+              <Link href="/dashboard" className="lp-cta h-9 px-4 text-sm inline-flex">
+                {t('landing', 'openDashboard')}
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-sm font-medium px-3 py-2 transition-colors"
+                  style={{ color: 'var(--lp-body)' }}
+                >
+                  {t('auth', 'signIn')}
+                </Link>
+                <Link href="/register" className="lp-cta h-9 px-4 text-sm inline-flex">
+                  {t('auth', 'signUp')}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile: menu only */}
@@ -205,22 +216,31 @@ export function LandingNavbar() {
         </nav>
 
         <div className="shrink-0 p-4 border-t border-[var(--lp-border)] space-y-3 bg-[var(--bg-primary)]">
-          <Link
-            href="/login"
-            onClick={closeMobile}
-            className="flex items-center justify-center min-h-11 w-full text-sm font-medium rounded-lg border border-[var(--lp-border)] transition-colors active:bg-[var(--hover-overlay-md)]"
-            style={{ color: 'var(--lp-ink)' }}
-          >
-            {t('auth', 'signIn')}
-          </Link>
-          <Link
-            href="/register"
-            onClick={closeMobile}
-            className="lp-cta w-full min-h-11 text-[15px] inline-flex"
-          >
-            {t('auth', 'signUp')}
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          {signedIn ? (
+            <Link href="/dashboard" onClick={closeMobile} className="lp-cta w-full min-h-11 text-[15px] inline-flex">
+              {t('landing', 'openDashboard')}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                onClick={closeMobile}
+                className="flex items-center justify-center min-h-11 w-full text-sm font-medium rounded-lg border border-[var(--lp-border)] transition-colors active:bg-[var(--hover-overlay-md)]"
+                style={{ color: 'var(--lp-ink)' }}
+              >
+                {t('auth', 'signIn')}
+              </Link>
+              <Link
+                href="/register"
+                onClick={closeMobile}
+                className="lp-cta w-full min-h-11 text-[15px] inline-flex"
+              >
+                {t('auth', 'signUp')}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </>
+          )}
 
           <div className="flex items-center justify-end gap-2 pt-1">
             <div className="flex items-center gap-1">

@@ -1,5 +1,6 @@
 'use client';
 
+import { getAccessToken } from '@/lib/api/client';
 import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -18,6 +19,11 @@ import { buildAuthPath, consumeAuthRedirect, saveAuthRedirect, sanitizeRedirectP
 
 function LoginPageContent() {
   const router = useRouter();
+
+  // Already signed in: the auth pages are not a destination — go straight to the dashboard.
+  useEffect(() => {
+    if (getAccessToken()) router.replace('/dashboard');
+  }, [router]);
   const searchParams = useSearchParams();
   const {
     login,

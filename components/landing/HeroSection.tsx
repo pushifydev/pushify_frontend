@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { useTranslation } from '@/hooks';
+import { useSignedIn } from '@/hooks/useSignedIn';
 import { DeployTerminal } from './DeployTerminal';
 
 export function HeroSection() {
   const { t } = useTranslation();
+  const signedIn = useSignedIn();
 
   const highlights = [
     t('landing', 'heroStatMitLicensed'),
@@ -32,8 +34,8 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mt-8 lp-reveal"
               style={{ animationDelay: '120ms' }}
             >
-              <Link href="/register" className="lp-cta group w-full sm:w-auto">
-                {t('landing', 'getStartedFree')}
+              <Link href={signedIn ? '/dashboard' : '/register'} className="lp-cta group w-full sm:w-auto">
+                {signedIn ? t('landing', 'openDashboard') : t('landing', 'getStartedFree')}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <a

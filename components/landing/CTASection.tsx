@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, Check, Copy } from 'lucide-react';
 import { useTranslation } from '@/hooks';
+import { useSignedIn } from '@/hooks/useSignedIn';
 import { Reveal } from './Reveal';
 
 const INSTALL_CMD =
@@ -11,6 +12,7 @@ const INSTALL_CMD =
 
 export function CTASection() {
   const { t } = useTranslation();
+  const signedIn = useSignedIn();
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -34,8 +36,8 @@ export function CTASection() {
             </h2>
             <p className="lp-lead mx-auto mb-8">{t('landing', 'ctaDescription')}</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/register" className="lp-cta group w-full sm:w-auto">
-                {t('landing', 'startDeployingFree')}
+              <Link href={signedIn ? '/dashboard' : '/register'} className="lp-cta group w-full sm:w-auto">
+                {signedIn ? t('landing', 'openDashboard') : t('landing', 'startDeployingFree')}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <a

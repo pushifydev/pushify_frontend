@@ -311,6 +311,7 @@ export interface TranslationKeys {
     heroTitleLead: string;
     heroTitleEm: string;
     getStartedFree: string;
+    openDashboard: string;
     viewOnGithub: string;
     edgeLocations: string;
     deployTime: string;
@@ -3020,6 +3021,7 @@ export const en: TranslationKeys = {
     heroTitleLead: 'Deploy to your own servers',
     heroTitleEm: 'in seconds',
     getStartedFree: 'Get Started Free',
+    openDashboard: 'Open dashboard',
     viewOnGithub: 'View on GitHub',
     edgeLocations: 'Any VPS · Any region',
     deployTime: 'Deploy Time',
