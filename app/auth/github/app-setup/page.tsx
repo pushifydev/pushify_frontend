@@ -4,7 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
-import { useGitHubAppSetup, useTranslation } from '@/hooks';
+import { useGitHubAppSetup, useGitHubAppInstall, useTranslation } from '@/hooks';
 
 /**
  * Where GitHub sends the browser after someone installs the Pushify App. The installation id
@@ -16,6 +16,7 @@ function AppSetupInner() {
   const params = useSearchParams();
   const { t } = useTranslation();
   const setup = useGitHubAppSetup();
+  const relink = useGitHubAppInstall();
 
   const [failure, setFailure] = useState<string | null>(null);
   const [account, setAccount] = useState<string | null>(null);
@@ -53,12 +54,30 @@ function AppSetupInner() {
         {error ? (
           <>
             <AlertCircle className="w-6 h-6 mx-auto mb-3" style={{ color: 'var(--status-error)' }} />
-            <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
               {error}
             </p>
-            <Link href="/dashboard/projects/new" className="btn btn-secondary text-sm">
-              {t('common', 'back')}
-            </Link>
+            {!missingInstallation && (
+              <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+                {t('newProject', 'githubAppRelinkHint')}
+              </p>
+            )}
+            <div className="flex items-center justify-center gap-2">
+              {!missingInstallation && (
+                <button
+                  type="button"
+                  onClick={() => relink.mutate()}
+                  disabled={relink.isPending}
+                  className="btn btn-primary text-sm"
+                >
+                  {relink.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  {t('newProject', 'githubAppRelink')}
+                </button>
+              )}
+              <Link href="/dashboard/projects/new" className="btn btn-secondary text-sm">
+                {t('common', 'back')}
+              </Link>
+            </div>
           </>
         ) : account ? (
           <>
