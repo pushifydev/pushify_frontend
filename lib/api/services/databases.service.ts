@@ -290,18 +290,23 @@ export const deleteDatabaseBackup = async (
 
 export const downloadDatabaseBackup = async (
   databaseId: string,
-  backupId: string
+  backupId: string,
+  fallbackFileName?: string
 ): Promise<void> => {
   const response = await api.get(
     `/databases/${databaseId}/backups/${backupId}/download`,
     { responseType: 'blob' }
   );
-  const blob = new Blob([response.data]);
+  // Keep the binary type — re-wrapping as an untyped Blob made browsers save it as .txt.
+  const blob = new Blob([response.data], { type: 'application/octet-stream' });
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
+  // Content-Disposition is only readable cross-origin when the API exposes it; the
+  // backup's own name (db_<timestamp>.sql.gz / .rdb) is the reliable fallback.
   const disposition = response.headers['content-disposition'];
-  const fileName = disposition?.match(/filename="(.+?)"/)?.[1] || `backup-${backupId}`;
+  const fileName =
+    disposition?.match(/filename="(.+?)"/)?.[1] || fallbackFileName || `backup-${backupId}.sql.gz`;
   link.download = fileName;
   document.body.appendChild(link);
   link.click();
