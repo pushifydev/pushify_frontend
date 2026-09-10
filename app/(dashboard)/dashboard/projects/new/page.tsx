@@ -142,7 +142,7 @@ export default function NewProjectPage() {
     switch (currentStep) {
       case 'source':
         if (sourceType === 'template') return !!selectedFramework;
-        if (sourceType === 'github') return !!importSource.selectedRepo && !!gitBranch;
+        if (sourceType === 'github') return (!!importSource.selectedRepo || !!importSource.selectedAppRepo) && !!gitBranch;
         if (sourceType === 'gitlab') return !!importSource.selectedGitLabRepo && !!gitBranch;
         return repositoryUrl.trim().length > 0;
       case 'configure':
@@ -337,6 +337,18 @@ export default function NewProjectPage() {
             githubConnect={importSource.githubConnect}
             githubAppInstall={importSource.githubAppInstall}
             appInstallations={importSource.appInstallations}
+            hasAppInstallation={importSource.hasAppInstallation}
+            useAppPicker={importSource.useAppPicker}
+            setPreferOAuthPicker={importSource.setPreferOAuthPicker}
+            installations={importSource.installations}
+            selectedAppInstallationId={importSource.selectedAppInstallationId}
+            setSelectedAppInstallationId={importSource.setSelectedAppInstallationId}
+            selectedAppRepo={importSource.selectedAppRepo}
+            selectAppRepo={importSource.selectAppRepo}
+            appRepoSearchQuery={importSource.appRepoSearchQuery}
+            setAppRepoSearchQuery={importSource.setAppRepoSearchQuery}
+            filteredAppRepos={importSource.filteredAppRepos}
+            isLoadingAppRepos={importSource.isLoadingAppRepos}
             githubBusy={importSource.githubBusy}
             handleDisconnectGithub={importSource.handleDisconnectGithub}
             handleChangeGithubAccount={importSource.handleChangeGithubAccount}

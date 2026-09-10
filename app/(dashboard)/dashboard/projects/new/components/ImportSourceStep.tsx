@@ -40,6 +40,18 @@ type ImportSourceStepProps = Pick<
   | 'githubConnect'
   | 'githubAppInstall'
   | 'appInstallations'
+  | 'hasAppInstallation'
+  | 'useAppPicker'
+  | 'setPreferOAuthPicker'
+  | 'installations'
+  | 'selectedAppInstallationId'
+  | 'setSelectedAppInstallationId'
+  | 'selectedAppRepo'
+  | 'selectAppRepo'
+  | 'appRepoSearchQuery'
+  | 'setAppRepoSearchQuery'
+  | 'filteredAppRepos'
+  | 'isLoadingAppRepos'
   | 'githubBusy'
   | 'handleDisconnectGithub'
   | 'handleChangeGithubAccount'
@@ -91,6 +103,18 @@ export function ImportSourceStep({
   githubConnect,
   githubAppInstall,
   appInstallations,
+  hasAppInstallation,
+  useAppPicker,
+  setPreferOAuthPicker,
+  installations,
+  selectedAppInstallationId,
+  setSelectedAppInstallationId,
+  selectedAppRepo,
+  selectAppRepo,
+  appRepoSearchQuery,
+  setAppRepoSearchQuery,
+  filteredAppRepos,
+  isLoadingAppRepos,
   githubBusy,
   handleDisconnectGithub,
   handleChangeGithubAccount,
@@ -225,10 +249,129 @@ export function ImportSourceStep({
       {/* GitHub Connect */}
       {sourceType === 'github' && (
         <div className="pt-4 border-t border-[var(--border-subtle)]">
+          {hasAppInstallation && !useAppPicker && (
+            <button
+              type="button"
+              onClick={() => setPreferOAuthPicker(false)}
+              className="mb-3 text-xs font-medium text-[var(--accent-purple)] hover:underline underline-offset-4"
+            >
+              ← {t('newProject', 'githubAppUsePicker')}
+            </button>
+          )}
           {isLoadingGitHubStatus ? (
             <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
               <Loader2 className="w-8 h-8 animate-spin text-[var(--accent-purple)] mx-auto mb-3" />
               <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'checkingGitHub')}</p>
+            </div>
+          ) : useAppPicker ? (
+            <div className="space-y-4">
+              {(() => {
+                const inst = installations.find((i) => i.installationId === selectedAppInstallationId) ?? installations[0];
+                const manageUrl = inst
+                  ? inst.accountType === 'Organization'
+                    ? `https://github.com/organizations/${inst.accountLogin}/settings/installations/${inst.installationId}`
+                    : `https://github.com/settings/installations/${inst.installationId}`
+                  : 'https://github.com/settings/installations';
+                return (
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+                    <div className="flex items-center gap-2 text-sm min-w-0">
+                      <Check className="w-4 h-4 shrink-0 text-[var(--status-success)]" />
+                      <span className="truncate">
+                        {t('newProject', 'githubAppInstalledOn')}{' '}
+                        {installations.length > 1 ? (
+                          <select
+                            value={selectedAppInstallationId ?? ''}
+                            onChange={(e) => setSelectedAppInstallationId(Number(e.target.value))}
+                            className="input inline-block w-auto py-0.5 px-2 text-sm"
+                          >
+                            {installations.map((i) => (
+                              <option key={i.installationId} value={i.installationId}>@{i.accountLogin}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <span className="font-medium">@{inst?.accountLogin}</span>
+                        )}
+                        <span className="text-[var(--text-muted)]">
+                          {' '}· {inst?.repositorySelection === 'all' ? t('newProject', 'githubAppAllRepos') : t('newProject', 'githubAppSelectedRepos')}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                      <a href={manageUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary text-xs py-1.5 px-3">
+                        {t('newProject', 'githubAppManage')}
+                      </a>
+                      <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]">
+                        {t('newProject', 'githubAppAddAccount')}
+                      </button>
+                      {githubStatus?.connected && (
+                        <button type="button" onClick={() => setPreferOAuthPicker(true)} className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]">
+                          {t('newProject', 'githubAppUseOAuth')}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div className="relative">
+                <input
+                  type="text"
+                  value={appRepoSearchQuery}
+                  onChange={(e) => setAppRepoSearchQuery(e.target.value)}
+                  placeholder={t('newProject', 'searchRepos')}
+                  className="input pl-10!"
+                />
+                <Globe className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+              </div>
+
+              <div className="max-h-64 overflow-y-auto rounded-xl border border-[var(--border-subtle)]">
+                {isLoadingAppRepos ? (
+                  <div className="p-6 text-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-purple)] mx-auto mb-2" />
+                    <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'loadingRepos')}</p>
+                  </div>
+                ) : filteredAppRepos.length === 0 ? (
+                  <div className="p-6 text-center text-sm text-[var(--text-muted)]">
+                    {appRepoSearchQuery ? t('newProject', 'noReposFound') : t('newProject', 'githubAppNoRepos')}
+                  </div>
+                ) : (
+                  filteredAppRepos.map((repo) => {
+                    const active = selectedAppRepo?.id === repo.id;
+                    return (
+                      <button
+                        key={repo.id}
+                        type="button"
+                        onClick={() => selectAppRepo(repo)}
+                        className={`w-full p-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--bg-tertiary)] transition-colors ${active ? 'bg-[var(--accent-purple)]/10' : ''}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${active ? 'bg-[var(--accent-purple)] text-white' : 'bg-[var(--bg-tertiary)]'}`}>
+                            {repo.private ? <EyeOff className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium truncate">{repo.fullName.split('/').pop()}</div>
+                            <div className="text-xs text-[var(--text-muted)] truncate">{repo.fullName} · {repo.defaultBranch}</div>
+                          </div>
+                          {active && <Check className="w-5 h-5 text-[var(--accent-purple)]" />}
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+
+              {selectedAppRepo && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t('newProject', 'branch')}</label>
+                  <input
+                    type="text"
+                    value={gitBranch}
+                    onChange={(e) => setGitBranch(e.target.value)}
+                    placeholder={selectedAppRepo.defaultBranch || 'main'}
+                    className="input"
+                  />
+                </div>
+              )}
             </div>
           ) : !githubStatus?.connected ? (
             <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
