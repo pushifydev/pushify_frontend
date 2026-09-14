@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Search, ChevronRight, Users, ShieldCheck, MailCheck } from 'lucide-react';
 import { useTranslation, useAdminUsers } from '@/hooks';
-import type { AdminUserSort } from '@/lib/api';
+import type { AdminUserSort, AdminUserFilter } from '@/lib/api';
 import { STATUS_COLORS } from '@/lib/constants';
 import { SkeletonActivityRow } from '@/components/Skeleton';
 import {
@@ -19,6 +19,7 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<AdminUserSort>('newest');
+  const [filter, setFilter] = useState<AdminUserFilter>('all');
   const [page, setPage] = useState(1);
 
   // Type-ahead without a request per keystroke.
@@ -27,12 +28,20 @@ export default function AdminUsersPage() {
     return () => clearTimeout(handle);
   }, [search]);
 
-  const { data, isLoading, error, refetch } = useAdminUsers({ search: query, sort, page, pageSize: PAGE_SIZE });
+  const { data, isLoading, error, refetch } = useAdminUsers({ search: query, sort, filter, page, pageSize: PAGE_SIZE });
 
   if (error) return <AdminError error={error} onRetry={() => refetch()} />;
 
   const users = data?.users ?? [];
   const total = data?.total ?? 0;
+
+  // Where people get stuck — each one is a list you can act on.
+  const filters: { key: AdminUserFilter; label: string }[] = [
+    { key: 'all', label: t('admin', 'filterAll') },
+    { key: 'unverified', label: t('admin', 'filterUnverified') },
+    { key: 'no_project', label: t('admin', 'filterNoProject') },
+    { key: 'failing', label: t('admin', 'filterFailing') },
+  ];
 
   return (
     <div className="space-y-4">
@@ -62,6 +71,28 @@ export default function AdminUsersPage() {
             <option value="most_active">{t('admin', 'sortMostActive')}</option>
           </select>
         </div>
+      </div>
+
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1" role="group" aria-label={t('admin', 'navUsers')}>
+        {filters.map((f) => {
+          const active = filter === f.key;
+          return (
+            <button
+              key={f.key}
+              type="button"
+              onClick={() => { setFilter(f.key); setPage(1); }}
+              aria-pressed={active}
+              className="px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-all"
+              style={{
+                background: active ? 'var(--dash-accent-bg)' : 'transparent',
+                color: active ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                border: active ? '1px solid var(--dash-accent-border-strong)' : '1px solid var(--glass-border)',
+              }}
+            >
+              {f.label}
+            </button>
+          );
+        })}
       </div>
 
       <AdminPanel

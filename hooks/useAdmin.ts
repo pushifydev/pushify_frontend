@@ -8,6 +8,7 @@ import {
   getAdminActivity,
   getAdminAuthEvents,
   type AdminUserSort,
+  type AdminUserFilter,
 } from '@/lib/api';
 import type { ApiError, ApiResponse } from '@/lib/api';
 
@@ -29,7 +30,7 @@ const unwrap = <T,>(result: ApiResponse<T>): T => {
 export const adminKeys = {
   all: ['admin'] as const,
   overview: () => [...adminKeys.all, 'overview'] as const,
-  users: (params: { search: string; sort: AdminUserSort; page: number; pageSize: number }) =>
+  users: (params: { search: string; sort: AdminUserSort; filter: AdminUserFilter; page: number; pageSize: number }) =>
     [...adminKeys.all, 'users', params] as const,
   user: (userId: string) => [...adminKeys.all, 'user', userId] as const,
   activity: (page: number, pageSize: number) => [...adminKeys.all, 'activity', page, pageSize] as const,
@@ -44,9 +45,16 @@ export function useAdminOverview() {
   });
 }
 
-export function useAdminUsers(params: { search: string; sort: AdminUserSort; page: number; pageSize?: number }) {
+export function useAdminUsers(params: {
+  search: string;
+  sort: AdminUserSort;
+  filter?: AdminUserFilter;
+  page: number;
+  pageSize?: number;
+}) {
   const pageSize = params.pageSize ?? 50;
-  const key = { search: params.search, sort: params.sort, page: params.page, pageSize };
+  const filter = params.filter ?? 'all';
+  const key = { search: params.search, sort: params.sort, filter, page: params.page, pageSize };
   return useQuery({
     queryKey: adminKeys.users(key),
     queryFn: async () =>
@@ -54,6 +62,7 @@ export function useAdminUsers(params: { search: string; sort: AdminUserSort; pag
         await getAdminUsers({
           search: params.search,
           sort: params.sort,
+          filter,
           limit: pageSize,
           offset: (params.page - 1) * pageSize,
         })

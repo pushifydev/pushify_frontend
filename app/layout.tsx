@@ -79,10 +79,20 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  // Google's result-page favicon wants a PNG/ICO at a multiple of 48px (SVG is often
+  // ignored, and a missing /favicon.ico falls back to the generic globe).
   icons: {
-    icon: '/icon.svg',
+    icon: [
+      { url: '/favicon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
     apple: '/apple-touch-icon.png',
   },
+  manifest: '/site.webmanifest',
 };
 
 // Runs before React hydration to prevent flash of wrong theme (FOUC)
