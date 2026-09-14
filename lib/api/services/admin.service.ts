@@ -29,10 +29,33 @@ export interface AdminOverview {
     paidOrganizations: number;
   };
   plans: { plan: string; count: number }[];
+  failures: { windowDays: number; total: number; categories: AdminDeployFailureSummary[] };
+}
+
+export type AdminDeployFailureCategory =
+  | 'out_of_memory'
+  | 'disk_space'
+  | 'platform_native'
+  | 'docker_build'
+  | 'application_build'
+  | 'container_start'
+  | 'server_capacity'
+  | 'project_config'
+  | 'unknown';
+
+export interface AdminDeployFailureSummary {
+  category: AdminDeployFailureCategory;
+  blame: 'pushify' | 'server' | 'project';
+  label: string;
+  hint: string;
+  count: number;
+  projects: number;
+  sample: string | null;
 }
 
 export type AdminSignupMethod = 'password' | 'github' | 'google';
 export type AdminUserSort = 'newest' | 'last_seen' | 'most_active';
+export type AdminUserFilter = 'all' | 'unverified' | 'no_project' | 'failing';
 export type AdminAuthEventType = 'register' | 'login' | 'login_failed' | 'two_factor_required' | 'two_factor_failed';
 export type AdminAuthMethod = 'password' | 'two_factor' | 'github' | 'google';
 
@@ -208,6 +231,7 @@ export interface AdminPage {
 export interface AdminUserListParams extends AdminPage {
   search?: string;
   sort?: AdminUserSort;
+  filter?: AdminUserFilter;
 }
 
 // ============ Helper ============

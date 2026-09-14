@@ -1,11 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import { Users, UserPlus, Zap, CreditCard, Rocket, Boxes, Layers, TrendingUp } from 'lucide-react';
+import { Users, UserPlus, Zap, CreditCard, Rocket, Boxes, Layers, TrendingUp, Bug } from 'lucide-react';
 import { useTranslation, useAdminOverview } from '@/hooks';
-import { getStatusColor } from '@/lib/constants';
+import type { AdminDeployFailureCategory, AdminDeployFailureSummary } from '@/lib/api';
+import type { TranslationKeys } from '@/lib/i18n';
+import { getStatusColor, STATUS_COLORS } from '@/lib/constants';
 import { Skeleton } from '@/components/Skeleton';
-import { AdminPanel, AdminError, rowBorder } from './shared';
+import { AdminPanel, AdminError, EmptyRow, rowBorder } from './shared';
+
+const CATEGORY_LABEL: Record<AdminDeployFailureCategory, keyof TranslationKeys['admin']> = {
+  out_of_memory: 'catOutOfMemory',
+  disk_space: 'catDiskSpace',
+  platform_native: 'catPlatformNative',
+  docker_build: 'catDockerBuild',
+  application_build: 'catApplicationBuild',
+  container_start: 'catContainerStart',
+  server_capacity: 'catServerCapacity',
+  project_config: 'catProjectConfig',
+  unknown: 'catUnknown',
+};
+
+const BLAME_LABEL: Record<AdminDeployFailureSummary['blame'], keyof TranslationKeys['admin']> = {
+  pushify: 'blamePushify',
+  server: 'blameServer',
+  project: 'blameProject',
+};
 
 export default function AdminOverviewPage() {
   const { t } = useTranslation();
@@ -99,6 +119,63 @@ export default function AdminOverviewPage() {
                         }}
                       />
                     </div>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+        </AdminPanel>
+
+        {/* Failure reasons — the "fix the product" panel. Blame on Pushify is highlighted. */}
+        <AdminPanel
+          title={t('admin', 'failuresTitle')}
+          icon={<Bug className="w-4 h-4" />}
+          meta={data ? `${data.failures.total} · ${t('admin', 'failuresHint')}` : undefined}
+        >
+          {isLoading || !data ? (
+            <div className="px-5 py-4 space-y-3">
+              {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-9 w-full rounded" />)}
+            </div>
+          ) : data.failures.categories.length === 0 ? (
+            <EmptyRow>{t('admin', 'failuresEmpty')}</EmptyRow>
+          ) : (
+            <ol className="py-1">
+              {data.failures.categories.map((f, idx) => {
+                const pct = Math.round((f.count / data.failures.total) * 100);
+                const ours = f.blame === 'pushify';
+                return (
+                  <li key={f.category} className="px-5 py-2.5" style={rowBorder(idx)}>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-sm flex items-center gap-2 min-w-0">
+                        <span className="truncate">{t('admin', CATEGORY_LABEL[f.category])}</span>
+                        <span
+                          className="text-[10px] px-1.5 py-px rounded shrink-0 uppercase tracking-wide"
+                          style={{
+                            background: ours ? `${STATUS_COLORS.warning}1f` : 'var(--bg-tertiary)',
+                            color: ours ? STATUS_COLORS.warning : 'var(--text-muted)',
+                          }}
+                        >
+                          {t('admin', BLAME_LABEL[f.blame])}
+                        </span>
+                      </span>
+                      <span className="text-sm tabular-nums shrink-0" style={{ fontFamily: 'var(--font-mono)' }}>
+                        {f.count}
+                        <span className="text-xs ml-1.5" style={{ color: 'var(--text-muted)' }}>
+                          {pct}% · {f.projects} {t('admin', 'failuresProjects')}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="mt-1.5 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-tertiary)' }}>
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${pct}%`, minWidth: 4, background: ours ? STATUS_COLORS.warning : 'var(--accent-cyan)' }}
+                      />
+                    </div>
+                    {f.sample && (
+                      <p className="text-xs mt-1.5 truncate" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }} title={f.sample}>
+                        {f.sample}
+                      </p>
+                    )}
                   </li>
                 );
               })}

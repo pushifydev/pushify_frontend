@@ -2818,6 +2818,26 @@ export interface TranslationKeys {
     prev: string;
     next: string;
     unknownUser: string;
+    filterAll: string;
+    filterUnverified: string;
+    filterNoProject: string;
+    filterFailing: string;
+    failuresTitle: string;
+    failuresHint: string;
+    failuresEmpty: string;
+    failuresProjects: string;
+    blamePushify: string;
+    blameServer: string;
+    blameProject: string;
+    catOutOfMemory: string;
+    catDiskSpace: string;
+    catPlatformNative: string;
+    catDockerBuild: string;
+    catApplicationBuild: string;
+    catContainerStart: string;
+    catServerCapacity: string;
+    catProjectConfig: string;
+    catUnknown: string;
   };
 }
 
@@ -5938,5 +5958,25 @@ export const en: TranslationKeys = {
     prev: 'Previous',
     next: 'Next',
     unknownUser: 'Deleted user',
+    filterAll: 'Everyone',
+    filterUnverified: 'Never verified email',
+    filterNoProject: 'No project yet',
+    filterFailing: 'Only failed deploys',
+    failuresTitle: 'Why deploys fail',
+    failuresHint: 'Failed deploys, last 30 days',
+    failuresEmpty: 'No failed deploys in the last 30 days.',
+    failuresProjects: 'projects',
+    blamePushify: 'Pushify',
+    blameServer: 'Server',
+    blameProject: 'Project',
+    catOutOfMemory: 'Out of memory',
+    catDiskSpace: 'Disk full',
+    catPlatformNative: 'Native module (platform)',
+    catDockerBuild: 'Docker build failed',
+    catApplicationBuild: 'Application build failed',
+    catContainerStart: 'Container failed to start',
+    catServerCapacity: 'Server busy',
+    catProjectConfig: 'Project configuration',
+    catUnknown: 'Unclassified',
   },
 };
