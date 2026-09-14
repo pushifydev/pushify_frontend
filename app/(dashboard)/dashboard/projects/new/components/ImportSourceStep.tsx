@@ -412,6 +412,7 @@ export function ImportSourceStep({
                   </>
                 )}
 
+                {!appInstallations?.configured && (
                 <button
                   onClick={() => githubConnect.mutate()}
                   disabled={githubConnect.isPending}
@@ -429,6 +430,7 @@ export function ImportSourceStep({
                     </>
                   )}
                 </button>
+                )}
               </div>
             </div>
           ) : (
@@ -485,6 +487,8 @@ export function ImportSourceStep({
                 </div>
               )}
 
+              {githubStatus?.hasRepoScope !== false && (
+              <>
               {/* Search repos */}
               <div className="relative">
                 <input
@@ -608,6 +612,8 @@ export function ImportSourceStep({
                     </div>
                   )}
                 </div>
+              )}
+              </>
               )}
             </div>
           )}
