@@ -465,6 +465,24 @@ export function ImportSourceStep({
                 </div>
               </div>
 
+              {githubStatus?.hasRepoScope === false && (
+                <div
+                  className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg text-sm"
+                  style={{ background: 'var(--dash-accent-bg)', border: '1px solid var(--glass-border-md)', color: 'var(--text-secondary)' }}
+                >
+                  <span className="flex-1">{t('newProject', 'githubOauthPublicOnly')}</span>
+                  {hasAppInstallation ? (
+                    <button type="button" onClick={() => setPreferOAuthPicker(false)} className="btn btn-primary text-xs py-1.5 px-3 shrink-0">
+                      {t('newProject', 'githubAppUsePicker')}
+                    </button>
+                  ) : appInstallations?.configured ? (
+                    <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-primary text-xs py-1.5 px-3 shrink-0">
+                      {t('newProject', 'githubAppInstall')}
+                    </button>
+                  ) : null}
+                </div>
+              )}
+
               {/* Search repos */}
               <div className="relative">
                 <input

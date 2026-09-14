@@ -883,6 +883,7 @@ export const tr: TranslationKeys = {
     githubAppLinked: 'GitHub App şu hesap için bağlandı:',
     githubAppMissingInstallation: 'GitHub bir kurulum kimliği döndürmedi',
     githubAppInstall: 'GitHub App\'i kur',
+    githubOauthPublicOnly: 'GitHub ile giriş yalnızca herkese açık repolarınızı listeler. Özel ve organizasyon repoları GitHub App üzerinden gelir — App’i kurun ya da erişebileceği repoları seçin.',
     githubAppRelinkHint: 'Genelde kurulum Pushify yerine GitHub’dan başlatıldığında olur; geri dönüşte state taşınmaz. Buradan başlatın, GitHub doğrudan geri getirir.',
     githubAppRelink: 'Bu kurulumu bağla',
     githubAppInstalledOn: 'GitHub App şurada kurulu:',

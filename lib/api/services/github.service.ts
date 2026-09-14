@@ -7,6 +7,8 @@ import type { ApiResponse, ApiError } from '../types';
 export interface GitHubStatus {
   connected: boolean;
   username: string | null;
+  /** false when the OAuth token lacks the `repo` scope — only public repositories are listable */
+  hasRepoScope?: boolean;
 }
 
 export interface GitHubRepo {
