@@ -150,6 +150,8 @@ export interface GitHubAppInstallation {
   accountType: string | null;
   repositorySelection: string | null;
   suspended: boolean;
+  /** Server-computed GitHub settings page for this installation (user vs organisation URL). */
+  manageUrl?: string;
 }
 
 export interface GitHubAppRepository {

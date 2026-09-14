@@ -269,11 +269,13 @@ export function ImportSourceStep({
             <div className="space-y-4">
               {(() => {
                 const inst = installations.find((i) => i.installationId === selectedAppInstallationId) ?? installations[0];
-                const manageUrl = inst
-                  ? inst.accountType === 'Organization'
-                    ? `https://github.com/organizations/${inst.accountLogin}/settings/installations/${inst.installationId}`
-                    : `https://github.com/settings/installations/${inst.installationId}`
-                  : 'https://github.com/settings/installations';
+                const manageUrl =
+                  inst?.manageUrl ??
+                  (inst
+                    ? inst.accountType === 'Organization'
+                      ? `https://github.com/organizations/${inst.accountLogin}/settings/installations/${inst.installationId}`
+                      : `https://github.com/settings/installations/${inst.installationId}`
+                    : 'https://github.com/settings/installations');
                 return (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
                     <div className="flex items-center gap-2 text-sm min-w-0">
