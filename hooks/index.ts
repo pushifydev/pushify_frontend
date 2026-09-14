@@ -363,3 +363,14 @@ export {
   registrarDomainKeys,
   domainManageKeys,
 } from './useRegistrarDomains';
+
+// Platform admin (operators only)
+export {
+  adminKeys,
+  AdminRequestError,
+  useAdminOverview,
+  useAdminUsers,
+  useAdminUser,
+  useAdminActivity,
+  useAdminAuthEvents,
+} from './useAdmin';

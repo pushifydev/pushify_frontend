@@ -604,3 +604,30 @@ export {
   type DomainEmailForwarding,
   type TransferQuote,
 } from './services/registrar-domains.service';
+
+// Platform admin (operators only)
+export {
+  getAdminOverview,
+  getAdminUsers,
+  getAdminUser,
+  getAdminActivity,
+  getAdminAuthEvents,
+  type AdminOverview,
+  type AdminSignupMethod,
+  type AdminUserSort,
+  type AdminAuthEventType,
+  type AdminAuthMethod,
+  type AdminUserSummary,
+  type AdminUserOrganization,
+  type AdminUserProject,
+  type AdminUserDeployment,
+  type AdminUserServer,
+  type AdminUserDatabase,
+  type AdminUserSession,
+  type AdminAuthEvent,
+  type AdminUserActivity,
+  type AdminTimelineEntry,
+  type AdminUserDetail,
+  type AdminActivityItem,
+  type AdminAuthEventItem,
+} from './services/admin.service';

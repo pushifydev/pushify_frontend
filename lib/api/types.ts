@@ -33,6 +33,8 @@ export interface User {
   avatarUrl: string | null;
   emailVerified?: boolean;
   twoFactorEnabled?: boolean;
+  /** true when the account is on the operator list (ADMIN_EMAILS) — shows the admin panel */
+  isPlatformAdmin?: boolean;
   createdAt?: string;
 }
 

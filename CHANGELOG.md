@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Admin panel at `/admin`** for platform operators (accounts listed in the backend's `ADMIN_EMAILS`, 2FA required). Four views: **Overview** — headline numbers, the sign-up → verified → project → deploy → live → server → paid funnel, deployments by status, resources, plans, and 30-day sign-up/sign-in strips; **Users** — searchable, sortable list with plan, projects · deploys (failed) · servers · DBs, last seen and joined; **User detail** — organisations, projects, servers, databases, active sessions, and a single day-grouped **timeline** that interleaves sign-ins, deploys (with the error inline when one failed), created resources and dashboard actions; **Activity** and **Sign-ins** — platform-wide, paged. The sidebar shows the link only when `/auth/me` reports `isPlatformAdmin`; a non-operator opening the URL gets the normal 404 page, and an operator without 2FA is told exactly what to turn on. English + Turkish.
+- **Dashboard-styled 404** (`app/(dashboard)/not-found.tsx`) for `notFound()` thrown inside the dashboard — previously the marketing 404, header and all, rendered inside the dashboard shell.
+
 ## [0.2.0-beta.66] - 2026-08-21
 
 ### Added

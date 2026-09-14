@@ -25,6 +25,7 @@ import {
   Sparkles,
   Globe,
   ArrowUpRight,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
@@ -72,6 +73,8 @@ export function Sidebar() {
   ];
 
   const bottomNavItems = [
+    // Operators only — the API answers 404 to everyone else; this just hides the link
+    ...(user?.isPlatformAdmin ? [{ href: '/admin', icon: ShieldCheck, label: t('admin', 'title') }] : []),
     { href: '/dashboard/settings', icon: Settings, label: t('common', 'settings') },
     { href: '/docs', icon: HelpCircle, label: t('navigation', 'helpDocs') },
   ];

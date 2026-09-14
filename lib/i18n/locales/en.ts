@@ -2711,6 +2711,114 @@ export interface TranslationKeys {
     publicHeroDesc: string;
     publicBuyCta: string;
   };
+  admin: {
+    title: string;
+    eyebrow: string;
+    subtitle: string;
+    navSection: string;
+    navOverview: string;
+    navUsers: string;
+    navActivity: string;
+    navSignins: string;
+    twoFactorTitle: string;
+    twoFactorDesc: string;
+    twoFactorCta: string;
+    loadError: string;
+    retry: string;
+    statUsers: string;
+    statNewWeek: string;
+    statActiveWeek: string;
+    statActiveHint: string;
+    statPaying: string;
+    verified: string;
+    with2fa: string;
+    funnelTitle: string;
+    funnelHint: string;
+    funnelRegistered: string;
+    funnelVerified: string;
+    funnelProject: string;
+    funnelDeployed: string;
+    funnelLive: string;
+    funnelServer: string;
+    funnelDatabase: string;
+    funnelPaid: string;
+    last30Title: string;
+    signups: string;
+    signins: string;
+    peak: string;
+    deploysTitle: string;
+    allTime: string;
+    thisWeek: string;
+    failedThisWeek: string;
+    byStatus: string;
+    resourcesTitle: string;
+    projects: string;
+    servers: string;
+    databases: string;
+    organizations: string;
+    plansTitle: string;
+    searchPlaceholder: string;
+    sortNewest: string;
+    sortLastSeen: string;
+    sortMostActive: string;
+    usersTotal: string;
+    usersEmpty: string;
+    colUser: string;
+    colPlan: string;
+    colUsage: string;
+    colLastSeen: string;
+    colJoined: string;
+    never: string;
+    methodPassword: string;
+    methodGithub: string;
+    methodGoogle: string;
+    methodTwoFactor: string;
+    failedShort: string;
+    backToUsers: string;
+    joined: string;
+    lastSeen: string;
+    emailVerified: string;
+    emailUnverified: string;
+    twoFactorOn: string;
+    twoFactorOff: string;
+    passwordSet: string;
+    oauthOnly: string;
+    orgsTitle: string;
+    projectsTitle: string;
+    serversTitle: string;
+    databasesTitle: string;
+    sessionsTitle: string;
+    timelineTitle: string;
+    timelineEmpty: string;
+    members: string;
+    wallet: string;
+    deploys: string;
+    lastDeploy: string;
+    noDeploysYet: string;
+    expires: string;
+    managed: string;
+    byos: string;
+    sectionEmpty: string;
+    evRegister: string;
+    evLogin: string;
+    evLoginFailed: string;
+    evTwoFactorRequired: string;
+    evTwoFactorFailed: string;
+    tlProject: string;
+    tlDeploy: string;
+    tlServerManaged: string;
+    tlServerByos: string;
+    tlDatabase: string;
+    via: string;
+    activityTitle: string;
+    activityEmpty: string;
+    signinsTitle: string;
+    signinsEmpty: string;
+    pageOf: string;
+    prev: string;
+    next: string;
+    unknownUser: string;
+  };
 }
 
 export const en: TranslationKeys = {
@@ -5722,5 +5830,113 @@ export const en: TranslationKeys = {
     publicHeroTitle: 'Find your domain',
     publicHeroDesc: 'Search, register, and connect a domain to your app in one place — DNS and SSL handled for you.',
     publicBuyCta: 'Sign up to buy',
+  },
+  admin: {
+    title: 'Admin',
+    eyebrow: 'Platform',
+    subtitle: 'Everyone who signed up, and what they did.',
+    navSection: 'Platform',
+    navOverview: 'Overview',
+    navUsers: 'Users',
+    navActivity: 'Activity',
+    navSignins: 'Sign-ins',
+    twoFactorTitle: 'Two-factor is required here',
+    twoFactorDesc: 'Your account is on the operator list, but the admin panel only opens for accounts with two-factor authentication turned on.',
+    twoFactorCta: 'Turn on two-factor',
+    loadError: 'Could not load this page. Try again in a moment.',
+    retry: 'Try again',
+    statUsers: 'Users',
+    statNewWeek: 'New this week',
+    statActiveWeek: 'Active this week',
+    statActiveHint: 'signed in or did something',
+    statPaying: 'Paying organizations',
+    verified: 'verified',
+    with2fa: 'with 2FA',
+    funnelTitle: 'How far people get',
+    funnelHint: 'Share of everyone who signed up',
+    funnelRegistered: 'Signed up',
+    funnelVerified: 'Verified email',
+    funnelProject: 'Created a project',
+    funnelDeployed: 'Ran a deploy',
+    funnelLive: 'Got a deploy live',
+    funnelServer: 'Connected a server',
+    funnelDatabase: 'Created a database',
+    funnelPaid: 'On a paid plan',
+    last30Title: 'Last 30 days',
+    signups: 'Sign-ups',
+    signins: 'Sign-ins',
+    peak: 'peak',
+    deploysTitle: 'Deployments',
+    allTime: 'All time',
+    thisWeek: 'This week',
+    failedThisWeek: 'Failed this week',
+    byStatus: 'By status',
+    resourcesTitle: 'Resources',
+    projects: 'Projects',
+    servers: 'Servers',
+    databases: 'Databases',
+    organizations: 'Organizations',
+    plansTitle: 'Plans',
+    searchPlaceholder: 'Search by email or name',
+    sortNewest: 'Newest first',
+    sortLastSeen: 'Last seen',
+    sortMostActive: 'Most active',
+    usersTotal: 'users',
+    usersEmpty: 'No one matches that search.',
+    colUser: 'User',
+    colPlan: 'Plan',
+    colUsage: 'Projects · Deploys · Servers · DBs',
+    colLastSeen: 'Last seen',
+    colJoined: 'Joined',
+    never: 'Never',
+    methodPassword: 'Email',
+    methodGithub: 'GitHub',
+    methodGoogle: 'Google',
+    methodTwoFactor: '2FA code',
+    failedShort: 'failed',
+    backToUsers: 'All users',
+    joined: 'Joined',
+    lastSeen: 'Last seen',
+    emailVerified: 'Email verified',
+    emailUnverified: 'Email not verified',
+    twoFactorOn: '2FA on',
+    twoFactorOff: '2FA off',
+    passwordSet: 'Password set',
+    oauthOnly: 'Signs in with a provider only',
+    orgsTitle: 'Organizations',
+    projectsTitle: 'Projects',
+    serversTitle: 'Servers',
+    databasesTitle: 'Databases',
+    sessionsTitle: 'Active sessions',
+    timelineTitle: 'Timeline',
+    timelineEmpty: 'Nothing yet — this account has only signed up.',
+    members: 'members',
+    wallet: 'wallet',
+    deploys: 'deploys',
+    lastDeploy: 'last deploy',
+    noDeploysYet: 'no deploys yet',
+    expires: 'expires',
+    managed: 'managed',
+    byos: 'own server',
+    sectionEmpty: 'None',
+    evRegister: 'Signed up',
+    evLogin: 'Signed in',
+    evLoginFailed: 'Failed sign-in',
+    evTwoFactorRequired: 'Password accepted, waiting for 2FA',
+    evTwoFactorFailed: 'Wrong 2FA code',
+    tlProject: 'Created project',
+    tlDeploy: 'Deploy',
+    tlServerManaged: 'Created server',
+    tlServerByos: 'Connected server',
+    tlDatabase: 'Created database',
+    via: 'via',
+    activityTitle: 'Everything, everyone',
+    activityEmpty: 'No activity yet.',
+    signinsTitle: 'Sign-in history',
+    signinsEmpty: 'No sign-ins recorded yet. History starts with this release.',
+    pageOf: 'of',
+    prev: 'Previous',
+    next: 'Next',
+    unknownUser: 'Deleted user',
   },
 };
