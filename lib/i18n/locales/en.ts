@@ -865,6 +865,7 @@ export interface TranslationKeys {
     githubAppLinked: string;
     githubAppMissingInstallation: string;
     githubAppInstall: string;
+    githubOauthPublicOnly: string;
     githubAppRelinkHint: string;
     githubAppRelink: string;
     githubAppInstalledOn: string;
@@ -3593,6 +3594,7 @@ export const en: TranslationKeys = {
     githubAppLinked: 'GitHub App linked for',
     githubAppMissingInstallation: 'GitHub did not send an installation id back',
     githubAppInstall: 'Install GitHub App',
+    githubOauthPublicOnly: 'Signing in with GitHub only lists your public repositories. Private and organisation repositories come through the GitHub App — install it, or pick which repositories it may access.',
     githubAppRelinkHint: 'This usually means the installation was started from GitHub instead of Pushify, so the link back carried no state. Start it from here and GitHub will bring you straight back.',
     githubAppRelink: 'Link this installation',
     githubAppInstalledOn: 'GitHub App installed on',
