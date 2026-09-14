@@ -2826,6 +2826,7 @@ export interface TranslationKeys {
     failuresHint: string;
     failuresEmpty: string;
     failuresProjects: string;
+    failuresProjectOne: string;
     blamePushify: string;
     blameServer: string;
     blameProject: string;
@@ -5966,6 +5967,7 @@ export const en: TranslationKeys = {
     failuresHint: 'Failed deploys, last 30 days',
     failuresEmpty: 'No failed deploys in the last 30 days.',
     failuresProjects: 'projects',
+    failuresProjectOne: 'project',
     blamePushify: 'Pushify',
     blameServer: 'Server',
     blameProject: 'Project',

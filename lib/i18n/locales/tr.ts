@@ -3129,6 +3129,7 @@ export const tr: TranslationKeys = {
     failuresHint: 'Son 30 günün başarısız deploy\'ları',
     failuresEmpty: 'Son 30 günde başarısız deploy yok.',
     failuresProjects: 'proje',
+    failuresProjectOne: 'proje',
     blamePushify: 'Pushify',
     blameServer: 'Sunucu',
     blameProject: 'Proje',

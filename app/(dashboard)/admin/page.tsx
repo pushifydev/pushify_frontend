@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Users, UserPlus, Zap, CreditCard, Rocket, Boxes, Layers, TrendingUp, Bug } from 'lucide-react';
 import { useTranslation, useAdminOverview } from '@/hooks';
-import type { AdminDeployFailureCategory, AdminDeployFailureSummary } from '@/lib/api';
+import type { AdminOverview, AdminDeployFailureCategory, AdminDeployFailureSummary } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n';
 import { getStatusColor, STATUS_COLORS } from '@/lib/constants';
 import { Skeleton } from '@/components/Skeleton';
@@ -47,6 +47,8 @@ export default function AdminOverviewPage() {
     : [];
   const registered = data?.funnel.registered ?? 0;
   const orgTotal = data?.resources.organizations ?? 0;
+  // The two repos deploy independently; a frontend ahead of the API must not crash here.
+  const failures: AdminOverview['failures'] | undefined = data?.failures;
 
   return (
     <div className="space-y-4">
@@ -130,18 +132,18 @@ export default function AdminOverviewPage() {
         <AdminPanel
           title={t('admin', 'failuresTitle')}
           icon={<Bug className="w-4 h-4" />}
-          meta={data ? `${data.failures.total} · ${t('admin', 'failuresHint')}` : undefined}
+          meta={failures ? `${failures.total} · ${t('admin', 'failuresHint')}` : undefined}
         >
           {isLoading || !data ? (
             <div className="px-5 py-4 space-y-3">
               {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-9 w-full rounded" />)}
             </div>
-          ) : data.failures.categories.length === 0 ? (
+          ) : !failures || failures.categories.length === 0 ? (
             <EmptyRow>{t('admin', 'failuresEmpty')}</EmptyRow>
           ) : (
             <ol className="py-1">
-              {data.failures.categories.map((f, idx) => {
-                const pct = Math.round((f.count / data.failures.total) * 100);
+              {failures.categories.map((f, idx) => {
+                const pct = Math.round((f.count / failures.total) * 100);
                 const ours = f.blame === 'pushify';
                 return (
                   <li key={f.category} className="px-5 py-2.5" style={rowBorder(idx)}>
@@ -161,7 +163,7 @@ export default function AdminOverviewPage() {
                       <span className="text-sm tabular-nums shrink-0" style={{ fontFamily: 'var(--font-mono)' }}>
                         {f.count}
                         <span className="text-xs ml-1.5" style={{ color: 'var(--text-muted)' }}>
-                          {pct}% · {f.projects} {t('admin', 'failuresProjects')}
+                          {pct}% · {f.projects} {t('admin', f.projects === 1 ? 'failuresProjectOne' : 'failuresProjects')}
                         </span>
                       </span>
                     </div>
