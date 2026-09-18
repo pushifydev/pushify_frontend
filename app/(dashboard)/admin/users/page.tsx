@@ -53,8 +53,7 @@ export default function AdminUsersPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('admin', 'searchPlaceholder')}
-            className="input"
-            style={{ paddingLeft: '2.25rem' }} // .input sets its own padding; the icon needs room
+            className="input pl-9!"
             aria-label={t('admin', 'searchPlaceholder')}
           />
         </label>

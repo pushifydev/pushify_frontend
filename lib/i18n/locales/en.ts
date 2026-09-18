@@ -1493,6 +1493,7 @@ export interface TranslationKeys {
     pendingInvitations: string;
     inviteByEmail: string;
     inviteNote: string;
+    inviteDescription: string;
     inviteNotePlaceholder: string;
     sendInvitation: string;
     sendingInvitation: string;
@@ -4358,6 +4359,7 @@ export const en: TranslationKeys = {
     pendingInvitations: 'Pending Invitations',
     inviteByEmail: 'Invite by email',
     inviteNote: 'Note (optional)',
+    inviteDescription: 'They get an email with a link that works for 7 days.',
     inviteNotePlaceholder: 'Add a personal message...',
     sendInvitation: 'Send Invitation',
     sendingInvitation: 'Sending...',

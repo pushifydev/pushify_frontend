@@ -7,6 +7,7 @@
 - **Dashboard-styled 404** (`app/(dashboard)/not-found.tsx`) for `notFound()` thrown inside the dashboard — previously the marketing 404, header and all, rendered inside the dashboard shell.
 - **Admin: "Why deploys fail"** panel on the overview — last 30 days of failed deploys by cause, share, projects affected and the latest message; causes blamed on Pushify are highlighted.
 - **Admin: stuck-user filters** on the users list — never verified email, no project yet, only failed deploys.
+- **Team → Invite member modal redone.** The email field no longer overlaps its icon (`.input` overrode the padding utility; now `pl-10!` like the other icon inputs). Roles are three cards with icon + description instead of a native select, the note is clearly optional, errors use the shared alert box, Enter submits, and the button stays disabled until the address looks like an email. Description says the link works for 7 days.
 
 ## [0.2.0-beta.66] - 2026-08-21
 

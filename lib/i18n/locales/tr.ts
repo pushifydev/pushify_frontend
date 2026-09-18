@@ -1519,6 +1519,7 @@ export const tr: TranslationKeys = {
     pendingInvitations: 'Bekleyen Davetler',
     inviteByEmail: 'E-posta ile davet et',
     inviteNote: 'Not (isteğe bağlı)',
+    inviteDescription: 'Bir e-posta alır; bağlantı 7 gün geçerli.',
     inviteNotePlaceholder: 'Kişisel bir mesaj ekleyin...',
     sendInvitation: 'Davet Gönder',
     sendingInvitation: 'Gönderiliyor...',
