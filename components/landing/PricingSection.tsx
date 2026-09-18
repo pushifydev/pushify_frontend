@@ -118,7 +118,9 @@ const COMPARE_ROWS: FeatureRow[] = [
 function fmtNum(n: number, unlimitedLabel: string): string {
   if (n === 0) return '—';
   if (n >= 9999 || n === -1) return unlimitedLabel;
-  return n.toLocaleString();
+  // Fixed locale: the server renders en-US and a tr-TR browser would print 3.000 for 3,000 —
+  // a hydration text mismatch that regenerates the page and drops the theme class.
+  return n.toLocaleString('en-US');
 }
 
 function formatCompareValue(
@@ -128,7 +130,7 @@ function formatCompareValue(
 ): string {
   if (value === 0) return '—';
   if (value >= 9999 || value === -1) return unlimitedLabel;
-  return unit ? `${value.toLocaleString()} ${unit}` : value.toLocaleString();
+  return unit ? `${value.toLocaleString('en-US')} ${unit}` : value.toLocaleString('en-US');
 }
 
 type PlanBundle = {
