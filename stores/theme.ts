@@ -33,7 +33,8 @@ export const useThemeStore = create<ThemeState>()(
   )
 );
 
-function applyTheme(theme: Theme) {
+/** Resolve the preference to a class on <html>. Exported so AfterHydration can put the class back after a hydration recovery. */
+export function applyTheme(theme: Theme) {
   if (typeof window === 'undefined') return;
 
   const root = document.documentElement;

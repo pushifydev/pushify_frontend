@@ -32,9 +32,21 @@ export const loadLocale = (locale: SupportedLocale): Promise<void> => {
 
 export const isLocaleLoaded = (locale: SupportedLocale): boolean => !!translations[locale];
 
+// The server always renders the default locale (it cannot see localStorage), so the first client
+// render must produce the same text or React reports a hydration mismatch, regenerates the tree
+// on the client and, as a side effect, resets <html class> — wiping the theme class the boot
+// script added (the pricing page came up dark for Turkish visitors). Until AfterHydration flips
+// this flag from a post-mount effect, every lookup answers from the default dictionary.
+let hydrated = false;
+
+export const markHydrated = (): void => {
+  hydrated = true;
+};
+
 // ============ Functions ============
 
 export const getTranslations = (locale: SupportedLocale): TranslationKeys => {
+  if (!hydrated) return translations[DEFAULT_LOCALE]!;
   return translations[locale] ?? translations[DEFAULT_LOCALE]!;
 };
 

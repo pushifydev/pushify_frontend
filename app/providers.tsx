@@ -7,7 +7,7 @@ import { useThemeStore, type Theme } from '@/stores/theme';
 import { ConfirmProvider } from '@/hooks/useConfirm';
 import { getApiErrorMessage } from '@/lib/api/get-error-message';
 import { appT } from '@/lib/i18n/app-translate';
-import { LocaleHtmlLang } from '@/components/LocaleHtmlLang';
+import { AfterHydration } from '@/components/AfterHydration';
 
 function resolveThemeMode(theme: Theme): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';
@@ -73,7 +73,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LocaleHtmlLang />
+      <AfterHydration />
       {children}
       <DynamicToaster />
       <ConfirmProvider />

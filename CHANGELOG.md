@@ -7,6 +7,11 @@
 - **Dashboard-styled 404** (`app/(dashboard)/not-found.tsx`) for `notFound()` thrown inside the dashboard — previously the marketing 404, header and all, rendered inside the dashboard shell.
 - **Admin: "Why deploys fail"** panel on the overview — last 30 days of failed deploys by cause, share, projects affected and the latest message; causes blamed on Pushify are highlighted.
 - **Admin: stuck-user filters** on the users list — never verified email, no project yet, only failed deploys.
+- **Team → Invite member modal redone.** The email field no longer overlaps its icon (`.input` overrode the padding utility; now `pl-10!` like the other icon inputs). Roles are three cards with icon + description instead of a native select, the note is clearly optional, errors use the shared alert box, Enter submits, and the button stays disabled until the address looks like an email. Description says the link works for 7 days.
+
+### Fixed
+- **First visit ignored the browser language.** The locale store checked for a saved preference *after* creating the store, but zustand's persist writes the default (`en`) to localStorage the moment it hydrates — so the check always found a value and browser detection never ran; every new visitor got English regardless of their OS language. The check now happens before the store is created. A Turkish browser opens in Turkish; anything else still gets English. (Theme was already right: it follows the OS until you toggle it.)
+- **/pricing came up dark for Turkish visitors.** Two things stacked: `toLocaleString()` without a locale printed `3,000` on the server and `3.000` in a tr-TR browser, so React reported a hydration text mismatch and regenerated the page on the client — and when it does that it rewrites `<html class>` from its own props, which never included the `light`/`dark` class the boot script had added, so the page fell back to the dark defaults. Fixed at both ends: pricing numbers are pinned to `en-US`; the first client render is forced to the default dictionary so it always matches the server HTML (the real locale shows after hydration, via the new `AfterHydration` component, which also re-applies the theme class as a guard against any future mismatch). Reproduced and re-verified with a fresh Turkish light-mode browser on /pricing, / and /login.
 
 ## [0.2.0-beta.66] - 2026-08-21
 

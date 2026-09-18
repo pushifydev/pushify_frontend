@@ -17,6 +17,11 @@ function ensureDictionary(locale: SupportedLocale, bump: () => void): void {
   void loadLocale(locale).then(bump);
 }
 
+// Read this BEFORE the store is created: persist writes the default locale to storage the moment
+// it hydrates (synchronously for localStorage), so a check made afterwards always finds a value
+// and browser-language detection never runs — every first visit came up in English.
+const hadStoredLocale = typeof window !== 'undefined' && safeStorage.get('pushify-locale') !== null;
+
 export const useLocaleStore = create<LocaleState>()(
   persist(
     (set, get) => ({
@@ -50,11 +55,7 @@ export const useLocaleStore = create<LocaleState>()(
   )
 );
 
-// Initialize with browser locale if no stored preference
-if (typeof window !== 'undefined') {
-  const stored = safeStorage.get('pushify-locale');
-  if (!stored) {
-    const browserLocale = detectBrowserLocale();
-    useLocaleStore.getState().setLocale(browserLocale);
-  }
+// First visit: follow the browser language (tr → Turkish, anything else → English)
+if (typeof window !== 'undefined' && !hadStoredLocale) {
+  useLocaleStore.getState().setLocale(detectBrowserLocale());
 }
