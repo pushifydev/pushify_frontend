@@ -113,7 +113,7 @@ export interface CreateProjectInput {
   description?: string;
   gitRepoUrl?: string;
   gitBranch?: string;
-  gitProvider?: 'github' | 'gitlab' | 'bitbucket';
+  gitProvider?: 'github' | 'gitlab';
   framework?: string;
   buildCommand?: string;
   installCommand?: string;
