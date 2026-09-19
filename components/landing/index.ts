@@ -10,7 +10,6 @@ export { MarketplacePreviewSection } from './MarketplacePreviewSection';
 export { SiteBuilderSection, SiteBuilderMockup } from './SiteBuilderSection';
 export { SecuritySection } from './SecuritySection';
 export { ComparisonPageView, type ComparisonRow } from './ComparisonPageView';
-export { SocialProofSection } from './SocialProofSection';
 export { ComparisonSection } from './ComparisonSection';
 export { FeaturesSection } from './FeaturesSection';
 export { OpenSourceSection } from './OpenSourceSection';

@@ -10,7 +10,14 @@ import {
   AlertTriangle,
   ArrowUpRight,
 } from 'lucide-react';
-import { useTranslation, useBillingInfo, useUpdateBillingEmail, billingKeys } from '@/hooks';
+import {
+  useTranslation,
+  useBillingInfo,
+  useUpdateBillingEmail,
+  useSubscriptionStatus,
+  useResumeSubscription,
+  billingKeys,
+} from '@/hooks';
 import { confirmInfraTopUp } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/auth';
@@ -61,6 +68,9 @@ export default function BillingPage() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const { organization } = useAuthStore();
   const { data: billingInfo, isLoading } = useBillingInfo();
+  // A cancelled-at-period-end subscription can be resumed until the period ends.
+  const { data: subscription } = useSubscriptionStatus();
+  const resumeSubscription = useResumeSubscription();
   const updateBillingEmail = useUpdateBillingEmail();
 
   useEffect(() => {
@@ -127,6 +137,10 @@ export default function BillingPage() {
 
   const planAccent = billingInfo ? planAccents[billingInfo.plan] : STATUS_COLORS.neutral;
   const isPaid = !!billingInfo && billingInfo.price > 0;
+  const cancelScheduled = isPaid && !!subscription?.cancelAtPeriodEnd;
+  const periodEndLabel = subscription?.currentPeriodEnd
+    ? new Date(subscription.currentPeriodEnd).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
   const statusOk = billingInfo?.billingStatus === 'active';
   const renewalDate = billingInfo?.currentPeriodEnd
     ? new Date(billingInfo.currentPeriodEnd).toLocaleDateString(
@@ -353,14 +367,30 @@ export default function BillingPage() {
                 {t('billing', key)}
               </span>
             ))}
-            {isPaid && (
+            {cancelScheduled ? (
+              <span className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                {formatMessage(t('billing', 'cancelScheduled'), { date: periodEndLabel })}
+                <button
+                  type="button"
+                  disabled={resumeSubscription.isPending}
+                  onClick={() =>
+                    resumeSubscription.mutate(undefined, {
+                      onSuccess: () => toast.success(t('billing', 'resumed')),
+                    })
+                  }
+                  className="btn btn-secondary"
+                >
+                  {t('billing', 'resumeSubscription')}
+                </button>
+              </span>
+            ) : isPaid ? (
               <button
                 onClick={() => setShowCancelModal(true)}
                 className="ml-auto text-xs text-[var(--text-muted)] hover:text-red-400 transition-colors"
               >
                 {t('billing', 'cancelSubscriptionLink')}
               </button>
-            )}
+            ) : null}
           </div>
         )}
       </section>

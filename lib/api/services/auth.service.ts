@@ -581,7 +581,6 @@ export interface NotificationPrefs {
   deploymentAlerts: boolean;
   securityAlerts: boolean;
   weeklyDigest: boolean;
-  productUpdates: boolean;
   /** Onboarding/lifecycle email sequence (maps to server-side opt-out) */
   onboardingEmails: boolean;
 }

@@ -286,7 +286,7 @@ export const docsTr: DocsContent = {
         description: 'Yeni bir sunucu oluşturur ve sağlar.',
         params: {
           name: 'Sunucu adı',
-          provider: 'Bulut sağlayıcı (hetzner, digitalocean)',
+          provider: 'Bulut sağlayıcı (hetzner)',
           region: 'Bölge tanımlayıcısı',
           size: 'Sunucu boyutu/türü',
         },

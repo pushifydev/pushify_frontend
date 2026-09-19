@@ -286,7 +286,7 @@ export const docsEn: DocsContent = {
         description: 'Create and provision a new server.',
         params: {
           name: 'Server name',
-          provider: 'Cloud provider (hetzner, digitalocean)',
+          provider: 'Cloud provider (hetzner)',
           region: 'Region identifier',
           size: 'Server size/type',
         },

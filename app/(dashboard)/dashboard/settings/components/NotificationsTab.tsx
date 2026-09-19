@@ -128,16 +128,6 @@ export function NotificationsTab() {
             }
           />
           <SettingsRow
-            title={t('notificationPrefs', 'productUpdates')}
-            description={t('notificationPrefs', 'productUpdatesDesc')}
-            control={
-              <Toggle
-                enabled={prefs.productUpdates}
-                onChange={(value) => handleChange('productUpdates', value)}
-              />
-            }
-          />
-          <SettingsRow
             title={t('notificationPrefs', 'onboardingEmails')}
             description={t('notificationPrefs', 'onboardingEmailsDesc')}
             control={

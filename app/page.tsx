@@ -17,9 +17,6 @@ import {
   CTASection,
   LandingFooter,
 } from '@/components/landing';
-// NOTE: SocialProofSection is intentionally not rendered yet — it holds placeholder
-// testimonials. Re-add <SocialProofSection /> below once real, attributable quotes
-// are in the i18n files (sp1/sp2/sp3). Component + i18n remain in the codebase.
 
 export default function LandingPage() {
   return (

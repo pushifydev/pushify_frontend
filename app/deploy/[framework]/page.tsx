@@ -50,13 +50,13 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
     en: {
       title: 'Deploy Next.js Apps',
       description:
-        'Deploy your Next.js 15 application to your own server in under 60 seconds. Pushify auto-detects Next.js projects, configures the build pipeline, and deploys with zero configuration. Supports App Router, Pages Router, API routes, and server components.',
+        'Deploy your Next.js 15 application to your own server with a single git push. Pushify auto-detects Next.js projects, configures the build pipeline, and deploys with zero configuration. Supports App Router, Pages Router, API routes, and server components.',
       steps: [
         { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
         { title: 'Initialize your project', code: 'pushify init', description: 'Pushify auto-detects your Next.js project, identifies the framework version, and configures the build pipeline automatically.' },
         { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your Next.js app is built, optimized, and deployed to your server with automatic SSL via Let\'s Encrypt.' },
       ],
-      features: ['App Router & Pages Router support', 'Server Components & Server Actions', 'API Routes and middleware', 'Automatic ISR and static generation', 'Environment variables management', 'Zero-downtime deployments'],
+      features: ['App Router & Pages Router support', 'Server Components & Server Actions', 'API Routes and middleware', 'Persistent .next/cache between builds', 'Environment variables management', 'Zero-downtime deployments'],
       howToTitle: 'How to deploy Next.js with Pushify',
       whatYouGet: 'What you get with Next.js on Pushify',
       readyTitle: 'Ready to deploy your Next.js app?',
@@ -67,13 +67,13 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
     tr: {
       title: 'Next.js Uygulamalarını Deploy Edin',
       description:
-        'Next.js 15 uygulamanızı kendi sunucunuza 60 saniyeden kısa sürede deploy edin. Pushify, Next.js projelerini otomatik algılar, build pipeline\'ını yapılandırır ve sıfır konfigürasyonla deploy eder. App Router, Pages Router, API route\'lar ve server component\'ler desteklenir.',
+        'Next.js 15 uygulamanızı kendi sunucunuza tek bir git push ile deploy edin. Pushify, Next.js projelerini otomatik algılar, build pipeline\'ını yapılandırır ve sıfır konfigürasyonla deploy eder. App Router, Pages Router, API route\'lar ve server component\'ler desteklenir.',
       steps: [
         { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
         { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, Next.js projenizi otomatik algılar, framework sürümünü belirler ve build pipeline\'ını otomatik yapılandırır.' },
         { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Next.js uygulamanız build edilir, optimize edilir ve Let\'s Encrypt ile otomatik SSL sertifikasıyla sunucunuza deploy edilir.' },
       ],
-      features: ['App Router & Pages Router desteği', 'Server Components & Server Actions', 'API Routes ve middleware', 'Otomatik ISR ve statik üretim', 'Ortam değişkenleri yönetimi', 'Sıfır kesinti ile deployment'],
+      features: ['App Router & Pages Router desteği', 'Server Components & Server Actions', 'API Routes ve middleware', 'Build\'ler arasında korunan .next/cache', 'Ortam değişkenleri yönetimi', 'Sıfır kesinti ile deployment'],
       howToTitle: 'Pushify ile Next.js nasıl deploy edilir',
       whatYouGet: 'Pushify\'da Next.js ile neler elde edersiniz',
       readyTitle: 'Next.js uygulamanızı deploy etmeye hazır mısınız?',
@@ -142,7 +142,7 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
         { title: 'Initialize your project', code: 'pushify init', description: 'Pushify detects your Python framework from requirements.txt or pyproject.toml and configures Gunicorn/Uvicorn.' },
         { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Dependencies are installed, your app is deployed with a production ASGI/WSGI server and automatic SSL.' },
       ],
-      features: ['Django, Flask, FastAPI support', 'Automatic Gunicorn/Uvicorn setup', 'Virtual environment management', 'Database migrations support', 'Environment variables', 'Background workers with Celery'],
+      features: ['Django, Flask, FastAPI support', 'Automatic Gunicorn/Uvicorn setup', 'Isolated Docker image per deploy', 'Cron jobs via pushify.yaml', 'Environment variables', 'Background workers via pushify.yaml'],
       howToTitle: 'How to deploy Python with Pushify', whatYouGet: 'What you get with Python on Pushify', readyTitle: 'Ready to deploy your Python app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
     },
     tr: {
@@ -153,7 +153,7 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
         { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, requirements.txt veya pyproject.toml\'dan Python framework\'ünüzü algılar ve Gunicorn/Uvicorn\'u yapılandırır.' },
         { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Bağımlılıklar kurulur, uygulamanız production ASGI/WSGI sunucusu ve otomatik SSL ile deploy edilir.' },
       ],
-      features: ['Django, Flask, FastAPI desteği', 'Otomatik Gunicorn/Uvicorn kurulumu', 'Sanal ortam yönetimi', 'Veritabanı migration desteği', 'Ortam değişkenleri', 'Celery ile arka plan işçileri'],
+      features: ['Django, Flask, FastAPI desteği', 'Otomatik Gunicorn/Uvicorn kurulumu', 'Her deploy için izole Docker imajı', 'pushify.yaml ile cron görevleri', 'Ortam değişkenleri', 'pushify.yaml ile arka plan işçileri'],
       howToTitle: 'Pushify ile Python nasıl deploy edilir', whatYouGet: 'Pushify\'da Python ile neler elde edersiniz', readyTitle: 'Python uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',
     },
   },
@@ -165,9 +165,9 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
       steps: [
         { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
         { title: 'Initialize your project', code: 'pushify init', description: 'Pushify reads your package.json, detects the Node.js framework, and configures the start script.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your Node.js app is deployed with PM2 process management, health checks, and automatic SSL.' },
+        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your Node.js app is deployed in a container with auto-restart, health checks, and automatic SSL.' },
       ],
-      features: ['Express, Fastify, NestJS, Koa support', 'PM2 process management', 'Automatic health checks', 'WebSocket support', 'Environment variables', 'Zero-downtime restarts'],
+      features: ['Express, Fastify, NestJS, Koa support', 'Container auto-restart on crash', 'Automatic health checks', 'WebSocket support', 'Environment variables', 'Zero-downtime restarts'],
       howToTitle: 'How to deploy Node.js with Pushify', whatYouGet: 'What you get with Node.js on Pushify', readyTitle: 'Ready to deploy your Node.js app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
     },
     tr: {
@@ -176,9 +176,9 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
       steps: [
         { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
         { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, package.json\'ınızı okur, Node.js framework\'ünü algılar ve başlatma script\'ini yapılandırır.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Node.js uygulamanız PM2 süreç yönetimi, sağlık kontrolleri ve otomatik SSL ile deploy edilir.' },
+        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Node.js uygulamanız otomatik yeniden başlatma, sağlık kontrolleri ve otomatik SSL ile bir container içinde deploy edilir.' },
       ],
-      features: ['Express, Fastify, NestJS, Koa desteği', 'PM2 süreç yönetimi', 'Otomatik sağlık kontrolleri', 'WebSocket desteği', 'Ortam değişkenleri', 'Sıfır kesinti ile yeniden başlatma'],
+      features: ['Express, Fastify, NestJS, Koa desteği', 'Çökmede otomatik yeniden başlatma', 'Otomatik sağlık kontrolleri', 'WebSocket desteği', 'Ortam değişkenleri', 'Sıfır kesinti ile yeniden başlatma'],
       howToTitle: 'Pushify ile Node.js nasıl deploy edilir', whatYouGet: 'Pushify\'da Node.js ile neler elde edersiniz', readyTitle: 'Node.js uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',
     },
   },
@@ -186,24 +186,24 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
     name: 'Laravel', slug: 'laravel', icon: 'L', color: '#FF2D20', buildCommand: 'composer install --no-dev', detectMessage: 'Detected: Laravel 11 + PHP 8.3',
     en: {
       title: 'Deploy Laravel Apps',
-      description: 'Deploy your Laravel application to your own server with zero configuration. Pushify sets up PHP, Composer dependencies, database migrations, queue workers, and Nginx configuration automatically.',
+      description: 'Deploy your Laravel application to your own server with zero configuration. Pushify sets up PHP-FPM with opcache, Composer dependencies, and Nginx configuration automatically.',
       steps: [
         { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
-        { title: 'Initialize your project', code: 'pushify init', description: 'Pushify detects Laravel from composer.json, configures PHP-FPM, Nginx, and database connections.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Composer install, migrations, asset compilation, and deployment — all automated with automatic SSL.' },
+        { title: 'Initialize your project', code: 'pushify init', description: 'Pushify detects Laravel from composer.json and generates a Dockerfile with PHP-FPM and Nginx.' },
+        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Composer install, config and route caching, and deployment — all automated with automatic SSL.' },
       ],
-      features: ['PHP-FPM & Nginx configuration', 'Composer dependency management', 'Automatic database migrations', 'Queue worker setup (Horizon)', 'Scheduled task configuration', 'Redis & cache management'],
+      features: ['PHP-FPM & Nginx configuration', 'Composer dependency management', 'PHP 8.3 image with opcache', 'Queue workers & cron jobs via pushify.yaml', 'Custom domains with automatic SSL', 'Rollbacks to previous deployments'],
       howToTitle: 'How to deploy Laravel with Pushify', whatYouGet: 'What you get with Laravel on Pushify', readyTitle: 'Ready to deploy your Laravel app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
     },
     tr: {
       title: 'Laravel Uygulamalarını Deploy Edin',
-      description: 'Laravel uygulamanızı sıfır konfigürasyonla kendi sunucunuza deploy edin. Pushify, PHP, Composer bağımlılıkları, veritabanı migration\'ları, kuyruk işçileri ve Nginx yapılandırmasını otomatik olarak ayarlar.',
+      description: 'Laravel uygulamanızı sıfır konfigürasyonla kendi sunucunuza deploy edin. Pushify, opcache\'li PHP-FPM, Composer bağımlılıkları ve Nginx yapılandırmasını otomatik olarak ayarlar.',
       steps: [
         { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
-        { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, composer.json\'dan Laravel\'i algılar, PHP-FPM, Nginx ve veritabanı bağlantılarını yapılandırır.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Composer install, migration\'lar, asset derleme ve deployment — hepsi otomatik SSL ile otomatize edilir.' },
+        { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, composer.json\'dan Laravel\'i algılar ve PHP-FPM ile Nginx içeren bir Dockerfile üretir.' },
+        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Composer install, config ve route önbellekleme ve deployment — hepsi otomatik SSL ile otomatize edilir.' },
       ],
-      features: ['PHP-FPM & Nginx yapılandırması', 'Composer bağımlılık yönetimi', 'Otomatik veritabanı migration\'ları', 'Kuyruk işçisi kurulumu (Horizon)', 'Zamanlanmış görev yapılandırması', 'Redis & önbellek yönetimi'],
+      features: ['PHP-FPM & Nginx yapılandırması', 'Composer bağımlılık yönetimi', 'Opcache\'li PHP 8.3 imajı', 'pushify.yaml ile kuyruk işçileri & cron görevleri', 'Otomatik SSL ile özel alan adları', 'Önceki deployment\'lara geri dönüş'],
       howToTitle: 'Pushify ile Laravel nasıl deploy edilir', whatYouGet: 'Pushify\'da Laravel ile neler elde edersiniz', readyTitle: 'Laravel uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',
     },
   },

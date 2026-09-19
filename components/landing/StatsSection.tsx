@@ -9,7 +9,7 @@ export function StatsSection() {
   const stats = [
     { num: '100%', label: t('homepage', 'statsTrusted') },
     { num: '24+', label: t('homepage', 'statsApps') },
-    { num: '<60s', label: t('homepage', 'statsDeployed') },
+    { num: '8', label: t('homepage', 'statsBuildpacks') },
     { num: '0', label: t('homepage', 'statsUptime') },
   ];
 
