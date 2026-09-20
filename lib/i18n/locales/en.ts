@@ -315,7 +315,6 @@ export interface TranslationKeys {
     viewOnGithub: string;
     edgeLocations: string;
     deployTime: string;
-    uptimeSla: string;
     configRequired: string;
     /** Hero editorial body (below headline) */
     heroLead: string;
@@ -387,9 +386,7 @@ export interface TranslationKeys {
     featuresDescription: string;
     sslCertificates: string;
     customDomains: string;
-    ddosProtection: string;
     live: string;
-    unlimitedTeamMembers: string;
     // Pricing section
     pricingBadge: string;
     simpleTransparent: string;
@@ -488,7 +485,6 @@ export interface TranslationKeys {
     githubStatFork: string;
     githubStatLanguage: string;
     uptime: string;
-    soc2Compliant: string;
     freeForeverPlan: string;
     // Footer
     openSourceUnderMit: string;
@@ -511,7 +507,7 @@ export interface TranslationKeys {
     // Stats
     stats: string;
     statsTrusted: string;
-    statsDeployed: string;
+    statsBuildpacks: string;
     statsApps: string;
     statsUptime: string;
     statsByTheNumbers: string;
@@ -567,19 +563,6 @@ export interface TranslationKeys {
     securityFeat5Desc: string;
     securityFeat6Title: string;
     securityFeat6Desc: string;
-    // Social proof
-    socialProofEyebrow: string;
-    socialProofHeadline: string;
-    socialProofSubtitle: string;
-    sp1Quote: string;
-    sp1Author: string;
-    sp1Role: string;
-    sp2Quote: string;
-    sp2Author: string;
-    sp2Role: string;
-    sp3Quote: string;
-    sp3Author: string;
-    sp3Role: string;
     // Comparison
     comparisonEyebrow: string;
     comparisonTitle: string;
@@ -1436,8 +1419,6 @@ export interface TranslationKeys {
     securityAlertsDesc: string;
     weeklyDigest: string;
     weeklyDigestDesc: string;
-    productUpdates: string;
-    productUpdatesDesc: string;
     saved: string;
   };
   team: {
@@ -1521,6 +1502,9 @@ export interface TranslationKeys {
   };
   billing: {
     cancelSubscriptionLink: string;
+    cancelScheduled: string;
+    resumeSubscription: string;
+    resumed: string;
     cancelTitle: string;
     cancelDesc: string;
     cancelReasonLabel: string;
@@ -3156,13 +3140,12 @@ export const en: TranslationKeys = {
     viewOnGithub: 'View on GitHub',
     edgeLocations: 'Any VPS · Any region',
     deployTime: 'Deploy Time',
-    uptimeSla: 'Self-hosted',
     configRequired: 'Config Required',
     heroLead:
       'Open-source PaaS for teams that want Vercel-grade developer experience without the vendor lock-in. Connect a repository, choose a server (yours or ours), and ship to production with HTTPS, builds, and zero-downtime cutover — in under a minute.',
     heroStarGithub: '★ Star on GitHub',
     heroStatMitLicensed: 'MIT licensed',
-    heroStatDeployFast: '< 60s deploy',
+    heroStatDeployFast: 'Git push → live',
     heroStatNoVendorLockIn: '0 vendor lock-in',
     heroMetaPlatform: 'PSH-01 / OPEN SOURCE PLATFORM',
     heroMetaDeploymentsLive: 'DEPLOYMENTS LIVE',
@@ -3193,7 +3176,7 @@ export const en: TranslationKeys = {
       'Provision Hetzner Cloud servers from the dashboard (paid plans). Usage is billed hourly from your prepaid infrastructure credits — separate from your platform subscription. BYOS servers you connect via SSH do not use this wallet.',
     dataLabel: 'Data',
     databasesOneClickTitle: 'Databases in one click.',
-    databasesOneClickDesc: 'Spin up PostgreSQL, MySQL, Redis, or MongoDB with automated backups, connection pooling, and secure access. No DevOps degree required.',
+    databasesOneClickDesc: 'Spin up PostgreSQL, MySQL, Redis, or MongoDB with automated backups and secure access. No DevOps degree required.',
     cliLabel: 'CLI',
     deployFromTerminalTitle: 'Deploy from your terminal.',
     deployFromTerminalDesc: 'The Pushify CLI gives you full control from the command line. Init, deploy, manage env vars, tail logs — everything without leaving your editor.',
@@ -3228,9 +3211,7 @@ export const en: TranslationKeys = {
     featuresDescription: 'Focus on building your product. We handle the infrastructure, scaling, and deployment.',
     sslCertificates: 'SSL Certificates',
     customDomains: 'Custom Domains',
-    ddosProtection: 'DDoS Protection',
     live: 'Live',
-    unlimitedTeamMembers: 'Unlimited team members',
     // Pricing section
     pricingBadge: 'Pricing',
     simpleTransparent: 'Simple,',
@@ -3345,7 +3326,6 @@ export const en: TranslationKeys = {
     githubStatFork: 'Fork',
     githubStatLanguage: 'TypeScript',
     uptime: 'Self-hostable',
-    soc2Compliant: 'MIT Licensed',
     freeForeverPlan: 'Free Forever Plan',
     // Footer
     openSourceUnderMit: 'Open Source under MIT',
@@ -3368,7 +3348,7 @@ export const en: TranslationKeys = {
     // Stats
     stats: 'Trusted by developers worldwide',
     statsTrusted: 'Open source',
-    statsDeployed: 'Avg. deploy time',
+    statsBuildpacks: 'Language buildpacks',
     statsApps: 'Marketplace apps',
     statsUptime: 'Vendor lock-in',
     statsByTheNumbers: 'By the numbers',
@@ -3387,7 +3367,7 @@ export const en: TranslationKeys = {
     step2Title: 'Pick a server',
     step2Desc: 'Provision a VPS via Hetzner Cloud in one click, or connect your existing server with SSH. Servers are configured automatically.',
     step3Title: 'Push to deploy',
-    step3Desc: 'Every git push triggers a build, runs in an isolated Docker container, and goes live with HTTPS in under 60 seconds.',
+    step3Desc: 'Every git push triggers a build, runs in an isolated Docker container, and goes live with HTTPS.',
     // Marketplace preview
     marketplaceEyebrow: 'Marketplace',
     marketplaceTitle: '24+ apps. One-click install.',
@@ -3424,19 +3404,6 @@ export const en: TranslationKeys = {
     securityFeat5Desc: "Free Let's Encrypt certificates with auto-renewal on every custom domain.",
     securityFeat6Title: 'Audit logs & 2FA',
     securityFeat6Desc: 'Two-factor authentication and a full audit trail of who changed what, and when.',
-    // Social proof
-    socialProofEyebrow: 'Loved by builders',
-    socialProofHeadline: 'Built for developers who ship.',
-    socialProofSubtitle: 'From solo makers to small teams — here is what early users are saying.',
-    sp1Quote: 'I moved three side projects off Vercel in an afternoon. Same DX, my own server, a fraction of the cost.',
-    sp1Author: 'Indie developer',
-    sp1Role: 'Early access',
-    sp2Quote: 'The one-click marketplace alone saved us a week of DevOps. Strapi and Postgres were live in minutes.',
-    sp2Author: 'Backend engineer',
-    sp2Role: 'Early access',
-    sp3Quote: 'Finally a self-hostable platform that does not feel like a downgrade. The site builder was a genuine surprise.',
-    sp3Author: 'Full-stack freelancer',
-    sp3Role: 'Early access',
     // Comparison
     comparisonEyebrow: 'Compare',
     comparisonTitle: 'How does Pushify compare?',
@@ -4296,13 +4263,11 @@ export const en: TranslationKeys = {
     emailNotifications: 'Email Notifications',
     emailNotificationsDesc: 'Receive important updates and alerts via email.',
     deploymentAlerts: 'Deployment Alerts',
-    deploymentAlertsDesc: 'Get notified when deployments succeed or fail.',
+    deploymentAlertsDesc: 'Email when a deployment fails, and again when it recovers.',
     securityAlerts: 'Security Alerts',
     securityAlertsDesc: 'Receive alerts about security-related events like new sign-ins.',
     weeklyDigest: 'Weekly Digest',
     weeklyDigestDesc: 'Receive a weekly summary of your project activity.',
-    productUpdates: 'Product Updates',
-    productUpdatesDesc: 'Stay informed about new features and improvements.',
     saved: 'Notification preferences saved!',
   },
   team: {
@@ -4388,6 +4353,9 @@ export const en: TranslationKeys = {
   },
   billing: {
     cancelSubscriptionLink: 'Cancel subscription',
+    cancelScheduled: 'Your subscription ends on {date}. Everything keeps working until then.',
+    resumeSubscription: 'Keep my subscription',
+    resumed: 'Subscription resumed — it will renew as before.',
     cancelTitle: 'Cancel your subscription?',
     cancelDesc: 'Your plan stays active until the end of the current billing period, then drops to Free. Your projects and data are not deleted.',
     cancelReasonLabel: 'One question before you go — why are you cancelling?',

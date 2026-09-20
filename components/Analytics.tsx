@@ -1,8 +1,10 @@
 import Script from 'next/script';
 
 // Public GA4 Measurement ID (not a secret — visible in any GA site's page source).
-// Override the property by setting NEXT_PUBLIC_GA_ID; otherwise this default is used.
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-SW4LNQEV9M';
+// Set NEXT_PUBLIC_GA_ID to use your own property. The Pushify default applies only to builds
+// that talk to Pushify's own API, so a self-hosted instance never reports to Pushify's GA.
+const PUSHIFY_CLOUD = (process.env.NEXT_PUBLIC_API_URL ?? '').includes('api.pushify.dev');
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || (PUSHIFY_CLOUD ? 'G-SW4LNQEV9M' : '');
 
 /**
  * Google Analytics 4. Loads in production builds only (skipped in local dev) so analytics

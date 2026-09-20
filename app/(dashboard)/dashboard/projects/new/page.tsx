@@ -212,9 +212,7 @@ export default function NewProjectPage() {
                 ? 'github'
                 : repositoryUrl.includes('gitlab')
                   ? 'gitlab'
-                  : repositoryUrl.includes('bitbucket.org')
-                    ? 'bitbucket'
-                    : undefined,
+                  : undefined,
         framework: selectedFramework || undefined,
         buildCommand: buildCommand || undefined,
         installCommand: installCommand || undefined,
