@@ -2,7 +2,6 @@
 title: Pushify is now open source
 description: The full platform — API server, dashboard, and CLI — is now MIT-licensed and on GitHub. Here's what's in the repos, how to self-host it, and why we opened it up.
 date: 2026-09-09
-author: Aziz Kurt
 tags: announcement, open source, self-hosting
 ---
 
