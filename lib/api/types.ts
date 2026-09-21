@@ -208,6 +208,9 @@ export interface NginxSettings {
   customLocationBlocks?: string;
 }
 
+/** An update: a field left out keeps its value, null removes it. */
+export type NginxSettingsUpdate = { [K in keyof NginxSettings]?: NginxSettings[K] | null };
+
 // ============ Deployment Types ============
 
 export type DeploymentStatus = 'pending' | 'queued' | 'building' | 'deploying' | 'running' | 'ready' | 'failed' | 'cancelled' | 'stopped';

@@ -514,6 +514,7 @@ export type {
   AddDomainInput,
   DnsSetupInfo,
   NginxSettings,
+  NginxSettingsUpdate,
   // Deployments
   Deployment,
   DeploymentStatus,

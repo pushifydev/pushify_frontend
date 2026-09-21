@@ -73,8 +73,10 @@ export function NginxSettingsModal({
       }
     });
 
+    // Cleared / switched-off fields go as null so the server removes them (undefined is simply
+    // left out of the JSON, which kept the old value — clearing a field used to change nothing).
     await updateSettings.mutateAsync({
-      proxyPort: proxyPort ? Number(proxyPort) : undefined,
+      proxyPort: proxyPort ? Number(proxyPort) : null,
       proxyTimeout,
       clientMaxBodySize,
       enableWebsocket,
@@ -84,13 +86,13 @@ export function NginxSettingsModal({
         enabled: true,
         requestsPerSecond: rateLimitRps,
         burst: rateLimitBurst,
-      } : undefined,
+      } : null,
       caching: cachingEnabled ? {
         enabled: true,
         maxAge: cachingMaxAge,
-      } : undefined,
-      customHeaders: Object.keys(headersObj).length > 0 ? headersObj : undefined,
-      customLocationBlocks: customLocationBlocks.trim() || undefined,
+      } : null,
+      customHeaders: Object.keys(headersObj).length > 0 ? headersObj : null,
+      customLocationBlocks: customLocationBlocks.trim() || null,
     });
     onClose();
   };
