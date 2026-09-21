@@ -5,6 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useGitHubAppSetup, useGitHubAppInstall, useTranslation } from '@/hooks';
+import { consumeGitHubReturn, peekGitHubReturn } from '@/lib/github-return';
+
+const FALLBACK_RETURN = '/dashboard/projects/new';
 
 /**
  * Where GitHub sends the browser after someone installs the Pushify App. The installation id
@@ -36,7 +39,8 @@ function AppSetupInner() {
       .mutateAsync({ installationId, state })
       .then((result) => {
         setAccount(result?.accountLogin ?? null);
-        setTimeout(() => router.replace('/dashboard/projects/new'), 1200);
+        const returnTo = consumeGitHubReturn(FALLBACK_RETURN);
+        setTimeout(() => router.replace(returnTo), 1200);
       })
       .catch((err: unknown) => {
         setFailure(err instanceof Error ? err.message : String(err));
@@ -66,7 +70,7 @@ function AppSetupInner() {
               {!missingInstallation && (
                 <button
                   type="button"
-                  onClick={() => relink.mutate()}
+                  onClick={() => relink.mutate(peekGitHubReturn(FALLBACK_RETURN))}
                   disabled={relink.isPending}
                   className="btn btn-primary text-sm"
                 >
@@ -74,7 +78,7 @@ function AppSetupInner() {
                   {t('newProject', 'githubAppRelink')}
                 </button>
               )}
-              <Link href="/dashboard/projects/new" className="btn btn-secondary text-sm">
+              <Link href={peekGitHubReturn(FALLBACK_RETURN)} className="btn btn-secondary text-sm">
                 {t('common', 'back')}
               </Link>
             </div>

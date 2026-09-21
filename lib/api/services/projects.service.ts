@@ -106,6 +106,32 @@ export const installGitHubWebhook = async (
   }
 };
 
+/** Which credential Pushify would use to read the project's repository (never the token). */
+export interface ProjectGitAccess {
+  provider: 'github' | 'gitlab' | null;
+  repoFullName: string | null;
+  repoOwner: string | null;
+  /**
+   * ok — automatic deploys can read it (GitHub App or the org owner's account)
+   * viewer_only — only your own GitHub account can: deploys you start work, pushes don't
+   * public — anyone can clone it; no_access — private and nothing connected can see it
+   */
+  status: 'ok' | 'viewer_only' | 'public' | 'no_access' | 'unknown' | 'not_git';
+  via: { source: 'app' | 'oauth'; account: string | null } | null;
+  viewer: { connected: boolean; username: string | null; hasRepoScope: boolean | null };
+  appConfigured: boolean;
+  oauthConfigured: boolean;
+}
+
+export const getProjectGitAccess = async (projectId: string): Promise<ApiResponse<ProjectGitAccess>> => {
+  try {
+    const response = await api.get<{ data: ProjectGitAccess }>(`/projects/${projectId}/git-access`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 // ============ Webhook Functions ============
 
 export interface WebhookInfo {
@@ -173,6 +199,7 @@ export const projectsService = {
   getWebhookInfo,
   regenerateWebhookSecret,
   installGitHubWebhook,
+  getGitAccess: getProjectGitAccess,
   updateSettings: updateProjectSettings,
 };
 

@@ -10,6 +10,7 @@ export {
   useWebhookInfo,
   useRegenerateWebhookSecret,
   useInstallGitHubWebhook,
+  useProjectGitAccess,
   useUpdateProjectSettings,
 } from './useProjects';
 

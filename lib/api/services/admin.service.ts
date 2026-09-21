@@ -33,6 +33,7 @@ export interface AdminOverview {
 }
 
 export type AdminDeployFailureCategory =
+  | 'repository_access'
   | 'out_of_memory'
   | 'disk_space'
   | 'platform_native'

@@ -19,6 +19,7 @@ import {
   type FrameworkDetection,
 } from '@/lib/api';
 import { safeStorage } from '@/lib/safe-storage';
+import { rememberGitHubReturn } from '@/lib/github-return';
 
 // Query Keys
 export const githubKeys = {
@@ -148,12 +149,13 @@ export function useGitHubAppRepositories(installationId: number | null) {
   });
 }
 
-/** Sends the browser to GitHub's installation screen. */
+/** Sends the browser to GitHub's installation screen; `mutate(returnTo)` picks where it comes back. */
 export function useGitHubAppInstall() {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (returnTo: string | void) => {
       const result = await getGitHubAppInstallUrl();
       if (result.error) throw new Error(result.error.message);
+      rememberGitHubReturn(returnTo);
       return result.data;
     },
     onSuccess: (data) => {
@@ -182,9 +184,10 @@ export function useGitHubConnect() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (returnTo: string | void) => {
       const result = await getGitHubAuthUrl();
       if (result.error) throw new Error(result.error.message);
+      rememberGitHubReturn(returnTo);
       return result.data;
     },
     onSuccess: (data) => {

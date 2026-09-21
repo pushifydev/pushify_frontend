@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/Skeleton';
 import { AdminPanel, AdminError, EmptyRow, rowBorder } from './shared';
 
 const CATEGORY_LABEL: Record<AdminDeployFailureCategory, keyof TranslationKeys['admin']> = {
+  repository_access: 'catRepositoryAccess',
   out_of_memory: 'catOutOfMemory',
   disk_space: 'catDiskSpace',
   platform_native: 'catPlatformNative',

@@ -307,9 +307,13 @@ export function ImportSourceStep({
                       <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]">
                         {t('newProject', 'githubAppAddAccount')}
                       </button>
-                      {githubStatus?.connected && (
+                      {githubStatus?.connected ? (
                         <button type="button" onClick={() => setPreferOAuthPicker(true)} className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]">
                           {t('newProject', 'githubAppUseOAuth')}
+                        </button>
+                      ) : (
+                        <button type="button" onClick={() => githubConnect.mutate()} disabled={githubConnect.isPending} className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]">
+                          {t('newProject', 'githubOrConnectAccount')}
                         </button>
                       )}
                     </div>
@@ -412,11 +416,10 @@ export function ImportSourceStep({
                   </>
                 )}
 
-                {!appInstallations?.configured && (
                 <button
                   onClick={() => githubConnect.mutate()}
                   disabled={githubConnect.isPending}
-                  className={appInstallations?.configured ? 'btn btn-ghost text-sm' : 'btn btn-primary'}
+                  className={appInstallations?.configured ? 'btn btn-ghost text-sm mt-1' : 'btn btn-primary'}
                 >
                   {githubConnect.isPending ? (
                     <>
@@ -426,11 +429,12 @@ export function ImportSourceStep({
                   ) : (
                     <>
                       <Github className="w-4 h-4" />
-                      {t('newProject', 'connectGithubBtn')}
+                      {appInstallations?.configured
+                        ? t('newProject', 'githubOrConnectAccount')
+                        : t('newProject', 'connectGithubBtn')}
                     </>
                   )}
                 </button>
-                )}
               </div>
             </div>
           ) : (
@@ -475,20 +479,24 @@ export function ImportSourceStep({
                   style={{ background: 'var(--dash-accent-bg)', border: '1px solid var(--glass-border-md)', color: 'var(--text-secondary)' }}
                 >
                   <span className="flex-1">{t('newProject', 'githubOauthPublicOnly')}</span>
-                  {hasAppInstallation ? (
-                    <button type="button" onClick={() => setPreferOAuthPicker(false)} className="btn btn-primary text-xs py-1.5 px-3 shrink-0">
-                      {t('newProject', 'githubAppUsePicker')}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button type="button" onClick={() => githubConnect.mutate()} disabled={githubConnect.isPending} className="btn btn-primary text-xs py-1.5 px-3">
+                      {githubConnect.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                      {t('newProject', 'githubReconnect')}
                     </button>
-                  ) : appInstallations?.configured ? (
-                    <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-primary text-xs py-1.5 px-3 shrink-0">
-                      {t('newProject', 'githubAppInstall')}
-                    </button>
-                  ) : null}
+                    {hasAppInstallation ? (
+                      <button type="button" onClick={() => setPreferOAuthPicker(false)} className="btn btn-ghost text-xs py-1.5 px-3">
+                        {t('newProject', 'githubAppUsePicker')}
+                      </button>
+                    ) : appInstallations?.configured ? (
+                      <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost text-xs py-1.5 px-3">
+                        {t('newProject', 'githubAppInstall')}
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               )}
 
-              {githubStatus?.hasRepoScope !== false && (
-              <>
               {/* Search repos */}
               <div className="relative">
                 <input
@@ -612,8 +620,6 @@ export function ImportSourceStep({
                     </div>
                   )}
                 </div>
-              )}
-              </>
               )}
             </div>
           )}

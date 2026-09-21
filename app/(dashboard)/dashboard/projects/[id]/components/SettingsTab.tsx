@@ -17,6 +17,7 @@ import { type ProjectStatus } from '@/lib/api';
 import { HealthCheckSection } from './HealthCheckSection';
 import { VolumesSection } from './VolumesSection';
 import { PreviewDeploymentsSection } from './PreviewDeploymentsSection';
+import { GitHubAccessSection } from './GitHubAccessSection';
 
 export function SettingsTab({
   project,
@@ -363,6 +364,11 @@ export function SettingsTab({
           </div>
         )}
       </div>
+
+      {/* GitHub access — which credential pulls the repo, and how to fix it when none can */}
+      {project.gitRepoUrl?.includes('github.com') && (
+        <GitHubAccessSection projectId={projectId} t={t} />
+      )}
 
       {/* Webhook settings */}
       <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
