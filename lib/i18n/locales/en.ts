@@ -745,6 +745,7 @@ export interface TranslationKeys {
     dnsHide: string;
     domainRecheck: string;
     domainRecheckHint: string;
+    nginxCustomLocationsHint: string;
     failureBlamePushify: string;
     failureBlameServer: string;
     failureBlameProject: string;
@@ -3628,6 +3629,7 @@ export const en: TranslationKeys = {
     dnsHide: 'Hide DNS setup',
     domainRecheck: 'Re-check SSL',
     domainRecheckHint: 'Re-applies Nginx and SSL — picks up a www record added later and retries a failed certificate',
+    nginxCustomLocationsHint: "Advanced — these run in the server's own Nginx, in front of your app. A block without proxy_pass or return serves files from the server, not from your app, so put your app's routes in your repository's nginx.conf. Only available on your own server.",
     failureBlamePushify: 'Pushify platform',
     failureBlameServer: 'Server capacity',
     failureBlameProject: 'Your project',

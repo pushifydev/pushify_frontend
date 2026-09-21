@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { api } from '../client';
-import type { ApiResponse, ApiError, Domain, AddDomainInput, DnsSetupInfo, NginxSettings } from '../types';
+import type { ApiResponse, ApiError, Domain, AddDomainInput, DnsSetupInfo, NginxSettings, NginxSettingsUpdate } from '../types';
 
 // ============ Helper ============
 
@@ -111,7 +111,7 @@ export const getNginxSettings = async (
 export const updateNginxSettings = async (
   projectId: string,
   domainId: string,
-  settings: Partial<NginxSettings>
+  settings: NginxSettingsUpdate
 ): Promise<ApiResponse<NginxSettings>> => {
   try {
     const response = await api.patch<{ data: NginxSettings; message: string }>(

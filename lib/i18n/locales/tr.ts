@@ -768,6 +768,7 @@ export const tr: TranslationKeys = {
     dnsHide: 'DNS kurulumunu gizle',
     domainRecheck: 'SSL\'i yeniden kontrol et',
     domainRecheckHint: 'Nginx ve SSL’i yeniden uygular — sonradan eklenen www kaydını alır, başarısız sertifikayı yeniden dener',
+    nginxCustomLocationsHint: "Gelişmiş — bunlar uygulamanın önündeki sunucu Nginx'inde çalışır. proxy_pass ya da return içermeyen bir blok uygulamanı değil sunucudaki dosyaları sunar; uygulamanın yönlendirmelerini reponun nginx.conf dosyasına koy. Yalnızca kendi sunucunda kullanılabilir.",
     failureBlamePushify: 'Pushify platformu',
     failureBlameServer: 'Sunucu kapasitesi',
     failureBlameProject: 'Projeniz',

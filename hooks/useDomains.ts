@@ -13,6 +13,7 @@ import {
   updateNginxSettings,
   type AddDomainInput,
   type NginxSettings,
+  type NginxSettingsUpdate,
 } from '@/lib/api';
 import { projectKeys } from './useProjects';
 
@@ -140,7 +141,7 @@ export function useUpdateNginxSettings(projectId: string, domainId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (settings: Partial<NginxSettings>) => {
+    mutationFn: async (settings: NginxSettingsUpdate) => {
       const result = await updateNginxSettings(projectId, domainId, settings);
       if (result.error) throw new Error(result.error.message);
       return result.data;

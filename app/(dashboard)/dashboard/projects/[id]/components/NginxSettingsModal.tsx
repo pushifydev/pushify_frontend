@@ -8,6 +8,7 @@ import {
   useUpdateNginxSettings,
   useTranslation,
 } from '@/hooks';
+import { toast } from 'sonner';
 import { ToggleOption } from './ToggleOption';
 
 // Nginx Settings Modal Component
@@ -73,25 +74,33 @@ export function NginxSettingsModal({
       }
     });
 
-    await updateSettings.mutateAsync({
-      proxyPort: proxyPort ? Number(proxyPort) : undefined,
-      proxyTimeout,
-      clientMaxBodySize,
-      enableWebsocket,
-      enableGzip,
-      forceHttps,
-      rateLimit: rateLimitEnabled ? {
-        enabled: true,
-        requestsPerSecond: rateLimitRps,
-        burst: rateLimitBurst,
-      } : undefined,
-      caching: cachingEnabled ? {
-        enabled: true,
-        maxAge: cachingMaxAge,
-      } : undefined,
-      customHeaders: Object.keys(headersObj).length > 0 ? headersObj : undefined,
-      customLocationBlocks: customLocationBlocks.trim() || undefined,
-    });
+    // Cleared / switched-off fields go as null so the server removes them (undefined is simply
+    // left out of the JSON, which kept the old value — clearing a field used to change nothing).
+    try {
+      await updateSettings.mutateAsync({
+        proxyPort: proxyPort ? Number(proxyPort) : null,
+        proxyTimeout,
+        clientMaxBodySize,
+        enableWebsocket,
+        enableGzip,
+        forceHttps,
+        rateLimit: rateLimitEnabled ? {
+          enabled: true,
+          requestsPerSecond: rateLimitRps,
+          burst: rateLimitBurst,
+        } : null,
+        caching: cachingEnabled ? {
+          enabled: true,
+          maxAge: cachingMaxAge,
+        } : null,
+        customHeaders: Object.keys(headersObj).length > 0 ? headersObj : null,
+        customLocationBlocks: customLocationBlocks.trim() || null,
+      });
+    } catch (err) {
+      // e.g. custom location blocks on the shared runner — say why instead of silently staying open
+      toast.error(err instanceof Error ? err.message : String(err));
+      return;
+    }
     onClose();
   };
 
@@ -349,7 +358,7 @@ export function NginxSettingsModal({
               <section className="space-y-4">
                 <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Custom Location Blocks</h3>
                 <p className="text-xs text-[var(--text-muted)]">
-                  Advanced: Add custom Nginx location blocks. Use with caution.
+                  {t('projectDetail', 'nginxCustomLocationsHint')}
                 </p>
                 <textarea
                   value={customLocationBlocks}
