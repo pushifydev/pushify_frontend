@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useDnsSetup, useDomains, useTranslation } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
+import { dnsRecordName, wwwTwin } from '@/lib/dns-record';
 
 export function DomainCard({
   projectId,
@@ -46,13 +47,12 @@ export function DomainCard({
   t: ReturnType<typeof useTranslation>['t'];
 }) {
   const confirm = useConfirm();
-  const { data: dnsSetup, isLoading: isDnsLoading } = useDnsSetup(
-    projectId,
-    isExpanded && !domain.verifiedAt ? domain.id : null
-  );
+  const { data: dnsSetup, isLoading: isDnsLoading } = useDnsSetup(projectId, isExpanded ? domain.id : null);
 
   const sslBadge = getSslStatusBadge(domain.sslStatus);
   const isVerified = !!domain.verifiedAt;
+  // example.com ↔ www.example.com: served as a redirect once its DNS points here too
+  const twin = wwwTwin(domain.domain);
 
   return (
     <div className="rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-hidden min-w-0">
@@ -73,15 +73,13 @@ export function DomainCard({
                 </span>
               )}
             </div>
-            {!isVerified && (
-              <button
-                onClick={onToggleExpand}
-                className="text-xs text-[var(--accent-cyan)] hover:underline mt-1 flex items-center gap-1"
-              >
-                <ChevronRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-                {isExpanded ? 'Hide DNS setup' : 'Show DNS setup instructions'}
-              </button>
-            )}
+            <button
+              onClick={onToggleExpand}
+              className="text-xs text-[var(--accent-cyan)] hover:underline mt-1 flex items-center gap-1"
+            >
+              <ChevronRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+              {isExpanded ? t('projectDetail', 'dnsHide') : t('projectDetail', 'dnsShow')}
+            </button>
           </div>
         </div>
         <div className="flex flex-wrap gap-2 shrink-0 w-full lg:w-auto">
@@ -103,6 +101,16 @@ export function DomainCard({
               >
                 <Sliders className="w-3 h-3" />
                 Settings
+              </button>
+              {/* Re-runs Nginx + SSL: picks up a www record added later, retries a failed certificate */}
+              <button
+                onClick={() => onVerify(domain.id)}
+                disabled={isVerifying}
+                className={`btn h-8 text-xs ${domain.sslStatus === 'active' ? 'btn-ghost' : 'btn-primary'}`}
+                title={t('projectDetail', 'domainRecheckHint')}
+              >
+                <RefreshCw className={`w-3 h-3 ${isVerifying ? 'animate-spin' : ''}`} />
+                {t('projectDetail', 'domainRecheck')}
               </button>
             </>
           ) : (
@@ -145,49 +153,59 @@ export function DomainCard({
       </div>
 
       {/* DNS Setup Instructions Panel */}
-      {isExpanded && !isVerified && (
+      {isExpanded && (
         <div className="border-t border-[var(--border-subtle)] p-4 bg-[var(--bg-tertiary)]">
           {isDnsLoading ? (
             <div className="flex items-center justify-center py-4">
               <RefreshCw className="w-5 h-5 animate-spin text-[var(--text-muted)]" />
-              <span className="ml-2 text-sm text-[var(--text-muted)]">Loading DNS information...</span>
+              <span className="ml-2 text-sm text-[var(--text-muted)]">{t('projectDetail', 'dnsLoading')}</span>
             </div>
           ) : dnsSetup ? (
             <div className="space-y-4">
-              <h4 className="font-medium text-sm">DNS Configuration</h4>
+              <h4 className="font-medium text-sm">{t('projectDetail', 'dnsConfiguration')}</h4>
 
               {dnsSetup.serverIp ? (
                 <>
                   <div className="text-sm text-[var(--text-secondary)]">
-                    <p className="mb-3">
-                      Add an <span className="font-semibold text-[var(--text-primary)]">A record</span> in your DNS provider pointing to your server:
-                    </p>
+                    <p className="mb-3">{t('projectDetail', 'dnsAddRecord')}</p>
 
-                    <div className="bg-[var(--bg-primary)] rounded-lg p-4 border border-[var(--border-subtle)]">
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs mb-3">
-                        <div>
-                          <span className="text-[var(--text-muted)] block mb-1">Type</span>
-                          <span className="terminal-text font-medium">A</span>
-                        </div>
-                        <div>
-                          <span className="text-[var(--text-muted)] block mb-1">Name</span>
-                          <span className="terminal-text font-medium">
-                            {domain.domain.split('.')[0] === domain.domain ? '@' : domain.domain.split('.')[0]}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-[var(--text-muted)] block mb-1">Value</span>
-                          <div className="flex items-center gap-2">
-                            <span className="terminal-text font-medium">{dnsSetup.serverIp}</span>
-                            <button
-                              onClick={() => onCopyIp(dnsSetup.serverIp!)}
-                              className="text-[var(--accent-cyan)] hover:text-[var(--text-primary)]"
-                            >
-                              {copiedIp ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                            </button>
+                    <div className="bg-[var(--bg-primary)] rounded-lg border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
+                      {[
+                        { host: domain.domain, twin: false },
+                        ...(twin ? [{ host: twin, twin: true }] : []),
+                      ].map((record) => (
+                        <div key={record.host} className="p-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                            <div>
+                              <span className="text-[var(--text-muted)] block mb-1">{t('projectDetail', 'dnsType')}</span>
+                              <span className="terminal-text font-medium">A</span>
+                            </div>
+                            <div>
+                              <span className="text-[var(--text-muted)] block mb-1">{t('projectDetail', 'dnsName')}</span>
+                              <span className="terminal-text font-medium">{dnsRecordName(record.host)}</span>
+                            </div>
+                            <div>
+                              <span className="text-[var(--text-muted)] block mb-1">{t('projectDetail', 'dnsValue')}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="terminal-text font-medium">{dnsSetup.serverIp}</span>
+                                <button
+                                  onClick={() => onCopyIp(dnsSetup.serverIp!)}
+                                  className="text-[var(--accent-cyan)] hover:text-[var(--text-primary)]"
+                                >
+                                  {copiedIp ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                </button>
+                              </div>
+                            </div>
                           </div>
+                          {record.twin && (
+                            <p className="text-xs text-[var(--text-muted)] mt-3">
+                              {t('projectDetail', 'dnsTwinHint')
+                                .replace('{twin}', record.host)
+                                .replace('{domain}', domain.domain)}
+                            </p>
+                          )}
                         </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
 
@@ -200,36 +218,35 @@ export function DomainCard({
                   }`}>
                     {dnsSetup.isConfigured ? (
                       <>
-                        <Check className="w-4 h-4" />
-                        <span>DNS is correctly configured! Click "Verify" to complete setup.</span>
+                        <Check className="w-4 h-4 shrink-0" />
+                        <span>{t('projectDetail', 'dnsReady')}</span>
                       </>
                     ) : dnsSetup.currentIp ? (
                       <>
-                        <Activity className="w-4 h-4" />
+                        <Activity className="w-4 h-4 shrink-0" />
                         <span>
-                          DNS currently points to <span className="font-mono">{dnsSetup.currentIp}</span>.
-                          Update it to point to <span className="font-mono">{dnsSetup.serverIp}</span>.
+                          {t('projectDetail', 'dnsPointsElsewhere')
+                            .replace('{current}', dnsSetup.currentIp)
+                            .replace('{server}', dnsSetup.serverIp)}
                         </span>
                       </>
                     ) : (
                       <>
-                        <Clock className="w-4 h-4" />
-                        <span>DNS record not found. Add the A record above, then wait for propagation (may take a few minutes).</span>
+                        <Clock className="w-4 h-4 shrink-0" />
+                        <span>{t('projectDetail', 'dnsNotFound')}</span>
                       </>
                     )}
                   </div>
                 </>
               ) : (
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-[var(--status-warning)]/10 text-[var(--status-warning)] text-sm">
-                  <Server className="w-4 h-4" />
-                  <span>No server assigned to this project. Please assign a server in project settings first.</span>
+                  <Server className="w-4 h-4 shrink-0" />
+                  <span>{t('projectDetail', 'dnsNoServer')}</span>
                 </div>
               )}
             </div>
           ) : (
-            <div className="text-sm text-[var(--text-muted)]">
-              Unable to load DNS setup information.
-            </div>
+            <div className="text-sm text-[var(--text-muted)]">{t('projectDetail', 'dnsUnavailable')}</div>
           )}
         </div>
       )}
