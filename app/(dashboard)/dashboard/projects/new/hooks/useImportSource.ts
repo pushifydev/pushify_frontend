@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/lib/api';
 import type { GitHubRepo, GitLabRepo } from '@/lib/api';
 import type { GitHubAppRepository } from '@/lib/api/services/github.service';
+import { readGitHubRepoSource, rememberGitHubRepoSource } from '@/lib/github-return';
 
 interface UseImportSourceArgs {
   projectName: string;
@@ -56,7 +57,13 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
   const [selectedAppInstallationId, setSelectedAppInstallationId] = useState<number | null>(null);
   const [selectedAppRepo, setSelectedAppRepo] = useState<GitHubAppRepository | null>(null);
   const [appRepoSearchQuery, setAppRepoSearchQuery] = useState('');
-  const [preferOAuthPicker, setPreferOAuthPicker] = useState(false);
+  // Opens on the list chosen last time — right after connecting an account, that account's repos.
+  // (The GitHub section only renders once the user picks it, so this can't cause a hydration diff.)
+  const [preferOAuthPicker, setPreferOAuthPickerState] = useState(() => readGitHubRepoSource() === 'oauth');
+  const setPreferOAuthPicker = (value: boolean) => {
+    setPreferOAuthPickerState(value);
+    rememberGitHubRepoSource(value ? 'oauth' : 'app');
+  };
   const installations = appInstallations?.installations ?? [];
   const hasAppInstallation = installations.length > 0;
   const useAppPicker = hasAppInstallation && !preferOAuthPicker;
@@ -102,14 +109,11 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
     }
   };
 
-  const handleChangeGithubAccount = async () => {
-    try {
-      await githubDisconnect.mutateAsync();
-      resetGithubSelection();
-      githubConnect.mutate();
-    } catch (err) {
-      toast.error(getApiErrorMessage(err));
-    }
+  // GitHub shows its account picker on connect, and the new account replaces the old one when
+  // it comes back — no disconnect first, so cancelling the picker leaves the current one intact.
+  const handleChangeGithubAccount = () => {
+    resetGithubSelection();
+    githubConnect.mutate();
   };
 
   const resetGitlabSelection = () => {
