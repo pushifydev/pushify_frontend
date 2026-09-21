@@ -748,7 +748,7 @@ export const tr: TranslationKeys = {
     gitAccessInstallApp: 'GitHub App\'i {owner} hesabına kur',
     gitAccessConnect: 'GitHub hesabını bağla',
     gitAccessReconnect: 'GitHub hesabını yeniden bağla',
-    gitAccessConnectHint: 'GitHub, github.com\'da hangi hesapla oturum açtıysan onu bağlar.',
+    gitAccessConnectHint: 'GitHub hangi hesabı bağlayacağını soracak — bu repoyu görebilen hesabı seç.',
     gitAccessPublicOnlyScope: 'GitHub bağlantın (@{username}) yalnızca herkese açık repoları görebiliyor. Özel repolara erişim vermek için yeniden bağlan.',
     gitAccessConnectedAs: 'GitHub bağlantın: @{username}',
     gitAccessRecheck: 'Tekrar kontrol et',

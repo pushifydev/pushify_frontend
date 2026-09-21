@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useGitHubAppSetup, useGitHubAppInstall, useTranslation } from '@/hooks';
-import { consumeGitHubReturn, peekGitHubReturn } from '@/lib/github-return';
+import { consumeGitHubReturn, peekGitHubReturn, rememberGitHubRepoSource } from '@/lib/github-return';
 
 const FALLBACK_RETURN = '/dashboard/projects/new';
 
@@ -39,6 +39,7 @@ function AppSetupInner() {
       .mutateAsync({ installationId, state })
       .then((result) => {
         setAccount(result?.accountLogin ?? null);
+        rememberGitHubRepoSource('app');
         const returnTo = consumeGitHubReturn(FALLBACK_RETURN);
         setTimeout(() => router.replace(returnTo), 1200);
       })

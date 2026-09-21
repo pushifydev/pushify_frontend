@@ -23,3 +23,18 @@ export function consumeGitHubReturn(fallback: string): string {
   safeStorage.remove(KEY);
   return value;
 }
+
+const SOURCE_KEY = 'github_repo_source';
+
+/**
+ * Which repository list New Project opens with. Right after connecting a GitHub account that is
+ * the account's own list — otherwise the App's list hides the account that was just connected.
+ */
+export function rememberGitHubRepoSource(source: 'oauth' | 'app'): void {
+  safeStorage.set(SOURCE_KEY, source);
+}
+
+export function readGitHubRepoSource(): 'oauth' | 'app' | null {
+  const value = safeStorage.get(SOURCE_KEY);
+  return value === 'oauth' || value === 'app' ? value : null;
+}

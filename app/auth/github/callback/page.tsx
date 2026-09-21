@@ -6,7 +6,7 @@ import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { connectGitHub, githubLoginCallback } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import { consumeAuthRedirect } from '@/lib/auth-redirect';
-import { consumeGitHubReturn } from '@/lib/github-return';
+import { consumeGitHubReturn, rememberGitHubRepoSource } from '@/lib/github-return';
 
 function GitHubCallbackContent() {
   const router = useRouter();
@@ -124,6 +124,7 @@ function GitHubCallbackContent() {
         }
 
         setStatus('success');
+        rememberGitHubRepoSource('oauth');
         // Back to where the connection was started (project settings or new project)
         const returnTo = consumeGitHubReturn('/dashboard/projects/new');
         setTimeout(() => {

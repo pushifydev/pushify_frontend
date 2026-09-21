@@ -3592,7 +3592,7 @@ export const en: TranslationKeys = {
     gitAccessInstallApp: 'Install GitHub App on {owner}',
     gitAccessConnect: 'Connect GitHub account',
     gitAccessReconnect: 'Reconnect GitHub account',
-    gitAccessConnectHint: 'GitHub connects whichever account you are signed in to on github.com.',
+    gitAccessConnectHint: 'GitHub asks which account to connect — pick the one that can see this repository.',
     gitAccessPublicOnlyScope: 'Your GitHub connection (@{username}) can only see public repositories. Reconnect to give Pushify access to private ones.',
     gitAccessConnectedAs: 'Your GitHub connection: @{username}',
     gitAccessRecheck: 'Check again',
