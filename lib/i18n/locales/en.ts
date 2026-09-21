@@ -729,6 +729,22 @@ export interface TranslationKeys {
     gitAccessPublicOnlyScope: string;
     gitAccessConnectedAs: string;
     gitAccessRecheck: string;
+    dnsLoading: string;
+    dnsConfiguration: string;
+    dnsAddRecord: string;
+    dnsType: string;
+    dnsName: string;
+    dnsValue: string;
+    dnsTwinHint: string;
+    dnsReady: string;
+    dnsPointsElsewhere: string;
+    dnsNotFound: string;
+    dnsNoServer: string;
+    dnsUnavailable: string;
+    dnsShow: string;
+    dnsHide: string;
+    domainRecheck: string;
+    domainRecheckHint: string;
     failureBlamePushify: string;
     failureBlameServer: string;
     failureBlameProject: string;
@@ -3596,6 +3612,22 @@ export const en: TranslationKeys = {
     gitAccessPublicOnlyScope: 'Your GitHub connection (@{username}) can only see public repositories. Reconnect to give Pushify access to private ones.',
     gitAccessConnectedAs: 'Your GitHub connection: @{username}',
     gitAccessRecheck: 'Check again',
+    dnsLoading: 'Loading DNS information...',
+    dnsConfiguration: 'DNS configuration',
+    dnsAddRecord: 'Add an A record at your DNS provider pointing to the server:',
+    dnsType: 'Type',
+    dnsName: 'Name',
+    dnsValue: 'Value',
+    dnsTwinHint: 'Add this one too so {twin} works as well — Pushify redirects it to {domain} and puts it on the same SSL certificate.',
+    dnsReady: 'DNS is set up correctly. Verify to finish the setup.',
+    dnsPointsElsewhere: 'DNS points to {current}. Change it to {server}.',
+    dnsNotFound: 'No DNS record found yet. Add the A record above and give it a few minutes to spread.',
+    dnsNoServer: 'No server to point at yet. Assign a server in project settings or deploy the project once.',
+    dnsUnavailable: 'Could not load DNS information.',
+    dnsShow: 'Show DNS setup',
+    dnsHide: 'Hide DNS setup',
+    domainRecheck: 'Re-check SSL',
+    domainRecheckHint: 'Re-applies Nginx and SSL — picks up a www record added later and retries a failed certificate',
     failureBlamePushify: 'Pushify platform',
     failureBlameServer: 'Server capacity',
     failureBlameProject: 'Your project',
