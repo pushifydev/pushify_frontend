@@ -2,7 +2,6 @@
 title: What it actually takes to self-host a PaaS
 description: TLS, builds, zero-downtime restarts, backups, logs — a checklist of the unglamorous work between "it runs on my VPS" and "I'd put production traffic on this."
 date: 2026-09-09
-author: Aziz Kurt
 tags: self-hosting, devops, vps
 ---
 

@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       description: post.description,
       url,
       publishedTime: `${post.date}T00:00:00Z`,
-      authors: [post.author],
+      ...(post.author && { authors: [post.author] }),
     },
     twitter: {
       card: 'summary_large_image',
@@ -73,7 +73,9 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
           description: post.description,
           url,
           datePublished: `${post.date}T00:00:00Z`,
-          author: { '@type': 'Person', name: post.author },
+          author: post.author
+            ? { '@type': 'Person', name: post.author }
+            : { '@id': 'https://pushify.dev/#organization' },
           publisher: { '@id': 'https://pushify.dev/#organization' },
           isPartOf: { '@id': 'https://pushify.dev/blog#blog' },
           keywords: post.tags.join(', '),
@@ -108,9 +110,11 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
           <p className="text-lg leading-relaxed" style={{ color: 'var(--lp-body)' }}>
             {post.description}
           </p>
-          <p className="text-sm mt-4" style={{ color: 'var(--lp-muted)' }}>
-            {post.author}
-          </p>
+          {post.author && (
+            <p className="text-sm mt-4" style={{ color: 'var(--lp-muted)' }}>
+              {post.author}
+            </p>
+          )}
         </header>
 
         <BlogProse blocks={post.blocks} />

@@ -11,6 +11,7 @@
 - **Marketing copy only claims what the code does.** Removed or reworded every unbacked item: Laravel "automatic migrations / Horizon / scheduled tasks / Redis", Node "PM2", Python "Celery / migrations / virtualenv", Next.js "automatic ISR", managed-database "connection pooling", the unmeasured "<60s" deploy claims (hero stat, how-it-works, Next.js page), and the three anonymous testimonials (section deleted). Docs now list `hetzner` as the only managed provider.
 - **Billing: resume a scheduled cancellation.** When a subscription is set to end at the period end, the plan card says so with the date and offers "Keep my subscription" instead of the cancel link (the API and hook existed; no UI called them).
 - **Settings → Notifications tells the truth.** "Deployment alerts" now does what it says (backend emails on a failed production deploy and on the recovery after it); the "Product updates" toggle, which nothing ever read, is gone.
+- **No personal name on the site.** Blog posts no longer carry a named author (they're published as Pushify, and the BlogPosting schema points at the organization); the About page's Founder row and note and the Organization schema's `founder` are gone.
 - **Misc.** Google Analytics loads only for builds that talk to Pushify's own API (`NEXT_PUBLIC_API_URL` on `api.pushify.dev`) or when `NEXT_PUBLIC_GA_ID` is set, so a self-hosted instance never reports to Pushify's property; Bitbucket is no longer offered as a git provider (the API refuses it and nothing ever integrated it).
 
 ### Fixed
@@ -39,7 +40,7 @@
 ## [0.2.0-beta.63] - 2026-07-19
 
 ### Changed
-- **Real company identity across the site.** The global Organization schema now carries `legalName: Pushify LLC`, the registered US address (30 N Gould St Ste N, Sheridan, WY) and the founder (M. Aziz Kurt) as structured data on every page. The About page's company card shows the legal entity, address and a Founder row with a short "why I built this" note (EN/TR), and the footer copyright reads Pushify LLC. Closes the audit's two biggest trust gaps: no named human and no legal entity anywhere on the site.
+- **Real company identity across the site.** The global Organization schema now carries `legalName: Pushify LLC` and the registered US address (30 N Gould St Ste N, Sheridan, WY) as structured data on every page. The About page's company card shows the legal entity and address, and the footer copyright reads Pushify LLC. Closes the audit's gap of no legal entity anywhere on the site.
 
 ## [0.2.0-beta.62] - 2026-07-19
 

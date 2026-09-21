@@ -7,7 +7,7 @@ import path from 'node:path';
  * changelog. Posts ship in the repo, so every page is fully static at build.
  *
  * Frontmatter between `---` lines: title, description, date (YYYY-MM-DD),
- * author, tags (comma-separated).
+ * author (optional — omitted means the post is by Pushify), tags (comma-separated).
  */
 
 const BLOG_DIR = path.join(process.cwd(), 'content', 'blog');
@@ -17,7 +17,7 @@ export interface BlogPostMeta {
   title: string;
   description: string;
   date: string;
-  author: string;
+  author?: string;
   tags: string[];
   readingMinutes: number;
 }
@@ -167,7 +167,7 @@ async function parsePost(slug: string): Promise<BlogPost | null> {
       title: meta.title,
       description: meta.description || '',
       date: meta.date,
-      author: meta.author || 'Pushify',
+      author: meta.author || undefined,
       tags: meta.tags ? meta.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
       readingMinutes: readingMinutes(body),
       blocks: parseBlocks(body),

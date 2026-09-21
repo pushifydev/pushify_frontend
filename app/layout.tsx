@@ -137,10 +137,6 @@ export default function RootLayout({
                   legalName: 'Pushify LLC',
                   url: 'https://pushify.dev',
                   logo: 'https://pushify.dev/logo-full.svg',
-                  founder: {
-                    '@type': 'Person',
-                    name: 'M. Aziz Kurt',
-                  },
                   address: {
                     '@type': 'PostalAddress',
                     streetAddress: '30 N Gould St Ste N',

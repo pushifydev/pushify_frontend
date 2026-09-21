@@ -2,7 +2,6 @@
 title: "From git push to live: how zero-downtime deploys work"
 description: The anatomy of a Pushify deployment — build, parallel boot, health gate, traffic switch, drain — and why each step exists.
 date: 2026-09-09
-author: Aziz Kurt
 tags: deployments, docker, engineering
 ---
 
