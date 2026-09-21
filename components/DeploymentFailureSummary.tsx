@@ -21,6 +21,7 @@ export function DeploymentFailureSummary({
   if (!errorMessage && !category) return null;
 
   const hintByCategory: Record<DeployFailureCategory, () => string> = {
+    repository_access: () => t('projectDetail', 'failureRepositoryAccess'),
     out_of_memory: () => t('projectDetail', 'failureOutOfMemory'),
     disk_space: () => t('projectDetail', 'failureDiskSpace'),
     platform_native: () => t('projectDetail', 'failurePlatformNative'),

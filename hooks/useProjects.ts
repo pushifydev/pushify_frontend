@@ -14,6 +14,7 @@ import {
   getWebhookInfo,
   regenerateWebhookSecret,
   installGitHubWebhook,
+  getProjectGitAccess,
   updateProjectSettings,
   type Project,
   type CreateProjectInput,
@@ -30,6 +31,7 @@ export const projectKeys = {
   details: () => [...projectKeys.all, 'detail'] as const,
   detail: (id: string) => [...projectKeys.details(), id] as const,
   webhook: (id: string) => [...projectKeys.all, 'webhook', id] as const,
+  gitAccess: (id: string) => [...projectKeys.all, 'git-access', id] as const,
 };
 
 // ============ Queries ============
@@ -190,6 +192,20 @@ export function useInstallGitHubWebhook(projectId: string) {
         data?.created ? 'githubWebhookInstalledDesc' : 'githubWebhookUpdatedDesc'
       );
     },
+  });
+}
+
+/** Which credential can read the project's repository — drives Settings → GitHub access. */
+export function useProjectGitAccess(projectId: string, enabled = true) {
+  return useQuery({
+    queryKey: projectKeys.gitAccess(projectId),
+    queryFn: async () => {
+      const result = await getProjectGitAccess(projectId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    enabled: enabled && !!projectId,
+    staleTime: 30_000,
   });
 }
 

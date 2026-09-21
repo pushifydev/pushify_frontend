@@ -713,6 +713,22 @@ export interface TranslationKeys {
     failureServerCapacity: string;
     failureProjectConfig: string;
     failureUnknown: string;
+    failureRepositoryAccess: string;
+    gitAccessTitle: string;
+    gitAccessDesc: string;
+    gitAccessOkApp: string;
+    gitAccessOkOAuth: string;
+    gitAccessViewerOnly: string;
+    gitAccessPublic: string;
+    gitAccessNone: string;
+    gitAccessUnknown: string;
+    gitAccessInstallApp: string;
+    gitAccessConnect: string;
+    gitAccessReconnect: string;
+    gitAccessConnectHint: string;
+    gitAccessPublicOnlyScope: string;
+    gitAccessConnectedAs: string;
+    gitAccessRecheck: string;
     failureBlamePushify: string;
     failureBlameServer: string;
     failureBlameProject: string;
@@ -849,6 +865,8 @@ export interface TranslationKeys {
     githubAppMissingInstallation: string;
     githubAppInstall: string;
     githubOauthPublicOnly: string;
+    githubReconnect: string;
+    githubOrConnectAccount: string;
     githubAppRelinkHint: string;
     githubAppRelink: string;
     githubAppInstalledOn: string;
@@ -2823,6 +2841,7 @@ export interface TranslationKeys {
     catContainerStart: string;
     catServerCapacity: string;
     catProjectConfig: string;
+    catRepositoryAccess: string;
     catUnknown: string;
   };
 }
@@ -3561,6 +3580,22 @@ export const en: TranslationKeys = {
     failureServerCapacity: 'Server was busy — wait and redeploy or use a dedicated server.',
     failureProjectConfig: 'Project configuration issue — check root directory, scripts, and framework settings.',
     failureUnknown: 'Deployment failed — review logs or contact support.',
+    failureRepositoryAccess: 'Pushify could not read the repository. Fix it under Settings → GitHub access: connect a GitHub account that can see it, or install the GitHub App on the repository owner.',
+    gitAccessTitle: 'GitHub access',
+    gitAccessDesc: 'The GitHub connection Pushify uses to pull this repository.',
+    gitAccessOkApp: 'Pushify reads this repository through the GitHub App on',
+    gitAccessOkOAuth: 'Pushify reads this repository through the GitHub account',
+    gitAccessViewerOnly: 'Only your own GitHub account can read this repository, so deploys you start work but automatic deploys on push fail. Install the GitHub App on the repository owner to fix it for everyone.',
+    gitAccessPublic: 'Public repository — no connection needed to deploy it.',
+    gitAccessNone: 'Pushify can\'t read this repository, so its deploys fail. Connect a GitHub account that can see it, or install the GitHub App on {owner}.',
+    gitAccessUnknown: 'Couldn\'t reach GitHub to check access. Try again in a moment.',
+    gitAccessInstallApp: 'Install GitHub App on {owner}',
+    gitAccessConnect: 'Connect GitHub account',
+    gitAccessReconnect: 'Reconnect GitHub account',
+    gitAccessConnectHint: 'GitHub connects whichever account you are signed in to on github.com.',
+    gitAccessPublicOnlyScope: 'Your GitHub connection (@{username}) can only see public repositories. Reconnect to give Pushify access to private ones.',
+    gitAccessConnectedAs: 'Your GitHub connection: @{username}',
+    gitAccessRecheck: 'Check again',
     failureBlamePushify: 'Pushify platform',
     failureBlameServer: 'Server capacity',
     failureBlameProject: 'Your project',
@@ -3666,7 +3701,7 @@ export const en: TranslationKeys = {
     githubStep3: 'Set Content type to "application/json"',
     githubStep4: 'Add the secret (if generated) and select "Just the push event"',
     installGithubWebhook: 'Install webhook on GitHub',
-    installGithubWebhookHint: 'Requires GitHub connected (org owner) and a webhook secret',
+    installGithubWebhookHint: 'Needs GitHub access to the repository (see GitHub access) and a webhook secret',
     deployQueuePosition: 'Queue #{position}',
     deployQueueWaiting: 'In queue',
     gitlabStep1: 'Go to your project Settings → Webhooks → Add new webhook',
@@ -3691,7 +3726,9 @@ export const en: TranslationKeys = {
     githubAppLinked: 'GitHub App linked for',
     githubAppMissingInstallation: 'GitHub did not send an installation id back',
     githubAppInstall: 'Install GitHub App',
-    githubOauthPublicOnly: 'Signing in with GitHub only lists your public repositories. Private and organisation repositories come through the GitHub App — install it, or pick which repositories it may access.',
+    githubOauthPublicOnly: 'This GitHub connection can only see public repositories. Reconnect to give Pushify access to your private repositories too, or use the GitHub App.',
+    githubReconnect: 'Reconnect',
+    githubOrConnectAccount: 'Or connect your GitHub account',
     githubAppRelinkHint: 'This usually means the installation was started from GitHub instead of Pushify, so the link back carried no state. Start it from here and GitHub will bring you straight back.',
     githubAppRelink: 'Link this installation',
     githubAppInstalledOn: 'GitHub App installed on',
@@ -5949,6 +5986,7 @@ export const en: TranslationKeys = {
     catContainerStart: 'Container failed to start',
     catServerCapacity: 'Server busy',
     catProjectConfig: 'Project configuration',
+    catRepositoryAccess: 'Repository access',
     catUnknown: 'Unclassified',
   },
 };

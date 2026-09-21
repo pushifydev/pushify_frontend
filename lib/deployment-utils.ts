@@ -36,6 +36,7 @@ function diffMs(start: string | null, end: string | null): number | null {
 }
 
 export type DeployFailureCategory =
+  | 'repository_access'
   | 'out_of_memory'
   | 'disk_space'
   | 'platform_native'
@@ -68,6 +69,7 @@ export function parseDeployFailureBlame(errorMessage?: string | null): DeployFai
 }
 
 const FAILURE_I18N_KEYS: Record<DeployFailureCategory, string> = {
+  repository_access: 'failureRepositoryAccess',
   out_of_memory: 'failureOutOfMemory',
   disk_space: 'failureDiskSpace',
   platform_native: 'failurePlatformNative',

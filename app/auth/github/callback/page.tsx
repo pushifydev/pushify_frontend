@@ -6,6 +6,7 @@ import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { connectGitHub, githubLoginCallback } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import { consumeAuthRedirect } from '@/lib/auth-redirect';
+import { consumeGitHubReturn } from '@/lib/github-return';
 
 function GitHubCallbackContent() {
   const router = useRouter();
@@ -123,9 +124,10 @@ function GitHubCallbackContent() {
         }
 
         setStatus('success');
-        // Redirect back to new project page after short delay
+        // Back to where the connection was started (project settings or new project)
+        const returnTo = consumeGitHubReturn('/dashboard/projects/new');
         setTimeout(() => {
-          router.push('/dashboard/projects/new');
+          router.push(returnTo);
         }, 1500);
       } catch {
         setStatus('error');
