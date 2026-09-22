@@ -1947,6 +1947,18 @@ export interface TranslationKeys {
     notFound: string;
     // Detail page
     connectionDetails: string;
+    internalConnectionString: string;
+    internalConnectionHint: string;
+    externalConnectionString: string;
+    connectedProjects: string;
+    connectedProjectsHint: string;
+    noConnectedProjects: string;
+    selectProject: string;
+    connectProject: string;
+    disconnectProject: string;
+    projectConnected: string;
+    projectDisconnected: string;
+    otherServerNote: string;
     networkAccess: string;
     info: string;
     backups: string;
@@ -4856,6 +4868,18 @@ export const en: TranslationKeys = {
     notFound: 'Database not found',
     // Detail page
     connectionDetails: 'Connection Details',
+    internalConnectionString: 'From your apps on this server',
+    internalConnectionHint: 'Projects you connect get this as DATABASE_URL (or the name you choose) on their next deploy.',
+    externalConnectionString: 'From outside the server (external access)',
+    connectedProjects: 'Connected projects',
+    connectedProjectsHint: 'Each connected project gets this database’s address as an environment variable on its next deploy.',
+    noConnectedProjects: 'No projects connected yet.',
+    selectProject: 'Choose a project',
+    connectProject: 'Connect',
+    disconnectProject: 'Disconnect',
+    projectConnected: 'Connected — redeploy the project to apply it',
+    projectDisconnected: 'Disconnected — redeploy the project to apply it',
+    otherServerNote: 'Runs on another server — needs external access',
     networkAccess: 'Network Access',
     info: 'Information',
     backups: 'Backups',
@@ -4873,7 +4897,7 @@ export const en: TranslationKeys = {
     externalAccessOn: 'External Access Enabled',
     externalAccessOff: 'Local Access Only',
     externalAccessOnDesc: 'Database is accessible from any IP address',
-    externalAccessOffDesc: 'Database is only accessible from the server',
+    externalAccessOffDesc: 'Only apps and tools on the server can reach it',
     externalAccessEnabled: 'External access enabled',
     externalAccessDisabled: 'External access disabled',
     externalAccessWarning: 'Warning: Enabling external access exposes your database to the internet. Make sure to use strong credentials.',
