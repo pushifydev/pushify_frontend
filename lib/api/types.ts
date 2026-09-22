@@ -92,6 +92,10 @@ export interface Project {
   dockerfilePath: string | null;
   /** Set when the project deploys a ready image instead of building the repository */
   dockerImage?: string | null;
+  /** Set when the project deploys its repository as a Docker Compose stack */
+  composePath?: string | null;
+  composeService?: string | null;
+  composePort?: number | null;
   port: number | null;
   autoDeploy: boolean;
   status: ProjectStatus;
@@ -139,6 +143,10 @@ export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'se
   replicas?: number;
   /** Deploy a ready image instead of the repository; null goes back to the repository */
   dockerImage?: string | null;
+  /** Deploy the repository as a compose stack: the file's path; null builds the repository */
+  composePath?: string | null;
+  composeService?: string | null;
+  composePort?: number | null;
   sleepEnabled?: boolean;
   sleepAfterMinutes?: number;
 }

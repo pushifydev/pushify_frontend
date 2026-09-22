@@ -51,6 +51,10 @@ export function SettingsTab({
   // Set: the project deploys this image and the repository settings below do not apply
   const [dockerImage, setDockerImage] = useState(project.dockerImage || '');
   const deploysImage = !!dockerImage.trim();
+  // Set: the repository is deployed as a compose stack instead of being built
+  const [composePath, setComposePath] = useState(project.composePath || '');
+  const [composeService, setComposeService] = useState(project.composeService || '');
+  const deploysCompose = !deploysImage && !!composePath.trim();
 
   // Server selection state
   const [selectedServerId, setSelectedServerId] = useState<string | null>(project.serverId || null);
@@ -83,6 +87,8 @@ export function SettingsTab({
       port: port ? parseInt(port, 10) : undefined,
       rootDirectory: rootDirectory || undefined,
       dockerImage: dockerImage.trim() || null,
+      composePath: composePath.trim() || null,
+      composeService: composeService.trim() || null,
     });
     setBuildSettingsSaved(true);
     setTimeout(() => setBuildSettingsSaved(false), 3000);
@@ -187,6 +193,39 @@ export function SettingsTab({
               {deploysImage ? t('projectDetail', 'dockerImageActive') : t('projectDetail', 'dockerImageHint')}
             </p>
           </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              {t('projectDetail', 'composePath')}
+            </label>
+            <input
+              type="text"
+              value={composePath}
+              onChange={(e) => setComposePath(e.target.value)}
+              placeholder="docker-compose.yml"
+              className="input w-full terminal-text"
+              disabled={deploysImage}
+            />
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+              {deploysCompose ? t('projectDetail', 'composePathActive') : t('projectDetail', 'composePathHint')}
+            </p>
+          </div>
+          {deploysCompose && (
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                {t('projectDetail', 'composeService')}
+              </label>
+              <input
+                type="text"
+                value={composeService}
+                onChange={(e) => setComposeService(e.target.value)}
+                placeholder="web"
+                className="input w-full terminal-text"
+              />
+              <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+                {t('projectDetail', 'composeServiceHint')}
+              </p>
+            </div>
+          )}
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               {t('projectDetail', 'replicas')}

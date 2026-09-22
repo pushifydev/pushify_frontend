@@ -804,6 +804,11 @@ export interface TranslationKeys {
     buildSettingsDesc: string;
     gitBranch: string;
     gitBranchPlaceholder: string;
+    composePath: string;
+    composePathHint: string;
+    composePathActive: string;
+    composeService: string;
+    composeServiceHint: string;
     dockerImage: string;
     dockerImageHint: string;
     dockerImageActive: string;
@@ -3743,6 +3748,11 @@ export const en: TranslationKeys = {
     buildSettingsDesc: 'Configure how your project is built and deployed.',
     gitBranch: 'Branch',
     gitBranchPlaceholder: 'main',
+    composePath: 'Docker Compose file',
+    composePathHint: 'Leave empty to build the repository. Set a path (docker-compose.yml) to deploy the repository as a stack instead — most repositories carry one for local development, so it is never picked up on its own.',
+    composePathActive: 'This project deploys the stack in that file. Only the served service is published on the host; the other services reach each other by name inside the stack.',
+    composeService: 'Service to serve',
+    composeServiceHint: 'The service nginx proxies to. Needed when more than one service publishes a port.',
     dockerImage: 'Docker image',
     dockerImageHint: 'Leave empty to build from the repository. Set it to deploy a ready image instead (ghcr.io/acme/api:1.4) — private ones need a registry under Settings → Private registries.',
     dockerImageActive: 'This project deploys the image above; the repository settings below are not used. Redeploy to pull the tag again.',
