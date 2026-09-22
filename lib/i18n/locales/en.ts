@@ -40,6 +40,10 @@ export interface TranslationKeys {
     password: string;
     name: string;
     forgotPassword: string;
+    ssoRequired: string;
+    continueWithSso: string;
+    ssoCompleting: string;
+    ssoFailed: string;
     signIn: string;
     signUp: string;
     signingIn: string;
@@ -203,6 +207,7 @@ export interface TranslationKeys {
   };
   activityLog: {
     subtitle: string;
+    exportCsv: string;
     filterAll: string;
     filterProjects: string;
     filterDeployments: string;
@@ -1308,6 +1313,30 @@ export interface TranslationKeys {
     totalNetworkIn: string;
     totalNetworkOut: string;
     memoryOf: string;
+  };
+  sso: {
+    title: string;
+    description: string;
+    provider: string;
+    redirectUri: string;
+    copy: string;
+    issuer: string;
+    issuerHint: string;
+    clientId: string;
+    clientSecret: string;
+    clientSecretHint: string;
+    clientSecretKeep: string;
+    domains: string;
+    domainsHint: string;
+    defaultRole: string;
+    defaultRoleHint: string;
+    roleMember: string;
+    roleAdmin: string;
+    enforce: string;
+    enforceHint: string;
+    saved: string;
+    remove: string;
+    removeConfirm: string;
   };
   registries: {
     title: string;
@@ -2967,6 +2996,10 @@ export const en: TranslationKeys = {
     password: 'Password',
     name: 'Name',
     forgotPassword: 'Forgot password?',
+    ssoRequired: 'Your organization signs in through its own identity provider.',
+    continueWithSso: 'Continue with SSO',
+    ssoCompleting: 'Completing sign-in…',
+    ssoFailed: 'The single sign-on could not be completed. Try again.',
     signIn: 'Sign in',
     signUp: 'Sign up',
     signingIn: 'Signing in...',
@@ -3130,6 +3163,7 @@ export const en: TranslationKeys = {
   },
   activityLog: {
     subtitle: 'Track all changes and actions in your organization',
+    exportCsv: 'Export CSV',
     filterAll: 'All',
     filterProjects: 'Projects',
     filterDeployments: 'Deployments',
@@ -4256,6 +4290,30 @@ export const en: TranslationKeys = {
     totalNetworkIn: 'Total In',
     totalNetworkOut: 'Total Out',
     memoryOf: 'of',
+  },
+  sso: {
+    title: 'Single sign-on',
+    description: "Sign in through your organization's own identity provider, over OpenID Connect.",
+    provider: 'Identity provider',
+    redirectUri: 'Enter this as the redirect URI at your provider',
+    copy: 'Copy',
+    issuer: 'Issuer URL',
+    issuerHint: 'Okta, Entra ID, Google Workspace, Auth0, Keycloak — the issuer from its OpenID configuration.',
+    clientId: 'Client ID',
+    clientSecret: 'Client secret',
+    clientSecretHint: 'Stored encrypted and never shown again.',
+    clientSecretKeep: 'Leave empty to keep the stored secret.',
+    domains: 'Email domains',
+    domainsHint: 'Only addresses in these domains sign in through the provider. Public providers such as gmail.com cannot be used.',
+    defaultRole: 'Role for new members',
+    defaultRoleHint: 'What someone gets the first time the provider sends them here.',
+    roleMember: 'Member',
+    roleAdmin: 'Admin',
+    enforce: 'Require single sign-on',
+    enforceHint: 'Passwords, GitHub and Google stop working for these domains — disabling someone at your provider is then enough to lock them out.',
+    saved: 'Saved',
+    remove: 'Remove connection',
+    removeConfirm: 'Members in these domains will sign in with a password again. Nobody loses access.',
   },
   registries: {
     title: 'Private registries',

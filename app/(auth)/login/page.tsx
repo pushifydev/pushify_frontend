@@ -4,8 +4,9 @@ import { getAccessToken } from '@/lib/api/client';
 import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, KeyRound } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
+import { checkSso, ssoStartUrl } from '@/lib/api';
 import { useTranslation } from '@/hooks';
 import {
   AuthSubmitButton,
@@ -38,6 +39,8 @@ function LoginPageContent() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // Does this address belong to an organization with its own identity provider?
+  const [sso, setSso] = useState<{ available: boolean; enforced: boolean }>({ available: false, enforced: false });
   const [showPassword, setShowPassword] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState('');
 
@@ -59,9 +62,36 @@ function LoginPageContent() {
     return '/dashboard';
   };
 
+  // Asked as the address is typed, a moment after they stop. A domain with enforced SSO has no
+  // password to offer, so the form turns into a single button rather than refusing on submit.
+  useEffect(() => {
+    if (!email.includes('@')) {
+      setSso({ available: false, enforced: false });
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const result = await checkSso(email);
+      if (!cancelled && result.data) setSso(result.data);
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [email]);
+
+  const startSso = () => {
+    window.location.href = ssoStartUrl(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
+
+    if (sso.enforced) {
+      startSso();
+      return;
+    }
 
     const result = await login(email, password);
     if (result === true) {
@@ -161,6 +191,9 @@ function LoginPageContent() {
           />
         </div>
 
+        {sso.enforced ? (
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">{t('auth', 'ssoRequired')}</p>
+        ) : (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400">
@@ -193,8 +226,18 @@ function LoginPageContent() {
             </button>
           </div>
         </div>
+        )}
 
-        <AuthSubmitButton isLoading={isLoading}>{t('auth', 'signIn')}</AuthSubmitButton>
+        <AuthSubmitButton isLoading={isLoading}>
+          {sso.enforced ? t('auth', 'continueWithSso') : t('auth', 'signIn')}
+        </AuthSubmitButton>
+
+        {sso.available && !sso.enforced && (
+          <button type="button" onClick={startSso} className="btn btn-ghost w-full justify-center">
+            <KeyRound className="w-4 h-4" />
+            {t('auth', 'continueWithSso')}
+          </button>
+        )}
       </form>
 
       <AuthDivider label={t('auth', 'orContinueWith')} />

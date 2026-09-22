@@ -197,6 +197,18 @@ export {
   type CreateRegistryInput,
 } from './services/registries.service';
 
+// Single sign-on
+export {
+  checkSso,
+  ssoStartUrl,
+  getSsoConnection,
+  saveSsoConnection,
+  deleteSsoConnection,
+  type SsoConnection,
+  type SaveSsoConnectionInput,
+  type SsoAvailability,
+} from './services/sso.service';
+
 // Health Check Functions
 export {
   getHealthCheckConfig,
