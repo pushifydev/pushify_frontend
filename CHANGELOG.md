@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- **Zero-downtime deploys: `scripts/jenkins-deploy.sh`.** The Jenkins job deleted `node_modules` and `.next` where the live site ran, so the dashboard answered "Internal Server Error" for the whole install + build. The script builds in the workspace, assembles the standalone build as a release under `/var/www/pushify-frontend/releases/<time>`, tries it on a spare port (a release that doesn't answer never goes live), switches `current` to it atomically and has pm2 restart the two cluster instances one after the other. The first run takes over the app from `ecosystem.config.js` (name, port and env kept); the last 3 releases stay for rollback. Verified in a container: 202 requests during a full redeploy, 202 answered.
 - **Connect a database read-only.** The connect form on the database page has a Read & write / Read only choice (not offered for Redis); read-only connections carry a badge. The backend gives them a database user that can only read.
 - **After a password reset, the connected projects are named.** The new-credentials dialog lists the projects connected read & write — they keep the old password until they redeploy — with a "Redeploy them now" button that starts their deploys.
 - **Database → Connected projects.** Connect a project to a database (and choose the variable, `DATABASE_URL` by default) or disconnect it, right on the database page — the API existed but nothing in the dashboard used it. Projects on another server without external access are flagged. Applies on the project's next deploy.
