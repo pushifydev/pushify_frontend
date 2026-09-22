@@ -1951,6 +1951,13 @@ export interface TranslationKeys {
     internalConnectionHint: string;
     externalConnectionString: string;
     connectedProjects: string;
+    accessReadWrite: string;
+    accessReadOnly: string;
+    readonlyBadge: string;
+    readonlyNotForRedis: string;
+    resetRedeployHint: string;
+    redeployConnected: string;
+    redeployStarted: string;
     connectedProjectsHint: string;
     noConnectedProjects: string;
     selectProject: string;
@@ -4872,6 +4879,13 @@ export const en: TranslationKeys = {
     internalConnectionHint: 'Projects you connect get this as DATABASE_URL (or the name you choose) on their next deploy.',
     externalConnectionString: 'From outside the server (external access)',
     connectedProjects: 'Connected projects',
+    accessReadWrite: 'Read & write',
+    accessReadOnly: 'Read only',
+    readonlyBadge: 'read-only',
+    readonlyNotForRedis: 'Redis has no read-only mode',
+    resetRedeployHint: '{count} connected project(s) still use the old password — they get the new one on their next deploy.',
+    redeployConnected: 'Redeploy them now',
+    redeployStarted: 'Deploys started',
     connectedProjectsHint: 'Each connected project gets this database’s address as an environment variable on its next deploy.',
     noConnectedProjects: 'No projects connected yet.',
     selectProject: 'Choose a project',
