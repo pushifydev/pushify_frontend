@@ -395,6 +395,8 @@ export interface Database {
     ipv4: string | null;
     status: string;
   };
+  /** Projects linked to this database (detail endpoint only) */
+  connections?: DatabaseConnection[];
 }
 
 export interface DatabaseCredentials {
@@ -404,6 +406,8 @@ export interface DatabaseCredentials {
   username: string;
   password: string;
   connectionString: string | null;
+  /** Container address apps on the same server use (older backends omit it) */
+  internalConnectionString?: string | null;
 }
 
 export interface CreateDatabaseInput {
@@ -432,6 +436,7 @@ export interface DatabaseConnection {
     id: string;
     name: string;
     slug: string;
+    serverId?: string | null;
   };
   database?: Database;
 }

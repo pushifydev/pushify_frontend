@@ -27,17 +27,35 @@ export function ConnectionPanel({
   t: T;
 }) {
   const connStr = credentials?.connectionString;
-  const maskedConn = connStr?.replace(/:[^:@]+@/, ':••••••••@') ?? '';
+  const internalStr = credentials?.internalConnectionString;
+  const mask = (value: string) => value.replace(/:[^:@]+@/, ':••••••••@');
 
   return (
     <section className="rounded-xl p-5" style={panelStyle}>
       <h2 className="text-sm font-semibold mb-4">{t('databases', 'connectionDetails')}</h2>
 
+      {internalStr && (
+        <div className="mb-4">
+          <CopyField
+            label={t('databases', 'internalConnectionString')}
+            value={showSecrets ? internalStr : mask(internalStr)}
+            fieldKey="internalConnectionString"
+            copiedField={copiedField}
+            onCopy={onCopy}
+            masked={!showSecrets}
+            onToggleMask={onToggleSecrets}
+          />
+          <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
+            {t('databases', 'internalConnectionHint')}
+          </p>
+        </div>
+      )}
+
       {connStr && (
         <div className="mb-4">
           <CopyField
-            label={t('databases', 'connectionString')}
-            value={showSecrets ? connStr : maskedConn}
+            label={t('databases', internalStr ? 'externalConnectionString' : 'connectionString')}
+            value={showSecrets ? connStr : mask(connStr)}
             fieldKey="connectionString"
             copiedField={copiedField}
             onCopy={onCopy}

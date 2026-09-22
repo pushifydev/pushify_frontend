@@ -20,6 +20,9 @@ import {
   useVerifyDatabaseBackup,
   useDeleteDatabaseBackup,
   useBackupStatusEvents,
+  useConnectDatabase,
+  useDisconnectDatabase,
+  useProjects,
   useTranslation,
 } from '@/hooks';
 import { downloadDatabaseBackup, type DatabaseCredentials } from '@/lib/api';
@@ -30,6 +33,7 @@ import {
   DatabaseStatsRow,
   ConnectionPanel,
   NetworkAccessPanel,
+  ConnectedProjectsPanel,
   BackupListPanel,
   DatabaseSidebar,
   NewCredentialsModal,
@@ -59,6 +63,9 @@ export default function DatabaseDetailPage() {
   const deleteDatabase = useDeleteDatabase();
   const updateDatabase = useUpdateDatabase(databaseId);
   const resetPassword = useResetDatabasePassword(databaseId);
+  const { data: projects = [] } = useProjects();
+  const connectDatabase = useConnectDatabase(databaseId);
+  const disconnectDatabase = useDisconnectDatabase();
 
   const { data: backups = [], isLoading: backupsLoading } = useDatabaseBackups(databaseId);
   const createBackup = useCreateDatabaseBackup(databaseId);
@@ -191,6 +198,30 @@ export default function DatabaseDetailPage() {
                     ? t('databases', 'externalAccessDisabled')
                     : t('databases', 'externalAccessEnabled')
                 );
+              } catch (e) {
+                toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
+              }
+            }}
+            t={t}
+          />
+
+          <ConnectedProjectsPanel
+            database={database}
+            projects={projects}
+            pending={connectDatabase.isPending || disconnectDatabase.isPending}
+            canEdit={database.status !== 'deleting'}
+            onConnect={async (projectId, envVarName) => {
+              try {
+                await connectDatabase.mutateAsync({ projectId, envVarName });
+                toast.success(t('databases', 'projectConnected'));
+              } catch (e) {
+                toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
+              }
+            }}
+            onDisconnect={async (connectionId) => {
+              try {
+                await disconnectDatabase.mutateAsync(connectionId);
+                toast.success(t('databases', 'projectDisconnected'));
               } catch (e) {
                 toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
               }
