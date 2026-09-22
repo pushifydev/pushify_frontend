@@ -5,6 +5,7 @@ export { SessionsTab } from './SessionsTab';
 export { NotificationsTab } from './NotificationsTab';
 export { SecurityTab } from './SecurityTab';
 export { ApiKeysTab } from './ApiKeysTab';
+export { RegistriesTab } from './RegistriesTab';
 
 // Shared layout primitives
 export { SettingsCard, SettingsField, SettingsRow } from './SettingsCard';

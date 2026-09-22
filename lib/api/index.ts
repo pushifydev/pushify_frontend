@@ -188,6 +188,15 @@ export {
   type ProjectLogSearchParams,
 } from './services/project-logs.service';
 
+// Private container registries
+export {
+  getRegistries,
+  createRegistry,
+  deleteRegistry,
+  type RegistryCredential,
+  type CreateRegistryInput,
+} from './services/registries.service';
+
 // Health Check Functions
 export {
   getHealthCheckConfig,

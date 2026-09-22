@@ -804,6 +804,9 @@ export interface TranslationKeys {
     buildSettingsDesc: string;
     gitBranch: string;
     gitBranchPlaceholder: string;
+    dockerImage: string;
+    dockerImageHint: string;
+    dockerImageActive: string;
     replicas: string;
     replicasHint: string;
     stagingBranch: string;
@@ -1300,6 +1303,24 @@ export interface TranslationKeys {
     totalNetworkIn: string;
     totalNetworkOut: string;
     memoryOf: string;
+  };
+  registries: {
+    title: string;
+    description: string;
+    listTitle: string;
+    add: string;
+    remove: string;
+    removeConfirm: string;
+    empty: string;
+    emptyDesc: string;
+    host: string;
+    hostHint: string;
+    username: string;
+    password: string;
+    passwordHint: string;
+    name: string;
+    lastUsed: string;
+    neverUsed: string;
   };
   apiKeys: {
     listTitle: string;
@@ -3722,6 +3743,9 @@ export const en: TranslationKeys = {
     buildSettingsDesc: 'Configure how your project is built and deployed.',
     gitBranch: 'Branch',
     gitBranchPlaceholder: 'main',
+    dockerImage: 'Docker image',
+    dockerImageHint: 'Leave empty to build from the repository. Set it to deploy a ready image instead (ghcr.io/acme/api:1.4) — private ones need a registry under Settings → Private registries.',
+    dockerImageActive: 'This project deploys the image above; the repository settings below are not used. Redeploy to pull the tag again.',
     replicas: 'Replicas',
     replicasHint: 'How many containers of this app run behind nginx, which spreads requests across them. More replicas need more memory on the server.',
     stagingBranch: 'Staging branch',
@@ -4222,6 +4246,24 @@ export const en: TranslationKeys = {
     totalNetworkIn: 'Total In',
     totalNetworkOut: 'Total Out',
     memoryOf: 'of',
+  },
+  registries: {
+    title: 'Private registries',
+    description: 'Credentials Pushify uses on the deploy server to pull your private images.',
+    listTitle: 'Registries',
+    add: 'Add registry',
+    remove: 'Remove',
+    removeConfirm: 'Deploys that need this registry will fail until you add it again. Running containers are not affected.',
+    empty: 'No private registries',
+    emptyDesc: 'Add one to build from a private base image, or to deploy a project straight from an image.',
+    host: 'Registry',
+    hostHint: 'Host only — ghcr.io, docker.io, registry.gitlab.com, registry.example.com:5000',
+    username: 'Username',
+    password: 'Password or access token',
+    passwordHint: 'Stored encrypted and never shown again. A token with read access is enough.',
+    name: 'Name (optional)',
+    lastUsed: 'Last used {time}',
+    neverUsed: 'Not used in a deploy yet',
   },
   apiKeys: {
     listTitle: 'Your keys',

@@ -48,6 +48,9 @@ export function SettingsTab({
   const [startCommand, setStartCommand] = useState(project.startCommand || '');
   const [port, setPort] = useState(project.port?.toString() || '');
   const [rootDirectory, setRootDirectory] = useState(project.rootDirectory || '');
+  // Set: the project deploys this image and the repository settings below do not apply
+  const [dockerImage, setDockerImage] = useState(project.dockerImage || '');
+  const deploysImage = !!dockerImage.trim();
 
   // Server selection state
   const [selectedServerId, setSelectedServerId] = useState<string | null>(project.serverId || null);
@@ -79,6 +82,7 @@ export function SettingsTab({
       startCommand: startCommand || undefined,
       port: port ? parseInt(port, 10) : undefined,
       rootDirectory: rootDirectory || undefined,
+      dockerImage: dockerImage.trim() || null,
     });
     setBuildSettingsSaved(true);
     setTimeout(() => setBuildSettingsSaved(false), 3000);
@@ -167,6 +171,21 @@ export function SettingsTab({
               placeholder={t('projectDetail', 'gitBranchPlaceholder')}
               className="input w-full"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              {t('projectDetail', 'dockerImage')}
+            </label>
+            <input
+              type="text"
+              value={dockerImage}
+              onChange={(e) => setDockerImage(e.target.value)}
+              placeholder="ghcr.io/acme/api:1.4"
+              className="input w-full terminal-text"
+            />
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+              {deploysImage ? t('projectDetail', 'dockerImageActive') : t('projectDetail', 'dockerImageHint')}
+            </p>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">

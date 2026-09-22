@@ -157,6 +157,8 @@ export {
   useInvoices,
 } from './useBilling';
 
+export { useRegistries, useCreateRegistry, useDeleteRegistry, registryKeys } from './useRegistries';
+
 // Dashboard overview
 export { dashboardKeys, useDashboardOverview } from './useDashboardOverview';
 

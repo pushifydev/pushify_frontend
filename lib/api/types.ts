@@ -90,6 +90,8 @@ export interface Project {
   startCommand: string | null;
   rootDirectory: string | null;
   dockerfilePath: string | null;
+  /** Set when the project deploys a ready image instead of building the repository */
+  dockerImage?: string | null;
   port: number | null;
   autoDeploy: boolean;
   status: ProjectStatus;
@@ -135,6 +137,8 @@ export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'se
   /** Pushes here deploy the staging copy; null turns staging off */
   stagingBranch?: string | null;
   replicas?: number;
+  /** Deploy a ready image instead of the repository; null goes back to the repository */
+  dockerImage?: string | null;
   sleepEnabled?: boolean;
   sleepAfterMinutes?: number;
 }
