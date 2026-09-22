@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- **Replicas setting.** Project settings take the number of containers to run behind nginx (1–10); nginx spreads requests across them.
 - **Staging on the project page.** Settings take a staging branch; the overview then shows a staging card with its URL, a "Deploy staging" button and "Promote to production" (the commit staging runs, rebuilt with production's variables).
 - **Monitoring line on the project overview.** Says whether the app is answering (with its response time) or not (with the status code or error, and since when). Every deployed project is watched now, so it shows without configuring anything.
 - **Zero-downtime deploys: `scripts/jenkins-deploy.sh`.** The Jenkins job deleted `node_modules` and `.next` where the live site ran, so the dashboard answered "Internal Server Error" for the whole install + build. The script builds in the workspace, assembles the standalone build as a release under `/var/www/pushify-frontend/releases/<time>`, tries it on a spare port (a release that doesn't answer never goes live), switches `current` to it atomically and has pm2 restart the two cluster instances one after the other. The first run takes over the app from `ecosystem.config.js` (name, port and env kept); the last 3 releases stay for rollback. Verified in a container: 202 requests during a full redeploy, 202 answered.

@@ -804,6 +804,8 @@ export interface TranslationKeys {
     buildSettingsDesc: string;
     gitBranch: string;
     gitBranchPlaceholder: string;
+    replicas: string;
+    replicasHint: string;
     stagingBranch: string;
     stagingBranchPlaceholder: string;
     stagingBranchHint: string;
@@ -3713,6 +3715,8 @@ export const en: TranslationKeys = {
     buildSettingsDesc: 'Configure how your project is built and deployed.',
     gitBranch: 'Branch',
     gitBranchPlaceholder: 'main',
+    replicas: 'Replicas',
+    replicasHint: 'How many containers of this app run behind nginx, which spreads requests across them. More replicas need more memory on the server.',
     stagingBranch: 'Staging branch',
     stagingBranchPlaceholder: 'develop (optional)',
     stagingBranchHint: 'Pushes here deploy a second copy of the project, with its own domain and staging variables. Leave empty for production only.',

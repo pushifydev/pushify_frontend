@@ -822,6 +822,8 @@ export const tr: TranslationKeys = {
     buildSettingsDesc: 'Projenizin nasıl build edileceğini ve dağıtılacağını yapılandırın.',
     gitBranch: 'Branch',
     gitBranchPlaceholder: 'main',
+    replicas: 'Kopya sayısı',
+    replicasHint: 'Bu uygulamanın nginx arkasında kaç konteyner çalıştıracağı. nginx istekleri aralarında dağıtır. Daha fazla kopya sunucuda daha fazla bellek ister.',
     stagingBranch: 'Staging dalı',
     stagingBranchPlaceholder: 'develop (isteğe bağlı)',
     stagingBranchHint: 'Bu dala push edilince projenin ikinci bir kopyası deploy edilir; kendi alan adı ve staging değişkenleriyle. Boş bırakırsan yalnızca production olur.',

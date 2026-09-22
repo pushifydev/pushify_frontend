@@ -80,6 +80,8 @@ export interface Project {
   gitBranch: string | null;
   /** Pushes here deploy the staging copy; null means the project has production only */
   stagingBranch?: string | null;
+  /** How many containers of the app run behind nginx */
+  replicas?: number;
   gitProvider: string | null;
   framework: string | null;
   buildCommand: string | null;
@@ -132,6 +134,7 @@ export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'se
   serverId?: string | null;
   /** Pushes here deploy the staging copy; null turns staging off */
   stagingBranch?: string | null;
+  replicas?: number;
   sleepEnabled?: boolean;
   sleepAfterMinutes?: number;
 }

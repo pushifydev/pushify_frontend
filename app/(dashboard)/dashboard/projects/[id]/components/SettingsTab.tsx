@@ -41,6 +41,7 @@ export function SettingsTab({
   // Build settings state
   const [gitBranch, setGitBranch] = useState(project.gitBranch || '');
   const [stagingBranch, setStagingBranch] = useState(project.stagingBranch || '');
+  const [replicas, setReplicas] = useState(String(project.replicas ?? 1));
   const [installCommand, setInstallCommand] = useState(project.installCommand || '');
   const [buildCommand, setBuildCommand] = useState(project.buildCommand || '');
   const [outputDirectory, setOutputDirectory] = useState(project.outputDirectory || '');
@@ -71,6 +72,7 @@ export function SettingsTab({
     await updateProject.mutateAsync({
       gitBranch: gitBranch || undefined,
       stagingBranch: stagingBranch.trim() || null,
+      replicas: Math.min(10, Math.max(1, parseInt(replicas, 10) || 1)),
       installCommand: installCommand || undefined,
       buildCommand: buildCommand || undefined,
       outputDirectory: outputDirectory || undefined,
@@ -165,6 +167,20 @@ export function SettingsTab({
               placeholder={t('projectDetail', 'gitBranchPlaceholder')}
               className="input w-full"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              {t('projectDetail', 'replicas')}
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={10}
+              value={replicas}
+              onChange={(e) => setReplicas(e.target.value)}
+              className="input w-full"
+            />
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">{t('projectDetail', 'replicasHint')}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
