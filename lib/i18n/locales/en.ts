@@ -1034,6 +1034,13 @@ export interface TranslationKeys {
     filterPlaceholder: string;
     searchPlaceholder: string;
     allTypes: string;
+    allContainers: string;
+    range1h: string;
+    range6h: string;
+    range24h: string;
+    range7d: string;
+    rangeAll: string;
+    exporting: string;
     search: string;
     searching: string;
     noDeployment: string;
@@ -3671,7 +3678,7 @@ export const en: TranslationKeys = {
     logsHelpTitle: 'Log types',
     logsHelpBuild: 'View Logs — build and deploy output for this deployment run.',
     logsHelpContainer: 'Container Logs — recent output from the running app container (live snapshot).',
-    logsHelpHistorical: 'History — logs saved periodically on the server (retained ~7 days).',
+    logsHelpHistorical: 'History — logs saved periodically on the server (retained for as long as your plan keeps them).',
     // Environment tab
     envVarsDesc: 'Environment variables are encrypted and available during build and runtime.',
     oauthHintTitle: 'Enable social login (OAuth)',
@@ -3949,13 +3956,20 @@ export const en: TranslationKeys = {
     filterPlaceholder: 'Filter live output…',
     searchPlaceholder: 'Search persisted logs (e.g. error, timeout)…',
     allTypes: 'All',
+    allContainers: 'All containers',
+    range1h: 'Last hour',
+    range6h: 'Last 6 hours',
+    range24h: 'Last 24 hours',
+    range7d: 'Last 7 days',
+    rangeAll: 'All history',
+    exporting: 'Preparing…',
     search: 'Search',
     searching: 'Searching…',
     noDeployment: 'No deployment yet — deploy the project to see logs.',
     waiting: 'Waiting for output…',
-    historyHint: 'Search the last 7 days of container logs.',
+    historyHint: 'Search stored container logs — pick a time range, a container and a term.',
     noResults: 'No matching log lines.',
-    retentionNote: 'Runtime logs are retained for 7 days. Timestamps in history mode are chunk-level.',
+    retentionNote: 'Your plan keeps {days} days of runtime logs. Timestamps in history mode are chunk-level; Download saves the full result, not just the lines shown.',
     shell: 'Shell',
   },
   volumes: {

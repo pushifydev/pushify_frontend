@@ -5,9 +5,24 @@ import Link from 'next/link';
 import { Download, Pause, Play, RefreshCw, Search, Terminal, Trash2 } from 'lucide-react';
 import { useContainerLogsStream } from '@/hooks/useContainerLogsStream';
 import { useDeployments, useTranslation } from '@/hooks';
-import { searchProjectLogs, type ProjectLogLine } from '@/lib/api';
+import {
+  exportProjectLogs,
+  getProjectLogContainers,
+  searchProjectLogs,
+  type ProjectLogLine,
+  type ProjectLogSearchParams,
+} from '@/lib/api';
 
 type Mode = 'live' | 'history';
+
+/** History windows, newest-relative; 0 means "everything the plan still keeps". */
+const RANGES = [
+  { hours: 1, key: 'range1h' },
+  { hours: 6, key: 'range6h' },
+  { hours: 24, key: 'range24h' },
+  { hours: 24 * 7, key: 'range7d' },
+  { hours: 0, key: 'rangeAll' },
+] as const;
 
 export function LogsTab({
   projectId,
@@ -23,8 +38,13 @@ export function LogsTab({
   // History mode state
   const [query, setQuery] = useState('');
   const [logType, setLogType] = useState<'all' | 'stdout' | 'stderr'>('all');
+  const [container, setContainer] = useState('');
+  const [rangeHours, setRangeHours] = useState<number>(24);
+  const [containers, setContainers] = useState<string[]>([]);
   const [historyLines, setHistoryLines] = useState<ProjectLogLine[] | null>(null);
+  const [retentionDays, setRetentionDays] = useState(7);
   const [searching, setSearching] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
   const { data: deployments = [] } = useDeployments(projectId);
@@ -51,34 +71,61 @@ export function LogsTab({
     return stream.logs.filter((line) => line.toLowerCase().includes(needle));
   }, [stream.logs, filter]);
 
+  // The containers with stored logs — replicas, workers and staging each get their own entry
+  useEffect(() => {
+    if (mode !== 'history') return;
+    let cancelled = false;
+    getProjectLogContainers(projectId).then((result) => {
+      if (!cancelled && result.data) setContainers(result.data.containers);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [mode, projectId]);
+
+  const searchParams = (): ProjectLogSearchParams => ({
+    q: query.trim() || undefined,
+    logType: logType === 'all' ? undefined : logType,
+    container: container || undefined,
+    from: rangeHours ? new Date(Date.now() - rangeHours * 3600_000).toISOString() : undefined,
+  });
+
   const runSearch = async () => {
     setSearching(true);
     setSearchError(null);
-    const result = await searchProjectLogs(projectId, {
-      q: query.trim() || undefined,
-      logType: logType === 'all' ? undefined : logType,
-      limit: 500,
-    });
+    const result = await searchProjectLogs(projectId, { ...searchParams(), limit: 500 });
     setSearching(false);
     if (result.error) {
       setSearchError(result.error.message);
       return;
     }
     setHistoryLines(result.data?.lines ?? []);
+    if (result.data?.retentionDays) setRetentionDays(result.data.retentionDays);
   };
 
-  const downloadLogs = () => {
-    const content =
-      mode === 'live'
-        ? visibleLiveLogs.join('\n')
-        : (historyLines ?? []).map((l) => `[${l.timestamp}] ${l.content}`).join('\n');
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+  const saveFile = (content: BlobPart, filename: string) => {
+    const url = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = `logs-${projectId.slice(0, 8)}-${mode}.txt`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const downloadLogs = async () => {
+    if (mode === 'live') {
+      saveFile(visibleLiveLogs.join('\n'), `logs-${projectId.slice(0, 8)}-live.txt`);
+      return;
+    }
+    // History: let the server write the file — it is not limited to the 500 lines on screen
+    setExporting(true);
+    const result = await exportProjectLogs(projectId, searchParams());
+    setExporting(false);
+    if (result.error) {
+      setSearchError(result.error.message);
+      return;
+    }
+    if (result.data) saveFile(result.data.blob, result.data.filename);
   };
 
   return (
@@ -142,9 +189,9 @@ export function LogsTab({
               </button>
             </>
           )}
-          <button onClick={downloadLogs} className="btn btn-ghost h-8 text-xs">
+          <button onClick={downloadLogs} disabled={exporting} className="btn btn-ghost h-8 text-xs">
             <Download className="w-3.5 h-3.5" />
-            {t('logs', 'download')}
+            {exporting ? t('logs', 'exporting') : t('logs', 'download')}
           </button>
           <Link
             href={`/dashboard/projects/${projectId}/shell`}
@@ -166,15 +213,40 @@ export function LogsTab({
           className="input w-full text-sm terminal-text"
         />
       ) : (
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && runSearch()}
             placeholder={t('logs', 'searchPlaceholder')}
-            className="input flex-1 text-sm terminal-text"
+            className="input flex-1 min-w-[12rem] text-sm terminal-text"
           />
+          <select
+            value={rangeHours}
+            onChange={(e) => setRangeHours(Number(e.target.value))}
+            className="input w-36 text-sm"
+          >
+            {RANGES.map((range) => (
+              <option key={range.key} value={range.hours}>
+                {t('logs', range.key)}
+              </option>
+            ))}
+          </select>
+          {containers.length > 1 && (
+            <select
+              value={container}
+              onChange={(e) => setContainer(e.target.value)}
+              className="input w-44 text-sm terminal-text"
+            >
+              <option value="">{t('logs', 'allContainers')}</option>
+              {containers.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          )}
           <select
             value={logType}
             onChange={(e) => setLogType(e.target.value as typeof logType)}
@@ -222,6 +294,9 @@ export function LogsTab({
               <span className="text-[var(--text-muted)]">
                 [{new Date(line.timestamp).toLocaleString()}]
               </span>{' '}
+              {line.containerName && containers.length > 1 && !container && (
+                <span className="text-[var(--text-secondary)]">{line.containerName}</span>
+              )}{' '}
               {line.logType === 'stderr' && (
                 <span className="text-[var(--status-error)]">stderr</span>
               )}{' '}
@@ -231,7 +306,9 @@ export function LogsTab({
         )}
       </div>
 
-      <p className="text-xs text-[var(--text-muted)]">{t('logs', 'retentionNote')}</p>
+      <p className="text-xs text-[var(--text-muted)]">
+        {t('logs', 'retentionNote').replace('{days}', String(retentionDays))}
+      </p>
     </div>
   );
 }

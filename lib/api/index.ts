@@ -181,6 +181,8 @@ export {
 // Project Logs (explorer)
 export {
   searchProjectLogs,
+  getProjectLogContainers,
+  exportProjectLogs,
   type ProjectLogLine,
   type ProjectLogSearchResult,
   type ProjectLogSearchParams,

@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- **Logs explorer: filters and a real download.** History mode filters by time range (last hour / 6h / 24h / 7 days / everything) and, when a project runs more than one container, by container — replicas, workers and the staging copy each show up by name, and lines are labelled with the container they came from. Download now asks the server for the whole result as a `.log` file instead of saving the 500 lines on screen, and the retention line states the days your plan actually keeps instead of a fixed "7 days".
 - **Replicas setting.** Project settings take the number of containers to run behind nginx (1–10); nginx spreads requests across them.
 - **Staging on the project page.** Settings take a staging branch; the overview then shows a staging card with its URL, a "Deploy staging" button and "Promote to production" (the commit staging runs, rebuilt with production's variables).
 - **Monitoring line on the project overview.** Says whether the app is answering (with its response time) or not (with the status code or error, and since when). Every deployed project is watched now, so it shows without configuring anything.
