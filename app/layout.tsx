@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: '%s | Pushify',
   },
   description:
-    'Deploy applications to your own servers in under 60 seconds. Open-source, zero config, 20+ frameworks supported. MIT licensed.',
+    'Open-source deployment platform: deploy apps from a Git repository to your own servers, with builds, HTTPS and zero-downtime deploys. MIT licensed.',
   keywords: [
     'cloud deployment',
     'open source PaaS',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     siteName: 'Pushify',
     title: 'Pushify - Open Source Cloud Deployment Platform',
     description:
-      'Deploy applications to your own servers in under 60 seconds. Open-source, zero config, 20+ frameworks supported.',
+      'Open-source deployment platform. Connect a repository, pick a server (yours or ours) and ship with HTTPS and zero-downtime deploys.',
     images: [
       {
         url: '/og-image.png',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Pushify - Open Source Cloud Deployment Platform',
     description:
-      'Deploy applications to your own servers in under 60 seconds. Open-source, zero config, 20+ frameworks supported.',
+      'Open-source deployment platform. Connect a repository, pick a server (yours or ours) and ship with HTTPS and zero-downtime deploys.',
     images: ['/og-image.png'],
   },
   robots: {
@@ -80,17 +80,18 @@ export const metadata: Metadata = {
     },
   },
   // Google's result-page favicon wants a PNG/ICO at a multiple of 48px (SVG is often
-  // ignored, and a missing /favicon.ico falls back to the generic globe).
+  // ignored, and a missing /favicon.ico falls back to the generic globe). `?v=` busts the
+  // browser favicon cache when the mark changes (scripts/gen-favicons.mjs) — bump it with it.
   icons: {
     icon: [
-      { url: '/favicon-48x48.png', sizes: '48x48', type: 'image/png' },
-      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-48x48.png?v=2', sizes: '48x48', type: 'image/png' },
+      { url: '/favicon-96x96.png?v=2', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon-32x32.png?v=2', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png?v=2', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon.ico?v=2', sizes: 'any' },
+      { url: '/icon.svg?v=2', type: 'image/svg+xml' },
     ],
-    apple: '/apple-touch-icon.png',
+    apple: '/apple-touch-icon.png?v=2',
   },
   manifest: '/site.webmanifest',
 };
@@ -136,7 +137,8 @@ export default function RootLayout({
                   name: 'Pushify',
                   legalName: 'Pushify LLC',
                   url: 'https://pushify.dev',
-                  logo: 'https://pushify.dev/logo-full.svg',
+                  // Square raster of the current mark (Google wants ≥112px; the old SVG was a retired design)
+                  logo: 'https://pushify.dev/logo-512.png',
                   address: {
                     '@type': 'PostalAddress',
                     streetAddress: '30 N Gould St Ste N',
@@ -164,7 +166,7 @@ export default function RootLayout({
                   operatingSystem: 'Linux, macOS, Windows',
                   url: 'https://pushify.dev',
                   description:
-                    'Open-source cloud deployment platform that lets developers deploy applications to their own VPS servers in under 60 seconds with zero configuration.',
+                    'Open-source cloud deployment platform that deploys applications from a Git repository to your own VPS servers, with automatic builds, HTTPS and zero-downtime deploys.',
                   featureList: [
                     'Push-to-deploy from GitHub with framework auto-detection (20+ frameworks)',
                     'Zero-downtime deploys with instant rollbacks',
