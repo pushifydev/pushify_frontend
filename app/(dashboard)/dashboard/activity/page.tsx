@@ -16,6 +16,7 @@ import {
   ChevronRight,
   RefreshCw,
   User,
+  Download,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { formatTimeAgo, formatShortDate } from '@/lib/formatters';
@@ -69,7 +70,25 @@ export default function ActivityPage() {
   const [isLoading, setIsLoading]             = useState(true);
   const [page, setPage]                       = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
   const limit = 20;
+
+  /** The whole filtered log as a file — what a compliance review asks for. */
+  const downloadCsv = async () => {
+    setIsExporting(true);
+    const actions = selectedCategory
+      ? (ACTION_CATEGORIES[selectedCategory as keyof typeof ACTION_CATEGORIES] as ActivityAction[])
+      : undefined;
+    const result = await activityService.exportLogs({ actions });
+    setIsExporting(false);
+    if (!result.data) return;
+    const url = URL.createObjectURL(result.data.blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = result.data.filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const fetchLogs = useCallback(async () => {
     setIsLoading(true);
@@ -124,14 +143,20 @@ export default function ActivityPage() {
             {t('activityLog', 'subtitle')}
           </p>
         </div>
-        <button
-          onClick={fetchLogs}
-          disabled={isLoading}
-          className="btn btn-primary shrink-0"
-        >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-          {t('common', 'refresh')}
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          <button onClick={downloadCsv} disabled={isExporting} className="btn btn-ghost">
+            <Download className="w-4 h-4" />
+            {isExporting ? t('common', 'loading') : t('activityLog', 'exportCsv')}
+          </button>
+          <button
+            onClick={fetchLogs}
+            disabled={isLoading}
+            className="btn btn-primary"
+          >
+            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            {t('common', 'refresh')}
+          </button>
+        </div>
       </div>
 
       {/* Filter pills */}

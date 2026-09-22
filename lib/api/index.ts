@@ -45,6 +45,7 @@ export {
   getDeployments,
   getDeployment,
   createDeployment,
+  promoteStaging,
   cancelDeployment,
   redeployDeployment,
   rollbackDeployment,
@@ -180,19 +181,44 @@ export {
 // Project Logs (explorer)
 export {
   searchProjectLogs,
+  getProjectLogContainers,
+  exportProjectLogs,
   type ProjectLogLine,
   type ProjectLogSearchResult,
   type ProjectLogSearchParams,
 } from './services/project-logs.service';
 
+// Private container registries
+export {
+  getRegistries,
+  createRegistry,
+  deleteRegistry,
+  type RegistryCredential,
+  type CreateRegistryInput,
+} from './services/registries.service';
+
+// Single sign-on
+export {
+  checkSso,
+  ssoStartUrl,
+  getSsoConnection,
+  saveSsoConnection,
+  deleteSsoConnection,
+  type SsoConnection,
+  type SaveSsoConnectionInput,
+  type SsoAvailability,
+} from './services/sso.service';
+
 // Health Check Functions
 export {
   getHealthCheckConfig,
+  getProjectHealthStatus,
   updateHealthCheckConfig,
   deleteHealthCheckConfig,
   getHealthCheckLogs,
   healthCheckService,
   type HealthCheckConfig,
+  type ProjectHealthStatus,
   type HealthCheckLog,
   type HealthCheckStatus,
   type HealthCheckConfigInput,

@@ -40,6 +40,10 @@ export interface TranslationKeys {
     password: string;
     name: string;
     forgotPassword: string;
+    ssoRequired: string;
+    continueWithSso: string;
+    ssoCompleting: string;
+    ssoFailed: string;
     signIn: string;
     signUp: string;
     signingIn: string;
@@ -203,6 +207,7 @@ export interface TranslationKeys {
   };
   activityLog: {
     subtitle: string;
+    exportCsv: string;
     filterAll: string;
     filterProjects: string;
     filterDeployments: string;
@@ -804,6 +809,25 @@ export interface TranslationKeys {
     buildSettingsDesc: string;
     gitBranch: string;
     gitBranchPlaceholder: string;
+    composePath: string;
+    composePathHint: string;
+    composePathActive: string;
+    composeService: string;
+    composeServiceHint: string;
+    dockerImage: string;
+    dockerImageHint: string;
+    dockerImageActive: string;
+    replicas: string;
+    replicasHint: string;
+    stagingBranch: string;
+    stagingBranchPlaceholder: string;
+    stagingBranchHint: string;
+    staging: string;
+    stagingNotDeployed: string;
+    deployStaging: string;
+    promoteToProduction: string;
+    promoteHint: string;
+    promoteStarted: string;
     installCommand: string;
     installCommandPlaceholder: string;
     buildCommandLabel: string;
@@ -1023,6 +1047,13 @@ export interface TranslationKeys {
     filterPlaceholder: string;
     searchPlaceholder: string;
     allTypes: string;
+    allContainers: string;
+    range1h: string;
+    range6h: string;
+    range24h: string;
+    range7d: string;
+    rangeAll: string;
+    exporting: string;
     search: string;
     searching: string;
     noDeployment: string;
@@ -1239,6 +1270,8 @@ export interface TranslationKeys {
     refreshing: string;
   };
   monitoring: {
+    up: string;
+    down: string;
     title: string;
     description: string;
     overview: string;
@@ -1280,6 +1313,48 @@ export interface TranslationKeys {
     totalNetworkIn: string;
     totalNetworkOut: string;
     memoryOf: string;
+  };
+  sso: {
+    title: string;
+    description: string;
+    provider: string;
+    redirectUri: string;
+    copy: string;
+    issuer: string;
+    issuerHint: string;
+    clientId: string;
+    clientSecret: string;
+    clientSecretHint: string;
+    clientSecretKeep: string;
+    domains: string;
+    domainsHint: string;
+    defaultRole: string;
+    defaultRoleHint: string;
+    roleMember: string;
+    roleAdmin: string;
+    enforce: string;
+    enforceHint: string;
+    saved: string;
+    remove: string;
+    removeConfirm: string;
+  };
+  registries: {
+    title: string;
+    description: string;
+    listTitle: string;
+    add: string;
+    remove: string;
+    removeConfirm: string;
+    empty: string;
+    emptyDesc: string;
+    host: string;
+    hostHint: string;
+    username: string;
+    password: string;
+    passwordHint: string;
+    name: string;
+    lastUsed: string;
+    neverUsed: string;
   };
   apiKeys: {
     listTitle: string;
@@ -2015,6 +2090,10 @@ export interface TranslationKeys {
     manual: string;
     backup_creating: string;
     backup_completed: string;
+    offsiteCopy: string;
+    offsiteCopyHint: string;
+    offsiteFailed: string;
+    offsiteFailedHint: string;
     backup_failed: string;
     backup_restoring: string;
     backup_restored: string;
@@ -2921,6 +3000,10 @@ export const en: TranslationKeys = {
     password: 'Password',
     name: 'Name',
     forgotPassword: 'Forgot password?',
+    ssoRequired: 'Your organization signs in through its own identity provider.',
+    continueWithSso: 'Continue with SSO',
+    ssoCompleting: 'Completing sign-in…',
+    ssoFailed: 'The single sign-on could not be completed. Try again.',
     signIn: 'Sign in',
     signUp: 'Sign up',
     signingIn: 'Signing in...',
@@ -3084,6 +3167,7 @@ export const en: TranslationKeys = {
   },
   activityLog: {
     subtitle: 'Track all changes and actions in your organization',
+    exportCsv: 'Export CSV',
     filterAll: 'All',
     filterProjects: 'Projects',
     filterDeployments: 'Deployments',
@@ -3658,7 +3742,7 @@ export const en: TranslationKeys = {
     logsHelpTitle: 'Log types',
     logsHelpBuild: 'View Logs — build and deploy output for this deployment run.',
     logsHelpContainer: 'Container Logs — recent output from the running app container (live snapshot).',
-    logsHelpHistorical: 'History — logs saved periodically on the server (retained ~7 days).',
+    logsHelpHistorical: 'History — logs saved periodically on the server (retained for as long as your plan keeps them).',
     // Environment tab
     envVarsDesc: 'Environment variables are encrypted and available during build and runtime.',
     oauthHintTitle: 'Enable social login (OAuth)',
@@ -3702,6 +3786,25 @@ export const en: TranslationKeys = {
     buildSettingsDesc: 'Configure how your project is built and deployed.',
     gitBranch: 'Branch',
     gitBranchPlaceholder: 'main',
+    composePath: 'Docker Compose file',
+    composePathHint: 'Leave empty to build the repository. Set a path (docker-compose.yml) to deploy the repository as a stack instead — most repositories carry one for local development, so it is never picked up on its own.',
+    composePathActive: 'This project deploys the stack in that file. Only the served service is published on the host; the other services reach each other by name inside the stack.',
+    composeService: 'Service to serve',
+    composeServiceHint: 'The service nginx proxies to. Needed when more than one service publishes a port.',
+    dockerImage: 'Docker image',
+    dockerImageHint: 'Leave empty to build from the repository. Set it to deploy a ready image instead (ghcr.io/acme/api:1.4) — private ones need a registry under Settings → Private registries.',
+    dockerImageActive: 'This project deploys the image above; the repository settings below are not used. Redeploy to pull the tag again.',
+    replicas: 'Replicas',
+    replicasHint: 'How many containers of this app run behind nginx, which spreads requests across them. More replicas need more memory on the server.',
+    stagingBranch: 'Staging branch',
+    stagingBranchPlaceholder: 'develop (optional)',
+    stagingBranchHint: 'Pushes here deploy a second copy of the project, with its own domain and staging variables. Leave empty for production only.',
+    staging: 'Staging',
+    stagingNotDeployed: 'Not deployed yet',
+    deployStaging: 'Deploy staging',
+    promoteToProduction: 'Promote to production',
+    promoteHint: 'Builds the commit staging is running with production’s variables.',
+    promoteStarted: 'Promoting staging to production',
     installCommand: 'Install Command',
     installCommandPlaceholder: 'npm install',
     buildCommandLabel: 'Build Command',
@@ -3925,13 +4028,20 @@ export const en: TranslationKeys = {
     filterPlaceholder: 'Filter live output…',
     searchPlaceholder: 'Search persisted logs (e.g. error, timeout)…',
     allTypes: 'All',
+    allContainers: 'All containers',
+    range1h: 'Last hour',
+    range6h: 'Last 6 hours',
+    range24h: 'Last 24 hours',
+    range7d: 'Last 7 days',
+    rangeAll: 'All history',
+    exporting: 'Preparing…',
     search: 'Search',
     searching: 'Searching…',
     noDeployment: 'No deployment yet — deploy the project to see logs.',
     waiting: 'Waiting for output…',
-    historyHint: 'Search the last 7 days of container logs.',
+    historyHint: 'Search stored container logs — pick a time range, a container and a term.',
     noResults: 'No matching log lines.',
-    retentionNote: 'Runtime logs are retained for 7 days. Timestamps in history mode are chunk-level.',
+    retentionNote: 'Your plan keeps {days} days of runtime logs. Timestamps in history mode are chunk-level; Download saves the full result, not just the lines shown.',
     shell: 'Shell',
   },
   volumes: {
@@ -4141,6 +4251,8 @@ export const en: TranslationKeys = {
     refreshing: 'Refreshing...',
   },
   monitoring: {
+    up: 'Answering',
+    down: 'Not answering',
     title: 'Monitoring',
     description: 'Real-time resource monitoring across all projects',
     overview: 'Overview',
@@ -4182,6 +4294,48 @@ export const en: TranslationKeys = {
     totalNetworkIn: 'Total In',
     totalNetworkOut: 'Total Out',
     memoryOf: 'of',
+  },
+  sso: {
+    title: 'Single sign-on',
+    description: "Sign in through your organization's own identity provider, over OpenID Connect.",
+    provider: 'Identity provider',
+    redirectUri: 'Enter this as the redirect URI at your provider',
+    copy: 'Copy',
+    issuer: 'Issuer URL',
+    issuerHint: 'Okta, Entra ID, Google Workspace, Auth0, Keycloak — the issuer from its OpenID configuration.',
+    clientId: 'Client ID',
+    clientSecret: 'Client secret',
+    clientSecretHint: 'Stored encrypted and never shown again.',
+    clientSecretKeep: 'Leave empty to keep the stored secret.',
+    domains: 'Email domains',
+    domainsHint: 'Only addresses in these domains sign in through the provider. Public providers such as gmail.com cannot be used.',
+    defaultRole: 'Role for new members',
+    defaultRoleHint: 'What someone gets the first time the provider sends them here.',
+    roleMember: 'Member',
+    roleAdmin: 'Admin',
+    enforce: 'Require single sign-on',
+    enforceHint: 'Passwords, GitHub and Google stop working for these domains — disabling someone at your provider is then enough to lock them out.',
+    saved: 'Saved',
+    remove: 'Remove connection',
+    removeConfirm: 'Members in these domains will sign in with a password again. Nobody loses access.',
+  },
+  registries: {
+    title: 'Private registries',
+    description: 'Credentials Pushify uses on the deploy server to pull your private images.',
+    listTitle: 'Registries',
+    add: 'Add registry',
+    remove: 'Remove',
+    removeConfirm: 'Deploys that need this registry will fail until you add it again. Running containers are not affected.',
+    empty: 'No private registries',
+    emptyDesc: 'Add one to build from a private base image, or to deploy a project straight from an image.',
+    host: 'Registry',
+    hostHint: 'Host only — ghcr.io, docker.io, registry.gitlab.com, registry.example.com:5000',
+    username: 'Username',
+    password: 'Password or access token',
+    passwordHint: 'Stored encrypted and never shown again. A token with read access is enough.',
+    name: 'Name (optional)',
+    lastUsed: 'Last used {time}',
+    neverUsed: 'Not used in a deploy yet',
   },
   apiKeys: {
     listTitle: 'Your keys',
@@ -4943,6 +5097,10 @@ export const en: TranslationKeys = {
     manual: 'Manual',
     backup_creating: 'Creating',
     backup_completed: 'Completed',
+    offsiteCopy: 'Off-site',
+    offsiteCopyHint: 'A copy of this backup is kept somewhere other than the server the database runs on.',
+    offsiteFailed: 'On this server only',
+    offsiteFailedHint: 'This backup exists only on the server the database runs on — losing that server loses it too.',
     backup_failed: 'Failed',
     backup_restoring: 'Restoring',
     backup_restored: 'Restored',

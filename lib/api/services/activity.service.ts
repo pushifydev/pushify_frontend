@@ -48,8 +48,32 @@ export const getActivityLogs = async (
   }
 };
 
+/**
+ * The same log as a CSV file. A compliance review asks for the audit trail as evidence, and
+ * scrolling a dashboard is not evidence — the server writes up to 10,000 entries, oldest first,
+ * with the IP each action came from.
+ */
+export const exportActivityLogs = async (
+  filters: ActivityLogFilters = {}
+): Promise<ApiResponse<{ blob: Blob; filename: string }>> => {
+  try {
+    const params = new URLSearchParams();
+    if (filters.projectId) params.append('projectId', filters.projectId);
+    if (filters.userId) params.append('userId', filters.userId);
+    if (filters.actions?.length) params.append('actions', filters.actions.join(','));
+
+    const response = await api.get(`/activity/export?${params.toString()}`, { responseType: 'blob' });
+    const disposition = String(response.headers['content-disposition'] || '');
+    const filename = disposition.match(/filename="([^"]+)"/)?.[1] || 'activity.csv';
+    return { data: { blob: response.data as Blob, filename } };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 // ============ Export as namespace ============
 
 export const activityService = {
   getLogs: getActivityLogs,
+  exportLogs: exportActivityLogs,
 };

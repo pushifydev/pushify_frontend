@@ -1,6 +1,6 @@
 'use client';
 
-import { Download, ArchiveRestore, Trash2, ShieldCheck, ShieldAlert, ShieldQuestion, Loader2 } from 'lucide-react';
+import { Download, ArchiveRestore, Trash2, ShieldCheck, ShieldAlert, ShieldQuestion, Loader2, CloudCheck, CloudOff } from 'lucide-react';
 import type { DatabaseBackup, BackupVerification } from '@/lib/api';
 import { STATUS_COLORS } from '@/lib/constants';
 import { formatMessage } from '@/lib/i18n/format-message';
@@ -152,6 +152,24 @@ export function BackupListPanel({
                       {backup.sizeMb ? `${backup.sizeMb} MB` : '—'}
                     </span>
                     {backup.status === 'completed' && verification && <VerificationBadge v={verification} t={t} />}
+                    {/* 'skipped' means the platform keeps no off-site copies at all — a warning
+                        nobody reading this can act on, so it is not shown. */}
+                    {backup.status === 'completed' &&
+                      (backup.offsiteStatus === 'uploaded' || backup.offsiteStatus === 'failed') && (
+                      <span
+                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full"
+                        style={{
+                          background: `${backup.offsiteCopy ? STATUS_COLORS.success : STATUS_COLORS.warning}18`,
+                          color: backup.offsiteCopy ? STATUS_COLORS.success : STATUS_COLORS.warning,
+                        }}
+                        title={
+                          backup.offsiteCopy ? t('databases', 'offsiteCopyHint') : t('databases', 'offsiteFailedHint')
+                        }
+                      >
+                        {backup.offsiteCopy ? <CloudCheck className="w-3 h-3" /> : <CloudOff className="w-3 h-3" />}
+                        {backup.offsiteCopy ? t('databases', 'offsiteCopy') : t('databases', 'offsiteFailed')}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <span

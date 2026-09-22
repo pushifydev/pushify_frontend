@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Key, Shield, Settings, User, Palette, Monitor, Bell } from 'lucide-react';
+import { Key, Shield, Settings, User, Palette, Monitor, Bell, Boxes, KeyRound } from 'lucide-react';
 import { useTranslation } from '@/hooks';
-import { ProfileTab, AppearanceTab, SessionsTab, NotificationsTab, SecurityTab, ApiKeysTab } from './components';
+import { ProfileTab, AppearanceTab, SessionsTab, NotificationsTab, SecurityTab, ApiKeysTab, RegistriesTab, SsoTab } from './components';
 
-type SettingsTab = 'profile' | 'appearance' | 'sessions' | 'notifications' | 'security' | 'api-keys';
+type SettingsTab = 'profile' | 'appearance' | 'sessions' | 'notifications' | 'security' | 'api-keys' | 'registries' | 'sso';
 
 interface TabDef {
   id: SettingsTab;
   icon: React.ElementType;
-  labelKey: 'profile' | 'appearance' | 'sessions' | 'notificationPrefs' | 'security' | 'apiKeys';
+  labelKey: 'profile' | 'appearance' | 'sessions' | 'notificationPrefs' | 'security' | 'apiKeys' | 'registries' | 'sso';
 }
 
 // Grouped like the content actually splits: identity/preferences vs. who-can-get-in
@@ -30,6 +30,8 @@ const tabGroups: { groupKey: 'settingsGroupAccount' | 'settingsGroupAccess'; tab
       { id: 'security', icon: Shield, labelKey: 'security' },
       { id: 'sessions', icon: Monitor, labelKey: 'sessions' },
       { id: 'api-keys', icon: Key, labelKey: 'apiKeys' },
+      { id: 'registries', icon: Boxes, labelKey: 'registries' },
+      { id: 'sso', icon: KeyRound, labelKey: 'sso' },
     ],
   },
 ];
@@ -147,6 +149,8 @@ export default function SettingsPage() {
             {activeTab === 'notifications' && <NotificationsTab />}
             {activeTab === 'security' && <SecurityTab />}
             {activeTab === 'api-keys' && <ApiKeysTab />}
+            {activeTab === 'registries' && <RegistriesTab />}
+            {activeTab === 'sso' && <SsoTab />}
           </main>
         </div>
       </div>

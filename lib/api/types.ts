@@ -78,6 +78,10 @@ export interface Project {
   description: string | null;
   gitRepoUrl: string | null;
   gitBranch: string | null;
+  /** Pushes here deploy the staging copy; null means the project has production only */
+  stagingBranch?: string | null;
+  /** How many containers of the app run behind nginx */
+  replicas?: number;
   gitProvider: string | null;
   framework: string | null;
   buildCommand: string | null;
@@ -86,6 +90,12 @@ export interface Project {
   startCommand: string | null;
   rootDirectory: string | null;
   dockerfilePath: string | null;
+  /** Set when the project deploys a ready image instead of building the repository */
+  dockerImage?: string | null;
+  /** Set when the project deploys its repository as a Docker Compose stack */
+  composePath?: string | null;
+  composeService?: string | null;
+  composePort?: number | null;
   port: number | null;
   autoDeploy: boolean;
   status: ProjectStatus;
@@ -128,6 +138,15 @@ export interface CreateProjectInput {
 
 export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'serverId'>> {
   serverId?: string | null;
+  /** Pushes here deploy the staging copy; null turns staging off */
+  stagingBranch?: string | null;
+  replicas?: number;
+  /** Deploy a ready image instead of the repository; null goes back to the repository */
+  dockerImage?: string | null;
+  /** Deploy the repository as a compose stack: the file's path; null builds the repository */
+  composePath?: string | null;
+  composeService?: string | null;
+  composePort?: number | null;
   sleepEnabled?: boolean;
   sleepAfterMinutes?: number;
 }
@@ -250,6 +269,8 @@ export interface CreateDeploymentInput {
   commitHash?: string;
   commitMessage?: string;
   branch?: string;
+  /** 'staging' deploys the project's staging copy */
+  environment?: 'production' | 'staging';
 }
 
 // ============ Activity Log Types ============
@@ -477,6 +498,10 @@ export interface DatabaseBackup {
   status: BackupStatus;
   sizeMb: number | null;
   filePath: string | null;
+  /** A copy exists somewhere other than the server the database runs on */
+  offsiteCopy?: boolean;
+  /** uploaded | failed | skipped — what happened to that copy */
+  offsiteStatus?: string | null;
   metadata: { verification?: BackupVerification } & Record<string, unknown>;
   errorMessage: string | null;
   startedAt: string;

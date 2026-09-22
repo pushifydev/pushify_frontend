@@ -107,6 +107,7 @@ export {
 export {
   healthCheckKeys,
   useHealthCheckConfig,
+  useProjectHealthStatus,
   useHealthCheckLogs,
   useUpdateHealthCheckConfig,
   useDeleteHealthCheckConfig,
@@ -155,6 +156,8 @@ export {
   useInfraTopUp,
   useInvoices,
 } from './useBilling';
+
+export { useRegistries, useCreateRegistry, useDeleteRegistry, registryKeys } from './useRegistries';
 
 // Dashboard overview
 export { dashboardKeys, useDashboardOverview } from './useDashboardOverview';

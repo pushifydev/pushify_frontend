@@ -6,6 +6,7 @@ import {
   updateHealthCheckConfig,
   deleteHealthCheckConfig,
   getHealthCheckLogs,
+  getProjectHealthStatus,
   type HealthCheckConfigInput,
 } from '@/lib/api';
 
@@ -14,7 +15,22 @@ export const healthCheckKeys = {
   all: ['healthCheck'] as const,
   config: (projectId: string) => [...healthCheckKeys.all, 'config', projectId] as const,
   logs: (projectId: string) => [...healthCheckKeys.all, 'logs', projectId] as const,
+  status: (projectId: string) => [...healthCheckKeys.all, 'status', projectId] as const,
 };
+
+/** What monitoring last saw for this project (every deployed project is watched). */
+export function useProjectHealthStatus(projectId: string, enabled = true) {
+  return useQuery({
+    queryKey: healthCheckKeys.status(projectId),
+    queryFn: async () => {
+      const result = await getProjectHealthStatus(projectId);
+      if (result.error) throw new Error(result.error.message);
+      return result.data;
+    },
+    enabled: enabled && !!projectId,
+    refetchInterval: 60_000,
+  });
+}
 
 // ============ Queries ============
 

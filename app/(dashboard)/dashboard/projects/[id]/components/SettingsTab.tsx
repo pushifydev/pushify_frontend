@@ -40,12 +40,21 @@ export function SettingsTab({
 
   // Build settings state
   const [gitBranch, setGitBranch] = useState(project.gitBranch || '');
+  const [stagingBranch, setStagingBranch] = useState(project.stagingBranch || '');
+  const [replicas, setReplicas] = useState(String(project.replicas ?? 1));
   const [installCommand, setInstallCommand] = useState(project.installCommand || '');
   const [buildCommand, setBuildCommand] = useState(project.buildCommand || '');
   const [outputDirectory, setOutputDirectory] = useState(project.outputDirectory || '');
   const [startCommand, setStartCommand] = useState(project.startCommand || '');
   const [port, setPort] = useState(project.port?.toString() || '');
   const [rootDirectory, setRootDirectory] = useState(project.rootDirectory || '');
+  // Set: the project deploys this image and the repository settings below do not apply
+  const [dockerImage, setDockerImage] = useState(project.dockerImage || '');
+  const deploysImage = !!dockerImage.trim();
+  // Set: the repository is deployed as a compose stack instead of being built
+  const [composePath, setComposePath] = useState(project.composePath || '');
+  const [composeService, setComposeService] = useState(project.composeService || '');
+  const deploysCompose = !deploysImage && !!composePath.trim();
 
   // Server selection state
   const [selectedServerId, setSelectedServerId] = useState<string | null>(project.serverId || null);
@@ -69,12 +78,17 @@ export function SettingsTab({
   const handleSaveBuildSettings = async () => {
     await updateProject.mutateAsync({
       gitBranch: gitBranch || undefined,
+      stagingBranch: stagingBranch.trim() || null,
+      replicas: Math.min(10, Math.max(1, parseInt(replicas, 10) || 1)),
       installCommand: installCommand || undefined,
       buildCommand: buildCommand || undefined,
       outputDirectory: outputDirectory || undefined,
       startCommand: startCommand || undefined,
       port: port ? parseInt(port, 10) : undefined,
       rootDirectory: rootDirectory || undefined,
+      dockerImage: dockerImage.trim() || null,
+      composePath: composePath.trim() || null,
+      composeService: composeService.trim() || null,
     });
     setBuildSettingsSaved(true);
     setTimeout(() => setBuildSettingsSaved(false), 3000);
@@ -163,6 +177,83 @@ export function SettingsTab({
               placeholder={t('projectDetail', 'gitBranchPlaceholder')}
               className="input w-full"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              {t('projectDetail', 'dockerImage')}
+            </label>
+            <input
+              type="text"
+              value={dockerImage}
+              onChange={(e) => setDockerImage(e.target.value)}
+              placeholder="ghcr.io/acme/api:1.4"
+              className="input w-full terminal-text"
+            />
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+              {deploysImage ? t('projectDetail', 'dockerImageActive') : t('projectDetail', 'dockerImageHint')}
+            </p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              {t('projectDetail', 'composePath')}
+            </label>
+            <input
+              type="text"
+              value={composePath}
+              onChange={(e) => setComposePath(e.target.value)}
+              placeholder="docker-compose.yml"
+              className="input w-full terminal-text"
+              disabled={deploysImage}
+            />
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+              {deploysCompose ? t('projectDetail', 'composePathActive') : t('projectDetail', 'composePathHint')}
+            </p>
+          </div>
+          {deploysCompose && (
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                {t('projectDetail', 'composeService')}
+              </label>
+              <input
+                type="text"
+                value={composeService}
+                onChange={(e) => setComposeService(e.target.value)}
+                placeholder="web"
+                className="input w-full terminal-text"
+              />
+              <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+                {t('projectDetail', 'composeServiceHint')}
+              </p>
+            </div>
+          )}
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              {t('projectDetail', 'replicas')}
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={10}
+              value={replicas}
+              onChange={(e) => setReplicas(e.target.value)}
+              className="input w-full"
+            />
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">{t('projectDetail', 'replicasHint')}</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              {t('projectDetail', 'stagingBranch')}
+            </label>
+            <input
+              type="text"
+              value={stagingBranch}
+              onChange={(e) => setStagingBranch(e.target.value)}
+              placeholder={t('projectDetail', 'stagingBranchPlaceholder')}
+              className="input w-full"
+            />
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+              {t('projectDetail', 'stagingBranchHint')}
+            </p>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">

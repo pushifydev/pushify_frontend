@@ -69,6 +69,7 @@ export interface PlanLimits {
   storageGb: number;
   bandwidthGb: number;
   buildMinutesPerMonth: number;
+  logRetentionDays: number;
   previewDeployments: boolean;
   healthChecks: boolean;
   prioritySupport: boolean;
