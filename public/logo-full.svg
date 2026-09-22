@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
-  <!-- Icon -->
-  <rect width="48" height="48" rx="11" fill="#22d3ee"/>
-  <path d="M24 12L33 22.5H27V36H21V22.5H15L24 12Z" fill="#020206"/>
-  <!-- Text -->
-  <text x="60" y="34" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="26" letter-spacing="-0.5" fill="currentColor">Pushify</text>
+  <rect width="48" height="48" rx="11" fill="#171717"/>
+  <path d="M16.5 36V12H25.5C28.8 12 31.5 13.2 33.2 15.2C34.9 17.2 35.5 19.6 35.5 22C35.5 24.4 34.9 26.8 33.2 28.8C31.5 30.8 28.8 32 25.5 32H23V36H16.5ZM23 26H25.2C26.3 26 27.2 25.6 27.8 25C28.4 24.4 28.7 23.4 28.7 22C28.7 20.6 28.4 19.6 27.8 19C27.2 18.4 26.3 18 25.2 18H23V26Z" fill="#ffffff"/>
+  <text x="60" y="34" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="700" font-size="26" letter-spacing="-0.5" fill="#09090b">Pushify</text>
 </svg>
