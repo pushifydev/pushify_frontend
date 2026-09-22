@@ -152,7 +152,10 @@ export function BackupListPanel({
                       {backup.sizeMb ? `${backup.sizeMb} MB` : '—'}
                     </span>
                     {backup.status === 'completed' && verification && <VerificationBadge v={verification} t={t} />}
-                    {backup.status === 'completed' && backup.offsiteStatus && (
+                    {/* 'skipped' means the platform keeps no off-site copies at all — a warning
+                        nobody reading this can act on, so it is not shown. */}
+                    {backup.status === 'completed' &&
+                      (backup.offsiteStatus === 'uploaded' || backup.offsiteStatus === 'failed') && (
                       <span
                         className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full"
                         style={{
