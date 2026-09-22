@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Activity, Globe } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { useDeployments, useTranslation } from '@/hooks';
 import { useMetricsSummary, useMetricsTimeSeries } from '@/hooks/useMetrics';
 import { formatStorage } from '@/lib/formatters';
@@ -86,8 +87,6 @@ export function MetricsSection({
       </div>
     );
   };
-
-  const { ResponsiveContainer, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } = require('recharts');
 
   return (
     <div className="p-4 sm:p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] min-w-0 overflow-hidden">
