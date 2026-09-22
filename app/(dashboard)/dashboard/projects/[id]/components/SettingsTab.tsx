@@ -40,6 +40,7 @@ export function SettingsTab({
 
   // Build settings state
   const [gitBranch, setGitBranch] = useState(project.gitBranch || '');
+  const [stagingBranch, setStagingBranch] = useState(project.stagingBranch || '');
   const [installCommand, setInstallCommand] = useState(project.installCommand || '');
   const [buildCommand, setBuildCommand] = useState(project.buildCommand || '');
   const [outputDirectory, setOutputDirectory] = useState(project.outputDirectory || '');
@@ -69,6 +70,7 @@ export function SettingsTab({
   const handleSaveBuildSettings = async () => {
     await updateProject.mutateAsync({
       gitBranch: gitBranch || undefined,
+      stagingBranch: stagingBranch.trim() || null,
       installCommand: installCommand || undefined,
       buildCommand: buildCommand || undefined,
       outputDirectory: outputDirectory || undefined,
@@ -163,6 +165,21 @@ export function SettingsTab({
               placeholder={t('projectDetail', 'gitBranchPlaceholder')}
               className="input w-full"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              {t('projectDetail', 'stagingBranch')}
+            </label>
+            <input
+              type="text"
+              value={stagingBranch}
+              onChange={(e) => setStagingBranch(e.target.value)}
+              placeholder={t('projectDetail', 'stagingBranchPlaceholder')}
+              className="input w-full"
+            />
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+              {t('projectDetail', 'stagingBranchHint')}
+            </p>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">

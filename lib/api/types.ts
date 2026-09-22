@@ -78,6 +78,8 @@ export interface Project {
   description: string | null;
   gitRepoUrl: string | null;
   gitBranch: string | null;
+  /** Pushes here deploy the staging copy; null means the project has production only */
+  stagingBranch?: string | null;
   gitProvider: string | null;
   framework: string | null;
   buildCommand: string | null;
@@ -128,6 +130,8 @@ export interface CreateProjectInput {
 
 export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'serverId'>> {
   serverId?: string | null;
+  /** Pushes here deploy the staging copy; null turns staging off */
+  stagingBranch?: string | null;
   sleepEnabled?: boolean;
   sleepAfterMinutes?: number;
 }
@@ -250,6 +254,8 @@ export interface CreateDeploymentInput {
   commitHash?: string;
   commitMessage?: string;
   branch?: string;
+  /** 'staging' deploys the project's staging copy */
+  environment?: 'production' | 'staging';
 }
 
 // ============ Activity Log Types ============

@@ -45,6 +45,7 @@ export {
   getDeployments,
   getDeployment,
   createDeployment,
+  promoteStaging,
   cancelDeployment,
   redeployDeployment,
   rollbackDeployment,

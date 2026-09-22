@@ -177,6 +177,22 @@ export const getHistoricalContainerLogs = async (
   }
 };
 
+/** Promote the staging copy to production: the commit staging ran, rebuilt with production's variables. */
+export const promoteStaging = async (
+  projectId: string,
+  deploymentId?: string
+): Promise<ApiResponse<Deployment>> => {
+  try {
+    const response = await api.post<{ data: Deployment; message: string }>(
+      `/projects/${projectId}/deployments/promote`,
+      deploymentId ? { deploymentId } : {}
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 // ============ Export as namespace for backward compatibility ============
 
 export const deploymentsService = {
@@ -186,6 +202,7 @@ export const deploymentsService = {
   cancel: cancelDeployment,
   redeploy: redeployDeployment,
   rollback: rollbackDeployment,
+  promote: promoteStaging,
   getLogs: getDeploymentLogs,
   getHistoricalLogs: getHistoricalContainerLogs,
 };

@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { wakeProject } from '@/lib/api';
+import { createDeployment, promoteStaging, wakeProject } from '@/lib/api';
 import {
   ExternalLink,
   GitBranch,
   Rocket,
-  RotateCcw, Moon, Sun, Activity} from 'lucide-react';
+  RotateCcw, Moon, Sun, Activity, ArrowUpCircle, FlaskConical} from 'lucide-react';
 import { DeploymentFailureSummary } from '@/components/DeploymentFailureSummary';
 import { DeploymentTimeline } from '@/components/DeploymentTimeline';
 import { findLastGoodDeployment } from '@/lib/deployment-utils';
@@ -67,6 +67,7 @@ export function OverviewTab({
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
       <div className="lg:col-span-2 space-y-4 min-w-0">
         <MonitoringLine projectId={projectId} t={t} />
+        <StagingCard project={project} projectId={projectId} t={t} />
         <h3 className="text-lg font-semibold">{t('projectDetail', 'latestDeployment')}</h3>
         {latestDeployment ? (
           <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
@@ -200,6 +201,70 @@ function MonitoringLine({ projectId, t }: { projectId: string; t: ReturnType<typ
       <span style={{ color }}>{down ? t('monitoring', 'down') : t('monitoring', 'up')}</span>
       {detail && <span className="text-[var(--text-muted)]">· {detail}</span>}
       {since && <span className="text-[var(--text-muted)]">· {since}</span>}
+    </div>
+  );
+}
+
+/**
+ * The project's staging copy: pushes to its branch deploy it, and it can be promoted to
+ * production (the same commit, rebuilt with production's variables).
+ */
+function StagingCard({
+  project,
+  projectId,
+  t,
+}: {
+  project: NonNullable<ReturnType<typeof useProject>['data']>;
+  projectId: string;
+  t: ReturnType<typeof useTranslation>['t'];
+}) {
+  const queryClient = useQueryClient();
+  const [pending, setPending] = useState<'deploy' | 'promote' | null>(null);
+  if (!project.stagingBranch) return null;
+
+  const stagingUrl = (project.settings as Record<string, unknown> | undefined)?.stagingUrl as string | undefined;
+
+  const run = async (what: 'deploy' | 'promote') => {
+    setPending(what);
+    try {
+      const result =
+        what === 'deploy'
+          ? await createDeployment(projectId, { environment: 'staging' })
+          : await promoteStaging(projectId);
+      if (result.error) throw new Error(result.error.message);
+      await queryClient.invalidateQueries({ queryKey: ['deployments', projectId] });
+    } finally {
+      setPending(null);
+    }
+  };
+
+  return (
+    <div className="rounded-lg p-4 bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+      <div className="flex flex-wrap items-center gap-2 mb-2">
+        <FlaskConical className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
+        <span className="text-sm font-medium">{t('projectDetail', 'staging')}</span>
+        <code className="text-xs px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+          {project.stagingBranch}
+        </code>
+        {stagingUrl ? (
+          <a href={stagingUrl} target="_blank" rel="noreferrer" className="text-sm truncate hover:underline">
+            {stagingUrl.replace(/^https?:\/\//, '')}
+          </a>
+        ) : (
+          <span className="text-sm text-[var(--text-muted)]">{t('projectDetail', 'stagingNotDeployed')}</span>
+        )}
+      </div>
+      <p className="text-xs text-[var(--text-muted)] mb-3">{t('projectDetail', 'promoteHint')}</p>
+      <div className="flex flex-wrap gap-2">
+        <button type="button" onClick={() => run('deploy')} disabled={!!pending} className="btn btn-secondary text-sm py-1.5">
+          <Rocket className="w-3.5 h-3.5" />
+          {pending === 'deploy' ? '…' : t('projectDetail', 'deployStaging')}
+        </button>
+        <button type="button" onClick={() => run('promote')} disabled={!!pending || !stagingUrl} className="btn btn-secondary text-sm py-1.5">
+          <ArrowUpCircle className="w-3.5 h-3.5" />
+          {pending === 'promote' ? '…' : t('projectDetail', 'promoteToProduction')}
+        </button>
+      </div>
     </div>
   );
 }

@@ -804,6 +804,15 @@ export interface TranslationKeys {
     buildSettingsDesc: string;
     gitBranch: string;
     gitBranchPlaceholder: string;
+    stagingBranch: string;
+    stagingBranchPlaceholder: string;
+    stagingBranchHint: string;
+    staging: string;
+    stagingNotDeployed: string;
+    deployStaging: string;
+    promoteToProduction: string;
+    promoteHint: string;
+    promoteStarted: string;
     installCommand: string;
     installCommandPlaceholder: string;
     buildCommandLabel: string;
@@ -3704,6 +3713,15 @@ export const en: TranslationKeys = {
     buildSettingsDesc: 'Configure how your project is built and deployed.',
     gitBranch: 'Branch',
     gitBranchPlaceholder: 'main',
+    stagingBranch: 'Staging branch',
+    stagingBranchPlaceholder: 'develop (optional)',
+    stagingBranchHint: 'Pushes here deploy a second copy of the project, with its own domain and staging variables. Leave empty for production only.',
+    staging: 'Staging',
+    stagingNotDeployed: 'Not deployed yet',
+    deployStaging: 'Deploy staging',
+    promoteToProduction: 'Promote to production',
+    promoteHint: 'Builds the commit staging is running with production’s variables.',
+    promoteStarted: 'Promoting staging to production',
     installCommand: 'Install Command',
     installCommandPlaceholder: 'npm install',
     buildCommandLabel: 'Build Command',
