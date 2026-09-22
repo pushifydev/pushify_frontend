@@ -498,6 +498,10 @@ export interface DatabaseBackup {
   status: BackupStatus;
   sizeMb: number | null;
   filePath: string | null;
+  /** A copy exists somewhere other than the server the database runs on */
+  offsiteCopy?: boolean;
+  /** uploaded | failed | skipped — what happened to that copy */
+  offsiteStatus?: string | null;
   metadata: { verification?: BackupVerification } & Record<string, unknown>;
   errorMessage: string | null;
   startedAt: string;

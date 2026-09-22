@@ -2090,6 +2090,10 @@ export interface TranslationKeys {
     manual: string;
     backup_creating: string;
     backup_completed: string;
+    offsiteCopy: string;
+    offsiteCopyHint: string;
+    offsiteFailed: string;
+    offsiteFailedHint: string;
     backup_failed: string;
     backup_restoring: string;
     backup_restored: string;
@@ -5093,6 +5097,10 @@ export const en: TranslationKeys = {
     manual: 'Manual',
     backup_creating: 'Creating',
     backup_completed: 'Completed',
+    offsiteCopy: 'Off-site',
+    offsiteCopyHint: 'A copy of this backup is kept somewhere other than the server the database runs on.',
+    offsiteFailed: 'On this server only',
+    offsiteFailedHint: 'This backup exists only on the server the database runs on — losing that server loses it too.',
     backup_failed: 'Failed',
     backup_restoring: 'Restoring',
     backup_restored: 'Restored',
