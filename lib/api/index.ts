@@ -188,11 +188,13 @@ export {
 // Health Check Functions
 export {
   getHealthCheckConfig,
+  getProjectHealthStatus,
   updateHealthCheckConfig,
   deleteHealthCheckConfig,
   getHealthCheckLogs,
   healthCheckService,
   type HealthCheckConfig,
+  type ProjectHealthStatus,
   type HealthCheckLog,
   type HealthCheckStatus,
   type HealthCheckConfigInput,

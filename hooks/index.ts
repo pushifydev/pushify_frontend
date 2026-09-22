@@ -107,6 +107,7 @@ export {
 export {
   healthCheckKeys,
   useHealthCheckConfig,
+  useProjectHealthStatus,
   useHealthCheckLogs,
   useUpdateHealthCheckConfig,
   useDeleteHealthCheckConfig,

@@ -7,11 +7,11 @@ import {
   ExternalLink,
   GitBranch,
   Rocket,
-  RotateCcw, Moon, Sun} from 'lucide-react';
+  RotateCcw, Moon, Sun, Activity} from 'lucide-react';
 import { DeploymentFailureSummary } from '@/components/DeploymentFailureSummary';
 import { DeploymentTimeline } from '@/components/DeploymentTimeline';
 import { findLastGoodDeployment } from '@/lib/deployment-utils';
-import { useProject, useDeployments, useTranslation } from '@/hooks';
+import { useProject, useDeployments, useProjectHealthStatus, useTranslation } from '@/hooks';
 import { MetricsSection } from './MetricsSection';
 
 export function OverviewTab({
@@ -66,6 +66,7 @@ export function OverviewTab({
     )}
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
       <div className="lg:col-span-2 space-y-4 min-w-0">
+        <MonitoringLine projectId={projectId} t={t} />
         <h3 className="text-lg font-semibold">{t('projectDetail', 'latestDeployment')}</h3>
         {latestDeployment ? (
           <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
@@ -168,5 +169,37 @@ export function OverviewTab({
       </div>
     </div>
     </>
+  );
+}
+
+/**
+ * What monitoring last saw. Every deployed project is checked about once a minute; after three
+ * failures in a row it counts as down and everyone with deployment alerts on gets an email.
+ */
+function MonitoringLine({ projectId, t }: { projectId: string; t: ReturnType<typeof useTranslation>['t'] }) {
+  const { data } = useProjectHealthStatus(projectId);
+  if (!data || data.status === 'unknown') return null;
+
+  const down = data.status === 'down';
+  const color = down ? 'var(--status-error)' : 'var(--status-success)';
+  const since = down && data.downSince ? new Date(data.downSince).toLocaleString() : null;
+  const detail = down
+    ? data.statusCode
+      ? `HTTP ${data.statusCode}`
+      : data.error || ''
+    : data.responseTimeMs != null
+      ? `${data.responseTimeMs} ms`
+      : '';
+
+  return (
+    <div
+      className="flex flex-wrap items-center gap-2 rounded-lg px-3 py-2 text-sm"
+      style={{ background: `${down ? 'var(--status-error)' : 'var(--status-success)'}10`, border: `1px solid ${color}25` }}
+    >
+      <Activity className="w-4 h-4 shrink-0" style={{ color }} />
+      <span style={{ color }}>{down ? t('monitoring', 'down') : t('monitoring', 'up')}</span>
+      {detail && <span className="text-[var(--text-muted)]">· {detail}</span>}
+      {since && <span className="text-[var(--text-muted)]">· {since}</span>}
+    </div>
   );
 }

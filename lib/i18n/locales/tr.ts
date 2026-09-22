@@ -1262,6 +1262,8 @@ export const tr: TranslationKeys = {
     refreshing: 'Yenileniyor...',
   },
   monitoring: {
+    up: 'Cevap veriyor',
+    down: 'Cevap vermiyor',
     title: 'İzleme',
     description: 'Tüm projelerin gerçek zamanlı kaynak izlemesi',
     overview: 'Genel Bakış',

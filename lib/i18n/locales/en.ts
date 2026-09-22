@@ -1239,6 +1239,8 @@ export interface TranslationKeys {
     refreshing: string;
   };
   monitoring: {
+    up: string;
+    down: string;
     title: string;
     description: string;
     overview: string;
@@ -4141,6 +4143,8 @@ export const en: TranslationKeys = {
     refreshing: 'Refreshing...',
   },
   monitoring: {
+    up: 'Answering',
+    down: 'Not answering',
     title: 'Monitoring',
     description: 'Real-time resource monitoring across all projects',
     overview: 'Overview',

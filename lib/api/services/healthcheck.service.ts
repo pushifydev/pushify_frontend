@@ -32,6 +32,19 @@ export interface HealthCheckLog {
   checkedAt: string;
 }
 
+/** What monitoring last saw — every deployed project is watched, config or not. */
+export interface ProjectHealthStatus {
+  projectId: string;
+  url: string | null;
+  status: 'up' | 'down' | 'unknown';
+  statusCode: number | null;
+  responseTimeMs: number | null;
+  failCount: number;
+  error: string | null;
+  downSince: string | null;
+  lastCheckedAt: string | null;
+}
+
 export interface HealthCheckConfigInput {
   endpoint?: string;
   intervalSeconds?: number;
@@ -114,4 +127,13 @@ export const healthCheckService = {
   updateConfig: updateHealthCheckConfig,
   deleteConfig: deleteHealthCheckConfig,
   getLogs: getHealthCheckLogs,
+};
+
+export const getProjectHealthStatus = async (projectId: string): Promise<ApiResponse<ProjectHealthStatus>> => {
+  try {
+    const response = await api.get<{ data: ProjectHealthStatus }>(`/projects/${projectId}/health-status`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
 };
