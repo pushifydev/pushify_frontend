@@ -25,7 +25,7 @@ import {
   useProjects,
   useTranslation,
 } from '@/hooks';
-import { downloadDatabaseBackup, type DatabaseCredentials } from '@/lib/api';
+import { createDeployment, downloadDatabaseBackup, type DatabaseCredentials } from '@/lib/api';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import {
@@ -52,6 +52,7 @@ export default function DatabaseDetailPage() {
   const [newCredentials, setNewCredentials] = useState<DatabaseCredentials | null>(null);
   const [restoreBackupId, setRestoreBackupId] = useState<string | null>(null);
   const [deleteBackupId, setDeleteBackupId] = useState<string | null>(null);
+  const [redeployPending, setRedeployPending] = useState(false);
 
   const { data: database, isLoading } = useDatabase(databaseId);
   const { data: credentials } = useDatabaseCredentials(databaseId);
@@ -210,9 +211,9 @@ export default function DatabaseDetailPage() {
             projects={projects}
             pending={connectDatabase.isPending || disconnectDatabase.isPending}
             canEdit={database.status !== 'deleting'}
-            onConnect={async (projectId, envVarName) => {
+            onConnect={async (projectId, envVarName, permissions) => {
               try {
-                await connectDatabase.mutateAsync({ projectId, envVarName });
+                await connectDatabase.mutateAsync({ projectId, envVarName, permissions });
                 toast.success(t('databases', 'projectConnected'));
               } catch (e) {
                 toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
@@ -370,6 +371,27 @@ export default function DatabaseDetailPage() {
           copiedField={copiedField}
           onCopy={handleCopy}
           onClose={() => setNewCredentials(null)}
+          staleProjects={(database.connections ?? [])
+            .filter((c) => c.permissions !== 'readonly' && c.project)
+            .map((c) => ({ id: c.project!.id, name: c.project!.name }))}
+          redeployPending={redeployPending}
+          onRedeploy={async () => {
+            setRedeployPending(true);
+            try {
+              const projectIds = (database.connections ?? [])
+                .filter((c) => c.permissions !== 'readonly')
+                .map((c) => c.projectId);
+              const results = await Promise.all(projectIds.map((id) => createDeployment(id)));
+              const failed = results.find((r) => r.error);
+              if (failed?.error) throw new Error(failed.error.message);
+              toast.success(t('databases', 'redeployStarted'));
+              setNewCredentials(null);
+            } catch (e) {
+              toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
+            } finally {
+              setRedeployPending(false);
+            }
+          }}
           t={t}
         />
       )}

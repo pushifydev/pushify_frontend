@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- **Connect a database read-only.** The connect form on the database page has a Read & write / Read only choice (not offered for Redis); read-only connections carry a badge. The backend gives them a database user that can only read.
+- **After a password reset, the connected projects are named.** The new-credentials dialog lists the projects connected read & write — they keep the old password until they redeploy — with a "Redeploy them now" button that starts their deploys.
 - **Database → Connected projects.** Connect a project to a database (and choose the variable, `DATABASE_URL` by default) or disconnect it, right on the database page — the API existed but nothing in the dashboard used it. Projects on another server without external access are flagged. Applies on the project's next deploy.
 - **Database connection details show the address apps use** ("From your apps on this server", the container address injected into connected projects) above the external one.
 - **Project → Settings → GitHub access.** Shows the repository, whether Pushify can read it and through what (GitHub App on @account, or a GitHub account), and — when it can't — fixes it in place: **Install GitHub App on @owner** and **Connect / Reconnect GitHub account**, both returning to this tab when GitHub is done. Warns when only your own account can read the repo (deploys you start work, pushes don't) and when your connection can only see public repositories. English + Turkish.

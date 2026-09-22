@@ -20,7 +20,7 @@ export function ConnectedProjectsPanel({
 }: {
   database: Database;
   projects: Project[];
-  onConnect: (projectId: string, envVarName: string) => Promise<void>;
+  onConnect: (projectId: string, envVarName: string, permissions: 'readwrite' | 'readonly') => Promise<void>;
   onDisconnect: (connectionId: string) => void;
   pending: boolean;
   canEdit: boolean;
@@ -28,6 +28,8 @@ export function ConnectedProjectsPanel({
 }) {
   const [projectId, setProjectId] = useState('');
   const [envVarName, setEnvVarName] = useState('DATABASE_URL');
+  const [permissions, setPermissions] = useState<'readwrite' | 'readonly'>('readwrite');
+  const readonlyAvailable = database.type !== 'redis';
 
   const connections = database.connections ?? [];
   const connectedIds = new Set(connections.map((c) => c.projectId));
@@ -83,6 +85,14 @@ export function ConnectedProjectsPanel({
                     >
                       {connection.envVarName}
                     </code>
+                    {connection.permissions === 'readonly' && (
+                      <span
+                        className="text-[11px] px-1.5 py-0.5 rounded-full"
+                        style={{ border: '1px solid var(--glass-border-md)', color: 'var(--text-muted)' }}
+                      >
+                        {t('databases', 'readonlyBadge')}
+                      </span>
+                    )}
                   </div>
                   {elsewhere && (
                     <p className="text-xs mt-1" style={{ color: STATUS_COLORS.warning }}>
@@ -114,7 +124,7 @@ export function ConnectedProjectsPanel({
           onSubmit={async (event) => {
             event.preventDefault();
             if (!projectId || !envValid) return;
-            await onConnect(projectId, envVarName);
+            await onConnect(projectId, envVarName, readonlyAvailable ? permissions : 'readwrite');
             setProjectId('');
           }}
         >
@@ -139,6 +149,18 @@ export function ConnectedProjectsPanel({
             style={{ ...inputStyle, borderColor: envValid ? 'var(--glass-border)' : STATUS_COLORS.error }}
             aria-label="Environment variable"
           />
+          <select
+            value={readonlyAvailable ? permissions : 'readwrite'}
+            onChange={(event) => setPermissions(event.target.value as 'readwrite' | 'readonly')}
+            className="sm:w-40 rounded-lg px-3 py-2 text-sm"
+            style={inputStyle}
+            aria-label={t('databases', 'accessReadWrite')}
+          >
+            <option value="readwrite">{t('databases', 'accessReadWrite')}</option>
+            <option value="readonly" disabled={!readonlyAvailable}>
+              {readonlyAvailable ? t('databases', 'accessReadOnly') : t('databases', 'readonlyNotForRedis')}
+            </option>
+          </select>
           <button type="submit" disabled={pending || !projectId || !envValid} className="btn btn-primary text-sm py-2">
             {pending ? '…' : t('databases', 'connectProject')}
           </button>
