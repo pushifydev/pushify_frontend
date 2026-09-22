@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- **Builds no longer depend on reaching Google Fonts.** `next/font/google` downloads Inter and JetBrains Mono at build time, so a build without a working connection to fonts.googleapis.com failed outright — the likely cause of CI's intermittent Build failures (the same commit passed and failed). Both fonts are now in `app/fonts` (from google/fonts, SIL OFL, licences included), variable weight 400–700, Latin + Latin Extended-A so Turkish renders in the font, via `next/font/local` (still self-hosted, preloaded, with fallback metrics). Inter 62 KB, JetBrains Mono 34 KB. Verified: builds with networking off; the previous version fails the same way.
+
 ### Added
 - **Database → Connected projects.** Connect a project to a database (and choose the variable, `DATABASE_URL` by default) or disconnect it, right on the database page — the API existed but nothing in the dashboard used it. Projects on another server without external access are flagged. Applies on the project's next deploy.
 - **Database connection details show the address apps use** ("From your apps on this server", the container address injected into connected projects) above the external one.

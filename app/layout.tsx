@@ -1,20 +1,23 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import { Providers } from './providers';
 import { Analytics } from '@/components/Analytics';
 import './globals.css';
 
-const inter = Inter({
-  subsets: ['latin'],
+// Vendored in app/fonts (SIL OFL) so a build never depends on reaching Google Fonts — a failed
+// font download failed the whole build. Inter and JetBrains Mono from google/fonts, weights
+// 400–700, Latin + Latin Extended-A (Turkish), subset with fonttools.
+const inter = localFont({
+  src: './fonts/InterVariable.woff2',
   variable: '--font-inter',
-  weight: ['400', '500', '600', '700'],
+  weight: '400 700',
   display: 'swap',
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
+const jetbrainsMono = localFont({
+  src: './fonts/JetBrainsMonoVariable.woff2',
   variable: '--font-jetbrains-mono',
-  weight: ['400', '500', '600', '700'],
+  weight: '400 700',
   display: 'swap',
 });
 
