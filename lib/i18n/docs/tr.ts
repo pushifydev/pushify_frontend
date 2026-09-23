@@ -57,6 +57,7 @@ export const docsTr: DocsContent = {
       label: 'Entegrasyonlar',
       items: [
         { id: 'webhooks', label: 'Webhook ve CI/CD' },
+        { id: 'sso', label: 'Tek oturum açma' },
       ],
     },
     {
@@ -379,6 +380,91 @@ export const docsTr: DocsContent = {
     secretTitle: 'Webhook Gizli Anahtarı',
     secretText:
       'Webhook yükleri HMAC-SHA256 ile imzalanır. Webhook gizli anahtarınızı proje ayarlarından veya GET /projects/:id/webhook uç noktasından alın.',
+  },
+  sso: {
+    title: 'Tek oturum açma (OIDC)',
+    description:
+      'Ekibinizin kendi kimlik sağlayıcınız üzerinden giriş yapmasını sağlayın. Yanlış yapılması kolay olan kısımların hepsi sağlayıcı tarafında, o yüzden burada orada ne gireceğiniz anlatılıyor.',
+    beforeTitle: 'Başlamadan önce',
+    beforeText:
+      'Kuruluşun sahibi olmanız gerekiyor. Ayarlar → Tek oturum açma ekranını açın: sağlayıcınızın kullanıcıları geri göndereceği yönlendirme adresini gösterir. Şimdi kopyalayın — her sağlayıcı önce onu ister.',
+    redirectExample: 'https://api.pushify.dev/api/v1/sso/callback',
+    redirectWarningTitle: 'Yönlendirme adresi birebir aynı olmalı',
+    redirectWarning:
+      'Harfi harfine — https dahil, sonundaki yol dahil. En sık yapılan hata budur ve girişin en sonunda, Pushify\'dan değil sağlayıcıdan gelen bir hata olarak ortaya çıkar; yani bir ayar sorunu değil de onların sorunu gibi görünür.',
+    issuerLabel: 'Pushify\'a girilecek issuer',
+    providers: [
+      {
+        name: 'Okta',
+        steps: [
+          'Okta yönetim konsolunda Applications → Create App Integration.',
+          'OIDC – OpenID Connect, ardından Web Application seçin.',
+          'Sign-in redirect URIs alanına Pushify\'daki adresi yapıştırın.',
+          'Assignments altında kimlerin kullanabileceğini seçin — yalnızca onlar giriş yapabilir.',
+          'Kaydedin, General sekmesinden Client ID ve Client secret değerlerini kopyalayın.',
+        ],
+        issuer: 'https://KURULUSUNUZ.okta.com',
+      },
+      {
+        name: 'Microsoft Entra ID (Azure AD)',
+        steps: [
+          'Azure portalında Microsoft Entra ID → App registrations → New registration.',
+          'Redirect URI için Web seçin ve Pushify\'daki adresi yapıştırın.',
+          'Kayıttan sonra Application (client) ID ve Directory (tenant) ID değerlerini not edin.',
+          'Certificates & secrets → New client secret ile bir gizli anahtar oluşturun ve Value sütununu kopyalayın (ID\'yi değil — Value yalnızca bir kez gösterilir).',
+          'Token configuration altında email isteğe bağlı talebini ekleyin; Microsoft Graph email izni için kutu çıkarsa işaretleyin.',
+        ],
+        issuer: 'https://login.microsoftonline.com/TENANT-ID/v2.0',
+      },
+      {
+        name: 'Google Workspace',
+        steps: [
+          'Google Cloud Console\'da kuruluşunuzun projesini seçip APIs & Services → Credentials bölümünü açın.',
+          'Create Credentials → OAuth client ID → Web application.',
+          'Authorised redirect URIs alanına Pushify\'daki adresi yapıştırın.',
+          'Client ID ve Client secret değerlerini kopyalayın.',
+          'OAuth consent screen\'de User type değerini Internal yapın; böylece yalnızca Workspace hesaplarınız kullanabilir.',
+        ],
+        issuer: 'https://accounts.google.com',
+      },
+    ],
+    finishTitle: 'Pushify tarafında tamamlama',
+    finishSteps: [
+      'Ayarlar → Tek oturum açma: issuer, client ID ve client secret girin.',
+      'Kuruluşunuza ait e-posta alan adlarını ekleyin — yalnızca bu alanlardaki adresler sağlayıcı üzerinden girer. gmail.com gibi genel sağlayıcılar reddedilir, çünkü herkeste olabilir.',
+      'Sağlayıcı birini ilk kez gönderdiğinde alacağı rolü seçin.',
+      'Kaydedin. Pushify kaydetmeden önce sağlayıcıya bağlanır, yani yanlış bir issuer ilk giriş yapmaya çalışan kişi tarafından değil burada fark edilir.',
+      'Çıkış yapıp giriş ekranına o alan adlarından bir adres yazın — parola alanının yerini tek bir düğme alır.',
+    ],
+    enforceTitle: 'SSO\'yu zorunlu kılmak',
+    enforceText:
+      '"Tek oturum açmayı zorunlu kıl" açıkken o alan adları için parola, GitHub ve Google girişi tamamen kapanır. Zaten amacı budur: birini kimlik sağlayıcınızda kapatmak, Pushify erişimini kesmeye yeter. İki adımlı doğrulama üstüne yine uygulanır — SSO kimin kim olduğunu söyler, istediğiniz ikinci faktörü kaldırmaz.',
+    lockoutTitle: 'Zorunlu kılmadan önce deneyin',
+    lockoutText:
+      'Parolalar hâlâ çalışırken sağlayıcı üzerinden bir kez giriş yapın. Bağlantı hatalıysa ve zorunluluğu çoktan açtıysanız sahip hesabı da dışarıda kalır; bunu düzeltmek sunucuya erişim gerektirir.',
+    troubleTitle: 'Çalışmadığında',
+    troubles: [
+      {
+        problem: 'Sağlayıcı yönlendirme adresinin eşleşmediğini söylüyor',
+        fix: 'Ayarlar → Tek oturum açma ekranından tekrar kopyalayın. Adres API adresinizden türetilir, o değişirse bu da değişir.',
+      },
+      {
+        problem: '"kimlik sağlayıcıda doğrulanmamış"',
+        fix: 'Sağlayıcı, doğrulamadığı bir adres gönderdi. Entra\'da email isteğe bağlı talebini ekleyin; Okta\'da kullanıcının doğrulanmış bir birincil e-postası olduğundan emin olun.',
+      },
+      {
+        problem: '"bu bağlantının giriş yaptırdığı bir alan adında değil"',
+        fix: 'Adres gerçek ama alan adı listenizde yok. Ekleyin ya da kişi iş adresini kullansın. Alt alan adları sayılmaz: @eu.acme.com, @acme.com değildir.',
+      },
+      {
+        problem: 'Giriş doğrulanamadı',
+        fix: 'Token imza ya da talep kontrolünden geçemedi. Genelde client secret yanlış ya da süresi dolmuştur — Entra gizli anahtarları genelde altı ayda sona erer.',
+      },
+      {
+        problem: 'Herkes dışarıda kaldı',
+        fix: 'Sunucuda kuruluşunuza ait satırı sso_connections tablosundan silin; parola girişi anında geri gelir.',
+      },
+    ],
   },
   errors: {
     title: 'Hata Yönetimi',

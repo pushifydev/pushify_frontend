@@ -88,5 +88,6 @@ export const VALID_SECTIONS: DocsSectionId[] = [
   'servers',
   'databases',
   'webhooks',
+  'sso',
   'errors',
 ];

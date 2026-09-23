@@ -372,3 +372,50 @@ html.light .docs-callout-warning {
   line-height: 1.65;
   max-width: 42rem;
 }
+
+/* Guide prose — the SSO section is instructions rather than an endpoint list, so it needs
+   paragraphs, numbered steps and a problem/fix list that the API cards never did. */
+.docs-p {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--lp-body);
+  max-width: 44rem;
+}
+
+.docs-ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--lp-body);
+  max-width: 44rem;
+}
+
+.docs-ol > li {
+  margin-bottom: 0.375rem;
+  padding-left: 0.25rem;
+}
+
+.docs-dl > div {
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--lp-border);
+}
+
+.docs-dl > div:first-child {
+  border-top: 0;
+}
+
+.docs-dl dt {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--lp-ink);
+  margin-bottom: 0.25rem;
+}
+
+.docs-dl dd {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--lp-muted);
+  margin: 0;
+  max-width: 44rem;
+}

@@ -57,6 +57,7 @@ export const docsEn: DocsContent = {
       label: 'Integrations',
       items: [
         { id: 'webhooks', label: 'Webhooks & CI/CD' },
+        { id: 'sso', label: 'Single sign-on' },
       ],
     },
     {
@@ -379,6 +380,91 @@ export const docsEn: DocsContent = {
     secretTitle: 'Webhook Secret',
     secretText:
       'Webhook payloads are signed with HMAC-SHA256. Retrieve your webhook secret via the project settings or the GET /projects/:id/webhook endpoint.',
+  },
+  sso: {
+    title: 'Single sign-on (OIDC)',
+    description:
+      "Let your team sign in through your own identity provider. The parts that are easy to get wrong are all on the provider's side, so this walks through what to enter there.",
+    beforeTitle: 'Before you start',
+    beforeText:
+      "You need to be the organization's owner. Open Settings → Single sign-on: it shows the redirect URI your provider must send people back to. Copy it now — every provider asks for it first.",
+    redirectExample: 'https://api.pushify.dev/api/v1/sso/callback',
+    redirectWarningTitle: 'The redirect URI has to match exactly',
+    redirectWarning:
+      "Character for character, including https and any trailing path. A mismatch is the single most common failure, and it surfaces at the very end of sign-in as an error from the provider rather than from Pushify — so it looks like their problem, not a setting.",
+    issuerLabel: 'Issuer to enter in Pushify',
+    providers: [
+      {
+        name: 'Okta',
+        steps: [
+          'In the Okta admin console, go to Applications → Create App Integration.',
+          'Choose OIDC – OpenID Connect, then Web Application.',
+          'Under Sign-in redirect URIs, paste the redirect URI from Pushify.',
+          'Under Assignments, pick who may use it — only these people will be able to sign in.',
+          'Save, then copy the Client ID and Client secret from the General tab.',
+        ],
+        issuer: 'https://YOUR-TENANT.okta.com',
+      },
+      {
+        name: 'Microsoft Entra ID (Azure AD)',
+        steps: [
+          'In the Azure portal, open Microsoft Entra ID → App registrations → New registration.',
+          'For Redirect URI choose Web and paste the one from Pushify.',
+          'After registering, note the Application (client) ID and the Directory (tenant) ID.',
+          'Go to Certificates & secrets → New client secret and copy the secret Value (not the ID — the Value is only shown once).',
+          'Under Token configuration, add the optional claim email, and tick the box to turn on the Microsoft Graph email permission if it offers.',
+        ],
+        issuer: 'https://login.microsoftonline.com/YOUR-TENANT-ID/v2.0',
+      },
+      {
+        name: 'Google Workspace',
+        steps: [
+          'In Google Cloud Console, pick the project for your organization and open APIs & Services → Credentials.',
+          'Create Credentials → OAuth client ID → Web application.',
+          'Under Authorised redirect URIs, paste the one from Pushify.',
+          'Copy the Client ID and Client secret.',
+          'On the OAuth consent screen, set User type to Internal so only your Workspace accounts can use it.',
+        ],
+        issuer: 'https://accounts.google.com',
+      },
+    ],
+    finishTitle: 'Finish in Pushify',
+    finishSteps: [
+      'Settings → Single sign-on: enter the issuer, client ID and client secret.',
+      'Add the email domains your organization owns — only addresses in these sign in through the provider. Public providers such as gmail.com are refused, because anyone can have one.',
+      'Pick the role a new member gets the first time your provider sends them.',
+      'Save. Pushify contacts the provider before storing anything, so a wrong issuer is refused here rather than by the first person who tries to sign in.',
+      'Sign out and enter an address in one of those domains on the login page — the password field is replaced with a single button.',
+    ],
+    enforceTitle: 'Requiring SSO',
+    enforceText:
+      'With "Require single sign-on" on, passwords, GitHub and Google all stop working for those domains. That is the point of it: disabling someone in your identity provider is then enough to lock them out of Pushify. Two-factor authentication still applies on top — SSO says who someone is, it does not waive a second factor you asked for.',
+    lockoutTitle: 'Test it before you require it',
+    lockoutText:
+      'Sign in through the provider once while passwords still work. If the connection is wrong and you have already turned on Require single sign-on, the owner account is locked out too — recovering that needs access to the server.',
+    troubleTitle: 'When it does not work',
+    troubles: [
+      {
+        problem: 'The provider says the redirect URI does not match',
+        fix: 'Copy it again from Settings → Single sign-on. It is derived from your API address, so it changes if that does.',
+      },
+      {
+        problem: '"is not verified with the identity provider"',
+        fix: "The provider sent an address it has not verified. In Entra, add the email optional claim; in Okta, check the user has a verified primary email.",
+      },
+      {
+        problem: '"is not in a domain this connection signs in"',
+        fix: 'The address is real but its domain is not on your list. Add it, or have the person use their work address. Sub-domains do not count: @eu.acme.com is not @acme.com.',
+      },
+      {
+        problem: 'The sign-in could not be verified',
+        fix: "The token failed signature or claim checks. Usually the client secret is wrong or expired — Entra secrets expire, often after six months.",
+      },
+      {
+        problem: 'Everyone is locked out',
+        fix: 'On the server, delete the row from sso_connections for your organization; password login works again immediately.',
+      },
+    ],
   },
   errors: {
     title: 'Error Handling',

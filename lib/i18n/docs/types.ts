@@ -8,6 +8,7 @@ export type DocsSectionId =
   | 'servers'
   | 'databases'
   | 'webhooks'
+  | 'sso'
   | 'errors';
 
 export interface DocsNavGroup {
@@ -165,6 +166,25 @@ export interface DocsContent {
     githubDesc: string;
     secretTitle: string;
     secretText: string;
+  };
+  sso: {
+    title: string;
+    description: string;
+    beforeTitle: string;
+    beforeText: string;
+    redirectExample: string;
+    redirectWarningTitle: string;
+    redirectWarning: string;
+    issuerLabel: string;
+    providers: { name: string; steps: string[]; issuer: string }[];
+    finishTitle: string;
+    finishSteps: string[];
+    enforceTitle: string;
+    enforceText: string;
+    lockoutTitle: string;
+    lockoutText: string;
+    troubleTitle: string;
+    troubles: { problem: string; fix: string }[];
   };
   errors: {
     title: string;

@@ -13,6 +13,7 @@ import {
   Database,
   Variable,
   Webhook,
+  KeyRound,
   Menu,
   X,
   Search,
@@ -32,6 +33,7 @@ import {
   ServersSection,
   DatabasesSection,
   WebhooksSection,
+  SsoSection,
   ErrorsSection,
   VALID_SECTIONS,
 } from './sections';
@@ -48,6 +50,7 @@ const sectionIcons: Record<DocsSectionId, typeof BookOpen> = {
   servers: Server,
   databases: Database,
   webhooks: Webhook,
+  sso: KeyRound,
   errors: Shield,
 };
 
@@ -238,6 +241,9 @@ function DocsPageContent() {
           </div>
           <div className={activeSection === 'webhooks' ? undefined : 'hidden'}>
             <WebhooksSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'sso' ? undefined : 'hidden'}>
+            <SsoSection c={c} apiBase={API_BASE} />
           </div>
           <div className={activeSection === 'errors' ? undefined : 'hidden'}>
             <ErrorsSection c={c} apiBase={API_BASE} />
