@@ -52,6 +52,7 @@ export const docsTr: DocsContent = {
         { id: 'servers', label: 'Sunucular' },
         { id: 'databases', label: 'Veritabanları' },
         { id: 'buildSources', label: 'Özel imajlar ve compose' },
+        { id: 'monitoring', label: 'İzleme ve uyarılar' },
       ],
     },
     {
@@ -381,6 +382,65 @@ export const docsTr: DocsContent = {
     secretTitle: 'Webhook Gizli Anahtarı',
     secretText:
       'Webhook yükleri HMAC-SHA256 ile imzalanır. Webhook gizli anahtarınızı proje ayarlarından veya GET /projects/:id/webhook uç noktasından alın.',
+  },
+  monitoring: {
+    title: 'İzleme, loglar ve yedekler',
+    description:
+      'Pushify\'ın sizin adınıza neleri izlediği, e-posta gelip gelmeyeceğine karar veren eşikler ve topladıklarını ne kadar sakladığı.',
+    alertsTitle: 'Ne zaman e-posta gelir',
+    alertsText:
+      'Canlı bir deploy\'u ve adresi olan her aktif proje dakikada bir aranır — ayar gerekmez. E-posta gönderen durumlar şunlar:',
+    alerts: [
+      {
+        when: 'Uygulama cevap vermeyi bırakır',
+        detail:
+          'Üst üste üç başarısız kontrol; yani tek bir yeniden başlatma kesinti sayılmaz. Tekrar cevap verdiğinde ikinci bir e-posta gelir ve ne kadar süre erişilemediğini söyler. Tanımlı bir sağlık kontrolü yoksa herhangi bir cevap "ayakta" sayılır — / üzerindeki 404 eksik bir rotadır, çöken bir uygulama değil.',
+      },
+      {
+        when: 'Bellek 5 dakika boyunca limitin %90\'ının üstünde',
+        detail:
+          'Bu noktadan sonra çekirdek neyi öldüreceğine karar veriyordur ve sonuç genelde bir yeniden başlatma döngüsüdür. Bu, uygulama cevap vermeyi bırakmadan önce gelen uyarıdır. Bellek limiti tanımlı değilse yok sayılır, çünkü yüzde tüm sunucunun olur.',
+      },
+      {
+        when: 'CPU 15 dakika boyunca %90\'ın üstünde',
+        detail:
+          'Bellekten çok daha uzun, çünkü bir build ya da toplu iş CPU\'yu haklı olarak doldurur. Uygulama çökmüş değildir — istekler arkasında sıraya girmiştir.',
+      },
+      {
+        when: 'Bir sunucunun diski uyarı seviyesini aşar',
+        detail:
+          'Sadece deploy sırasında değil, saatlik kontrol edilir. Dolu bir disk o kutudaki bütün container\'ları birlikte düşürür, veritabanları dahil. Dolu kaldıkça günde bir hatırlatma gelir.',
+      },
+      {
+        when: 'Bir HTTPS sertifikasının süresi dolmak üzere',
+        detail: 'On dört gün önce, sonra üç gün kala bir kez daha. Yenileme bir şey engellemedikçe otomatiktir — DNS taşınmış, 80 portu kapanmış olabilir.',
+      },
+    ],
+    quietTitle: 'Neden e-posta yağmuruna tutulmazsınız',
+    quietText:
+      'Her container başlarken bir an %100 CPU\'ya çıkar, çöp toplayıcı tasarım gereği %95 bellekte çalışır. Bu yüzden bir okumanın sayılması için pencerenin tamamı boyunca çizginin üstünde kalması gerekir — ve ancak çizginin belirgin şekilde altına indiğinde temizlenir, yoksa eşikte gezinen bir değer sonsuza kadar "sorun" ve "düzeldi" gönderirdi. Çizgiyi aşan üç replika, üç e-posta değil, en kötü container\'ı söyleyen tek bir e-postadır.',
+    recipientsTitle: 'Kime gider',
+    recipientsText:
+      'Kuruluştaki, kendi bildirim ayarlarında deploy uyarılarını açık bırakmış herkese. Projenin bildirim kanalları (Slack, Discord, webhook) da ayakta/çökük olaylarını alır.',
+    logsTitle: 'Loglar ne kadar saklanır',
+    logsText:
+      'Container çıktısı, projenin çalıştırdığı her container\'dan toplanır — uygulama, replikaları, worker\'ları ve staging kopyası — ve terime, zaman aralığına ve container\'a göre aranabilir. Ne kadar kalacağı plana bağlıdır:',
+    logRetention: [
+      { plan: 'Free', kept: '3 gün' },
+      { plan: 'Hobby', kept: '7 gün' },
+      { plan: 'Pro', kept: '14 gün' },
+      { plan: 'Business', kept: '30 gün' },
+      { plan: 'Enterprise', kept: '90 gün' },
+    ],
+    backupsTitle: 'Yedekler ve aralığın bedeli',
+    backupsText:
+      'Yönetilen bir veritabanı otomatik yedeklenir. Seçtiğiniz aralık, en kötü senaryoda kaybedeceğiniz veridir: 24 saatte, diski kaybetmek bir günlük yazma demektir. En kısa aralığı planınız belirler — Free\'de günlük, Hobby\'de 12 saat, Pro\'da 6 saat, Business ve Enterprise\'da saatlik.',
+    backupNotes: [
+      'Hiç yedeklenmemiş bir veritabanı, ilk aralığın dolmasını beklemeden hemen yedeklenir.',
+      'Operatör dış depolama tanımladıysa her dump alındığı sunucunun dışına da kopyalanır — ve geri yükleme bu kopyaya düşer, yani veritabanı dosyayı hiç görmemiş bir sunucuya geri yüklenebilir.',
+      'Yedek listesi her yedek için dış kopyanın olup olmadığını gösterir.',
+      'Bir veritabanını silmek yedeklerini de siler, dış kopyalar dahil.',
+    ],
   },
   buildSources: {
     title: 'Özel imajlar ve compose yığınları',

@@ -15,6 +15,7 @@ import {
   Webhook,
   KeyRound,
   Package,
+  Activity,
   Menu,
   X,
   Search,
@@ -36,6 +37,7 @@ import {
   WebhooksSection,
   SsoSection,
   BuildSourcesSection,
+  MonitoringSection,
   ErrorsSection,
   VALID_SECTIONS,
 } from './sections';
@@ -54,6 +56,7 @@ const sectionIcons: Record<DocsSectionId, typeof BookOpen> = {
   webhooks: Webhook,
   sso: KeyRound,
   buildSources: Package,
+  monitoring: Activity,
   errors: Shield,
 };
 
@@ -244,6 +247,9 @@ function DocsPageContent() {
           </div>
           <div className={activeSection === 'webhooks' ? undefined : 'hidden'}>
             <WebhooksSection c={c} apiBase={API_BASE} />
+          </div>
+          <div className={activeSection === 'monitoring' ? undefined : 'hidden'}>
+            <MonitoringSection c={c} apiBase={API_BASE} />
           </div>
           <div className={activeSection === 'buildSources' ? undefined : 'hidden'}>
             <BuildSourcesSection c={c} apiBase={API_BASE} />

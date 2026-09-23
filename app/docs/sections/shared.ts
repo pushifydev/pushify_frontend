@@ -90,5 +90,6 @@ export const VALID_SECTIONS: DocsSectionId[] = [
   'webhooks',
   'sso',
   'buildSources',
+  'monitoring',
   'errors',
 ];

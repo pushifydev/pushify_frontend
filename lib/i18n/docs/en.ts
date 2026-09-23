@@ -52,6 +52,7 @@ export const docsEn: DocsContent = {
         { id: 'servers', label: 'Servers' },
         { id: 'databases', label: 'Databases' },
         { id: 'buildSources', label: 'Private images & compose' },
+        { id: 'monitoring', label: 'Monitoring & alerts' },
       ],
     },
     {
@@ -381,6 +382,65 @@ export const docsEn: DocsContent = {
     secretTitle: 'Webhook Secret',
     secretText:
       'Webhook payloads are signed with HMAC-SHA256. Retrieve your webhook secret via the project settings or the GET /projects/:id/webhook endpoint.',
+  },
+  monitoring: {
+    title: 'Monitoring, logs and backups',
+    description:
+      'What Pushify watches on your behalf, the thresholds that decide whether an email arrives, and how long it keeps what it collects.',
+    alertsTitle: 'When you get an email',
+    alertsText:
+      'Every active project with a live deployment and a URL is called about once a minute — no configuration needed. These are the conditions that send mail:',
+    alerts: [
+      {
+        when: 'The app stops answering',
+        detail:
+          'Three failed checks in a row, so a single restart is not an outage. A second email arrives when it answers again, saying how long it was out. Without a configured health check any answer counts as up — a 404 on / is a missing route, not a down app.',
+      },
+      {
+        when: 'Memory above 90% of the limit for 5 minutes',
+        detail:
+          'Past this the kernel is choosing what to kill next, and the usual result is a restart loop. This is the warning that arrives before the app stops answering. Ignored where no memory limit is set, since the percentage would then be of the whole server.',
+      },
+      {
+        when: 'CPU above 90% for 15 minutes',
+        detail:
+          'Much longer than memory, because a build or a batch job legitimately saturates a CPU. The app is not down — requests are queuing behind it.',
+      },
+      {
+        when: 'A server disk crosses its warning level',
+        detail:
+          'Checked hourly, not just at deploy time. A full disk takes every container on the box down together, databases included. One reminder a day while it stays full.',
+      },
+      {
+        when: 'An HTTPS certificate is about to expire',
+        detail: 'Fourteen days before, then once more three days before. Renewal is automatic until something stops it — DNS moved, port 80 blocked.',
+      },
+    ],
+    quietTitle: 'Why you are not flooded',
+    quietText:
+      'A container is at 100% CPU every time it starts and a garbage collector runs at 95% memory by design, so a reading has to stay over the line for the whole window before it counts — and it only clears once it is well back under, or a value sitting on the threshold would alternate "problem" and "recovered" for ever. Three replicas over the line are one email naming the worst container, not three.',
+    recipientsTitle: 'Who gets them',
+    recipientsText:
+      'Everyone in the organization with deployment alerts turned on, in their own notification settings. A project\'s notification channels (Slack, Discord, webhooks) also receive the up/down events.',
+    logsTitle: 'How long logs are kept',
+    logsText:
+      "Container output is collected from every container a project runs — the app, its replicas, its workers and its staging copy — and is searchable by term, time range and container. How long it stays depends on the plan:",
+    logRetention: [
+      { plan: 'Free', kept: '3 days' },
+      { plan: 'Hobby', kept: '7 days' },
+      { plan: 'Pro', kept: '14 days' },
+      { plan: 'Business', kept: '30 days' },
+      { plan: 'Enterprise', kept: '90 days' },
+    ],
+    backupsTitle: 'Backups and what an interval costs',
+    backupsText:
+      'A managed database is backed up automatically. The interval you pick is your worst-case data loss: at 24 hours, losing the disk costs a day of writes. The plan sets the shortest interval available — a day on Free, 12 hours on Hobby, 6 on Pro, hourly on Business and Enterprise.',
+    backupNotes: [
+      'A database that has never been backed up is backed up at once rather than waiting out its first interval.',
+      'Where the operator has configured off-site storage, each dump is also copied off the server it was made on — and a restore falls back to that copy, so a database can be restored onto a server that has never seen the file.',
+      'The backup list shows whether an off-site copy exists for each backup.',
+      'Deleting a database deletes its backups, off-site copies included.',
+    ],
   },
   buildSources: {
     title: 'Private images and compose stacks',

@@ -10,6 +10,7 @@ export type DocsSectionId =
   | 'webhooks'
   | 'sso'
   | 'buildSources'
+  | 'monitoring'
   | 'errors';
 
 export interface DocsNavGroup {
@@ -167,6 +168,23 @@ export interface DocsContent {
     githubDesc: string;
     secretTitle: string;
     secretText: string;
+  };
+  monitoring: {
+    title: string;
+    description: string;
+    alertsTitle: string;
+    alertsText: string;
+    alerts: { when: string; detail: string }[];
+    quietTitle: string;
+    quietText: string;
+    recipientsTitle: string;
+    recipientsText: string;
+    logsTitle: string;
+    logsText: string;
+    logRetention: { plan: string; kept: string }[];
+    backupsTitle: string;
+    backupsText: string;
+    backupNotes: string[];
   };
   buildSources: {
     title: string;
