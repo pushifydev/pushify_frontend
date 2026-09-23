@@ -403,6 +403,8 @@ export interface Database {
   storageMb: number | null;
   usedStorageMb: number | null;
   backupEnabled: boolean;
+  /** How often an automatic backup runs; the plan sets the shortest allowed */
+  backupIntervalHours?: number;
   backupRetentionDays: number | null;
   lastBackupAt: string | null;
   containerName: string | null;
@@ -444,6 +446,8 @@ export interface UpdateDatabaseInput {
   description?: string;
   backupEnabled?: boolean;
   backupRetentionDays?: number;
+  /** How often an automatic backup runs — the worst-case data loss */
+  backupIntervalHours?: number;
 }
 
 export interface DatabaseConnection {

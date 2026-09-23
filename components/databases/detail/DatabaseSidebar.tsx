@@ -10,12 +10,14 @@ import { panelStyle, type T } from './_shared';
 export function DatabaseSidebar({
   database,
   onToggleAutoBackup,
+  onChangeBackupInterval,
   backupPending,
   onDeleteClick,
   t,
 }: {
   database: Database;
   onToggleAutoBackup: (enabled: boolean) => void;
+  onChangeBackupInterval: (hours: number) => void;
   backupPending: boolean;
   onDeleteClick: () => void;
   t: T;
@@ -60,9 +62,35 @@ export function DatabaseSidebar({
           </button>
         </div>
         {database.backupEnabled && (
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {t('databases', 'retentionDays').replace('{days}', String(database.backupRetentionDays || 7))}
-          </p>
+          <>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                {t('databases', 'backupEvery')}
+              </span>
+              <select
+                value={String(database.backupIntervalHours ?? 24)}
+                onChange={(e) => onChangeBackupInterval(Number(e.target.value))}
+                disabled={backupPending}
+                className="input h-8 w-32 text-sm"
+              >
+                {[1, 6, 12, 24, 48, 168].map((hours) => (
+                  <option key={hours} value={hours}>
+                    {t('databases', `interval_${hours}` as 'interval_24')}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* The interval is the worst-case data loss — say that, not just the number */}
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              {t('databases', 'worstCaseLoss').replace(
+                '{loss}',
+                t('databases', `loss_${database.backupIntervalHours ?? 24}` as 'loss_24')
+              )}
+            </p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              {t('databases', 'retentionDays').replace('{days}', String(database.backupRetentionDays || 7))}
+            </p>
+          </>
         )}
       </div>
 

@@ -275,6 +275,15 @@ export default function DatabaseDetailPage() {
               toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
             }
           }}
+          onChangeBackupInterval={async (hours) => {
+            try {
+              await updateDatabase.mutateAsync({ backupIntervalHours: hours });
+              toast.success(t('databases', 'updated'));
+            } catch (e) {
+              // The plan floor is refused here, with a message saying what to upgrade to
+              toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
+            }
+          }}
           onDeleteClick={() => setShowDeleteConfirm(true)}
           t={t}
         />
