@@ -295,9 +295,20 @@ export default function ServersPage() {
                     <MemoryStick className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
                     {formatMemory(server.memoryMb)}
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span
+                    className="flex items-center gap-1"
+                    // A disk near full takes every container on the box with it, so the number
+                    // that matters here is how much is left, not how big it is
+                    style={
+                      typeof server.diskUsedPercent === 'number' && server.diskUsedPercent >= 85
+                        ? { color: 'var(--status-warning)' }
+                        : undefined
+                    }
+                  >
                     <HardDrive className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-                    {server.diskGb} GB
+                    {typeof server.diskUsedPercent === 'number'
+                      ? `${server.diskUsedPercent}% / ${server.diskGb} GB`
+                      : `${server.diskGb} GB`}
                   </span>
                 </div>
 
