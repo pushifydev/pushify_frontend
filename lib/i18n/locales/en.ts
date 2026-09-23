@@ -2066,6 +2066,20 @@ export interface TranslationKeys {
     disable: string;
     // Backups
     autoBackup: string;
+    backupEvery: string;
+    interval_1: string;
+    interval_6: string;
+    interval_12: string;
+    interval_24: string;
+    interval_48: string;
+    interval_168: string;
+    worstCaseLoss: string;
+    loss_1: string;
+    loss_6: string;
+    loss_12: string;
+    loss_24: string;
+    loss_48: string;
+    loss_168: string;
     retentionDays: string;
     lastBackup: string;
     backupHistory: string;
@@ -5073,6 +5087,20 @@ export const en: TranslationKeys = {
     disable: 'Disable',
     // Backups
     autoBackup: 'Automatic Backups',
+    backupEvery: 'Back up every',
+    interval_1: 'Hour',
+    interval_6: '6 hours',
+    interval_12: '12 hours',
+    interval_24: 'Day',
+    interval_48: '2 days',
+    interval_168: 'Week',
+    worstCaseLoss: 'If the server is lost, you lose {loss} of writes.',
+    loss_1: 'up to 1 hour',
+    loss_6: 'up to 6 hours',
+    loss_12: 'up to 12 hours',
+    loss_24: 'up to 1 day',
+    loss_48: 'up to 2 days',
+    loss_168: 'up to 1 week',
     retentionDays: 'Retention: {days} days',
     lastBackup: 'Last backup',
     backupHistory: 'Backup History',
