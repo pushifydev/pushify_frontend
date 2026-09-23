@@ -82,6 +82,10 @@ export interface Project {
   stagingBranch?: string | null;
   /** How many containers of the app run behind nginx */
   replicas?: number;
+  /** Adjust that number on load instead of by hand */
+  autoscaleEnabled?: boolean;
+  autoscaleMin?: number;
+  autoscaleMax?: number;
   gitProvider: string | null;
   framework: string | null;
   buildCommand: string | null;
@@ -141,6 +145,9 @@ export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'se
   /** Pushes here deploy the staging copy; null turns staging off */
   stagingBranch?: string | null;
   replicas?: number;
+  autoscaleEnabled?: boolean;
+  autoscaleMin?: number;
+  autoscaleMax?: number;
   /** Deploy a ready image instead of the repository; null goes back to the repository */
   dockerImage?: string | null;
   /** Deploy the repository as a compose stack: the file's path; null builds the repository */

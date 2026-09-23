@@ -819,6 +819,11 @@ export interface TranslationKeys {
     dockerImageActive: string;
     replicas: string;
     replicasHint: string;
+    replicasManagedHint: string;
+    autoscale: string;
+    autoscaleHint: string;
+    autoscaleMin: string;
+    autoscaleMax: string;
     stagingBranch: string;
     stagingBranchPlaceholder: string;
     stagingBranchHint: string;
@@ -3810,6 +3815,11 @@ export const en: TranslationKeys = {
     dockerImageActive: 'This project deploys the image above; the repository settings below are not used. Redeploy to pull the tag again.',
     replicas: 'Replicas',
     replicasHint: 'How many containers of this app run behind nginx, which spreads requests across them. More replicas need more memory on the server.',
+    replicasManagedHint: 'Managed by autoscaling — this is the count right now.',
+    autoscale: 'Scale automatically',
+    autoscaleHint: 'Add a container when CPU stays high, remove one when it stays low. Moves one step at a time and waits between changes, so it cannot flap. Pro plan and above.',
+    autoscaleMin: 'Minimum containers',
+    autoscaleMax: 'Maximum containers',
     stagingBranch: 'Staging branch',
     stagingBranchPlaceholder: 'develop (optional)',
     stagingBranchHint: 'Pushes here deploy a second copy of the project, with its own domain and staging variables. Leave empty for production only.',
