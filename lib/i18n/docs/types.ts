@@ -9,6 +9,7 @@ export type DocsSectionId =
   | 'databases'
   | 'webhooks'
   | 'sso'
+  | 'buildSources'
   | 'errors';
 
 export interface DocsNavGroup {
@@ -166,6 +167,25 @@ export interface DocsContent {
     githubDesc: string;
     secretTitle: string;
     secretText: string;
+  };
+  buildSources: {
+    title: string;
+    description: string;
+    registriesTitle: string;
+    registriesText: string;
+    registries: { name: string; host: string; steps: string[] }[];
+    registryScopeTitle: string;
+    registryScopeText: string;
+    imageTitle: string;
+    imageText: string;
+    imageExample: string;
+    imageNotes: string[];
+    composeTitle: string;
+    composeText: string;
+    composeExample: string;
+    composeNotes: string[];
+    composePortsTitle: string;
+    composePortsText: string;
   };
   sso: {
     title: string;

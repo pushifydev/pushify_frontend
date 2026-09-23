@@ -51,6 +51,7 @@ export const docsTr: DocsContent = {
       items: [
         { id: 'servers', label: 'Sunucular' },
         { id: 'databases', label: 'Veritabanları' },
+        { id: 'buildSources', label: 'Özel imajlar ve compose' },
       ],
     },
     {
@@ -380,6 +381,79 @@ export const docsTr: DocsContent = {
     secretTitle: 'Webhook Gizli Anahtarı',
     secretText:
       'Webhook yükleri HMAC-SHA256 ile imzalanır. Webhook gizli anahtarınızı proje ayarlarından veya GET /projects/:id/webhook uç noktasından alın.',
+  },
+  buildSources: {
+    title: 'Özel imajlar ve compose yığınları',
+    description:
+      'Bir proje depoyu build edebilir, hazır bir imajı çalıştırabilir ya da bütün bir compose yığınını ayağa kaldırabilir. Her birinin gerektirdiği kimlik bilgileri ve registry\'lerin gerçekten istediği izinler burada.',
+    registriesTitle: 'Özel registry\'ler',
+    registriesText:
+      'Ayarlar → Özel registry\'ler, tüm kuruluş için registry başına tek bir giriş saklar. İki şey için kullanılır: FROM satırı özel bir base imaj olan Dockerfile\'lar ve hazır imaj deploy eden projeler. Token yalnızca yazılır — bir kez gönderilir, bir daha gösterilmez, sadece değiştirilebilir.',
+    registries: [
+      {
+        name: 'GitHub Container Registry',
+        host: 'ghcr.io',
+        steps: [
+          'GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic).',
+          'read:packages izniyle bir token üretin. Çekmek için bu tek izin yeterlidir; repo ve write:packages gerekmez.',
+          'Kullanıcı adı GitHub kullanıcı adınız, parola ise token.',
+        ],
+      },
+      {
+        name: 'Docker Hub',
+        host: 'docker.io',
+        steps: [
+          'Docker Hub → Account Settings → Personal access tokens → Generate.',
+          'Read-only erişim verin.',
+          'Kullanıcı adı Docker Hub kullanıcı adınız, parola ise token — hesap parolanız değil.',
+        ],
+      },
+      {
+        name: 'GitLab Container Registry',
+        host: 'registry.gitlab.com',
+        steps: [
+          'GitLab projesi → Settings → Repository → Deploy tokens.',
+          'read_registry izniyle bir tane oluşturun.',
+          'GitLab\'in gösterdiği token kullanıcı adını ve değerini olduğu gibi kullanın.',
+        ],
+      },
+    ],
+    registryScopeTitle: 'Sadece okuma yetkisi yeterli',
+    registryScopeText:
+      'Pushify yalnızca çeker. Yazma yetkisi de olan bir token, sızması hâlinde imajlarınızın değiştirilebileceği anlamına gelir; okuma yetkisi verin, fazlasını değil.',
+    imageTitle: 'Hazır bir imajı deploy etmek',
+    imageText:
+      'Proje ayarları → Docker imajı: bir referans girin, proje depoyu build etmek yerine o imajı deploy etsin. Her deploy referansı yeniden çeker, yani etiketi taşıyıp deploy almak yeni imajı yayınlar.',
+    imageExample: 'ghcr.io/acme/api:1.4',
+    imageNotes: [
+      'İmaj kendi tanımlarını korur — CMD, ENV ve açtığı port olduğu gibi kullanılır.',
+      'Build edilen bir uygulamayla aynı muameleyi görür: blue-green geçiş, replikalar, staging, volume\'ler, alan adları ve HTTPS.',
+      'Alanın altındaki depo ayarları geçerliliğini yitirir; arayüz bunu söyler.',
+      'Özel bir imaj için o host\'a ait bir registry kimlik bilgisi gerekir — yukarıya bakın.',
+      'Bunun için bir sunucu gerekir; sunucusuz mod imaj çekemez.',
+    ],
+    composeTitle: 'Bir compose yığınını deploy etmek',
+    composeText:
+      'Proje ayarları → Docker Compose dosyası: deponuzdaki bir compose dosyasının yolunu verin, proje checkout\'unuzdan bir yığın olarak deploy edilsin. Böylece build: bağlamları ve yanındaki config dosyaları yerelde olduğu gibi çalışır. Varsayılan kapalıdır ve kendiliğinden kullanılmaz — çoğu depoda yerel geliştirme için bir compose dosyası vardır, onu deploy etmek sürpriz olurdu.',
+    composeExample: `services:
+  web:
+    build: ./web
+    ports:
+      - "8080:3000"
+    environment:
+      API: http://api:4000
+  api:
+    build: ./api`,
+    composeNotes: [
+      'Servisler yığın ağında birbirine adıyla erişir, tıpkı yereldeki gibi.',
+      'Birden fazla servis port yayınlıyorsa ayarlarda hangisinin servis edileceğini belirtin — aksi hâlde tahmin edilmez, deploy reddedilir.',
+      'Projenin ortam değişkenleri yığına verilir; depoda commit\'lenmiş bir .env varsa önce o okunur.',
+      'Pushify\'ın Worker ve Zamanlanmış görevleri tek bir container\'ı sürer, burada geçerli değildir — onları compose dosyasında servis olarak tanımlayın. Deploy log\'u bunu sessizce geçmek yerine söyler.',
+      'Yeniden deploy yığını indirip kaldırır, yani build edilen bir uygulamanın aksine kesintisiz değildir.',
+    ],
+    composePortsTitle: 'Portlara sizin yerinize karar verilir',
+    composePortsText:
+      'Yalnızca servis edilen servis yayınlanır, nginx\'in proxy\'lediği portta. Diğer servislerin ports: satırları düşürülür — veritabanı için 5432:5432 yazan bir dosya, aksi hâlde o veritabanını doğrudan internete açardı. Yığının içinde hiçbir şey değişmez.',
   },
   sso: {
     title: 'Tek oturum açma (OIDC)',
