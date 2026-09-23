@@ -183,6 +183,8 @@ export {
   searchProjectLogs,
   getProjectLogContainers,
   exportProjectLogs,
+  getScaleEvents,
+  type ScaleEvent,
   type ProjectLogLine,
   type ProjectLogSearchResult,
   type ProjectLogSearchParams,

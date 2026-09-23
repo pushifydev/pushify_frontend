@@ -69,6 +69,31 @@ export const searchProjectLogs = async (
   }
 };
 
+/** One autoscaling decision — including the ones taken while only watching. */
+export interface ScaleEvent {
+  id: string;
+  from: number;
+  to: number;
+  averageCpu: number | null;
+  reason: string;
+  /** False when the project was only observing: decided, not carried out */
+  applied: boolean;
+  createdAt: string;
+}
+
+/**
+ * What autoscaling decided for this project. Read for a few days before trusting the thresholds
+ * with real traffic — in observe mode nothing changes, but every decision is still recorded.
+ */
+export const getScaleEvents = async (projectId: string): Promise<ApiResponse<ScaleEvent[]>> => {
+  try {
+    const response = await api.get<{ data: ScaleEvent[] }>(`/projects/${projectId}/scale-events`);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 /** The containers that have stored logs, for the container filter */
 export const getProjectLogContainers = async (
   projectId: string

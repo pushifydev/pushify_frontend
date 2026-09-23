@@ -432,6 +432,19 @@ export const docsEn: DocsContent = {
       { plan: 'Business', kept: '30 days' },
       { plan: 'Enterprise', kept: '90 days' },
     ],
+    scalingTitle: 'Scaling on load',
+    scalingText:
+      'Project settings → Scale automatically gives a minimum and a maximum, and Pushify moves the container count between them as CPU changes. Pro plan and above. Left off, the count stays exactly where you set it.',
+    scalingNotes: [
+      'One container at a time: a reading of 100% CPU adds one, not five — a container takes time to start and the reading cannot yet know whether one more is enough.',
+      'Added above 70% average CPU, and not again for three minutes. Removed below 30%, and not again for ten — a lull at lunchtime should not undo a busy morning.',
+      'At least three readings before anything happens, so a single spike changes nothing.',
+      'Changing the minimum or maximum applies immediately, without waiting for a threshold or a cooldown: the range is an instruction, the thresholds are a guess.',
+      'A new container is started from what the last deploy actually used, so it cannot differ from the ones already running. A project deployed before autoscaling existed starts scaling after its next deploy.',
+      'Scaling down takes the container out of nginx and reloads before stopping it, so requests already in flight finish.',
+      'Every change is written down with the reading that caused it, and listed in project settings.',
+      'Not sure the thresholds suit your app? Turn on "Only report what it would do": the decision still runs and is recorded, but nothing changes. Watch for a few days, then decide.',
+    ],
     backupsTitle: 'Backups and what an interval costs',
     backupsText:
       'A managed database is backed up automatically. The interval you pick is your worst-case data loss: at 24 hours, losing the disk costs a day of writes. The plan sets the shortest interval available — a day on Free, 12 hours on Hobby, 6 on Pro, hourly on Business and Enterprise.',

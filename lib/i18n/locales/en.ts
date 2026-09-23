@@ -824,6 +824,11 @@ export interface TranslationKeys {
     autoscaleHint: string;
     autoscaleMin: string;
     autoscaleMax: string;
+    autoscaleObserve: string;
+    autoscaleObserveHint: string;
+    scaleHistory: string;
+    scaleHistoryEmpty: string;
+    scaleNotApplied: string;
     stagingBranch: string;
     stagingBranchPlaceholder: string;
     stagingBranchHint: string;
@@ -3820,6 +3825,11 @@ export const en: TranslationKeys = {
     autoscaleHint: 'Add a container when CPU stays high, remove one when it stays low. Moves one step at a time and waits between changes, so it cannot flap. Pro plan and above.',
     autoscaleMin: 'Minimum containers',
     autoscaleMax: 'Maximum containers',
+    autoscaleObserve: 'Only report what it would do',
+    autoscaleObserveHint: 'Decide and write it down, but change nothing. The thresholds are reasonable guesses until they meet your traffic — watch for a few days before letting it act.',
+    scaleHistory: 'Recent decisions',
+    scaleHistoryEmpty: 'Nothing yet. Decisions appear here as they are made.',
+    scaleNotApplied: 'not applied',
     stagingBranch: 'Staging branch',
     stagingBranchPlaceholder: 'develop (optional)',
     stagingBranchHint: 'Pushes here deploy a second copy of the project, with its own domain and staging variables. Leave empty for production only.',

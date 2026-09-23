@@ -432,6 +432,19 @@ export const docsTr: DocsContent = {
       { plan: 'Business', kept: '30 gün' },
       { plan: 'Enterprise', kept: '90 gün' },
     ],
+    scalingTitle: 'Yüke göre ölçekleme',
+    scalingText:
+      'Proje ayarları → Otomatik ölçekle ile bir alt ve üst sınır verirsiniz; Pushify container sayısını CPU değiştikçe bu aralıkta hareket ettirir. Pro ve üzeri planlarda. Kapalı bırakırsanız sayı tam olarak belirlediğiniz yerde kalır.',
+    scalingNotes: [
+      'Bir seferde tek container: %100 CPU okuması bir tane ekler, beş değil — container başlaması zaman alır ve okuma henüz bir tanenin yetip yetmeyeceğini bilemez.',
+      'Ortalama CPU %70 üstündeyken eklenir ve üç dakika boyunca tekrar eklenmez. %30 altındayken kaldırılır ve on dakika boyunca tekrar kaldırılmaz — öğle saatindeki bir durgunluk, yoğun bir sabahı geri almamalı.',
+      'Hiçbir şey olmadan önce en az üç okuma gerekir, yani tek bir ani yükselme hiçbir şeyi değiştirmez.',
+      'Alt ya da üst sınırı değiştirmek anında uygulanır; eşik ya da bekleme süresi beklenmez. Aralık bir talimattır, eşikler bir tahmindir.',
+      'Yeni container, son deploy\'un gerçekte kullandığı ayarlarla başlatılır; böylece hâlihazırda çalışanlardan farklı olamaz. Otomatik ölçekleme eklenmeden önce deploy edilmiş bir proje, bir sonraki deploy\'undan sonra ölçeklenmeye başlar.',
+      'Küçülürken container önce nginx\'ten çıkarılır ve reload edilir, sonra durdurulur; böylece işlenmekte olan istekler tamamlanır.',
+      'Her değişiklik, sebebi olan okumayla birlikte kaydedilir ve proje ayarlarında listelenir.',
+      'Eşiklerin uygulamanıza uyup uymadığından emin değil misiniz? "Sadece ne yapacağını bildir" seçeneğini açın: karar yine verilir ve kaydedilir ama hiçbir şey değişmez. Birkaç gün izleyip karar verin.',
+    ],
     backupsTitle: 'Yedekler ve aralığın bedeli',
     backupsText:
       'Yönetilen bir veritabanı otomatik yedeklenir. Seçtiğiniz aralık, en kötü senaryoda kaybedeceğiniz veridir: 24 saatte, diski kaybetmek bir günlük yazma demektir. En kısa aralığı planınız belirler — Free\'de günlük, Hobby\'de 12 saat, Pro\'da 6 saat, Business ve Enterprise\'da saatlik.',
