@@ -360,7 +360,16 @@ export default function ServerDetailPage({ params }: PageProps) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <StatTile icon={Cpu} label={t('servers', 'vcpus')} value={String(server.vcpus)} />
               <StatTile icon={MemoryStick} label={t('servers', 'memory')} value={memoryLabel} />
-              <StatTile icon={HardDrive} label={t('servers', 'disk')} value={`${server.diskGb} GB`} />
+              <StatTile
+                icon={HardDrive}
+                label={t('servers', 'disk')}
+                value={
+                  // The hourly check knows how full it actually is; the size alone does not
+                  typeof server.diskUsedPercent === 'number'
+                    ? `${server.diskUsedPercent}% / ${server.diskGb} GB`
+                    : `${server.diskGb} GB`
+                }
+              />
               <StatTile icon={MapPin} label={t('servers', 'region')} value={server.region} />
             </div>
           </ServerDetailSection>

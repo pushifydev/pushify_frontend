@@ -36,6 +36,9 @@ export interface Server {
   vcpus: number;
   memoryMb: number;
   diskGb: number;
+  /** Root filesystem usage from the hourly check; null until the first one runs */
+  diskUsedPercent?: number | null;
+  diskCheckedAt?: string | null;
   ipv4: string | null;
   ipv6: string | null;
   privateIp: string | null;
