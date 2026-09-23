@@ -73,7 +73,7 @@ export function HeroSection() {
           <div className="relative lp-reveal" style={{ animationDelay: '180ms' }}>
             {/* Dashboard card peeking behind for depth */}
             <div
-              className="hidden md:block absolute -top-12 right-0 w-[400px] max-w-full rounded-xl rotate-2 pointer-events-none select-none"
+              className="hidden md:block absolute -top-[4.5rem] left-3 right-3 rounded-xl rotate-1 pointer-events-none select-none"
               aria-hidden="true"
               style={{
                 background: 'var(--lp-surface)',
@@ -94,11 +94,10 @@ export function HeroSection() {
                 </span>
               </div>
               <div className="p-4 space-y-2">
-                {[
-                  { name: 'my-app', meta: 'Next.js · fra1', ok: true, time: '47s' },
-                  { name: 'api-service', meta: 'Node.js · fra1', ok: true, time: '39s' },
-                  { name: 'docs-site', meta: 'Astro · static', ok: true, time: '12s' },
-                ].map((row) => (
+                {/* One row only. The card is a peek above the terminal, and any row the terminal's
+                    top edge lands on would be sliced in half — which reads as a glitch, not depth.
+                    With a single row there is nothing below it to cut. */}
+                {[{ name: 'my-app', meta: 'Next.js · fra1', ok: true, time: '47s' }].map((row) => (
                   <div
                     key={row.name}
                     className="flex items-center gap-3 px-3 py-2 rounded-lg"
@@ -122,7 +121,7 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="relative mt-4 md:mt-10 lg:mr-14">
+            <div className="relative mt-4 md:mt-10">
               <DeployTerminal />
             </div>
           </div>

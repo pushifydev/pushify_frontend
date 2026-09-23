@@ -326,7 +326,7 @@ export const tr: TranslationKeys = {
     heroStarGithub: "★ GitHub'da yıldız ver",
     heroStatMitLicensed: 'MIT lisanslı',
     heroStatDeployFast: 'Git push → canlı',
-    heroStatNoVendorLockIn: '0 vendor lock-in',
+    heroStatNoVendorLockIn: 'Vendor kilidi yok',
     heroMetaPlatform: 'PSH-01 / AÇIK KAYNAK PLATFORM',
     heroMetaDeploymentsLive: 'CANLI DAĞITIMLAR',
     heroMetaDeploymentsLiveShort: 'CANLI',
@@ -519,10 +519,12 @@ export const tr: TranslationKeys = {
     contact: 'İletişim',
     product: 'Ürün',
     resources: 'Kaynaklar',
+    compare: 'Karşılaştır',
+    allAlternatives: 'Tüm alternatifler',
     company: 'Şirket',
     footerDescription: 'Açık kaynak bulut dağıtım platformu. Sizin sunucularınız, sizin verileriniz, sizin kurallarınız.',
-    builtWithLove: 'Sevgiyle',
-    forDevelopers: 'geliştiriciler için',
+    builtWithLove: 'Geliştiriciler için',
+    forDevelopers: 'ile yapıldı',
   },
   homepage: {
     // Stats

@@ -79,14 +79,14 @@ export function LandingNavbar() {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1" aria-label="Main">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0" aria-label="Main">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noopener noreferrer' : undefined}
-                className="px-3 py-2 text-sm font-medium rounded-md transition-colors"
+                className="px-2.5 xl:px-3 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap"
                 style={{ color: 'var(--lp-body)' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.color = 'var(--lp-ink)';
@@ -101,7 +101,7 @@ export function LandingNavbar() {
           </nav>
 
           {/* Desktop actions */}
-          <div className="hidden md:flex items-center gap-1.5 shrink-0">
+          <div className="hidden lg:flex items-center gap-1.5 shrink-0">
             <button
               type="button"
               onClick={() => setTheme(isDark ? 'light' : 'dark')}
@@ -148,7 +148,7 @@ export function LandingNavbar() {
           <button
             type="button"
             onClick={() => setMobileOpen((open) => !open)}
-            className={`md:hidden ${iconBtnClass}`}
+            className={`lg:hidden ${iconBtnClass}`}
             style={{ color: 'var(--lp-ink)' }}
             aria-label={mobileOpen ? t('common', 'closeMenu') : t('common', 'openMenu')}
             aria-expanded={mobileOpen}
@@ -164,7 +164,7 @@ export function LandingNavbar() {
       <div
         role="presentation"
         aria-hidden={!mobileOpen}
-        className={`fixed inset-0 z-[60] md:hidden bg-black/50 backdrop-blur-sm transition-opacity duration-200 ${
+        className={`fixed inset-0 z-[60] lg:hidden bg-black/50 backdrop-blur-sm transition-opacity duration-200 ${
           mobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={closeMobile}
@@ -174,7 +174,7 @@ export function LandingNavbar() {
       <aside
         id="landing-mobile-menu"
         aria-hidden={!mobileOpen}
-        className={`fixed top-0 right-0 z-[70] md:hidden flex flex-col w-[min(100vw,20rem)] max-w-full h-[100dvh] border-l border-[var(--lp-border)] bg-[var(--bg-primary)] shadow-2xl transition-transform duration-300 ease-out supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)] supports-[padding:max(0px)]:pb-[env(safe-area-inset-bottom)] ${
+        className={`fixed top-0 right-0 z-[70] lg:hidden flex flex-col w-[min(100vw,20rem)] max-w-full h-[100dvh] border-l border-[var(--lp-border)] bg-[var(--bg-primary)] shadow-2xl transition-transform duration-300 ease-out supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)] supports-[padding:max(0px)]:pb-[env(safe-area-inset-bottom)] ${
           mobileOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none'
         }`}
       >

@@ -503,6 +503,8 @@ export interface TranslationKeys {
     contact: string;
     product: string;
     resources: string;
+    compare: string;
+    allAlternatives: string;
     company: string;
     footerDescription: string;
     builtWithLove: string;
@@ -3309,7 +3311,7 @@ export const en: TranslationKeys = {
     heroStarGithub: '★ Star on GitHub',
     heroStatMitLicensed: 'MIT licensed',
     heroStatDeployFast: 'Git push → live',
-    heroStatNoVendorLockIn: '0 vendor lock-in',
+    heroStatNoVendorLockIn: 'No vendor lock-in',
     heroMetaPlatform: 'PSH-01 / OPEN SOURCE PLATFORM',
     heroMetaDeploymentsLive: 'DEPLOYMENTS LIVE',
     heroMetaDeploymentsLiveShort: 'LIVE',
@@ -3502,6 +3504,8 @@ export const en: TranslationKeys = {
     contact: 'Contact',
     product: 'Product',
     resources: 'Resources',
+    compare: 'Compare',
+    allAlternatives: 'All alternatives',
     company: 'Company',
     footerDescription: 'Open-source cloud deployment platform. Your servers, your data, your rules.',
     builtWithLove: 'Built with',
