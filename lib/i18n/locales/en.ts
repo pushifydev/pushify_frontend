@@ -2857,6 +2857,20 @@ export interface TranslationKeys {
     fwdEmpty: string;
     publicHeroTitle: string;
     publicHeroDesc: string;
+    publicTldsLabel: string;
+    publicTldsNote: string;
+    publicStep1Title: string;
+    publicStep1Text: string;
+    publicStep2Title: string;
+    publicStep2Text: string;
+    publicStep3Title: string;
+    publicStep3Text: string;
+    publicDnsTitle: string;
+    publicDnsText: string;
+    publicLeaveTitle: string;
+    publicLeaveText: string;
+    publicTransferTitle: string;
+    publicTransferText: string;
     publicBuyCta: string;
   };
   admin: {
@@ -6147,6 +6161,20 @@ export const en: TranslationKeys = {
     fwdEmpty: 'No forwarding addresses yet.',
     publicHeroTitle: 'Find your domain',
     publicHeroDesc: 'Search, register, and connect a domain to your app in one place — DNS and SSL handled for you.',
+    publicTldsLabel: 'Searched in one go',
+    publicTldsNote: 'Type a word to see these, or a full domain to check that one.',
+    publicStep1Title: 'Register it, for up to five years',
+    publicStep1Text: 'Pay once for the whole term. WHOIS privacy is on from the start, and auto-renew is a switch you control — not a default you have to remember to cancel.',
+    publicStep2Title: 'Point it at a project',
+    publicStep2Text: 'Pick the project and the records are written for you. The certificate is requested in the same step, so the domain answers over HTTPS without a second visit.',
+    publicStep3Title: 'Keep editing the DNS',
+    publicStep3Text: 'A, AAAA, CNAME, MX, TXT, SRV and NS records, edited in the dashboard — so email, verification records and a subdomain elsewhere do not send you to another provider.',
+    publicDnsTitle: 'Already own the domain?',
+    publicDnsText: 'You do not have to buy it here. Add a domain you own to a project, point one record at the server, and Pushify issues and renews the certificate.',
+    publicLeaveTitle: 'You can leave',
+    publicLeaveText: 'Transferring out is a right, not a favour: unlock the domain and the auth code is shown to you. No ticket, no retention call.',
+    publicTransferTitle: 'Bringing one in',
+    publicTransferText: 'A transfer includes a year of renewal, so the domain does not expire while it moves.',
     publicBuyCta: 'Sign up to buy',
   },
   admin: {

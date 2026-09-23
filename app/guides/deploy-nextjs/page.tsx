@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'How to Deploy Next.js to Your Own Server (2026 Guide)',
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/guides/deploy-nextjs' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Deploy Next.js to Your Own Server | Pushify',
     description:
       'The complete manual path (Node, PM2, nginx, SSL) and the automated one — both on servers you own.',

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Pushify vs Coolify',
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/vs/coolify' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Pushify vs Coolify | Pushify',
     description:
       'An honest, side-by-side comparison of two open-source self-hosting platforms — features, pricing, and which one fits.',

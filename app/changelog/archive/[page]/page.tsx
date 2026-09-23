@@ -8,6 +8,7 @@ import {
   archiveSlice,
   getChangelogEntries,
 } from './../../shared';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -30,6 +31,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description: 'Older Pushify releases — the full history of features, fixes and improvements.',
     alternates: { canonical: `/changelog/archive/${page}` },
     openGraph: {
+      images: OG_IMAGE,
       title: `Changelog Archive — page ${page} | Pushify`,
       url: `https://pushify.dev/changelog/archive/${page}`,
     },

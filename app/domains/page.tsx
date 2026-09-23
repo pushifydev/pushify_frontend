@@ -9,6 +9,9 @@ import { usePublicDomainSearch, useTranslation } from '@/hooks';
 import { getAccessToken } from '@/lib/api/client';
 import { buildAuthPath } from '@/lib/auth-redirect';
 
+/** What one keyword search covers — mirrors SEARCH_TLDS in the backend's registrar service. */
+const SEARCH_TLDS = ['com', 'net', 'org', 'dev', 'app', 'io', 'co', 'me', 'xyz', 'ai'];
+
 function formatUsd(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
@@ -38,7 +41,7 @@ export default function PublicDomainsPage() {
         description={t('domainSales', 'publicHeroDesc')}
       />
 
-      <div className="lp-container max-w-2xl pb-20 md:pb-28">
+      <div className="lp-container max-w-2xl pb-10 md:pb-14">
         <Reveal>
           <form
             onSubmit={(e) => {
@@ -137,6 +140,79 @@ export default function PublicDomainsPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Below the search the page used to stop, leaving a nav-level page at a hero and a text
+          field. Everything here is what the registrar integration actually does. */}
+      <div className="lp-container pb-24 md:pb-32">
+        <Reveal>
+          <div className="max-w-2xl">
+            <p className="lp-label mb-3">{t('domainSales', 'publicTldsLabel')}</p>
+            <div className="flex flex-wrap gap-2">
+              {SEARCH_TLDS.map((tld) => (
+                <span
+                  key={tld}
+                  className="px-3 py-1.5 rounded-full text-xs"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    color: 'var(--lp-ink)',
+                    background: 'var(--lp-surface)',
+                    border: '1px solid var(--lp-border)',
+                  }}
+                >
+                  .{tld}
+                </span>
+              ))}
+            </div>
+            <p className="mt-3 text-xs" style={{ color: 'var(--lp-muted)' }}>
+              {t('domainSales', 'publicTldsNote')}
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-14">
+          {[
+            { title: t('domainSales', 'publicStep1Title'), text: t('domainSales', 'publicStep1Text') },
+            { title: t('domainSales', 'publicStep2Title'), text: t('domainSales', 'publicStep2Text') },
+            { title: t('domainSales', 'publicStep3Title'), text: t('domainSales', 'publicStep3Text') },
+          ].map((card, i) => (
+            <Reveal key={card.title} delay={i * 90} className="h-full">
+              <div className="lp-card h-full p-5">
+                <span
+                  className="text-xs font-semibold"
+                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--lp-muted)' }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h2 className="text-sm font-semibold mt-3 mb-2" style={{ color: 'var(--lp-ink)' }}>
+                  {card.title}
+                </h2>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
+                  {card.text}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          {[
+            { title: t('domainSales', 'publicDnsTitle'), text: t('domainSales', 'publicDnsText') },
+            { title: t('domainSales', 'publicTransferTitle'), text: t('domainSales', 'publicTransferText') },
+            { title: t('domainSales', 'publicLeaveTitle'), text: t('domainSales', 'publicLeaveText') },
+          ].map((card, i) => (
+            <Reveal key={card.title} delay={i * 90} className="h-full">
+              <div className="lp-card h-full p-5">
+                <h2 className="text-sm font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
+                  {card.title}
+                </h2>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
+                  {card.text}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </MarketingShell>
   );

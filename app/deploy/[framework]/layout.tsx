@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import { OG_IMAGE } from '@/lib/seo';
 
 const FRAMEWORK_META: Record<string, { title: string; desc: string; slug: string }> = {
-  nextjs: { title: 'Deploy Next.js Apps', desc: 'Deploy Next.js apps to your own VPS in under 60 seconds. Zero config, automatic SSL, instant rollbacks. Free tier available.', slug: 'nextjs' },
+  nextjs: { title: 'Deploy Next.js Apps', desc: 'Deploy Next.js apps to your own VPS. Zero config, automatic SSL, instant rollbacks. Free tier available.', slug: 'nextjs' },
   react: { title: 'Deploy React Apps', desc: 'Deploy React apps (Vite, CRA) to your own VPS instantly. Auto-detect, zero config, free SSL. Start free.', slug: 'react' },
   vue: { title: 'Deploy Vue.js Apps', desc: 'Deploy Vue.js and Nuxt apps to your own VPS in seconds. Auto-detect, zero config, free SSL. Start free.', slug: 'vue' },
   python: { title: 'Deploy Python Apps', desc: 'Deploy Python apps (Django, Flask, FastAPI) to your own VPS instantly. Auto-detect, zero config, free SSL.', slug: 'python' },
@@ -27,6 +28,7 @@ export async function generateMetadata({
     description: fw.desc,
     alternates: { canonical: `/deploy/${fw.slug}` },
     openGraph: {
+      images: OG_IMAGE,
       title: `${fw.title} with Pushify`,
       description: fw.desc,
       url: `https://pushify.dev/deploy/${fw.slug}`,

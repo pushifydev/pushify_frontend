@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Pushify vs Vercel',
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/vs/vercel' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Pushify vs Vercel | Pushify',
     description:
       'An honest, side-by-side comparison of Pushify and Vercel — own your infrastructure with predictable pricing and no lock-in.',

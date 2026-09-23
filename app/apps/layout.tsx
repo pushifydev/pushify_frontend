@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: {
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     'One-click self-hosting for WordPress, n8n, Supabase, Grafana, Plausible, Ghost and more — on your own server with HTTPS, backups and health checks handled.',
   alternates: { canonical: '/apps' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Pushify Apps — self-host open-source tools in one click',
     url: 'https://pushify.dev/apps',
   },
