@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { listBlogPosts } from '@/lib/blog';
 import { APPS } from '@/lib/apps-catalog';
+import { archiveHref, archivePageCount, getChangelogEntries } from './changelog/shared';
 
 /**
  * Per-route lastModified reflects when the CONTENT meaningfully changed, not the
@@ -47,8 +48,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(date),
   }));
 
-  // Changelog genuinely updates with every release — build time is accurate here.
+  // Changelog genuinely updates with every release — build time is accurate here. The archive
+  // is paged, and a page crawlers can only reach by clicking through the pager is a page they
+  // mostly do not reach, so every page is listed.
   entries.push({ url: `${base}/changelog`, lastModified: new Date() });
+  const changelogEntries = await getChangelogEntries();
+  for (let page = 1; page <= archivePageCount(changelogEntries.length); page++) {
+    entries.push({ url: `${base}${archiveHref(page)}`, lastModified: new Date() });
+  }
 
   // Apps catalog — static snapshot; dated by when the catalog pages shipped.
   entries.push({ url: `${base}/apps`, lastModified: new Date('2026-09-10') });

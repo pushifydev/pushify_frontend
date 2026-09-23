@@ -1,7 +1,12 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
-import { ChangelogEntryList, getChangelogEntries } from './../shared';
+import {
+  ChangelogEntryList,
+  ChangelogPager,
+  archivePageCount,
+  archiveSlice,
+  getChangelogEntries,
+} from './../shared';
 
 export const revalidate = 3600;
 
@@ -15,11 +20,10 @@ export const metadata: Metadata = {
   },
 };
 
-const LATEST_COUNT = 30;
-
+/** The first archive page: releases 31–60. Later pages live at /changelog/archive/[page]. */
 export default async function ChangelogArchivePage() {
   const entries = await getChangelogEntries();
-  const older = entries.slice(LATEST_COUNT);
+  const pageCount = archivePageCount(entries.length);
 
   return (
     <MarketingShell>
@@ -30,16 +34,9 @@ export default async function ChangelogArchivePage() {
       />
 
       <div className="lp-container max-w-3xl mx-auto pb-24 space-y-6">
-        <div className="text-center pb-2">
-          <Link
-            href="/changelog"
-            className="text-sm underline underline-offset-4"
-            style={{ color: 'var(--lp-muted)' }}
-          >
-            ← Back to latest releases
-          </Link>
-        </div>
-        <ChangelogEntryList entries={older} />
+        <ChangelogPager page={1} pageCount={pageCount} className="pb-2" />
+        <ChangelogEntryList entries={archiveSlice(entries, 1)} />
+        <ChangelogPager page={1} pageCount={pageCount} />
       </div>
     </MarketingShell>
   );

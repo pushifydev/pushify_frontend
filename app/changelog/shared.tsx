@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -212,5 +213,72 @@ export function ChangelogUnavailable() {
         </span>
       ))}
     </div>
+  );
+}
+
+/* ───────────────── Paging ───────────────── */
+
+/**
+ * Releases per page.
+ *
+ * The archive used to render every older release in one document — 463 KB of HTML and some
+ * ninety entries to scroll past. Thirty is the same size as the front page, so a reader moving
+ * from /changelog into the archive gets pages of a consistent length.
+ */
+export const PAGE_SIZE = 30;
+
+/** How many archive pages `total` releases need. Page 1 of the archive holds entries 31–60. */
+export function archivePageCount(total: number): number {
+  return Math.max(0, Math.ceil((total - PAGE_SIZE) / PAGE_SIZE));
+}
+
+/** The slice of releases on archive page `page` (1-based). */
+export function archiveSlice<T>(entries: T[], page: number): T[] {
+  const start = PAGE_SIZE * page;
+  return entries.slice(start, start + PAGE_SIZE);
+}
+
+/** Archive page 1 keeps the bare /changelog/archive URL; the rest are numbered. */
+export function archiveHref(page: number): string {
+  return page <= 1 ? '/changelog/archive' : `/changelog/archive/${page}`;
+}
+
+export function ChangelogPager({
+  page,
+  pageCount,
+  className = 'pt-6',
+}: {
+  page: number;
+  pageCount: number;
+  /** Spacing differs above and below the list; everything else is identical. */
+  className?: string;
+}) {
+  if (pageCount <= 1) return null;
+
+  const link = 'text-sm underline underline-offset-4 hover:no-underline';
+
+  return (
+    <nav
+      className={`flex items-center justify-between gap-4 ${className}`}
+      aria-label="Changelog archive pages"
+      style={{ color: 'var(--text-muted)' }}
+    >
+      {/* Page 1's "newer" target is the changelog itself, not another archive page */}
+      <Link href={page <= 1 ? '/changelog' : archiveHref(page - 1)} className={link} rel="prev">
+        ← {page <= 1 ? 'Latest releases' : 'Newer releases'}
+      </Link>
+
+      <span className="text-xs">
+        Page {page} of {pageCount}
+      </span>
+
+      {page < pageCount ? (
+        <Link href={archiveHref(page + 1)} className={link} rel="next">
+          Older releases →
+        </Link>
+      ) : (
+        <span aria-hidden="true" />
+      )}
+    </nav>
   );
 }
