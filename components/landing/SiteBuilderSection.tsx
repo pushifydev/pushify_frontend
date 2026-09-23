@@ -8,6 +8,7 @@ import {
 import { useTranslation } from '@/hooks';
 import { LandingSectionHeader } from './LandingSectionHeader';
 import { Reveal } from './Reveal';
+import { ProductScreenshot } from './ProductScreenshot';
 
 /* ───────────────── Editor mockup (shared with /features) ───────────────── */
 export function SiteBuilderMockup() {
@@ -171,8 +172,20 @@ export function SiteBuilderSection() {
           description={t('homepage', 'siteBuilderSubtitle')}
         />
 
+        {/* Catalog first, then the editor — the order someone actually meets them in. */}
         <Reveal>
           <div className="max-w-4xl mx-auto">
+            <ProductScreenshot
+              light="/product/sitestudio-light.webp"
+              dark="/product/sitestudio-dark.webp"
+              alt={t('homepage', 'siteBuilderShotAlt')}
+              caption={t('homepage', 'siteBuilderShotCaption')}
+            />
+          </div>
+        </Reveal>
+
+        <Reveal>
+          <div className="max-w-4xl mx-auto mt-8">
             <SiteBuilderMockup />
           </div>
         </Reveal>

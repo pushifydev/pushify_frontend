@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Pushify vs Heroku',
   description:
-    'Pushify vs Heroku: an honest comparison. Heroku is fully managed with per-dyno pricing (Basic $7/mo, free tier removed in 2022); Pushify is MIT-licensed, self-hostable, and runs on servers you own with flat pricing.',
+    'Pushify vs Heroku: Heroku is fully managed and priced per dyno (Basic $7/mo, no free tier since 2022); Pushify is MIT-licensed and runs on servers you own.',
   keywords: [
     'heroku alternative',
     'self hosted heroku',
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/vs/heroku' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Pushify vs Heroku | Pushify',
     description:
       'The git-push workflow Heroku made famous — on servers you own. An honest side-by-side comparison with real pricing.',

@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'pushify.yaml Reference – Config-as-Code for Deployments',
   description:
-    'Pin build, start and port settings, cron jobs, persistent volumes and worker processes in a pushify.yaml at the root of your repository. Full field reference with examples.',
+    'Pin build, start and port settings, cron jobs, volumes and workers in a pushify.yaml at the root of your repository. Every field, with examples.',
   alternates: { canonical: '/pushify-yaml' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'pushify.yaml Reference',
     url: 'https://pushify.dev/pushify-yaml',
   },

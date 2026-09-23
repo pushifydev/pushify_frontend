@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Domain Search & Registration',
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
     'Search, register, and connect a custom domain to your Pushify app. Live pricing across popular TLDs, automatic DNS and SSL — no separate registrar needed.',
   alternates: { canonical: '/domains' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Domain Search & Registration | Pushify',
     description:
       'Search, register, and connect a custom domain to your Pushify app. Live pricing, automatic DNS and SSL — no separate registrar needed.',

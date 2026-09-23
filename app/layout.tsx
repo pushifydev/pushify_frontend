@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import localFont from 'next/font/local';
 import { Providers } from './providers';
 import { Analytics } from '@/components/Analytics';
 import './globals.css';
+import { LOCALE_HEADER, isSupportedLocale } from '@/lib/locale-request';
+import { DEFAULT_LOCALE, type SupportedLocale } from '@/lib/i18n';
+import { ensureDictionaryOnServer } from '@/lib/i18n/server';
+import { version as appVersion } from '../package.json';
 
 // Vendored in app/fonts (SIL OFL) so a build never depends on reaching Google Fonts — a failed
 // font download failed the whole build. Inter and JetBrains Mono from google/fonts, weights
@@ -99,7 +104,9 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
-// Runs before React hydration to prevent flash of wrong theme (FOUC)
+// Runs before React hydration to prevent flash of wrong theme (FOUC). The language is not in
+// here: middleware.ts resolves it and this layout renders the page in it, so there is nothing
+// for a script to correct.
 const themeScript = `(function(){
   function resolveTheme(pref) {
     if (pref === 'system' || !pref) {
@@ -118,16 +125,38 @@ const themeScript = `(function(){
   }
 })();`;
 
-export default function RootLayout({
+/**
+ * The visitor's language, decided in middleware.ts from their cookie or, on a first visit, their
+ * Accept-Language. Reading a header makes this route render per request — the measured cost is
+ * about 6ms, against roughly 85ms of the page visibly changing language after every reload.
+ */
+async function requestLocale(): Promise<SupportedLocale> {
+  const value = (await headers()).get(LOCALE_HEADER);
+  return isSupportedLocale(value) ? value : DEFAULT_LOCALE;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await requestLocale();
+  // Before anything renders: the components below print their text from this dictionary.
+  await ensureDictionaryOnServer(locale);
+
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang={locale} suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Blocking on purpose: React must find this dictionary already in memory when it
+            hydrates, or the first client render would fall back to English and the page would
+            change language under the reader — the thing this whole arrangement removes. The URL
+            is versioned and served immutable, so it is fetched once and never again. */}
+        {locale === 'tr' && (
+          // eslint-disable-next-line @next/next/no-sync-scripts
+          <script src={`/i18n/tr?v=${appVersion}`} />
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -171,14 +200,14 @@ export default function RootLayout({
                   description:
                     'Open-source cloud deployment platform that deploys applications from a Git repository to your own VPS servers, with automatic builds, HTTPS and zero-downtime deploys.',
                   featureList: [
-                    'Push-to-deploy from GitHub with framework auto-detection (20+ frameworks)',
+                    'Push-to-deploy from GitHub with framework auto-detection (26 frameworks)',
                     'Zero-downtime deploys with instant rollbacks',
                     "Automatic SSL via Let's Encrypt",
                     'One-click managed databases (PostgreSQL, MySQL, Redis, MongoDB)',
                     'Bring your own server (BYOS) or managed Hetzner Cloud',
                     'Team collaboration with role-based access control',
                     'No-code site builder',
-                    'App marketplace with 24+ one-click apps',
+                    'App marketplace with 24 one-click apps',
                   ],
                   offers: {
                     '@type': 'AggregateOffer',
@@ -213,7 +242,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Providers initialLocale={locale}>{children}</Providers>
         <Analytics />
       </body>
     </html>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Self-Hosted PaaS & Heroku Alternatives Compared (2026)',
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/alternatives' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Self-Hosted PaaS & Heroku Alternatives Compared | Pushify',
     description:
       'Real licenses, real prices, no fake rankings — the self-hosted PaaS landscape in one honest page.',

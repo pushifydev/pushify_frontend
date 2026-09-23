@@ -6,18 +6,11 @@ import { serverKeys } from '@/hooks/useServers';
 import { Globe } from 'lucide-react';
 
 export function LanguageSwitcher() {
-  const { locale, toggleLocale, isHydrated } = useTranslation();
+  const { locale, toggleLocale } = useTranslation();
   const queryClient = useQueryClient();
 
-  if (!isHydrated) {
-    return (
-      <div className="flex items-center gap-1 px-2 py-1.5 rounded-md bg-[var(--bg-tertiary)]">
-        <Globe className="w-4 h-4 text-[var(--text-muted)]" />
-        <span className="text-xs font-medium text-[var(--text-muted)] w-6">--</span>
-      </div>
-    );
-  }
-
+  // No placeholder while the locale settles: the server renders the visitor's language, so it is
+  // already the right one on the first paint.
   return (
     <button
       onClick={() => {

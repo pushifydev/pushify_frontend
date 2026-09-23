@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
 import './docs.css';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'API Documentation',
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     canonical: '/docs',
   },
   openGraph: {
+    images: OG_IMAGE,
     title: 'API Documentation | Pushify',
     description: 'Complete REST API reference for Pushify cloud deployment platform.',
     url: 'https://pushify.dev/docs',

@@ -2,7 +2,7 @@
 
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
 import { useTranslation } from '@/hooks';
-import { Mail, MapPin, Globe, Github, Heart, Rocket, Server, Database, Package, Code2, ShieldCheck, Eye } from 'lucide-react';
+import { Mail, MapPin, Globe, Github, Rocket, Server, Database, Package, Code2, ShieldCheck, Eye } from 'lucide-react';
 import { Reveal } from '@/components/landing/Reveal';
 
 const content = {
@@ -18,7 +18,7 @@ const content = {
       { title: 'One-Click Deploy', desc: 'Connect your GitHub repo, framework auto-detected, live in minutes.' },
       { title: 'Server Management', desc: 'Provision VPS via Hetzner Cloud or bring your own server.' },
       { title: 'Database Management', desc: 'PostgreSQL, MySQL, Redis, MongoDB with one-click setup.' },
-      { title: 'Marketplace', desc: '24+ ready-to-deploy apps (WordPress, Supabase, Appwrite, Cal.com etc.).' },
+      { title: 'Marketplace', desc: '24 ready-to-deploy apps (WordPress, Supabase, Appwrite, Cal.com etc.).' },
     ],
     companyTitle: 'Company Information',
     web: 'Web',
@@ -40,8 +40,6 @@ const content = {
         desc: 'All pricing and features are publicly published. No hidden fees, no surprise changes.',
       },
     ],
-    builtFor: 'for developers',
-    builtWith: 'Built with',
   },
   tr: {
     title: 'Hakkımızda',
@@ -55,7 +53,7 @@ const content = {
       { title: 'Tek Tıkla Yayınlama', desc: 'GitHub reponuzu bağlayın, framework otomatik algılansın, dakikalar içinde canlı olun.' },
       { title: 'Sunucu Yönetimi', desc: 'Hetzner Cloud üzerinden tek tıkla VPS sağlayın veya kendi sunucularınızı bağlayın.' },
       { title: 'Veritabanı Yönetimi', desc: 'PostgreSQL, MySQL, Redis, MongoDB tek tıkla kurulum ve yönetim.' },
-      { title: 'Marketplace', desc: '24+ hazır uygulama (WordPress, Supabase, Appwrite, Cal.com vb.) tek tıkla yayında.' },
+      { title: 'Marketplace', desc: '24 hazır uygulama (WordPress, Supabase, Appwrite, Cal.com vb.) tek tıkla yayında.' },
     ],
     companyTitle: 'Şirket Bilgileri',
     web: 'Web',
@@ -77,8 +75,6 @@ const content = {
         desc: 'Tüm fiyatlandırmamız ve özelliklerimiz açık şekilde yayınlanır. Gizli ücret veya sürpriz değişiklik yok.',
       },
     ],
-    builtFor: 'için',
-    builtWith: 'Geliştiriciler',
   },
 };
 
@@ -206,23 +202,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <div className="text-center pt-8 border-t" style={{ borderColor: 'var(--lp-border)' }}>
-          <p className="text-sm inline-flex items-center gap-2" style={{ color: 'var(--lp-muted)' }}>
-            {locale === 'tr' ? (
-              <>
-                {c.builtWith} {c.builtFor}
-                <Heart className="w-4 h-4 fill-current" style={{ color: 'var(--lp-ink)' }} />
-                ile yapıldı
-              </>
-            ) : (
-              <>
-                {c.builtWith}
-                <Heart className="w-4 h-4 fill-current" style={{ color: 'var(--lp-ink)' }} />
-                {c.builtFor}
-              </>
-            )}
-          </p>
-        </div>
       </div>
     </MarketingShell>
   );

@@ -106,11 +106,14 @@ export function FrameworksSection() {
           >
             <span style={{ color: 'var(--lp-muted)' }}>$ git push</span>
             <span aria-hidden="true" style={{ color: 'var(--lp-muted)' }}>→</span>
-            <span style={{ color: '#16a34a' }}>✓ {t('landing', 'frameworkDetectedChip')}</span>
+            <span style={{ color: 'var(--status-success)' }}>✓ {t('landing', 'frameworkDetectedChip')}</span>
           </span>
           <span className="text-sm" style={{ color: 'var(--lp-muted)' }}>
             {t('landing', 'frameworksSupported')}{' '}
-            <span className="font-semibold" style={{ color: 'var(--lp-ink)', fontFamily: 'var(--font-mono)' }}>20+</span>
+            {/* Counted from the backend's buildpacks (src/buildpacks/*.ts `frameworks`): 26
+                frameworks across 8 language buildpacks. It said 20+, which undersold it — and a
+                exact number reads as more credible than a vague plus. */}
+            <span className="font-semibold" style={{ color: 'var(--lp-ink)', fontFamily: 'var(--font-mono)' }}>26</span>
           </span>
         </div>
       </div>

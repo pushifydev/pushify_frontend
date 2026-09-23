@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Open Source',
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
     'Pushify is MIT licensed. Self-host the platform, contribute on GitHub, and use the pushify-cli for deployments.',
   alternates: { canonical: '/open-source' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Open Source | Pushify',
     url: 'https://pushify.dev/open-source',
   },

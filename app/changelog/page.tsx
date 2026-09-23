@@ -1,18 +1,17 @@
 import Link from 'next/link';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
-import { ChangelogEntryList, ChangelogUnavailable, getChangelogEntries } from './shared';
+import { ChangelogEntryList, ChangelogUnavailable, PAGE_SIZE, getChangelogEntries } from './shared';
 
 // Re-render at most hourly; each release lands here without a frontend redeploy.
 export const revalidate = 3600;
 
 // Keep the primary document light (~2k DOM nodes hurt INP with 90+ entries);
-// older releases live on /changelog/archive.
-const LATEST_COUNT = 30;
+// older releases live on /changelog/archive, itself paged at the same size.
 
 export default async function ChangelogPage() {
   const entries = await getChangelogEntries();
-  const latest = entries.slice(0, LATEST_COUNT);
-  const archivedCount = Math.max(0, entries.length - LATEST_COUNT);
+  const latest = entries.slice(0, PAGE_SIZE);
+  const archivedCount = Math.max(0, entries.length - PAGE_SIZE);
 
   return (
     <MarketingShell>

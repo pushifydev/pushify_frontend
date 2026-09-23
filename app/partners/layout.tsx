@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Partners – Run Pushify for Your Clients',
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
     'Agency setup, white-label licensing, and team plans. Run the open-source Pushify deployment platform for your clients — on your infrastructure or ours.',
   alternates: { canonical: '/partners' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Pushify Partners – Agencies & Hosting Providers',
     url: 'https://pushify.dev/partners',
   },

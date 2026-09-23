@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Deploy to Pushify Button – One-Click Deploys from Your README',
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
     'Add a "Deploy to Pushify" button to any repository README. Visitors deploy your project to their own server in one click — repo, branch and framework prefilled.',
   alternates: { canonical: '/deploy-button' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Deploy to Pushify Button',
     url: 'https://pushify.dev/deploy-button',
   },

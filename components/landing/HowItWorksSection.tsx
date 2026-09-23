@@ -70,6 +70,7 @@ function DeployVignette() {
       }}
     >
       <div style={{ color: 'rgba(255,255,255,0.85)' }}>$ git push origin main</div>
+      {/* Fixed, not themed: this block stays dark in light mode too. */}
       <div style={{ color: '#4ade80' }}>● Live at my-app.pushify.dev — 47s</div>
     </div>
   );

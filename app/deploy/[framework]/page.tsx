@@ -115,7 +115,7 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
       steps: [
         { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
         { title: 'Initialize your project', code: 'pushify init', description: 'Pushify detects Vue.js or Nuxt and configures the appropriate build and serve strategy.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your Vue app is built, deployed, and live with automatic SSL in under 60 seconds.' },
+        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your Vue app is built, deployed, and live with automatic SSL.' },
       ],
       features: ['Vue 3 Composition API', 'Nuxt 3 SSR support', 'Vite-powered builds', 'Static and SSR modes', 'Environment variables', 'Zero-downtime deployments'],
       howToTitle: 'How to deploy Vue.js with Pushify', whatYouGet: 'What you get with Vue.js on Pushify', readyTitle: 'Ready to deploy your Vue.js app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
@@ -126,7 +126,7 @@ const FRAMEWORKS: Record<string, FrameworkData> = {
       steps: [
         { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
         { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, Vue.js veya Nuxt\'u algılar ve uygun build ve sunma stratejisini yapılandırır.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Vue uygulamanız build edilir, deploy edilir ve 60 saniyeden kısa sürede otomatik SSL ile yayına alınır.' },
+        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Vue uygulamanız build edilir, deploy edilir ve otomatik SSL ile yayına alınır.' },
       ],
       features: ['Vue 3 Composition API', 'Nuxt 3 SSR desteği', 'Vite destekli build\'ler', 'Statik ve SSR modları', 'Ortam değişkenleri', 'Sıfır kesinti ile deployment'],
       howToTitle: 'Pushify ile Vue.js nasıl deploy edilir', whatYouGet: 'Pushify\'da Vue.js ile neler elde edersiniz', readyTitle: 'Vue.js uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',

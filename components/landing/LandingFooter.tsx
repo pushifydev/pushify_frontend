@@ -2,7 +2,8 @@
 
 import { useTranslation } from '@/hooks';
 import { LogoMark } from '@/components/logo';
-import { Github, Mail, ArrowUpRight } from 'lucide-react';
+import { MarketingLink } from './MarketingLink';
+import { Github, Mail, ArrowUpRight, Heart } from 'lucide-react';
 
 export function LandingFooter() {
   const { t } = useTranslation();
@@ -35,10 +36,17 @@ export function LandingFooter() {
       { label: 'Status', href: '/status' },
       { label: t('landing', 'blog'), href: '/blog' },
       { label: t('landing', 'deployButton'), href: '/deploy-button' },
-      { label: t('vsCoolify', 'h1'), href: '/vs/coolify' },
-      { label: t('vsVercel', 'h1'), href: '/vs/vercel' },
-      { label: t('vsHeroku', 'h1'), href: '/vs/heroku' },
-      { label: t('alternatives', 'h1'), href: '/alternatives' },
+    ],
+    // The four comparison links sat at the bottom of Resources and made that column twice the
+    // height of the others — the last one wrapping onto three lines. They are a subject of their
+    // own, and as a column they balance the row.
+    [t('landing', 'compare')]: [
+      { label: 'Coolify', href: '/vs/coolify' },
+      { label: 'Vercel', href: '/vs/vercel' },
+      { label: 'Heroku', href: '/vs/heroku' },
+      { label: 'Railway', href: '/vs/railway' },
+      { label: 'Render', href: '/vs/render' },
+      { label: t('landing', 'allAlternatives'), href: '/alternatives' },
     ],
     [t('landing', 'company')]: [
       { label: t('legal', 'about'), href: '/about' },
@@ -68,7 +76,7 @@ export function LandingFooter() {
   return (
     <footer className="border-t border-[var(--lp-border)]">
       <div className="lp-container py-14 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-x-8 gap-y-10">
           <div className="col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
               <LogoMark size={28} />
@@ -104,16 +112,15 @@ export function LandingFooter() {
                   const isExternal = (link as { external?: boolean }).external;
                   return (
                     <li key={link.label}>
-                      <a
+                      <MarketingLink
                         href={link.href}
-                        target={isExternal ? '_blank' : undefined}
-                        rel={isExternal ? 'noopener noreferrer' : undefined}
+                        external={isExternal}
                         className="text-sm inline-flex items-center gap-1 py-1 transition-colors hover:underline underline-offset-4"
                         style={{ color: 'var(--lp-body)' }}
                       >
                         {link.label}
                         {isExternal && <ArrowUpRight className="w-3 h-3 opacity-50" />}
-                      </a>
+                      </MarketingLink>
                     </li>
                   );
                 })}
@@ -129,8 +136,12 @@ export function LandingFooter() {
           <p>
             &copy; {new Date().getFullYear()} Pushify LLC. {t('landing', 'openSourceUnderMit')}.
           </p>
-          <p>
-            {t('landing', 'builtWithLove')} {t('landing', 'forDevelopers')}
+          {/* The heart was missing, so every page read "Built with for developers". Both
+              halves are ordered so the icon sits correctly in English and Turkish alike. */}
+          <p className="inline-flex items-center gap-1.5">
+            {t('landing', 'builtWithLove')}
+            <Heart className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
+            {t('landing', 'forDevelopers')}
           </p>
         </div>
       </div>

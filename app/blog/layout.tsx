@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
 import './blog.css';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: {
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     types: { 'application/rss+xml': 'https://pushify.dev/blog/rss.xml' },
   },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Pushify Blog',
     url: 'https://pushify.dev/blog',
   },

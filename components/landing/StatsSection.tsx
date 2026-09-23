@@ -8,7 +8,8 @@ export function StatsSection() {
 
   const stats = [
     { num: '100%', label: t('homepage', 'statsTrusted') },
-    { num: '24+', label: t('homepage', 'statsApps') },
+    // Exactly 24 in src/marketplace/templates — the plus claimed one that is not there
+    { num: '24', label: t('homepage', 'statsApps') },
     { num: '8', label: t('homepage', 'statsBuildpacks') },
     { num: '0', label: t('homepage', 'statsUptime') },
   ];

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Pricing – Plans, Server Credits & Billing',
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
     'Platform subscription plus prepaid infrastructure credits for managed Hetzner servers. Hourly billing, payment failure policy, and BYOS explained.',
   alternates: { canonical: '/pricing' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Pricing | Pushify',
     description: 'Simple pricing for self-hosted and managed deployment.',
     url: 'https://pushify.dev/pricing',

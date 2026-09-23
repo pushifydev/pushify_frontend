@@ -503,6 +503,8 @@ export interface TranslationKeys {
     contact: string;
     product: string;
     resources: string;
+    compare: string;
+    allAlternatives: string;
     company: string;
     footerDescription: string;
     builtWithLove: string;
@@ -651,6 +653,10 @@ export interface TranslationKeys {
     marketplaceCatalogCategory: string;
     marketplaceCatalogStatus: string;
     marketplaceCatalogFooter: string;
+    marketplaceShotAlt: string;
+    marketplaceShotCaption: string;
+    siteBuilderShotAlt: string;
+    siteBuilderShotCaption: string;
     fullPlanComparisonTitle: string;
   };
   errors: {
@@ -2851,6 +2857,20 @@ export interface TranslationKeys {
     fwdEmpty: string;
     publicHeroTitle: string;
     publicHeroDesc: string;
+    publicTldsLabel: string;
+    publicTldsNote: string;
+    publicStep1Title: string;
+    publicStep1Text: string;
+    publicStep2Title: string;
+    publicStep2Text: string;
+    publicStep3Title: string;
+    publicStep3Text: string;
+    publicDnsTitle: string;
+    publicDnsText: string;
+    publicLeaveTitle: string;
+    publicLeaveText: string;
+    publicTransferTitle: string;
+    publicTransferText: string;
     publicBuyCta: string;
   };
   admin: {
@@ -3309,7 +3329,7 @@ export const en: TranslationKeys = {
     heroStarGithub: '★ Star on GitHub',
     heroStatMitLicensed: 'MIT licensed',
     heroStatDeployFast: 'Git push → live',
-    heroStatNoVendorLockIn: '0 vendor lock-in',
+    heroStatNoVendorLockIn: 'No vendor lock-in',
     heroMetaPlatform: 'PSH-01 / OPEN SOURCE PLATFORM',
     heroMetaDeploymentsLive: 'DEPLOYMENTS LIVE',
     heroMetaDeploymentsLiveShort: 'LIVE',
@@ -3502,6 +3522,8 @@ export const en: TranslationKeys = {
     contact: 'Contact',
     product: 'Product',
     resources: 'Resources',
+    compare: 'Compare',
+    allAlternatives: 'All alternatives',
     company: 'Company',
     footerDescription: 'Open-source cloud deployment platform. Your servers, your data, your rules.',
     builtWithLove: 'Built with',
@@ -3533,7 +3555,7 @@ export const en: TranslationKeys = {
     step3Desc: 'Every git push triggers a build, runs in an isolated Docker container, and goes live with HTTPS.',
     // Marketplace preview
     marketplaceEyebrow: 'Marketplace',
-    marketplaceTitle: '24+ apps. One-click install.',
+    marketplaceTitle: '24 apps. One-click install.',
     marketplaceSubtitle: 'Self-host the tools you love. WordPress, Supabase, Cal.com, NextCloud, and more — fully configured and ready in minutes.',
     marketplaceCTA: 'Browse marketplace',
     // Site builder showcase
@@ -3594,7 +3616,7 @@ export const en: TranslationKeys = {
     faq2Q: 'How is it different from Vercel or Render?',
     faq2A: 'Vercel and Render are closed-source SaaS — your apps run on their infrastructure, you pay per usage. Pushify is open-source: you can self-host the whole platform, run apps on your own VPS, and avoid lock-in. Plans start at $0 and scale predictably.',
     faq3Q: 'How is it different from Coolify or CapRover?',
-    faq3A: 'Coolify is excellent open-source self-host but lacks team collaboration, billing, and a hosted option. Pushify offers both: run it yourself for free, or use our managed service for one-click setup. We also include a 24+ app marketplace, AI assistant, and Stripe-compatible billing out of the box.',
+    faq3A: 'Coolify is excellent open-source self-host but lacks team collaboration, billing, and a hosted option. Pushify offers both: run it yourself for free, or use our managed service for one-click setup. We also include a 24-app marketplace, AI assistant, and Stripe-compatible billing out of the box.',
     faq4Q: 'Is the source code really open?',
     faq4A: 'Yes. Pushify\'s frontend, backend, and CLI are MIT-licensed and public on GitHub. You can fork, audit, contribute, or run a private instance with no restrictions.',
     faq5Q: 'Can I bring my own servers?',
@@ -3641,7 +3663,7 @@ export const en: TranslationKeys = {
     pillar3Title: 'Managed',
     pillar3Detail: 'Or use our cloud. Same UI, no migration.',
     pillar4Title: 'Marketplace',
-    pillar4Detail: '24+ apps installed in a click.',
+    pillar4Detail: '24 apps installed in a click.',
     marketplaceHeadlineAppsCount: '24',
     marketplaceHeadlineAppsSuffix: ' apps,',
     marketplaceHeadlineTagline: 'one click each.',
@@ -3651,6 +3673,10 @@ export const en: TranslationKeys = {
     marketplaceCatalogCategory: 'Category',
     marketplaceCatalogStatus: 'Status',
     marketplaceCatalogFooter: 'Catalog updated weekly. PRs welcome.',
+    marketplaceShotAlt: 'The Pushify marketplace, listing one-click apps such as Supabase, Appwrite, PocketBase, Hasura, Directus and NocoDB with their versions and memory requirements',
+    marketplaceShotCaption: 'The marketplace, as it looks inside Pushify.',
+    siteBuilderShotAlt: 'Site Studio in Pushify, showing the template catalog filtered by use case and platform',
+    siteBuilderShotCaption: 'The Site Studio template catalog, as it looks inside Pushify.',
     fullPlanComparisonTitle: 'Full plan comparison',
   },
   errors: {
@@ -5412,7 +5438,7 @@ export const en: TranslationKeys = {
     title: 'Launch your website in minutes',
     badge: 'Site Studio',
     marketplaceBanner:
-      'Need dev tools, monitoring, or databases? The Marketplace has one-click apps like Grafana, n8n, and more.',
+      'Need dev tools, monitoring, or databases? The Marketplace has one-click apps like Uptime Kuma, n8n, and more.',
     marketplaceBannerCta: 'Browse Marketplace',
     paymentRegionGlobal: 'Global',
     paymentRegionRegional: 'Regional',
@@ -5824,7 +5850,7 @@ export const en: TranslationKeys = {
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Heroku alternative?',
     faq1A:
-      'If you want the git-push workflow without giving up server ownership, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Heroku\'s managed add-on ecosystem; you gain flat pricing and root access.',
+      'If you want the git-push workflow without giving up server ownership, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Heroku\'s managed add-on ecosystem; you gain flat pricing and root access.',
     faq2Q: 'How much cheaper is Pushify than Heroku, really?',
     faq2A:
       'A small always-on Heroku app with a database starts around $12/mo (Basic dyno $7 + Essential-0 Postgres $5). The same workload fits on one entry-level VPS: self-host Pushify on it for free, or use a managed server at a flat monthly price — with room for several more apps on the same box.',
@@ -5920,7 +5946,7 @@ export const en: TranslationKeys = {
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Railway alternative?',
     faq1A:
-      'If you like Railway’s git-push workflow but want it on servers you own, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Railway’s managed multi-region cloud; you gain flat pricing and root access.',
+      'If you like Railway’s git-push workflow but want it on servers you own, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Railway’s managed multi-region cloud; you gain flat pricing and root access.',
     faq2Q: 'How does pricing actually compare?',
     faq2A:
       'Railway is metered: $5/mo Hobby includes $5 of usage, then CPU and memory bill as you consume them, and Pro adds $20 per seat. Pushify has no metering — self-host for free, or run a managed server at one flat monthly price and fit several apps and databases on the same box.',
@@ -5981,7 +6007,7 @@ export const en: TranslationKeys = {
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Render alternative?',
     faq1A:
-      'If you like Render’s simplicity but want server ownership and per-server pricing, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose managed autoscaling; you gain root access and a flat bill.',
+      'If you like Render’s simplicity but want server ownership and per-server pricing, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose managed autoscaling; you gain root access and a flat bill.',
     faq2Q: 'How does pricing actually compare?',
     faq2A:
       'On Render a small always-on app with a database is typically two line items starting around $7/mo each. On Pushify the same workload fits on one entry-level VPS — self-host for free, or use a flat-priced managed server — with room for several more apps on the same box.',
@@ -6135,6 +6161,20 @@ export const en: TranslationKeys = {
     fwdEmpty: 'No forwarding addresses yet.',
     publicHeroTitle: 'Find your domain',
     publicHeroDesc: 'Search, register, and connect a domain to your app in one place — DNS and SSL handled for you.',
+    publicTldsLabel: 'Searched in one go',
+    publicTldsNote: 'Type a word to see these, or a full domain to check that one.',
+    publicStep1Title: 'Register it, for up to five years',
+    publicStep1Text: 'Pay once for the whole term. WHOIS privacy is on from the start, and auto-renew is a switch you control — not a default you have to remember to cancel.',
+    publicStep2Title: 'Point it at a project',
+    publicStep2Text: 'Pick the project and the records are written for you. The certificate is requested in the same step, so the domain answers over HTTPS without a second visit.',
+    publicStep3Title: 'Keep editing the DNS',
+    publicStep3Text: 'A, AAAA, CNAME, MX, TXT, SRV and NS records, edited in the dashboard — so email, verification records and a subdomain elsewhere do not send you to another provider.',
+    publicDnsTitle: 'Already own the domain?',
+    publicDnsText: 'You do not have to buy it here. Add a domain you own to a project, point one record at the server, and Pushify issues and renews the certificate.',
+    publicLeaveTitle: 'You can leave',
+    publicLeaveText: 'Transferring out is a right, not a favour: unlock the domain and the auth code is shown to you. No ticket, no retention call.',
+    publicTransferTitle: 'Bringing one in',
+    publicTransferText: 'A transfer includes a year of renewal, so the domain does not expire while it moves.',
     publicBuyCta: 'Sign up to buy',
   },
   admin: {

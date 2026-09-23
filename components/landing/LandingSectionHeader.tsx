@@ -9,6 +9,11 @@ interface LandingSectionHeaderProps {
   description?: string;
   align?: 'left' | 'center';
   className?: string;
+  /**
+   * A section heading is an h2 — except on a page whose only content is that one section, where
+   * it is the page's title and nothing else would be the h1.
+   */
+  as?: 'h1' | 'h2';
 }
 
 export function LandingSectionHeader({
@@ -17,6 +22,7 @@ export function LandingSectionHeader({
   description,
   align = 'left',
   className = '',
+  as: Heading = 'h2',
 }: LandingSectionHeaderProps) {
   const alignClass = align === 'center' ? 'text-center mx-auto' : '';
 
@@ -24,7 +30,7 @@ export function LandingSectionHeader({
     <Reveal>
       <header className={`max-w-2xl mb-12 md:mb-14 ${alignClass} ${className}`}>
         {label && <p className="lp-label mb-3">{label}</p>}
-        <h2 className="lp-section-title">{title}</h2>
+        <Heading className="lp-section-title">{title}</Heading>
         {description && <p className="lp-lead mt-4">{description}</p>}
       </header>
     </Reveal>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useLocaleStore } from '@/stores/locale';
+import { useLocale } from '@/components/LocaleProvider';
 import { getTranslations, type TranslationKeys, type SupportedLocale } from '@/lib/i18n';
 
 type NestedKeyOf<T> = T extends object
@@ -16,7 +17,10 @@ type NestedKeyOf<T> = T extends object
   : never;
 
 export function useTranslation() {
-  const { locale, setLocale, toggleLocale, isHydrated } = useLocaleStore();
+  // Reading from context, writing to the store: the store's server snapshot is fixed at its
+  // initial value (zustand v5), so it cannot be what the server renders from.
+  const locale = useLocale();
+  const { setLocale, toggleLocale } = useLocaleStore();
   const translations = getTranslations(locale);
 
   const t = <C extends keyof TranslationKeys>(
@@ -36,7 +40,6 @@ export function useTranslation() {
     locale,
     setLocale,
     toggleLocale,
-    isHydrated,
   };
 }
 

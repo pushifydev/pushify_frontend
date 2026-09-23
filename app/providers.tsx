@@ -8,9 +8,11 @@ import { ConfirmProvider } from '@/hooks/useConfirm';
 import { getApiErrorMessage } from '@/lib/api/get-error-message';
 import { appT } from '@/lib/i18n/app-translate';
 import { AfterHydration } from '@/components/AfterHydration';
+import { LocaleProvider } from '@/components/LocaleProvider';
+import type { SupportedLocale } from '@/lib/i18n';
 
 function resolveThemeMode(theme: Theme): 'light' | 'dark' {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return 'dark';
   if (theme === 'system') {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
@@ -50,7 +52,14 @@ function DynamicToaster() {
   );
 }
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  initialLocale,
+  children,
+}: {
+  /** The language the server rendered this page in (see app/layout.tsx). */
+  initialLocale: SupportedLocale;
+  children: React.ReactNode;
+}) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -73,10 +82,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AfterHydration />
-      {children}
-      <DynamicToaster />
-      <ConfirmProvider />
+      <LocaleProvider initialLocale={initialLocale}>
+        <AfterHydration />
+        {children}
+        <DynamicToaster />
+        <ConfirmProvider />
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }

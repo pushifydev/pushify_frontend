@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils';
 import {
   Check,
   X,
-  Loader2,
   Star,
   Server,
   ArrowRight,
@@ -384,14 +383,30 @@ export function PricingSection({ pageLayout, initialPlans }: PricingSectionProps
   const { data: apiPlans, isLoading } = useAvailablePlans(initialPlans);
 
   if (isLoading || !apiPlans) {
+    // A lone spinner in a third of a viewport is what a pricing page looked like until the API
+    // answered — and what it kept looking like if the API never did. Three card outlines in the
+    // shape of the real ones keep the page recognisable while the numbers are on their way.
     return (
-      <section
-        className={cn(
-          'flex items-center justify-center min-h-[32vh]',
-          pageLayout ? 'pb-20' : 'lp-section',
-        )}
-      >
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--lp-muted)' }} />
+      <section className={cn(pageLayout ? 'pb-20' : 'lp-section')} aria-busy="true">
+        <div className="lp-container">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5 items-stretch">
+            {MAIN_TIERS.map((tier) => (
+              <div key={tier} className="lp-card p-6 animate-pulse">
+                <div className="h-4 w-24 rounded" style={{ background: 'var(--lp-border)' }} />
+                <div className="h-9 w-32 rounded mt-5" style={{ background: 'var(--lp-border)' }} />
+                <div className="h-3 w-full rounded mt-6" style={{ background: 'var(--lp-border)' }} />
+                <div className="h-3 w-5/6 rounded mt-3" style={{ background: 'var(--lp-border)' }} />
+                <div className="h-10 w-full rounded-full mt-7" style={{ background: 'var(--lp-border)' }} />
+                <div className="mt-7 space-y-3">
+                  {[0, 1, 2, 3, 4].map((row) => (
+                    <div key={row} className="h-3 rounded" style={{ background: 'var(--lp-border)', width: `${90 - row * 8}%` }} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <span className="sr-only">{t('common', 'loading')}</span>
+        </div>
       </section>
     );
   }

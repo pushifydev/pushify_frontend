@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Site Builder',
   description:
-    'Build and publish websites without code. A WordPress-style visual editor with multi-page management, ready-made design templates, and one-click publish to your own server — domain optional.',
+    'Build and publish a website without code: a visual multi-page editor, ready-made templates, and one-click publish to your own server. Domain optional.',
   alternates: { canonical: '/sites' },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Site Builder | Pushify',
     description:
       'Pick a design, edit blocks on the page, add pages, and publish to your own server — with or without a domain.',

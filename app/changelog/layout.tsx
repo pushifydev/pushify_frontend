@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
+import { OG_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Changelog',
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     types: { 'application/rss+xml': 'https://pushify.dev/changelog/rss.xml' },
   },
   openGraph: {
+    images: OG_IMAGE,
     title: 'Changelog | Pushify',
     url: 'https://pushify.dev/changelog',
   },
