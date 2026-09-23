@@ -6,6 +6,7 @@ import { ArrowRight, Table2, Code2, Target, type LucideIcon } from 'lucide-react
 import { BrandIcon, hasBrandIcon } from './BrandIcon';
 import { LandingSectionHeader } from './LandingSectionHeader';
 import { Reveal } from './Reveal';
+import { ProductScreenshot } from './ProductScreenshot';
 
 type App = {
   name: string;
@@ -119,6 +120,18 @@ export function MarketplacePreviewSection() {
             );
           })}
         </div>
+
+        {/* The tiles above say which apps exist; this says the marketplace exists. */}
+        <Reveal>
+          <div className="mt-12 max-w-4xl mx-auto">
+            <ProductScreenshot
+              light="/product/marketplace-light.webp"
+              dark="/product/marketplace-dark.webp"
+              alt={t('homepage', 'marketplaceShotAlt')}
+              caption={t('homepage', 'marketplaceShotCaption')}
+            />
+          </div>
+        </Reveal>
 
         <div className="mt-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <p className="text-sm" style={{ color: 'var(--lp-muted)' }}>

@@ -1697,3 +1697,24 @@ html.dark .lp-page .lp-card:hover {
 .dash-app tr.dash-plans-row-alt .dash-plans-th-sticky {
   background: color-mix(in srgb, var(--bg-tertiary) 40%, var(--bg-secondary));
 }
+
+/* ════════════════════════════════════════════════
+   REAL PRODUCT SCREENSHOTS — theme swap
+   Dark mode is a class on <html>, not a media query, so <picture> cannot
+   choose between the two files. Dark is the default: the pre-paint script in
+   layout.tsx adds .light before first paint, so a light visitor never sees the
+   dark shot flash. Paired with loading="lazy", the hidden image has no layout
+   box and browsers skip fetching it — only one file is ever downloaded.
+   ════════════════════════════════════════════════ */
+
+.product-shot-light {
+  display: none;
+}
+
+html.light .product-shot-light {
+  display: block;
+}
+
+html.light .product-shot-dark {
+  display: none;
+}

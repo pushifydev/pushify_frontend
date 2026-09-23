@@ -653,6 +653,10 @@ export interface TranslationKeys {
     marketplaceCatalogCategory: string;
     marketplaceCatalogStatus: string;
     marketplaceCatalogFooter: string;
+    marketplaceShotAlt: string;
+    marketplaceShotCaption: string;
+    siteBuilderShotAlt: string;
+    siteBuilderShotCaption: string;
     fullPlanComparisonTitle: string;
   };
   errors: {
@@ -3655,6 +3659,10 @@ export const en: TranslationKeys = {
     marketplaceCatalogCategory: 'Category',
     marketplaceCatalogStatus: 'Status',
     marketplaceCatalogFooter: 'Catalog updated weekly. PRs welcome.',
+    marketplaceShotAlt: 'The Pushify marketplace, listing one-click apps such as Supabase, Appwrite, PocketBase, Hasura, Directus and NocoDB with their versions and memory requirements',
+    marketplaceShotCaption: 'The marketplace, as it looks inside Pushify.',
+    siteBuilderShotAlt: 'Site Studio in Pushify, showing the template catalog filtered by use case and platform',
+    siteBuilderShotCaption: 'The Site Studio template catalog, as it looks inside Pushify.',
     fullPlanComparisonTitle: 'Full plan comparison',
   },
   errors: {

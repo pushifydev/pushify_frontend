@@ -21,3 +21,4 @@ export { LandingFooter } from './LandingFooter';
 export { Reveal } from './Reveal';
 export { DeployTerminal } from './DeployTerminal';
 export { ProductShowcaseSection } from './ProductShowcaseSection';
+export { ProductScreenshot } from './ProductScreenshot';

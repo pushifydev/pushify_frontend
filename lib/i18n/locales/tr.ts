@@ -670,6 +670,10 @@ export const tr: TranslationKeys = {
     marketplaceCatalogCategory: 'Kategori',
     marketplaceCatalogStatus: 'Durum',
     marketplaceCatalogFooter: 'Katalog haftalık güncellenir. PR\'lar memnuniyetle.',
+    marketplaceShotAlt: 'Pushify marketplace ekranı: Supabase, Appwrite, PocketBase, Hasura, Directus ve NocoDB gibi tek tıkla kurulan uygulamalar, sürümleri ve bellek ihtiyaçlarıyla birlikte',
+    marketplaceShotCaption: 'Pushify içindeki marketplace ekranı.',
+    siteBuilderShotAlt: 'Pushify Site Studio ekranı: kullanım amacına ve platforma göre filtrelenebilen şablon kataloğu',
+    siteBuilderShotCaption: 'Pushify içindeki Site Studio şablon kataloğu.',
     fullPlanComparisonTitle: 'Tüm planların karşılaştırması',
   },
   errors: {
