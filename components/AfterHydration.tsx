@@ -1,31 +1,28 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useLocaleStore } from '@/stores/locale';
+import { useLocaleStore, migrateLegacyLocale } from '@/stores/locale';
 import { useThemeStore, applyTheme } from '@/stores/theme';
-import { markHydrated } from '@/lib/i18n';
 
 /**
- * Runs once React has hydrated the page, then keeps two <html> attributes in sync.
+ * Two bits of tidying that can only happen once React has hydrated.
  *
- * - Locale: the first client render is forced to the default dictionary so it matches the
- *   server HTML; only now may the real locale show (see `markHydrated` in lib/i18n).
- * - Theme: the boot script in app/layout.tsx adds `light`/`dark` to <html> before React runs.
- *   If hydration ever has to regenerate the tree, React rewrites <html class> from its own
- *   props, which never included that class — so re-apply it here.
+ * The language is no longer one of them: middleware.ts resolves it, the root layout renders the
+ * page in it and seeds the store with the same value, so the first client render already matches.
+ * What is left is carrying over a preference from before the language lived in a cookie, and
+ * putting the theme class back if hydration had to regenerate the tree — React rewrites
+ * <html class> from its own props, which never included the class the boot script added.
  */
 export function AfterHydration() {
   const locale = useLocaleStore((s) => s.locale);
 
   useEffect(() => {
-    markHydrated();
-    // Re-render translated UI now that the real locale may be shown.
-    useLocaleStore.setState((s) => ({ dictVersion: s.dictVersion + 1 }));
+    migrateLegacyLocale();
     applyTheme(useThemeStore.getState().theme);
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang = locale === 'tr' ? 'tr' : 'en';
+    document.documentElement.lang = locale;
   }, [locale]);
 
   return null;

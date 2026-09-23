@@ -6,6 +6,7 @@ import { Check } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useThemeStore, type Theme } from '@/stores/theme';
 import { useLocaleStore } from '@/stores/locale';
+import { useLocale } from '@/components/LocaleProvider';
 import { type SupportedLocale } from '@/lib/i18n';
 import { showSuccessToast } from '@/lib/toast-i18n';
 import { SettingsCard } from './SettingsCard';
@@ -63,7 +64,8 @@ function ThemePreview({ theme }: { theme: Theme }) {
 export function AppearanceTab() {
   const { t } = useTranslation();
   const { theme, setTheme } = useThemeStore();
-  const { locale, setLocale } = useLocaleStore();
+  const locale = useLocale();
+  const { setLocale } = useLocaleStore();
   const queryClient = useQueryClient();
 
   const handleThemeChange = (newTheme: Theme) => {

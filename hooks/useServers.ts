@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { showSuccessToast } from '@/lib/toast-i18n';
-import { useLocaleStore } from '@/stores/locale';
+import { useLocale } from '@/components/LocaleProvider';
 import {
   listServers,
   getServer,
@@ -156,7 +156,7 @@ export function useProviderImages(provider: ServerProvider) {
 }
 
 export function useProviderSizes(provider: ServerProvider, region?: string) {
-  const locale = useLocaleStore((s) => s.locale);
+  const locale = useLocale();
   return useQuery({
     queryKey: [...serverKeys.sizes(provider), region || 'default', locale],
     queryFn: async () => {
