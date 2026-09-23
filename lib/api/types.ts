@@ -86,6 +86,8 @@ export interface Project {
   autoscaleEnabled?: boolean;
   autoscaleMin?: number;
   autoscaleMax?: number;
+  /** Decide and record, but change nothing */
+  autoscaleObserveOnly?: boolean;
   gitProvider: string | null;
   framework: string | null;
   buildCommand: string | null;
@@ -148,6 +150,7 @@ export interface UpdateProjectInput extends Partial<Omit<CreateProjectInput, 'se
   autoscaleEnabled?: boolean;
   autoscaleMin?: number;
   autoscaleMax?: number;
+  autoscaleObserveOnly?: boolean;
   /** Deploy a ready image instead of the repository; null goes back to the repository */
   dockerImage?: string | null;
   /** Deploy the repository as a compose stack: the file's path; null builds the repository */

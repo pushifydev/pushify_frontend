@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- **See what autoscaling decided before you trust it.** Project settings gained "Only report what it would do" — the decision runs and is recorded, nothing changes — and a list of recent decisions underneath, each with the CPU reading behind it and marked when it was not applied. Watch for a few days, then decide whether the thresholds suit your traffic.
 - **Autoscaling documented.** The Monitoring & alerts page now explains what makes the count move: one container at a time, up above 70% average CPU after three minutes, down below 30% after ten, never on fewer than three readings — and why changing the bounds applies at once while the thresholds wait.
 - **Autoscaling in project settings.** A checkbox and a minimum/maximum, next to the replica count — which then shows what is running right now rather than what someone typed, and says so. Available on Pro and above.
 - **Documented what Pushify watches, and what it keeps.** A Monitoring & alerts page in `/docs`: every condition that sends an email and the exact threshold behind it (three failed checks before "not answering", 90% memory for five minutes, 90% CPU for fifteen, disk checked hourly, certificates at 14 and 3 days), why those windows exist rather than alerting on the first reading, who receives them, how many days of logs each plan keeps, and what a backup interval actually costs you.

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Check, Copy, Pause, Play, RefreshCw, Server, Trash2, Moon} from 'lucide-react';
 import {
@@ -13,7 +13,7 @@ import {
   useServers,
   useTranslation,
 } from '@/hooks';
-import { type ProjectStatus } from '@/lib/api';
+import { getScaleEvents, type ProjectStatus, type ScaleEvent } from '@/lib/api';
 import { HealthCheckSection } from './HealthCheckSection';
 import { VolumesSection } from './VolumesSection';
 import { PreviewDeploymentsSection } from './PreviewDeploymentsSection';
@@ -46,6 +46,20 @@ export function SettingsTab({
   const [autoscaleEnabled, setAutoscaleEnabled] = useState(project.autoscaleEnabled ?? false);
   const [autoscaleMin, setAutoscaleMin] = useState(String(project.autoscaleMin ?? 1));
   const [autoscaleMax, setAutoscaleMax] = useState(String(project.autoscaleMax ?? 3));
+  const [autoscaleObserveOnly, setAutoscaleObserveOnly] = useState(project.autoscaleObserveOnly ?? false);
+  // What it decided, so the thresholds can be judged against real traffic rather than trusted
+  const [scaleEvents, setScaleEvents] = useState<ScaleEvent[]>([]);
+
+  useEffect(() => {
+    if (!autoscaleEnabled) return;
+    let cancelled = false;
+    getScaleEvents(projectId).then((result) => {
+      if (!cancelled && result.data) setScaleEvents(result.data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [autoscaleEnabled, projectId]);
   const [installCommand, setInstallCommand] = useState(project.installCommand || '');
   const [buildCommand, setBuildCommand] = useState(project.buildCommand || '');
   const [outputDirectory, setOutputDirectory] = useState(project.outputDirectory || '');
@@ -87,6 +101,7 @@ export function SettingsTab({
       autoscaleEnabled,
       autoscaleMin: Math.min(10, Math.max(1, parseInt(autoscaleMin, 10) || 1)),
       autoscaleMax: Math.min(10, Math.max(1, parseInt(autoscaleMax, 10) || 1)),
+      autoscaleObserveOnly,
       installCommand: installCommand || undefined,
       buildCommand: buildCommand || undefined,
       outputDirectory: outputDirectory || undefined,
@@ -287,6 +302,53 @@ export function SettingsTab({
                   />
                 </label>
               </div>
+            )}
+            {autoscaleEnabled && (
+              <>
+                <label className="flex items-start gap-3 cursor-pointer mt-3">
+                  <input
+                    type="checkbox"
+                    checked={autoscaleObserveOnly}
+                    onChange={(e) => setAutoscaleObserveOnly(e.target.checked)}
+                    className="mt-1"
+                  />
+                  <span>
+                    <span className="text-sm font-medium block">{t('projectDetail', 'autoscaleObserve')}</span>
+                    <span className="text-xs text-[var(--text-muted)]">{t('projectDetail', 'autoscaleObserveHint')}</span>
+                  </span>
+                </label>
+
+                <div className="mt-4">
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-2">
+                    {t('projectDetail', 'scaleHistory')}
+                  </p>
+                  {scaleEvents.length === 0 ? (
+                    <p className="text-xs text-[var(--text-muted)]">{t('projectDetail', 'scaleHistoryEmpty')}</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {scaleEvents.slice(0, 8).map((event) => (
+                        <div key={event.id} className="text-xs flex items-baseline gap-2 flex-wrap">
+                          <span className="text-[var(--text-muted)]">
+                            {new Date(event.createdAt).toLocaleString()}
+                          </span>
+                          <span className="font-medium">
+                            {event.from} → {event.to}
+                          </span>
+                          <span className="text-[var(--text-secondary)]">{event.reason}</span>
+                          {!event.applied && (
+                            <span
+                              className="px-1.5 py-0.5 rounded-full"
+                              style={{ background: 'var(--hover-overlay-md)', color: 'var(--text-muted)' }}
+                            >
+                              {t('projectDetail', 'scaleNotApplied')}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
           <div>
