@@ -442,7 +442,8 @@ export const docsEn: DocsContent = {
       'Changing the minimum or maximum applies immediately, without waiting for a threshold or a cooldown: the range is an instruction, the thresholds are a guess.',
       'A new container is started from what the last deploy actually used, so it cannot differ from the ones already running. A project deployed before autoscaling existed starts scaling after its next deploy.',
       'Scaling down takes the container out of nginx and reloads before stopping it, so requests already in flight finish.',
-      'Every change is written to the activity log with the reading that caused it.',
+      'Every change is written down with the reading that caused it, and listed in project settings.',
+      'Not sure the thresholds suit your app? Turn on "Only report what it would do": the decision still runs and is recorded, but nothing changes. Watch for a few days, then decide.',
     ],
     backupsTitle: 'Backups and what an interval costs',
     backupsText:

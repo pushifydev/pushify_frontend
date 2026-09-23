@@ -442,7 +442,8 @@ export const docsTr: DocsContent = {
       'Alt ya da üst sınırı değiştirmek anında uygulanır; eşik ya da bekleme süresi beklenmez. Aralık bir talimattır, eşikler bir tahmindir.',
       'Yeni container, son deploy\'un gerçekte kullandığı ayarlarla başlatılır; böylece hâlihazırda çalışanlardan farklı olamaz. Otomatik ölçekleme eklenmeden önce deploy edilmiş bir proje, bir sonraki deploy\'undan sonra ölçeklenmeye başlar.',
       'Küçülürken container önce nginx\'ten çıkarılır ve reload edilir, sonra durdurulur; böylece işlenmekte olan istekler tamamlanır.',
-      'Her değişiklik, sebebi olan okumayla birlikte etkinlik kaydına yazılır.',
+      'Her değişiklik, sebebi olan okumayla birlikte kaydedilir ve proje ayarlarında listelenir.',
+      'Eşiklerin uygulamanıza uyup uymadığından emin değil misiniz? "Sadece ne yapacağını bildir" seçeneğini açın: karar yine verilir ve kaydedilir ama hiçbir şey değişmez. Birkaç gün izleyip karar verin.',
     ],
     backupsTitle: 'Yedekler ve aralığın bedeli',
     backupsText:
