@@ -277,7 +277,8 @@ export function FeaturesSection() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={stagger}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+            /* Nine of these: four columns leaves the last one stranded on a row of its own. */
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <MiniFeature
               icon={<Globe className="w-4 h-4" />}

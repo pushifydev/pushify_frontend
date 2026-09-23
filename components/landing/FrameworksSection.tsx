@@ -106,7 +106,7 @@ export function FrameworksSection() {
           >
             <span style={{ color: 'var(--lp-muted)' }}>$ git push</span>
             <span aria-hidden="true" style={{ color: 'var(--lp-muted)' }}>→</span>
-            <span style={{ color: '#16a34a' }}>✓ {t('landing', 'frameworkDetectedChip')}</span>
+            <span style={{ color: 'var(--status-success)' }}>✓ {t('landing', 'frameworkDetectedChip')}</span>
           </span>
           <span className="text-sm" style={{ color: 'var(--lp-muted)' }}>
             {t('landing', 'frameworksSupported')}{' '}

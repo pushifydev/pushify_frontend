@@ -205,8 +205,8 @@ export function ProductShowcaseSection() {
                           className="ml-auto text-[11px] px-2 py-0.5 rounded-full shrink-0"
                           style={
                             d.ok
-                              ? { color: '#16a34a', background: 'rgba(34,197,94,0.10)', border: '1px solid rgba(34,197,94,0.25)' }
-                              : { color: '#a16207', background: 'rgba(234,179,8,0.10)', border: '1px solid rgba(234,179,8,0.3)' }
+                              ? { color: 'var(--status-success)', background: 'rgba(34,197,94,0.10)', border: '1px solid rgba(34,197,94,0.25)' }
+                              : { color: 'var(--status-warning)', background: 'rgba(234,179,8,0.10)', border: '1px solid rgba(234,179,8,0.3)' }
                           }
                         >
                           {d.status}
@@ -246,7 +246,7 @@ export function ProductShowcaseSection() {
                     </div>
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-[11px]" style={{ color: 'var(--lp-muted)' }}>Uptime</span>
-                      <span className="text-[11px] font-semibold" style={{ color: '#16a34a', fontFamily: 'var(--font-mono)' }}>
+                      <span className="text-[11px] font-semibold" style={{ color: 'var(--status-success)', fontFamily: 'var(--font-mono)' }}>
                         ● Healthy
                       </span>
                     </div>

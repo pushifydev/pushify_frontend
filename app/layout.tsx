@@ -171,14 +171,14 @@ export default function RootLayout({
                   description:
                     'Open-source cloud deployment platform that deploys applications from a Git repository to your own VPS servers, with automatic builds, HTTPS and zero-downtime deploys.',
                   featureList: [
-                    'Push-to-deploy from GitHub with framework auto-detection (20+ frameworks)',
+                    'Push-to-deploy from GitHub with framework auto-detection (26 frameworks)',
                     'Zero-downtime deploys with instant rollbacks',
                     "Automatic SSL via Let's Encrypt",
                     'One-click managed databases (PostgreSQL, MySQL, Redis, MongoDB)',
                     'Bring your own server (BYOS) or managed Hetzner Cloud',
                     'Team collaboration with role-based access control',
                     'No-code site builder',
-                    'App marketplace with 24+ one-click apps',
+                    'App marketplace with 24 one-click apps',
                   ],
                   offers: {
                     '@type': 'AggregateOffer',

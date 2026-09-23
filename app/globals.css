@@ -20,7 +20,7 @@
   /* ─── Text ─── */
   --text-primary:   #eeeef0;
   --text-secondary: #8a8a9a;
-  --text-muted:     #52525e;
+  --text-muted:     #80808e;
 
   /* ─── Accent ─── */
   --accent-cyan:      #6366f1;
@@ -85,7 +85,13 @@ html.light {
   /* ── Text — dark, high-contrast hierarchy ── */
   --text-primary:   #09090B;   /* Zinc-950 — near-black                       */
   --text-secondary: #3F3F46;   /* Zinc-700 — strong mid-tone                  */
-  --text-muted:     #71717A;   /* Zinc-500 — visible muted                    */
+  --text-muted:     #6B6B75;   /* between Zinc-500 and 600 — 4.5:1 on cards   */
+
+  /* ─── Status (same hues, dark enough to read on a white surface) ─── */
+  --status-success: #15803d;
+  --status-warning: #854d0e;
+  --status-error:   #B91C1C;
+  --status-info:    #1D4ED8;
 
   /* ── Borders — defined, not washed out ── */
   --border-subtle:  #E4E4E7;   /* Zinc-200 — hairline separators              */

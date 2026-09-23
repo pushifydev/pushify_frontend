@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: '%s | Pushify Apps',
   },
   description:
-    'One-click self-hosting for WordPress, n8n, Supabase, Grafana, Plausible, Ghost and more — on your own server with HTTPS, backups and health checks handled.',
+    'One-click self-hosting for WordPress, n8n, Supabase, Uptime Kuma, Plausible, Ghost and more — on your own server with HTTPS, backups and health checks handled.',
   alternates: { canonical: '/apps' },
   openGraph: {
     images: OG_IMAGE,

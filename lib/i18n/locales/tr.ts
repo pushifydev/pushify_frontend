@@ -552,7 +552,7 @@ export const tr: TranslationKeys = {
     step3Desc: 'Her git push bir build tetikler, izole Docker konteynerinde çalışır ve HTTPS ile canlıya çıkar.',
     // Marketplace preview
     marketplaceEyebrow: 'Marketplace',
-    marketplaceTitle: '24+ uygulama. Tek tıkla kurulum.',
+    marketplaceTitle: '24 uygulama. Tek tıkla kurulum.',
     marketplaceSubtitle: 'Sevdiğiniz araçları kendi sunucunuzda barındırın. WordPress, Supabase, Cal.com, NextCloud ve daha fazlası — tamamen yapılandırılmış ve dakikalar içinde hazır.',
     marketplaceCTA: 'Marketplace\'i incele',
     // Site builder showcase
@@ -613,7 +613,7 @@ export const tr: TranslationKeys = {
     faq2Q: 'Vercel veya Render\'dan farkı ne?',
     faq2A: 'Vercel ve Render kapalı kaynak SaaS\'tır — uygulamalarınız onların altyapısında çalışır, kullandıkça ödersiniz. Pushify açık kaynaktır: tüm platformu kendi sunucunuzda çalıştırabilir, uygulamalarınızı kendi VPS\'inizde tutabilir ve lock-in\'den kaçınabilirsiniz. Planlar $0\'dan başlar ve öngörülebilir şekilde ölçeklenir.',
     faq3Q: 'Coolify veya CapRover\'dan farkı ne?',
-    faq3A: 'Coolify mükemmel bir açık kaynak self-host çözümüdür ancak ekip iş birliği, faturalandırma ve hosted seçeneği yoktur. Pushify her ikisini de sunar: ücretsiz olarak kendiniz çalıştırın veya tek tıkla yönetilen hizmetimizi kullanın. Ayrıca 24+ uygulamalı bir marketplace, AI asistanı ve Stripe uyumlu faturalandırmayı kutudan çıktığı gibi sunarız.',
+    faq3A: 'Coolify mükemmel bir açık kaynak self-host çözümüdür ancak ekip iş birliği, faturalandırma ve hosted seçeneği yoktur. Pushify her ikisini de sunar: ücretsiz olarak kendiniz çalıştırın veya tek tıkla yönetilen hizmetimizi kullanın. Ayrıca 24 uygulamalı bir marketplace, AI asistanı ve Stripe uyumlu faturalandırmayı kutudan çıktığı gibi sunarız.',
     faq4Q: 'Kaynak kodu gerçekten açık mı?',
     faq4A: 'Evet. Pushify\'ın frontend, backend ve CLI\'ı MIT lisansı altında ve GitHub\'da herkese açıktır. Fork\'layabilir, denetleyebilir, katkıda bulunabilir veya hiçbir kısıtlama olmadan özel bir instance çalıştırabilirsiniz.',
     faq5Q: 'Kendi sunucularımı getirebilir miyim?',
@@ -660,7 +660,7 @@ export const tr: TranslationKeys = {
     pillar3Title: 'Yönetilen',
     pillar3Detail: 'Ya da bulutumuzu kullanın. Aynı arayüz, göç yok.',
     pillar4Title: 'Marketplace',
-    pillar4Detail: '24+ uygulama tek tıkla kurulum.',
+    pillar4Detail: '24 uygulama tek tıkla kurulum.',
     marketplaceHeadlineAppsCount: '24',
     marketplaceHeadlineAppsSuffix: ' uygulama,',
     marketplaceHeadlineTagline: 'her biri tek tık.',
@@ -2437,7 +2437,7 @@ export const tr: TranslationKeys = {
     title: 'Web sitenizi dakikalar içinde yayına alın',
     badge: 'Site Studio',
     marketplaceBanner:
-      'Geliştirici araçları, izleme veya veritabanı mı lazım? Marketplace\'te Grafana, n8n ve daha fazlası tek tıkla.',
+      'Geliştirici araçları, izleme veya veritabanı mı lazım? Marketplace\'te Uptime Kuma, n8n ve daha fazlası tek tıkla.',
     marketplaceBannerCta: 'Marketplace\'e git',
     paymentRegionGlobal: 'Global',
     paymentRegionRegional: 'Bölgesel',
@@ -2849,7 +2849,7 @@ export const tr: TranslationKeys = {
     faqTitle: 'Sık sorulan sorular',
     faq1Q: 'Pushify iyi bir Heroku alternatifi mi?',
     faq1A:
-      "Git-push akışını sunucu sahipliğinden vazgeçmeden istiyorsan evet: Pushify 20+ framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişiyle yayınlar. Heroku'nun yönetilen eklenti ekosistemini kaybedersin; sabit fiyat ve root erişimi kazanırsın.",
+      "Git-push akışını sunucu sahipliğinden vazgeçmeden istiyorsan evet: Pushify 26 framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişiyle yayınlar. Heroku'nun yönetilen eklenti ekosistemini kaybedersin; sabit fiyat ve root erişimi kazanırsın.",
     faq2Q: 'Pushify, Heroku\'dan gerçekten ne kadar ucuz?',
     faq2A:
       "Veritabanlı, sürekli açık küçük bir Heroku uygulaması yaklaşık $12/ay'dan başlar (Basic dyno $7 + Essential-0 Postgres $5). Aynı iş yükü tek bir giriş seviyesi VPS'e sığar: üzerine Pushify'ı ücretsiz self-host et ya da sabit aylık fiyatlı yönetilen sunucu kullan — aynı makinede birkaç uygulamaya daha yer kalır.",
@@ -2945,7 +2945,7 @@ export const tr: TranslationKeys = {
     faqTitle: 'Sık sorulan sorular',
     faq1Q: 'Pushify iyi bir Railway alternatifi mi?',
     faq1A:
-      "Railway'in git-push akışını sevip kendi sunucularında istiyorsan, evet: Pushify 20+ framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişlerle deploy eder. Railway'in yönetilen çok bölgeli bulutunu kaybedersin; sabit fiyat ve root erişimi kazanırsın.",
+      "Railway'in git-push akışını sevip kendi sunucularında istiyorsan, evet: Pushify 26 framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişlerle deploy eder. Railway'in yönetilen çok bölgeli bulutunu kaybedersin; sabit fiyat ve root erişimi kazanırsın.",
     faq2Q: 'Fiyatlar gerçekte nasıl karşılaştırılır?',
     faq2A:
       "Railway ölçer: $5/ay Hobby'ye $5 kullanım dahildir, sonrası CPU ve bellek tükettikçe faturalanır, Pro koltuk başı $20 ekler. Pushify'da sayaç yok — ücretsiz self-host et ya da tek sabit aylık fiyatlı yönetilen sunucuda birkaç uygulama ve veritabanını aynı makineye sığdır.",
@@ -3006,7 +3006,7 @@ export const tr: TranslationKeys = {
     faqTitle: 'Sık sorulan sorular',
     faq1Q: 'Pushify iyi bir Render alternatifi mi?',
     faq1A:
-      "Render'ın sadeliğini sevip sunucu sahipliği ve sunucu başına fiyat istiyorsan, evet: Pushify 20+ framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişlerle deploy eder. Yönetilen otomatik ölçeklemeyi kaybedersin; root erişimi ve sabit bir fatura kazanırsın.",
+      "Render'ın sadeliğini sevip sunucu sahipliği ve sunucu başına fiyat istiyorsan, evet: Pushify 26 framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişlerle deploy eder. Yönetilen otomatik ölçeklemeyi kaybedersin; root erişimi ve sabit bir fatura kazanırsın.",
     faq2Q: 'Fiyatlar gerçekte nasıl karşılaştırılır?',
     faq2A:
       "Render'da veritabanlı, sürekli açık küçük bir uygulama genellikle her biri yaklaşık $7/ay'dan başlayan iki fatura kalemidir. Pushify'da aynı iş yükü tek bir giriş seviyesi VPS'e sığar — ücretsiz self-host et ya da sabit fiyatlı yönetilen sunucu kullan — aynı makinede birkaç uygulamaya daha yer kalır.",

@@ -3555,7 +3555,7 @@ export const en: TranslationKeys = {
     step3Desc: 'Every git push triggers a build, runs in an isolated Docker container, and goes live with HTTPS.',
     // Marketplace preview
     marketplaceEyebrow: 'Marketplace',
-    marketplaceTitle: '24+ apps. One-click install.',
+    marketplaceTitle: '24 apps. One-click install.',
     marketplaceSubtitle: 'Self-host the tools you love. WordPress, Supabase, Cal.com, NextCloud, and more — fully configured and ready in minutes.',
     marketplaceCTA: 'Browse marketplace',
     // Site builder showcase
@@ -3616,7 +3616,7 @@ export const en: TranslationKeys = {
     faq2Q: 'How is it different from Vercel or Render?',
     faq2A: 'Vercel and Render are closed-source SaaS — your apps run on their infrastructure, you pay per usage. Pushify is open-source: you can self-host the whole platform, run apps on your own VPS, and avoid lock-in. Plans start at $0 and scale predictably.',
     faq3Q: 'How is it different from Coolify or CapRover?',
-    faq3A: 'Coolify is excellent open-source self-host but lacks team collaboration, billing, and a hosted option. Pushify offers both: run it yourself for free, or use our managed service for one-click setup. We also include a 24+ app marketplace, AI assistant, and Stripe-compatible billing out of the box.',
+    faq3A: 'Coolify is excellent open-source self-host but lacks team collaboration, billing, and a hosted option. Pushify offers both: run it yourself for free, or use our managed service for one-click setup. We also include a 24-app marketplace, AI assistant, and Stripe-compatible billing out of the box.',
     faq4Q: 'Is the source code really open?',
     faq4A: 'Yes. Pushify\'s frontend, backend, and CLI are MIT-licensed and public on GitHub. You can fork, audit, contribute, or run a private instance with no restrictions.',
     faq5Q: 'Can I bring my own servers?',
@@ -3663,7 +3663,7 @@ export const en: TranslationKeys = {
     pillar3Title: 'Managed',
     pillar3Detail: 'Or use our cloud. Same UI, no migration.',
     pillar4Title: 'Marketplace',
-    pillar4Detail: '24+ apps installed in a click.',
+    pillar4Detail: '24 apps installed in a click.',
     marketplaceHeadlineAppsCount: '24',
     marketplaceHeadlineAppsSuffix: ' apps,',
     marketplaceHeadlineTagline: 'one click each.',
@@ -5438,7 +5438,7 @@ export const en: TranslationKeys = {
     title: 'Launch your website in minutes',
     badge: 'Site Studio',
     marketplaceBanner:
-      'Need dev tools, monitoring, or databases? The Marketplace has one-click apps like Grafana, n8n, and more.',
+      'Need dev tools, monitoring, or databases? The Marketplace has one-click apps like Uptime Kuma, n8n, and more.',
     marketplaceBannerCta: 'Browse Marketplace',
     paymentRegionGlobal: 'Global',
     paymentRegionRegional: 'Regional',
@@ -5850,7 +5850,7 @@ export const en: TranslationKeys = {
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Heroku alternative?',
     faq1A:
-      'If you want the git-push workflow without giving up server ownership, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Heroku\'s managed add-on ecosystem; you gain flat pricing and root access.',
+      'If you want the git-push workflow without giving up server ownership, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Heroku\'s managed add-on ecosystem; you gain flat pricing and root access.',
     faq2Q: 'How much cheaper is Pushify than Heroku, really?',
     faq2A:
       'A small always-on Heroku app with a database starts around $12/mo (Basic dyno $7 + Essential-0 Postgres $5). The same workload fits on one entry-level VPS: self-host Pushify on it for free, or use a managed server at a flat monthly price — with room for several more apps on the same box.',
@@ -5946,7 +5946,7 @@ export const en: TranslationKeys = {
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Railway alternative?',
     faq1A:
-      'If you like Railway’s git-push workflow but want it on servers you own, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Railway’s managed multi-region cloud; you gain flat pricing and root access.',
+      'If you like Railway’s git-push workflow but want it on servers you own, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Railway’s managed multi-region cloud; you gain flat pricing and root access.',
     faq2Q: 'How does pricing actually compare?',
     faq2A:
       'Railway is metered: $5/mo Hobby includes $5 of usage, then CPU and memory bill as you consume them, and Pro adds $20 per seat. Pushify has no metering — self-host for free, or run a managed server at one flat monthly price and fit several apps and databases on the same box.',
@@ -6007,7 +6007,7 @@ export const en: TranslationKeys = {
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Render alternative?',
     faq1A:
-      'If you like Render’s simplicity but want server ownership and per-server pricing, yes: Pushify auto-detects 20+ frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose managed autoscaling; you gain root access and a flat bill.',
+      'If you like Render’s simplicity but want server ownership and per-server pricing, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose managed autoscaling; you gain root access and a flat bill.',
     faq2Q: 'How does pricing actually compare?',
     faq2A:
       'On Render a small always-on app with a database is typically two line items starting around $7/mo each. On Pushify the same workload fits on one entry-level VPS — self-host for free, or use a flat-priced managed server — with room for several more apps on the same box.',

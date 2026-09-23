@@ -4,14 +4,15 @@ import { CodeBlock, SectionHeading } from '../components';
 import type { SectionProps } from './shared';
 
 const statusCodeColors: Record<string, string> = {
-  '200': 'text-emerald-600 dark:text-emerald-400',
-  '201': 'text-emerald-600 dark:text-emerald-400',
-  '400': 'text-amber-600 dark:text-amber-400',
-  '401': 'text-red-600 dark:text-red-400',
-  '403': 'text-red-600 dark:text-red-400',
-  '404': 'text-red-600 dark:text-red-400',
-  '429': 'text-orange-600 dark:text-orange-400',
-  '500': 'text-red-600 dark:text-red-400',
+  // The -600 shades measured 3.0–3.5:1 on the light canvas, under the 4.5:1 body-text floor.
+  '200': 'text-emerald-700 dark:text-emerald-400',
+  '201': 'text-emerald-700 dark:text-emerald-400',
+  '400': 'text-amber-700 dark:text-amber-400',
+  '401': 'text-red-700 dark:text-red-400',
+  '403': 'text-red-700 dark:text-red-400',
+  '404': 'text-red-700 dark:text-red-400',
+  '429': 'text-orange-700 dark:text-orange-400',
+  '500': 'text-red-700 dark:text-red-400',
 };
 
 export function ErrorsSection({ c, apiBase }: SectionProps) {
