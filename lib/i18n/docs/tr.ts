@@ -51,12 +51,15 @@ export const docsTr: DocsContent = {
       items: [
         { id: 'servers', label: 'Sunucular' },
         { id: 'databases', label: 'Veritabanları' },
+        { id: 'buildSources', label: 'Özel imajlar ve compose' },
+        { id: 'monitoring', label: 'İzleme ve uyarılar' },
       ],
     },
     {
       label: 'Entegrasyonlar',
       items: [
         { id: 'webhooks', label: 'Webhook ve CI/CD' },
+        { id: 'sso', label: 'Tek oturum açma' },
       ],
     },
     {
@@ -379,6 +382,223 @@ export const docsTr: DocsContent = {
     secretTitle: 'Webhook Gizli Anahtarı',
     secretText:
       'Webhook yükleri HMAC-SHA256 ile imzalanır. Webhook gizli anahtarınızı proje ayarlarından veya GET /projects/:id/webhook uç noktasından alın.',
+  },
+  monitoring: {
+    title: 'İzleme, loglar ve yedekler',
+    description:
+      'Pushify\'ın sizin adınıza neleri izlediği, e-posta gelip gelmeyeceğine karar veren eşikler ve topladıklarını ne kadar sakladığı.',
+    alertsTitle: 'Ne zaman e-posta gelir',
+    alertsText:
+      'Canlı bir deploy\'u ve adresi olan her aktif proje dakikada bir aranır — ayar gerekmez. E-posta gönderen durumlar şunlar:',
+    alerts: [
+      {
+        when: 'Uygulama cevap vermeyi bırakır',
+        detail:
+          'Üst üste üç başarısız kontrol; yani tek bir yeniden başlatma kesinti sayılmaz. Tekrar cevap verdiğinde ikinci bir e-posta gelir ve ne kadar süre erişilemediğini söyler. Tanımlı bir sağlık kontrolü yoksa herhangi bir cevap "ayakta" sayılır — / üzerindeki 404 eksik bir rotadır, çöken bir uygulama değil.',
+      },
+      {
+        when: 'Bellek 5 dakika boyunca limitin %90\'ının üstünde',
+        detail:
+          'Bu noktadan sonra çekirdek neyi öldüreceğine karar veriyordur ve sonuç genelde bir yeniden başlatma döngüsüdür. Bu, uygulama cevap vermeyi bırakmadan önce gelen uyarıdır. Bellek limiti tanımlı değilse yok sayılır, çünkü yüzde tüm sunucunun olur.',
+      },
+      {
+        when: 'CPU 15 dakika boyunca %90\'ın üstünde',
+        detail:
+          'Bellekten çok daha uzun, çünkü bir build ya da toplu iş CPU\'yu haklı olarak doldurur. Uygulama çökmüş değildir — istekler arkasında sıraya girmiştir.',
+      },
+      {
+        when: 'Bir sunucunun diski uyarı seviyesini aşar',
+        detail:
+          'Sadece deploy sırasında değil, saatlik kontrol edilir. Dolu bir disk o kutudaki bütün container\'ları birlikte düşürür, veritabanları dahil. Dolu kaldıkça günde bir hatırlatma gelir.',
+      },
+      {
+        when: 'Bir HTTPS sertifikasının süresi dolmak üzere',
+        detail: 'On dört gün önce, sonra üç gün kala bir kez daha. Yenileme bir şey engellemedikçe otomatiktir — DNS taşınmış, 80 portu kapanmış olabilir.',
+      },
+    ],
+    quietTitle: 'Neden e-posta yağmuruna tutulmazsınız',
+    quietText:
+      'Her container başlarken bir an %100 CPU\'ya çıkar, çöp toplayıcı tasarım gereği %95 bellekte çalışır. Bu yüzden bir okumanın sayılması için pencerenin tamamı boyunca çizginin üstünde kalması gerekir — ve ancak çizginin belirgin şekilde altına indiğinde temizlenir, yoksa eşikte gezinen bir değer sonsuza kadar "sorun" ve "düzeldi" gönderirdi. Çizgiyi aşan üç replika, üç e-posta değil, en kötü container\'ı söyleyen tek bir e-postadır.',
+    recipientsTitle: 'Kime gider',
+    recipientsText:
+      'Kuruluştaki, kendi bildirim ayarlarında deploy uyarılarını açık bırakmış herkese. Projenin bildirim kanalları (Slack, Discord, webhook) da ayakta/çökük olaylarını alır.',
+    logsTitle: 'Loglar ne kadar saklanır',
+    logsText:
+      'Container çıktısı, projenin çalıştırdığı her container\'dan toplanır — uygulama, replikaları, worker\'ları ve staging kopyası — ve terime, zaman aralığına ve container\'a göre aranabilir. Ne kadar kalacağı plana bağlıdır:',
+    logRetention: [
+      { plan: 'Free', kept: '3 gün' },
+      { plan: 'Hobby', kept: '7 gün' },
+      { plan: 'Pro', kept: '14 gün' },
+      { plan: 'Business', kept: '30 gün' },
+      { plan: 'Enterprise', kept: '90 gün' },
+    ],
+    backupsTitle: 'Yedekler ve aralığın bedeli',
+    backupsText:
+      'Yönetilen bir veritabanı otomatik yedeklenir. Seçtiğiniz aralık, en kötü senaryoda kaybedeceğiniz veridir: 24 saatte, diski kaybetmek bir günlük yazma demektir. En kısa aralığı planınız belirler — Free\'de günlük, Hobby\'de 12 saat, Pro\'da 6 saat, Business ve Enterprise\'da saatlik.',
+    backupNotes: [
+      'Hiç yedeklenmemiş bir veritabanı, ilk aralığın dolmasını beklemeden hemen yedeklenir.',
+      'Operatör dış depolama tanımladıysa her dump alındığı sunucunun dışına da kopyalanır — ve geri yükleme bu kopyaya düşer, yani veritabanı dosyayı hiç görmemiş bir sunucuya geri yüklenebilir.',
+      'Yedek listesi her yedek için dış kopyanın olup olmadığını gösterir.',
+      'Bir veritabanını silmek yedeklerini de siler, dış kopyalar dahil.',
+    ],
+  },
+  buildSources: {
+    title: 'Özel imajlar ve compose yığınları',
+    description:
+      'Bir proje depoyu build edebilir, hazır bir imajı çalıştırabilir ya da bütün bir compose yığınını ayağa kaldırabilir. Her birinin gerektirdiği kimlik bilgileri ve registry\'lerin gerçekten istediği izinler burada.',
+    registriesTitle: 'Özel registry\'ler',
+    registriesText:
+      'Ayarlar → Özel registry\'ler, tüm kuruluş için registry başına tek bir giriş saklar. İki şey için kullanılır: FROM satırı özel bir base imaj olan Dockerfile\'lar ve hazır imaj deploy eden projeler. Token yalnızca yazılır — bir kez gönderilir, bir daha gösterilmez, sadece değiştirilebilir.',
+    registries: [
+      {
+        name: 'GitHub Container Registry',
+        host: 'ghcr.io',
+        steps: [
+          'GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic).',
+          'read:packages izniyle bir token üretin. Çekmek için bu tek izin yeterlidir; repo ve write:packages gerekmez.',
+          'Kullanıcı adı GitHub kullanıcı adınız, parola ise token.',
+        ],
+      },
+      {
+        name: 'Docker Hub',
+        host: 'docker.io',
+        steps: [
+          'Docker Hub → Account Settings → Personal access tokens → Generate.',
+          'Read-only erişim verin.',
+          'Kullanıcı adı Docker Hub kullanıcı adınız, parola ise token — hesap parolanız değil.',
+        ],
+      },
+      {
+        name: 'GitLab Container Registry',
+        host: 'registry.gitlab.com',
+        steps: [
+          'GitLab projesi → Settings → Repository → Deploy tokens.',
+          'read_registry izniyle bir tane oluşturun.',
+          'GitLab\'in gösterdiği token kullanıcı adını ve değerini olduğu gibi kullanın.',
+        ],
+      },
+    ],
+    registryScopeTitle: 'Sadece okuma yetkisi yeterli',
+    registryScopeText:
+      'Pushify yalnızca çeker. Yazma yetkisi de olan bir token, sızması hâlinde imajlarınızın değiştirilebileceği anlamına gelir; okuma yetkisi verin, fazlasını değil.',
+    imageTitle: 'Hazır bir imajı deploy etmek',
+    imageText:
+      'Proje ayarları → Docker imajı: bir referans girin, proje depoyu build etmek yerine o imajı deploy etsin. Her deploy referansı yeniden çeker, yani etiketi taşıyıp deploy almak yeni imajı yayınlar.',
+    imageExample: 'ghcr.io/acme/api:1.4',
+    imageNotes: [
+      'İmaj kendi tanımlarını korur — CMD, ENV ve açtığı port olduğu gibi kullanılır.',
+      'Build edilen bir uygulamayla aynı muameleyi görür: blue-green geçiş, replikalar, staging, volume\'ler, alan adları ve HTTPS.',
+      'Alanın altındaki depo ayarları geçerliliğini yitirir; arayüz bunu söyler.',
+      'Özel bir imaj için o host\'a ait bir registry kimlik bilgisi gerekir — yukarıya bakın.',
+      'Bunun için bir sunucu gerekir; sunucusuz mod imaj çekemez.',
+    ],
+    composeTitle: 'Bir compose yığınını deploy etmek',
+    composeText:
+      'Proje ayarları → Docker Compose dosyası: deponuzdaki bir compose dosyasının yolunu verin, proje checkout\'unuzdan bir yığın olarak deploy edilsin. Böylece build: bağlamları ve yanındaki config dosyaları yerelde olduğu gibi çalışır. Varsayılan kapalıdır ve kendiliğinden kullanılmaz — çoğu depoda yerel geliştirme için bir compose dosyası vardır, onu deploy etmek sürpriz olurdu.',
+    composeExample: `services:
+  web:
+    build: ./web
+    ports:
+      - "8080:3000"
+    environment:
+      API: http://api:4000
+  api:
+    build: ./api`,
+    composeNotes: [
+      'Servisler yığın ağında birbirine adıyla erişir, tıpkı yereldeki gibi.',
+      'Birden fazla servis port yayınlıyorsa ayarlarda hangisinin servis edileceğini belirtin — aksi hâlde tahmin edilmez, deploy reddedilir.',
+      'Projenin ortam değişkenleri yığına verilir; depoda commit\'lenmiş bir .env varsa önce o okunur.',
+      'Pushify\'ın Worker ve Zamanlanmış görevleri tek bir container\'ı sürer, burada geçerli değildir — onları compose dosyasında servis olarak tanımlayın. Deploy log\'u bunu sessizce geçmek yerine söyler.',
+      'Yeniden deploy yığını indirip kaldırır, yani build edilen bir uygulamanın aksine kesintisiz değildir.',
+    ],
+    composePortsTitle: 'Portlara sizin yerinize karar verilir',
+    composePortsText:
+      'Yalnızca servis edilen servis yayınlanır, nginx\'in proxy\'lediği portta. Diğer servislerin ports: satırları düşürülür — veritabanı için 5432:5432 yazan bir dosya, aksi hâlde o veritabanını doğrudan internete açardı. Yığının içinde hiçbir şey değişmez.',
+  },
+  sso: {
+    title: 'Tek oturum açma (OIDC)',
+    description:
+      'Ekibinizin kendi kimlik sağlayıcınız üzerinden giriş yapmasını sağlayın. Yanlış yapılması kolay olan kısımların hepsi sağlayıcı tarafında, o yüzden burada orada ne gireceğiniz anlatılıyor.',
+    beforeTitle: 'Başlamadan önce',
+    beforeText:
+      'Kuruluşun sahibi olmanız gerekiyor. Ayarlar → Tek oturum açma ekranını açın: sağlayıcınızın kullanıcıları geri göndereceği yönlendirme adresini gösterir. Şimdi kopyalayın — her sağlayıcı önce onu ister.',
+    redirectExample: 'https://api.pushify.dev/api/v1/sso/callback',
+    redirectWarningTitle: 'Yönlendirme adresi birebir aynı olmalı',
+    redirectWarning:
+      'Harfi harfine — https dahil, sonundaki yol dahil. En sık yapılan hata budur ve girişin en sonunda, Pushify\'dan değil sağlayıcıdan gelen bir hata olarak ortaya çıkar; yani bir ayar sorunu değil de onların sorunu gibi görünür.',
+    issuerLabel: 'Pushify\'a girilecek issuer',
+    providers: [
+      {
+        name: 'Okta',
+        steps: [
+          'Okta yönetim konsolunda Applications → Create App Integration.',
+          'OIDC – OpenID Connect, ardından Web Application seçin.',
+          'Sign-in redirect URIs alanına Pushify\'daki adresi yapıştırın.',
+          'Assignments altında kimlerin kullanabileceğini seçin — yalnızca onlar giriş yapabilir.',
+          'Kaydedin, General sekmesinden Client ID ve Client secret değerlerini kopyalayın.',
+        ],
+        issuer: 'https://KURULUSUNUZ.okta.com',
+      },
+      {
+        name: 'Microsoft Entra ID (Azure AD)',
+        steps: [
+          'Azure portalında Microsoft Entra ID → App registrations → New registration.',
+          'Redirect URI için Web seçin ve Pushify\'daki adresi yapıştırın.',
+          'Kayıttan sonra Application (client) ID ve Directory (tenant) ID değerlerini not edin.',
+          'Certificates & secrets → New client secret ile bir gizli anahtar oluşturun ve Value sütununu kopyalayın (ID\'yi değil — Value yalnızca bir kez gösterilir).',
+          'Token configuration altında email isteğe bağlı talebini ekleyin; Microsoft Graph email izni için kutu çıkarsa işaretleyin.',
+        ],
+        issuer: 'https://login.microsoftonline.com/TENANT-ID/v2.0',
+      },
+      {
+        name: 'Google Workspace',
+        steps: [
+          'Google Cloud Console\'da kuruluşunuzun projesini seçip APIs & Services → Credentials bölümünü açın.',
+          'Create Credentials → OAuth client ID → Web application.',
+          'Authorised redirect URIs alanına Pushify\'daki adresi yapıştırın.',
+          'Client ID ve Client secret değerlerini kopyalayın.',
+          'OAuth consent screen\'de User type değerini Internal yapın; böylece yalnızca Workspace hesaplarınız kullanabilir.',
+        ],
+        issuer: 'https://accounts.google.com',
+      },
+    ],
+    finishTitle: 'Pushify tarafında tamamlama',
+    finishSteps: [
+      'Ayarlar → Tek oturum açma: issuer, client ID ve client secret girin.',
+      'Kuruluşunuza ait e-posta alan adlarını ekleyin — yalnızca bu alanlardaki adresler sağlayıcı üzerinden girer. gmail.com gibi genel sağlayıcılar reddedilir, çünkü herkeste olabilir.',
+      'Sağlayıcı birini ilk kez gönderdiğinde alacağı rolü seçin.',
+      'Kaydedin. Pushify kaydetmeden önce sağlayıcıya bağlanır, yani yanlış bir issuer ilk giriş yapmaya çalışan kişi tarafından değil burada fark edilir.',
+      'Çıkış yapıp giriş ekranına o alan adlarından bir adres yazın — parola alanının yerini tek bir düğme alır.',
+    ],
+    enforceTitle: 'SSO\'yu zorunlu kılmak',
+    enforceText:
+      '"Tek oturum açmayı zorunlu kıl" açıkken o alan adları için parola, GitHub ve Google girişi tamamen kapanır. Zaten amacı budur: birini kimlik sağlayıcınızda kapatmak, Pushify erişimini kesmeye yeter. İki adımlı doğrulama üstüne yine uygulanır — SSO kimin kim olduğunu söyler, istediğiniz ikinci faktörü kaldırmaz.',
+    lockoutTitle: 'Zorunlu kılmadan önce deneyin',
+    lockoutText:
+      'Parolalar hâlâ çalışırken sağlayıcı üzerinden bir kez giriş yapın. Bağlantı hatalıysa ve zorunluluğu çoktan açtıysanız sahip hesabı da dışarıda kalır; bunu düzeltmek sunucuya erişim gerektirir.',
+    troubleTitle: 'Çalışmadığında',
+    troubles: [
+      {
+        problem: 'Sağlayıcı yönlendirme adresinin eşleşmediğini söylüyor',
+        fix: 'Ayarlar → Tek oturum açma ekranından tekrar kopyalayın. Adres API adresinizden türetilir, o değişirse bu da değişir.',
+      },
+      {
+        problem: '"kimlik sağlayıcıda doğrulanmamış"',
+        fix: 'Sağlayıcı, doğrulamadığı bir adres gönderdi. Entra\'da email isteğe bağlı talebini ekleyin; Okta\'da kullanıcının doğrulanmış bir birincil e-postası olduğundan emin olun.',
+      },
+      {
+        problem: '"bu bağlantının giriş yaptırdığı bir alan adında değil"',
+        fix: 'Adres gerçek ama alan adı listenizde yok. Ekleyin ya da kişi iş adresini kullansın. Alt alan adları sayılmaz: @eu.acme.com, @acme.com değildir.',
+      },
+      {
+        problem: 'Giriş doğrulanamadı',
+        fix: 'Token imza ya da talep kontrolünden geçemedi. Genelde client secret yanlış ya da süresi dolmuştur — Entra gizli anahtarları genelde altı ayda sona erer.',
+      },
+      {
+        problem: 'Herkes dışarıda kaldı',
+        fix: 'Sunucuda kuruluşunuza ait satırı sso_connections tablosundan silin; parola girişi anında geri gelir.',
+      },
+    ],
   },
   errors: {
     title: 'Hata Yönetimi',

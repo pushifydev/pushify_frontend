@@ -42,6 +42,10 @@ export function SettingsTab({
   const [gitBranch, setGitBranch] = useState(project.gitBranch || '');
   const [stagingBranch, setStagingBranch] = useState(project.stagingBranch || '');
   const [replicas, setReplicas] = useState(String(project.replicas ?? 1));
+  // With autoscaling on, the replica count is Pushify's to set — the field becomes a range
+  const [autoscaleEnabled, setAutoscaleEnabled] = useState(project.autoscaleEnabled ?? false);
+  const [autoscaleMin, setAutoscaleMin] = useState(String(project.autoscaleMin ?? 1));
+  const [autoscaleMax, setAutoscaleMax] = useState(String(project.autoscaleMax ?? 3));
   const [installCommand, setInstallCommand] = useState(project.installCommand || '');
   const [buildCommand, setBuildCommand] = useState(project.buildCommand || '');
   const [outputDirectory, setOutputDirectory] = useState(project.outputDirectory || '');
@@ -80,6 +84,9 @@ export function SettingsTab({
       gitBranch: gitBranch || undefined,
       stagingBranch: stagingBranch.trim() || null,
       replicas: Math.min(10, Math.max(1, parseInt(replicas, 10) || 1)),
+      autoscaleEnabled,
+      autoscaleMin: Math.min(10, Math.max(1, parseInt(autoscaleMin, 10) || 1)),
+      autoscaleMax: Math.min(10, Math.max(1, parseInt(autoscaleMax, 10) || 1)),
       installCommand: installCommand || undefined,
       buildCommand: buildCommand || undefined,
       outputDirectory: outputDirectory || undefined,
@@ -238,7 +245,49 @@ export function SettingsTab({
               onChange={(e) => setReplicas(e.target.value)}
               className="input w-full"
             />
-            <p className="text-xs mt-1.5 text-[var(--text-muted)]">{t('projectDetail', 'replicasHint')}</p>
+            <p className="text-xs mt-1.5 text-[var(--text-muted)]">
+              {autoscaleEnabled ? t('projectDetail', 'replicasManagedHint') : t('projectDetail', 'replicasHint')}
+            </p>
+          </div>
+          <div>
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={autoscaleEnabled}
+                onChange={(e) => setAutoscaleEnabled(e.target.checked)}
+                className="mt-1"
+              />
+              <span>
+                <span className="text-sm font-medium block">{t('projectDetail', 'autoscale')}</span>
+                <span className="text-xs text-[var(--text-muted)]">{t('projectDetail', 'autoscaleHint')}</span>
+              </span>
+            </label>
+            {autoscaleEnabled && (
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                <label className="block">
+                  <span className="text-xs text-[var(--text-secondary)]">{t('projectDetail', 'autoscaleMin')}</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={autoscaleMin}
+                    onChange={(e) => setAutoscaleMin(e.target.value)}
+                    className="input w-full mt-1"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-xs text-[var(--text-secondary)]">{t('projectDetail', 'autoscaleMax')}</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={autoscaleMax}
+                    onChange={(e) => setAutoscaleMax(e.target.value)}
+                    className="input w-full mt-1"
+                  />
+                </label>
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">

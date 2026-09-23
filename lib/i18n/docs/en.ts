@@ -51,12 +51,15 @@ export const docsEn: DocsContent = {
       items: [
         { id: 'servers', label: 'Servers' },
         { id: 'databases', label: 'Databases' },
+        { id: 'buildSources', label: 'Private images & compose' },
+        { id: 'monitoring', label: 'Monitoring & alerts' },
       ],
     },
     {
       label: 'Integrations',
       items: [
         { id: 'webhooks', label: 'Webhooks & CI/CD' },
+        { id: 'sso', label: 'Single sign-on' },
       ],
     },
     {
@@ -379,6 +382,223 @@ export const docsEn: DocsContent = {
     secretTitle: 'Webhook Secret',
     secretText:
       'Webhook payloads are signed with HMAC-SHA256. Retrieve your webhook secret via the project settings or the GET /projects/:id/webhook endpoint.',
+  },
+  monitoring: {
+    title: 'Monitoring, logs and backups',
+    description:
+      'What Pushify watches on your behalf, the thresholds that decide whether an email arrives, and how long it keeps what it collects.',
+    alertsTitle: 'When you get an email',
+    alertsText:
+      'Every active project with a live deployment and a URL is called about once a minute — no configuration needed. These are the conditions that send mail:',
+    alerts: [
+      {
+        when: 'The app stops answering',
+        detail:
+          'Three failed checks in a row, so a single restart is not an outage. A second email arrives when it answers again, saying how long it was out. Without a configured health check any answer counts as up — a 404 on / is a missing route, not a down app.',
+      },
+      {
+        when: 'Memory above 90% of the limit for 5 minutes',
+        detail:
+          'Past this the kernel is choosing what to kill next, and the usual result is a restart loop. This is the warning that arrives before the app stops answering. Ignored where no memory limit is set, since the percentage would then be of the whole server.',
+      },
+      {
+        when: 'CPU above 90% for 15 minutes',
+        detail:
+          'Much longer than memory, because a build or a batch job legitimately saturates a CPU. The app is not down — requests are queuing behind it.',
+      },
+      {
+        when: 'A server disk crosses its warning level',
+        detail:
+          'Checked hourly, not just at deploy time. A full disk takes every container on the box down together, databases included. One reminder a day while it stays full.',
+      },
+      {
+        when: 'An HTTPS certificate is about to expire',
+        detail: 'Fourteen days before, then once more three days before. Renewal is automatic until something stops it — DNS moved, port 80 blocked.',
+      },
+    ],
+    quietTitle: 'Why you are not flooded',
+    quietText:
+      'A container is at 100% CPU every time it starts and a garbage collector runs at 95% memory by design, so a reading has to stay over the line for the whole window before it counts — and it only clears once it is well back under, or a value sitting on the threshold would alternate "problem" and "recovered" for ever. Three replicas over the line are one email naming the worst container, not three.',
+    recipientsTitle: 'Who gets them',
+    recipientsText:
+      'Everyone in the organization with deployment alerts turned on, in their own notification settings. A project\'s notification channels (Slack, Discord, webhooks) also receive the up/down events.',
+    logsTitle: 'How long logs are kept',
+    logsText:
+      "Container output is collected from every container a project runs — the app, its replicas, its workers and its staging copy — and is searchable by term, time range and container. How long it stays depends on the plan:",
+    logRetention: [
+      { plan: 'Free', kept: '3 days' },
+      { plan: 'Hobby', kept: '7 days' },
+      { plan: 'Pro', kept: '14 days' },
+      { plan: 'Business', kept: '30 days' },
+      { plan: 'Enterprise', kept: '90 days' },
+    ],
+    backupsTitle: 'Backups and what an interval costs',
+    backupsText:
+      'A managed database is backed up automatically. The interval you pick is your worst-case data loss: at 24 hours, losing the disk costs a day of writes. The plan sets the shortest interval available — a day on Free, 12 hours on Hobby, 6 on Pro, hourly on Business and Enterprise.',
+    backupNotes: [
+      'A database that has never been backed up is backed up at once rather than waiting out its first interval.',
+      'Where the operator has configured off-site storage, each dump is also copied off the server it was made on — and a restore falls back to that copy, so a database can be restored onto a server that has never seen the file.',
+      'The backup list shows whether an off-site copy exists for each backup.',
+      'Deleting a database deletes its backups, off-site copies included.',
+    ],
+  },
+  buildSources: {
+    title: 'Private images and compose stacks',
+    description:
+      'A project can build a repository, run a ready image, or bring up a whole compose stack. The credentials each one needs — and the scopes registries actually require — are here.',
+    registriesTitle: 'Private registries',
+    registriesText:
+      "Settings → Private registries stores one login per registry for the whole organization. It is used for two things: a Dockerfile whose FROM is a private base image, and projects that deploy a ready image. The token is write-only — it is sent once and never shown again, only replaced.",
+    registries: [
+      {
+        name: 'GitHub Container Registry',
+        host: 'ghcr.io',
+        steps: [
+          'GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic).',
+          'Generate a token with the read:packages scope. That one scope is enough to pull; repo and write:packages are not needed.',
+          'Username is your GitHub username; password is the token.',
+        ],
+      },
+      {
+        name: 'Docker Hub',
+        host: 'docker.io',
+        steps: [
+          'Docker Hub → Account Settings → Personal access tokens → Generate.',
+          'Give it Read-only access.',
+          'Username is your Docker Hub username; password is the token, not your account password.',
+        ],
+      },
+      {
+        name: 'GitLab Container Registry',
+        host: 'registry.gitlab.com',
+        steps: [
+          'GitLab project → Settings → Repository → Deploy tokens.',
+          'Create one with the read_registry scope.',
+          'Use the token username and token value exactly as GitLab shows them.',
+        ],
+      },
+    ],
+    registryScopeTitle: 'Read-only is enough',
+    registryScopeText:
+      'Pushify only ever pulls. A token that can also write is a token that can be used to replace your images if the credentials ever leak, so give it read access and nothing more.',
+    imageTitle: 'Deploying a ready image',
+    imageText:
+      'Project settings → Docker image: fill in a reference and the project deploys that image instead of building the repository. Every deploy pulls the reference again, so moving a tag and redeploying ships the new image.',
+    imageExample: 'ghcr.io/acme/api:1.4',
+    imageNotes: [
+      'The image keeps everything it already declares — its CMD, ENV and exposed port are used as they are.',
+      'It gets the same treatment as a built app: blue-green switch, replicas, staging, volumes, domains and HTTPS.',
+      'The repository settings below the field stop applying, and the dashboard says so.',
+      'A private image needs a registry credential for its host — see above.',
+      'This needs a server; the no-server fallback cannot pull images.',
+    ],
+    composeTitle: 'Deploying a compose stack',
+    composeText:
+      "Project settings → Docker Compose file: give the path of a compose file in your repository and the project is deployed as a stack from your checkout, so build: contexts and the config files beside it work as they do locally. It is off by default and never picked up on its own — most repositories carry a compose file meant for local development, and deploying that would be a surprise.",
+    composeExample: `services:
+  web:
+    build: ./web
+    ports:
+      - "8080:3000"
+    environment:
+      API: http://api:4000
+  api:
+    build: ./api`,
+    composeNotes: [
+      'Services reach each other by name on the stack network, exactly as they do locally.',
+      'When more than one service publishes a port, name the one to serve in the settings — otherwise the deploy is refused rather than guessing.',
+      'The project\'s environment variables are available to the stack, and a committed .env is read first.',
+      'Pushify\'s Workers and Scheduled tasks drive a single container and do not apply — declare those as services in the compose file. The deploy log says so rather than ignoring them.',
+      'A redeploy takes the stack down and brings it up, so unlike a built app it is not zero-downtime.',
+    ],
+    composePortsTitle: 'Ports are decided for you',
+    composePortsText:
+      'Only the served service is published, on the port nginx proxies. Every other service\'s ports: entry is dropped — a file mapping 5432:5432 for its database would otherwise put that database on the internet. Inside the stack nothing changes.',
+  },
+  sso: {
+    title: 'Single sign-on (OIDC)',
+    description:
+      "Let your team sign in through your own identity provider. The parts that are easy to get wrong are all on the provider's side, so this walks through what to enter there.",
+    beforeTitle: 'Before you start',
+    beforeText:
+      "You need to be the organization's owner. Open Settings → Single sign-on: it shows the redirect URI your provider must send people back to. Copy it now — every provider asks for it first.",
+    redirectExample: 'https://api.pushify.dev/api/v1/sso/callback',
+    redirectWarningTitle: 'The redirect URI has to match exactly',
+    redirectWarning:
+      "Character for character, including https and any trailing path. A mismatch is the single most common failure, and it surfaces at the very end of sign-in as an error from the provider rather than from Pushify — so it looks like their problem, not a setting.",
+    issuerLabel: 'Issuer to enter in Pushify',
+    providers: [
+      {
+        name: 'Okta',
+        steps: [
+          'In the Okta admin console, go to Applications → Create App Integration.',
+          'Choose OIDC – OpenID Connect, then Web Application.',
+          'Under Sign-in redirect URIs, paste the redirect URI from Pushify.',
+          'Under Assignments, pick who may use it — only these people will be able to sign in.',
+          'Save, then copy the Client ID and Client secret from the General tab.',
+        ],
+        issuer: 'https://YOUR-TENANT.okta.com',
+      },
+      {
+        name: 'Microsoft Entra ID (Azure AD)',
+        steps: [
+          'In the Azure portal, open Microsoft Entra ID → App registrations → New registration.',
+          'For Redirect URI choose Web and paste the one from Pushify.',
+          'After registering, note the Application (client) ID and the Directory (tenant) ID.',
+          'Go to Certificates & secrets → New client secret and copy the secret Value (not the ID — the Value is only shown once).',
+          'Under Token configuration, add the optional claim email, and tick the box to turn on the Microsoft Graph email permission if it offers.',
+        ],
+        issuer: 'https://login.microsoftonline.com/YOUR-TENANT-ID/v2.0',
+      },
+      {
+        name: 'Google Workspace',
+        steps: [
+          'In Google Cloud Console, pick the project for your organization and open APIs & Services → Credentials.',
+          'Create Credentials → OAuth client ID → Web application.',
+          'Under Authorised redirect URIs, paste the one from Pushify.',
+          'Copy the Client ID and Client secret.',
+          'On the OAuth consent screen, set User type to Internal so only your Workspace accounts can use it.',
+        ],
+        issuer: 'https://accounts.google.com',
+      },
+    ],
+    finishTitle: 'Finish in Pushify',
+    finishSteps: [
+      'Settings → Single sign-on: enter the issuer, client ID and client secret.',
+      'Add the email domains your organization owns — only addresses in these sign in through the provider. Public providers such as gmail.com are refused, because anyone can have one.',
+      'Pick the role a new member gets the first time your provider sends them.',
+      'Save. Pushify contacts the provider before storing anything, so a wrong issuer is refused here rather than by the first person who tries to sign in.',
+      'Sign out and enter an address in one of those domains on the login page — the password field is replaced with a single button.',
+    ],
+    enforceTitle: 'Requiring SSO',
+    enforceText:
+      'With "Require single sign-on" on, passwords, GitHub and Google all stop working for those domains. That is the point of it: disabling someone in your identity provider is then enough to lock them out of Pushify. Two-factor authentication still applies on top — SSO says who someone is, it does not waive a second factor you asked for.',
+    lockoutTitle: 'Test it before you require it',
+    lockoutText:
+      'Sign in through the provider once while passwords still work. If the connection is wrong and you have already turned on Require single sign-on, the owner account is locked out too — recovering that needs access to the server.',
+    troubleTitle: 'When it does not work',
+    troubles: [
+      {
+        problem: 'The provider says the redirect URI does not match',
+        fix: 'Copy it again from Settings → Single sign-on. It is derived from your API address, so it changes if that does.',
+      },
+      {
+        problem: '"is not verified with the identity provider"',
+        fix: "The provider sent an address it has not verified. In Entra, add the email optional claim; in Okta, check the user has a verified primary email.",
+      },
+      {
+        problem: '"is not in a domain this connection signs in"',
+        fix: 'The address is real but its domain is not on your list. Add it, or have the person use their work address. Sub-domains do not count: @eu.acme.com is not @acme.com.',
+      },
+      {
+        problem: 'The sign-in could not be verified',
+        fix: "The token failed signature or claim checks. Usually the client secret is wrong or expired — Entra secrets expire, often after six months.",
+      },
+      {
+        problem: 'Everyone is locked out',
+        fix: 'On the server, delete the row from sso_connections for your organization; password login works again immediately.',
+      },
+    ],
   },
   errors: {
     title: 'Error Handling',

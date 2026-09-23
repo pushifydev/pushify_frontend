@@ -7,5 +7,8 @@ export { DomainsSection } from './DomainsSection';
 export { ServersSection } from './ServersSection';
 export { DatabasesSection } from './DatabasesSection';
 export { WebhooksSection } from './WebhooksSection';
+export { SsoSection } from './SsoSection';
+export { BuildSourcesSection } from './BuildSourcesSection';
+export { MonitoringSection } from './MonitoringSection';
 export { ErrorsSection } from './ErrorsSection';
 export { VALID_SECTIONS } from './shared';

@@ -8,6 +8,9 @@ export type DocsSectionId =
   | 'servers'
   | 'databases'
   | 'webhooks'
+  | 'sso'
+  | 'buildSources'
+  | 'monitoring'
   | 'errors';
 
 export interface DocsNavGroup {
@@ -165,6 +168,61 @@ export interface DocsContent {
     githubDesc: string;
     secretTitle: string;
     secretText: string;
+  };
+  monitoring: {
+    title: string;
+    description: string;
+    alertsTitle: string;
+    alertsText: string;
+    alerts: { when: string; detail: string }[];
+    quietTitle: string;
+    quietText: string;
+    recipientsTitle: string;
+    recipientsText: string;
+    logsTitle: string;
+    logsText: string;
+    logRetention: { plan: string; kept: string }[];
+    backupsTitle: string;
+    backupsText: string;
+    backupNotes: string[];
+  };
+  buildSources: {
+    title: string;
+    description: string;
+    registriesTitle: string;
+    registriesText: string;
+    registries: { name: string; host: string; steps: string[] }[];
+    registryScopeTitle: string;
+    registryScopeText: string;
+    imageTitle: string;
+    imageText: string;
+    imageExample: string;
+    imageNotes: string[];
+    composeTitle: string;
+    composeText: string;
+    composeExample: string;
+    composeNotes: string[];
+    composePortsTitle: string;
+    composePortsText: string;
+  };
+  sso: {
+    title: string;
+    description: string;
+    beforeTitle: string;
+    beforeText: string;
+    redirectExample: string;
+    redirectWarningTitle: string;
+    redirectWarning: string;
+    issuerLabel: string;
+    providers: { name: string; steps: string[]; issuer: string }[];
+    finishTitle: string;
+    finishSteps: string[];
+    enforceTitle: string;
+    enforceText: string;
+    lockoutTitle: string;
+    lockoutText: string;
+    troubleTitle: string;
+    troubles: { problem: string; fix: string }[];
   };
   errors: {
     title: string;
