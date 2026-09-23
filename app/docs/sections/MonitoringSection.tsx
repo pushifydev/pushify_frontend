@@ -50,6 +50,16 @@ export function MonitoringSection({ c }: SectionProps) {
       </div>
 
       <div className="space-y-3">
+        <h3 className="docs-h3">{s.scalingTitle}</h3>
+        <p className="docs-p">{s.scalingText}</p>
+        <ul className="docs-ol" style={{ listStyle: 'disc' }}>
+          {s.scalingNotes.map((note, i) => (
+            <li key={i}>{note}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="space-y-3">
         <h3 className="docs-h3">{s.backupsTitle}</h3>
         <p className="docs-p">{s.backupsText}</p>
         <ul className="docs-ol" style={{ listStyle: 'disc' }}>

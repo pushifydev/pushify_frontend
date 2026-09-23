@@ -185,6 +185,9 @@ export interface DocsContent {
     backupsTitle: string;
     backupsText: string;
     backupNotes: string[];
+    scalingTitle: string;
+    scalingText: string;
+    scalingNotes: string[];
   };
   buildSources: {
     title: string;
