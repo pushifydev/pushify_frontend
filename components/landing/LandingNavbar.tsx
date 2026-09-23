@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { MarketingLink } from './MarketingLink';
 import { usePathname } from 'next/navigation';
 import { ArrowRight, Menu, X, Github, Sun, Moon, ExternalLink } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -81,11 +82,10 @@ export function LandingNavbar() {
 
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0" aria-label="Main">
             {navLinks.map((link) => (
-              <a
+              <MarketingLink
                 key={link.href}
                 href={link.href}
-                target={link.external ? '_blank' : undefined}
-                rel={link.external ? 'noopener noreferrer' : undefined}
+                external={link.external}
                 className="px-2.5 xl:px-3 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap"
                 style={{ color: 'var(--lp-body)' }}
                 onMouseEnter={(e) => {
@@ -96,7 +96,7 @@ export function LandingNavbar() {
                 }}
               >
                 {link.label}
-              </a>
+              </MarketingLink>
             ))}
           </nav>
 
@@ -197,10 +197,9 @@ export function LandingNavbar() {
           <ul className="space-y-1">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
+                <MarketingLink
                   href={link.href}
-                  target={link.external ? '_blank' : undefined}
-                  rel={link.external ? 'noopener noreferrer' : undefined}
+                  external={link.external}
                   onClick={closeMobile}
                   className="flex items-center justify-between min-h-11 px-3 rounded-lg text-[15px] font-medium transition-colors active:bg-[var(--hover-overlay-md)]"
                   style={{ color: 'var(--lp-body)' }}
@@ -209,7 +208,7 @@ export function LandingNavbar() {
                   {link.external && (
                     <ExternalLink className="w-4 h-4 shrink-0 opacity-50" aria-hidden />
                   )}
-                </a>
+                </MarketingLink>
               </li>
             ))}
           </ul>

@@ -2,6 +2,7 @@
 
 import { useTranslation } from '@/hooks';
 import { LogoMark } from '@/components/logo';
+import { MarketingLink } from './MarketingLink';
 import { Github, Mail, ArrowUpRight, Heart } from 'lucide-react';
 
 export function LandingFooter() {
@@ -111,16 +112,15 @@ export function LandingFooter() {
                   const isExternal = (link as { external?: boolean }).external;
                   return (
                     <li key={link.label}>
-                      <a
+                      <MarketingLink
                         href={link.href}
-                        target={isExternal ? '_blank' : undefined}
-                        rel={isExternal ? 'noopener noreferrer' : undefined}
+                        external={isExternal}
                         className="text-sm inline-flex items-center gap-1 py-1 transition-colors hover:underline underline-offset-4"
                         style={{ color: 'var(--lp-body)' }}
                       >
                         {link.label}
                         {isExternal && <ArrowUpRight className="w-3 h-3 opacity-50" />}
-                      </a>
+                      </MarketingLink>
                     </li>
                   );
                 })}

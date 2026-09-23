@@ -2,6 +2,7 @@
 
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 import { useTranslation } from '@/hooks';
+import Link from 'next/link';
 
 export default function TermsPage() {
   const { locale } = useTranslation();
@@ -33,7 +34,7 @@ function TermsEN() {
         <li><strong>Pro:</strong> $30/month — professional teams</li>
         <li><strong>Business:</strong> $100/month — enterprise use</li>
       </ul>
-      <p>All prices include applicable taxes. Current pricing is published at <a href="/pricing">/pricing</a>.</p>
+      <p>All prices include applicable taxes. Current pricing is published at <Link href="/pricing">/pricing</Link>.</p>
 
       <h2>4. General Provisions</h2>
       <p>
@@ -60,7 +61,7 @@ function TermsEN() {
         Per applicable Distance Sales regulations, the right of withdrawal expires once
         performance begins on digital content with the consumer&apos;s consent. That said,
         Pushify offers a <strong>14-day full refund</strong> from your first purchase if you are
-        not satisfied. See <a href="/refund">Refund Policy</a> for details.
+        not satisfied. See <Link href="/refund">Refund Policy</Link> for details.
       </p>
 
       <h2>8. Obligations of the Parties</h2>
@@ -161,7 +162,7 @@ function TermsTR() {
         <li><strong>Business:</strong> Aylık 100 USD &mdash; kurumsal kullanım</li>
       </ul>
       <p>
-        Tüm fiyatlara KDV dahildir. Güncel fiyatlar <a href="/pricing">/pricing</a> sayfasında yayınlanır.
+        Tüm fiyatlara KDV dahildir. Güncel fiyatlar <Link href="/pricing">/pricing</Link> sayfasında yayınlanır.
       </p>
 
       <h2>4. Genel Hükümler</h2>
@@ -191,7 +192,7 @@ function TermsTR() {
         andan itibaren <strong>cayma hakkı sona ermektedir</strong>. Bununla
         birlikte, Pushify olarak ilk satın almayı izleyen <strong>14 gün içinde</strong>
         memnun kalmadığınız takdirde tam iade sağlıyoruz. Detaylar için{' '}
-        <a href="/refund">İade Politikası</a> sayfasına bakınız.
+        <Link href="/refund">İade Politikası</Link> sayfasına bakınız.
       </p>
 
       <h2>8. Tarafların Yükümlülükleri</h2>

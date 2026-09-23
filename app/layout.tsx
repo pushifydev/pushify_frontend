@@ -99,7 +99,9 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
-// Runs before React hydration to prevent flash of wrong theme (FOUC)
+// Runs before React hydration to prevent flash of wrong theme (FOUC), and to put the right
+// language on <html> — the document is prerendered as English, so without this a Turkish
+// visitor's browser is told the page is English until React has hydrated.
 const themeScript = `(function(){
   function resolveTheme(pref) {
     if (pref === 'system' || !pref) {
@@ -116,6 +118,13 @@ const themeScript = `(function(){
   } catch(e) {
     document.documentElement.classList.add(resolveTheme('system'));
   }
+  try {
+    var l = localStorage.getItem('pushify-locale');
+    var lp = l ? JSON.parse(l) : null;
+    var locale = lp && lp.state ? lp.state.locale : null;
+    if (!locale) locale = (navigator.language || 'en').split('-')[0];
+    document.documentElement.lang = locale === 'tr' ? 'tr' : 'en';
+  } catch(e) {}
 })();`;
 
 export default function RootLayout({

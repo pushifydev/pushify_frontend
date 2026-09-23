@@ -10,7 +10,7 @@ import { appT } from '@/lib/i18n/app-translate';
 import { AfterHydration } from '@/components/AfterHydration';
 
 function resolveThemeMode(theme: Theme): 'light' | 'dark' {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return 'dark';
   if (theme === 'system') {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
