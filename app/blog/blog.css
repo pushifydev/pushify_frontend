@@ -1,81 +1,281 @@
-/* Blog prose — landing tokens, so it follows dark/light automatically. */
+/* Blog — the site's type (Inter 500 headings, --hp-body paragraphs, mono labels, hairlines).
+   Everything reads the --hp-* tokens, so it follows dark/light with the rest of the site. */
+
+/* ── Index ──────────────────────────────────────────────────────────────── */
+
+.blog-list {
+  border-top: 1px solid var(--hp-line);
+}
+
+.blog-list-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--hp-line);
+}
+
+@media (min-width: 768px) {
+  .blog-list-item {
+    grid-template-columns: 11rem 1fr;
+    gap: 2.5rem;
+  }
+  .blog-list-item > .blog-meta {
+    padding-top: 0.45rem;
+  }
+  /* In the narrow date column, date and reading time stack instead of wrapping mid-phrase. */
+  .blog-list-item > .blog-meta time {
+    display: block;
+  }
+  .blog-list-item > .blog-meta > span[aria-hidden] {
+    display: none;
+  }
+}
+
+.blog-meta {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--hp-muted);
+}
+
+.blog-list-title {
+  font-size: clamp(1.375rem, 2.2vw, 1.625rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--hp-ink);
+  text-wrap: balance;
+}
+
+.blog-list-title a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.blog-list-title a:hover {
+  text-decoration-color: var(--hp-line-strong);
+}
+
+.blog-list-desc {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--hp-body);
+  text-wrap: pretty;
+}
+
+.blog-read-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-ink);
+  text-underline-offset: 4px;
+}
+
+.blog-read-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Post ───────────────────────────────────────────────────────────────── */
+
+.blog-back-link {
+  margin-top: 0;
+  color: var(--hp-muted);
+}
+
+.blog-back-link:hover {
+  color: var(--hp-ink);
+}
+
+.blog-post-header {
+  margin: 2.5rem 0 3rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--hp-line);
+}
+
+.blog-post-title {
+  margin-top: 1.25rem;
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--hp-ink);
+  text-wrap: balance;
+}
+
+.blog-post-lead {
+  margin-top: 1.25rem;
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--hp-body);
+  text-wrap: pretty;
+}
+
+.blog-post-author {
+  margin-top: 1.25rem;
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-muted);
+}
+
+.blog-post-footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--hp-line);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  font-size: 0.9375rem;
+  color: var(--hp-body);
+}
+
+@media (min-width: 640px) {
+  .blog-post-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.blog-post-footer a:not(.lp-cta) {
+  color: var(--hp-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--hp-line-strong);
+  text-underline-offset: 4px;
+}
+
+.blog-post-footer a:not(.lp-cta):hover {
+  text-decoration-color: var(--hp-ink);
+}
+
+/* ── Article prose ──────────────────────────────────────────────────────── */
 
 .blog-prose {
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   line-height: 1.75;
-  color: var(--lp-body);
+  color: var(--hp-body);
 }
 
 .blog-prose h2 {
-  font-size: 1.375rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--lp-ink);
-  margin: 2.75rem 0 0.875rem;
+  font-size: clamp(1.375rem, 2.2vw, 1.625rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--hp-ink);
+  margin: 3.5rem 0 1rem;
   scroll-margin-top: 6rem;
+  text-wrap: balance;
 }
 
 .blog-prose h3 {
-  font-size: 1.0625rem;
-  font-weight: 600;
+  font-size: 1.1875rem;
+  font-weight: 500;
+  line-height: 1.35;
   letter-spacing: -0.01em;
-  color: var(--lp-ink);
-  margin: 2rem 0 0.625rem;
+  color: var(--hp-ink);
+  margin: 2.5rem 0 0.75rem;
   scroll-margin-top: 6rem;
 }
 
+.blog-prose > :first-child {
+  margin-top: 0;
+}
+
 .blog-prose p {
-  margin: 0 0 1.125rem;
+  margin: 0 0 1.25rem;
+  text-wrap: pretty;
 }
 
 .blog-prose a {
-  color: var(--lp-ink);
+  color: var(--hp-ink);
   text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: var(--lp-border);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--hp-line-strong);
   transition: text-decoration-color 0.15s ease;
 }
 
 .blog-prose a:hover {
-  text-decoration-color: var(--lp-ink);
+  text-decoration-color: var(--hp-ink);
 }
 
 .blog-prose strong {
-  color: var(--lp-ink);
-  font-weight: 600;
+  color: var(--hp-ink);
+  font-weight: 500;
 }
 
 .blog-prose code {
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.375rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--lp-border);
-  color: var(--lp-ink);
+  font-size: 0.85em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  background: var(--hp-card);
+  border: 1px solid var(--hp-line);
+  color: var(--hp-ink);
+  overflow-wrap: anywhere;
 }
 
+/* Same object as the marketing kit's CodePanel: a card with a hairline, mono at 13px. */
 .blog-prose pre {
-  margin: 1.25rem 0 1.5rem;
-  padding: 1rem 1.25rem;
-  border-radius: 0.75rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--lp-border);
+  position: relative;
+  margin: 1.75rem 0 2rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 14px;
+  background: var(--hp-card);
+  border: 1px solid var(--hp-line);
   overflow-x: auto;
+}
+
+.blog-prose pre[data-lang] {
+  padding-top: 3rem;
+}
+
+.blog-prose pre[data-lang]::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0.7rem 1.25rem;
+  border-bottom: 1px solid var(--hp-line);
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  line-height: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-muted);
 }
 
 .blog-prose pre code {
   padding: 0;
   border: 0;
+  border-radius: 0;
   background: transparent;
   font-size: 0.8125rem;
-  line-height: 1.7;
-  color: var(--lp-ink);
+  line-height: 1.75;
+  color: var(--hp-ink);
+  overflow-wrap: normal;
 }
 
 .blog-prose ul,
 .blog-prose ol {
-  margin: 0 0 1.25rem;
+  margin: 0 0 1.5rem;
   padding-left: 1.375rem;
 }
 
@@ -88,23 +288,30 @@
 }
 
 .blog-prose li {
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
 }
 
 .blog-prose li::marker {
-  color: var(--lp-muted);
+  color: var(--hp-muted);
+}
+
+.blog-prose ol li::marker {
+  font-family: var(--font-label);
+  font-size: 0.85em;
 }
 
 .blog-prose blockquote {
-  margin: 1.5rem 0;
-  padding: 0.25rem 0 0.25rem 1.125rem;
-  border-left: 2px solid var(--lp-border);
-  color: var(--lp-muted);
-  font-style: italic;
+  margin: 2rem 0;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  border-left: 1px solid var(--hp-line-strong);
+  color: var(--hp-ink);
+  font-size: 1.125rem;
+  line-height: 1.6;
 }
 
 .blog-prose hr {
-  margin: 2.5rem 0;
+  margin: 3rem 0;
   border: 0;
-  border-top: 1px solid var(--lp-border);
+  border-top: 1px solid var(--hp-line);
 }

@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import localFont from 'next/font/local';
 import { Providers } from './providers';
+import { MARKETING_PATH_PATTERN } from '@/lib/marketing-routes';
 import { Analytics } from '@/components/Analytics';
 import './globals.css';
+import './marketing.css';
 import { LOCALE_HEADER, isSupportedLocale } from '@/lib/locale-request';
 import { DEFAULT_LOCALE, type SupportedLocale } from '@/lib/i18n';
 import { ensureDictionaryOnServer } from '@/lib/i18n/server';
@@ -24,6 +26,18 @@ const jetbrainsMono = localFont({
   variable: '--font-jetbrains-mono',
   weight: '400 700',
   display: 'swap',
+});
+
+// The marketing labels (navigation, eyebrows) set in Menlo where the visitor has it — every Mac
+// and iPhone does — and Geist Mono (SIL OFL, from the `geist` package, 400 only, Latin + Latin
+// Extended-A + arrows) everywhere else. Menlo itself is Apple's and is never shipped from here.
+// Not preloaded: most visitors on Apple devices never need the file.
+const geistMono = localFont({
+  src: './fonts/GeistMono-Regular.woff2',
+  variable: '--font-geist-mono',
+  weight: '400',
+  display: 'swap',
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -108,20 +122,23 @@ export const metadata: Metadata = {
 // here: middleware.ts resolves it and this layout renders the page in it, so there is nothing
 // for a script to correct.
 const themeScript = `(function(){
-  function resolveTheme(pref) {
-    if (pref === 'system' || !pref) {
+  // Mirrors stores/theme.ts: dark unless light was chosen; 'system' follows the OS only when it was
+  // chosen under the current store version (v0 stored the old 'system' default for everyone).
+  function resolveTheme(pref, version) {
+    // The public site is dark-only for now (lib/marketing-routes.ts).
+    if (new RegExp(${JSON.stringify(MARKETING_PATH_PATTERN)}).test(location.pathname)) return 'dark';
+    if (pref === 'light') return 'light';
+    if (pref === 'system' && version >= 1) {
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-    return pref === 'light' ? 'light' : 'dark';
+    return 'dark';
   }
   try {
     var s = localStorage.getItem('pushify-theme');
     var p = s ? JSON.parse(s) : null;
-    var pref = p && p.state ? p.state.theme : 'system';
-    var resolved = resolveTheme(pref);
-    document.documentElement.classList.add(resolved);
+    document.documentElement.classList.add(resolveTheme(p && p.state ? p.state.theme : null, p && p.version ? p.version : 0));
   } catch(e) {
-    document.documentElement.classList.add(resolveTheme('system'));
+    document.documentElement.classList.add('dark');
   }
 })();`;
 
@@ -145,7 +162,7 @@ export default async function RootLayout({
   await ensureDictionaryOnServer(locale);
 
   return (
-    <html lang={locale} suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang={locale} suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable} ${geistMono.variable}`}>
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

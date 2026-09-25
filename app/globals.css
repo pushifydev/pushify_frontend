@@ -8,38 +8,39 @@
 
 :root {
   /* ─── Core Backgrounds ─── */
-  --bg-primary:   #07070a;
-  --bg-secondary: #0f0f14;
-  --bg-tertiary:  #161620;
-  --bg-elevated:  #1c1c28;
+  --bg-primary:   #030303;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary:  #121213;
+  --bg-elevated:  #18181a;
 
   /* ─── Shell ─── */
-  --bg-sidebar:       #060609;
-  --bg-header-glass:  rgba(7,7,10,0.88);
+  --bg-sidebar:       #030303;
+  --bg-header-glass:  rgba(3,3,3,0.8);
 
   /* ─── Text ─── */
-  --text-primary:   #eeeef0;
-  --text-secondary: #8a8a9a;
-  --text-muted:     #80808e;
+  --text-primary:   #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted:     #7c7c85;
 
   /* ─── Accent ─── */
-  --accent-cyan:      #6366f1;
-  --accent-cyan-dim:  #4f46e5;
-  --on-accent:        #ffffff;
+  /* The product's accent is ink, as on the site; colour is kept for status. */
+  --accent-cyan:      #f4f4f5;
+  --accent-cyan-dim:  #d4d4d8;
+  --on-accent:        #09090b;
   --accent-amber:     #fbbf24;
   --accent-amber-dim: #d97706;
   --accent-green:     #34d399;
   --accent-red:       #f87171;
-  --accent-purple:    #a78bfa;
+  --accent-purple:    #a1a1aa;
 
   /* ─── Landing typography support ─── */
   /* Near-black for glyphs on accent fills (FAQ chevron); not the page canvas */
-  --ink-deep:        #07070a;
+  --ink-deep:        #030303;
 
   /* ─── Borders (hex) ─── */
-  --border-subtle:  #1a1a24;
-  --border-default: #252530;
-  --border-strong:  #32323f;
+  --border-subtle:  #1c1c1e;
+  --border-default: #29292c;
+  --border-strong:  #3a3a3e;
 
   /* ─── Glass / transparency (light-dark aware) ─── */
   --glass-border:        rgba(255,255,255,0.05);
@@ -58,13 +59,19 @@
   --status-error:   #ef4444;
   --status-info:    #3b82f6;
 
+  /* ─── Chart series: ink first, a quieter grey second ─── */
+  --chart-1: var(--text-primary);
+  --chart-2: #71717a;
+
   /* ─── Glow ─── */
-  --glow-cyan:   0 0 24px rgba(99, 102, 241, 0.25);
+  --glow-cyan:   none;
   --glow-amber:  0 0 24px rgba(251, 191, 36, 0.25);
 
   /* ─── Typography ─── */
   --font-display:   var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono:      var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  /* Marketing labels: Menlo on Apple devices, Geist Mono elsewhere (see app/layout.tsx). */
+  --font-label:     Menlo, var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
 
   /* ─── Transitions ─── */
   --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -110,7 +117,12 @@ html.light {
   --hover-overlay-lg:    rgba(0,0,0,0.070);
 
   /* ── Glows ── */
-  --glow-cyan:  0 0 18px rgba(99, 102, 241, 0.18);
+  --glow-cyan:  none;
+  --chart-2:    #a1a1aa;
+  --accent-cyan:     #09090b;
+  --accent-cyan-dim: #27272a;
+  --accent-purple:   #52525b;
+  --on-accent:       #ffffff;
   --glow-amber: 0 0 18px rgba(245, 158, 11, 0.18);
 }
 
@@ -205,7 +217,7 @@ html.light .input {
   box-shadow: none;
 }
 html.light .input:hover  { border-color: var(--border-strong); }
-html.light .input:focus  { box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+html.light .input:focus  { box-shadow: 0 0 0 3px rgba(0,0,0,0.08); }
 
 /* ─── Light mode: scrollbar ──────────────────── */
 html.light ::-webkit-scrollbar-track  { background: var(--bg-tertiary); }
@@ -300,7 +312,7 @@ html.light .card-hover:hover {
   font-size: 13.5px;
   font-weight: 500;
   letter-spacing: -0.01em;
-  border-radius: 8px;
+  border-radius: 999px;
   transition: all var(--transition-fast);
   cursor: pointer;
   border: none;
@@ -308,20 +320,19 @@ html.light .card-hover:hover {
 }
 .btn-primary {
   background: var(--accent-cyan);
-  color: #ffffff;
-  font-weight: 600;
+  color: var(--on-accent);
+  font-weight: 500;
 }
 .btn-primary:hover {
   background: var(--accent-cyan-dim);
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
 }
 .btn-secondary {
-  background: var(--bg-tertiary);
+  background: transparent;
   color: var(--text-primary);
   border: 1px solid var(--border-default);
 }
 .btn-secondary:hover {
-  background: var(--bg-elevated);
+  background: var(--hover-overlay-lg);
   border-color: var(--border-strong);
 }
 .btn-ghost {
@@ -343,7 +354,7 @@ html.light .card-hover:hover {
   padding-right: 14px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--text-primary);
   font-family: var(--font-display);
   font-size: 14px;
@@ -353,7 +364,7 @@ html.light .card-hover:hover {
 .input:focus {
   outline: none;
   border-color: var(--accent-cyan);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px var(--hover-overlay-lg);
 }
 .input::placeholder { color: var(--text-muted); }
 
@@ -411,7 +422,8 @@ html.light .badge-info     { background: rgba(59,130,246,0.14); }
 .bar-grow { animation: bar-grow 0.9s cubic-bezier(0.4, 0, 0.2, 1) both; }
 
 /* ════════════════════════════════════════════════
-   DASHBOARD — minimal, aligned with landing
+   DASHBOARD — the site's language inside the product: black canvas,
+   hairlines, bracketed monospace labels, Inter 500 titles, pill buttons.
    Scoped via .dash-app on dashboard layout.
    ════════════════════════════════════════════════ */
 
@@ -441,7 +453,7 @@ html.light .dash-app {
   --bg-tertiary: #f4f4f5;
   --bg-elevated: #ffffff;
   --bg-sidebar: #ffffff;
-  --bg-header-glass: #ffffff;
+  --bg-header-glass: rgba(255, 255, 255, 0.82);
   --border-subtle: #e4e4e7;
   --border-default: #d4d4d8;
   --glass-border: rgba(0, 0, 0, 0.08);
@@ -454,15 +466,26 @@ html.dark .dash-app {
   --dash-accent-bg-md: rgba(255, 255, 255, 0.09);
   --dash-accent-border: rgba(255, 255, 255, 0.14);
   --dash-accent-border-strong: rgba(255, 255, 255, 0.22);
-  --accent-cyan: #fafafa;
-  --accent-cyan-dim: #d4d4d4;
-  --accent-purple: #a3a3a3;
-  --bg-primary: #09090b;
-  --bg-secondary: #111111;
-  --bg-tertiary: #1a1a1a;
-  --bg-elevated: #1f1f1f;
-  --bg-sidebar: #09090b;
-  --bg-header-glass: #09090b;
+  --accent-cyan: #f4f4f5;
+  --accent-cyan-dim: #d4d4d8;
+  --accent-purple: #a1a1aa;
+  --bg-primary: #030303;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #121213;
+  --bg-elevated: #18181a;
+  --bg-sidebar: #030303;
+  --bg-header-glass: rgba(3, 3, 3, 0.78);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-md: rgba(255, 255, 255, 0.12);
+  --glass-border-strong: rgba(255, 255, 255, 0.12);
+  --glass-border-xl: rgba(255, 255, 255, 0.16);
+  --glass-divider: rgba(255, 255, 255, 0.06);
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #7c7c85;
   --on-accent: #09090b;
 }
 
@@ -491,7 +514,7 @@ html.dark .dash-app {
 }
 
 .dash-app .btn-primary:hover {
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 1px var(--dash-accent-border), 0 6px 20px rgba(0, 0, 0, 0.18);
 }
 
 html.light .dash-app .input:focus {
@@ -510,7 +533,7 @@ html.light .dash-app .input:focus {
 .dash-app .dash-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
-  border-radius: 0.75rem;
+  border-radius: 14px;
 }
 
 /* Icon + label rows (dashboard) */
@@ -544,7 +567,7 @@ html.light .dash-app .input:focus {
 .dash-app .dash-stat-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
-  border-radius: 0.75rem;
+  border-radius: 14px;
   transition: border-color var(--transition-fast);
 }
 
@@ -556,7 +579,7 @@ html.light .dash-app .input:focus {
 .dash-app .dash-surface {
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
-  border-radius: 0.75rem;
+  border-radius: 14px;
 }
 
 /* Default inset; :where keeps Tailwind p-* / px-* overrides working */
@@ -589,27 +612,55 @@ html.light .dash-app .input:focus {
   margin-right: auto;
 }
 
+/* `[ LABEL ]`, as on the site. */
 .dash-app .dash-eyebrow {
+  font-family: var(--font-label);
   font-size: 0.6875rem;
-  font-weight: 500;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--text-muted);
+}
+.dash-app .dash-eyebrow::before {
+  content: '[\00a0';
+}
+.dash-app .dash-eyebrow::after {
+  content: '\00a0]';
 }
 
 .dash-app .dash-page-title {
-  font-size: 1.75rem;
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
   line-height: 1.15;
   color: var(--text-primary);
 }
 
-.dash-app .dash-section-label {
-  font-size: 0.6875rem;
+/* Every page title in the product speaks with one voice. Unlayered on purpose: it overrides the
+   text-xl / font-bold utilities pages were written with. The site-studio hero keeps its display size. */
+.dash-app .dash-main h1:not(.ss-display) {
+  font-size: 1.75rem;
   font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+/* Title icons were decoration; the words are the title. */
+.dash-app .dash-main h1:not(.ss-display) > svg {
+  display: none;
+}
+@media (max-width: 639px) {
+  .dash-app .dash-main h1:not(.ss-display) {
+    font-size: 1.5rem;
+  }
+}
+
+.dash-app .dash-section-label {
+  font-family: var(--font-label);
+  font-size: 0.6875rem;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   color: var(--text-muted);
 }
 
@@ -667,7 +718,7 @@ html.light .dash-app .input:focus {
 
 .dash-app .dash-stat-value {
   font-size: 1.75rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1;
   color: var(--text-primary);
@@ -675,10 +726,11 @@ html.light .dash-app .input:focus {
 }
 
 .dash-app .dash-stat-label {
+  font-family: var(--font-label);
   font-size: 0.6875rem;
-  font-weight: 500;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   color: var(--text-muted);
   margin-top: 0.375rem;
 }
@@ -720,8 +772,8 @@ html.light .dash-app .input:focus {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--text-primary);
 }
 
@@ -766,7 +818,7 @@ html.light .dash-app .input:focus {
 }
 
 .dash-app .dash-status-dot.is-success {
-  background: #16a34a;
+  background: #22c55e;
 }
 
 .dash-app .dash-status-dot.is-error {
@@ -812,7 +864,7 @@ html.dark .dash-app .dash-callout-attention {
 
 .dash-app .dash-stat-mini-value {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
   letter-spacing: -0.03em;
   color: var(--text-primary);
@@ -844,7 +896,7 @@ html.dark .dash-app .dash-callout-attention {
 /* Dashboard overview — mobile & tablet */
 @media (max-width: 639px) {
   .dash-app .dash-page-title {
-    font-size: 1.375rem;
+    font-size: 1.5rem;
   }
 
   .dash-app .dash-stat-value {
@@ -991,106 +1043,6 @@ html.dark .lp-page {
   --lp-border: rgba(255, 255, 255, 0.1);
 }
 
-.lp-page .lp-container {
-  width: 100%;
-  max-width: 72rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .lp-page .lp-container {
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
-  }
-}
-
-.lp-page .lp-section {
-  padding-top: clamp(5rem, 9vw, 7.5rem);
-  padding-bottom: clamp(5rem, 9vw, 7.5rem);
-  border-top: 1px solid var(--lp-border);
-}
-
-.lp-page .lp-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.3125rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--lp-body);
-  background: var(--lp-surface);
-  border: 1px solid var(--lp-border);
-  border-radius: 9999px;
-}
-
-.lp-page .lp-hero-title {
-  font-size: clamp(2.25rem, 5.5vw, 3.625rem);
-  font-weight: 600;
-  letter-spacing: -0.042em;
-  line-height: 1.06;
-  color: var(--lp-ink);
-}
-
-.lp-page .lp-section-title {
-  font-size: clamp(1.75rem, 3.2vw, 2.375rem);
-  font-weight: 600;
-  letter-spacing: -0.036em;
-  line-height: 1.12;
-  color: var(--lp-ink);
-}
-
-.lp-page .lp-lead {
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  color: var(--lp-body);
-  font-weight: 400;
-}
-
-.lp-page .lp-body {
-  font-size: 1rem;
-  line-height: 1.65;
-  color: var(--lp-body);
-}
-
-.lp-page .lp-card {
-  background: var(--lp-surface);
-  border: 1px solid var(--lp-border);
-  border-radius: 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-html.dark .lp-page .lp-card {
-  box-shadow: none;
-}
-
-.lp-page .lp-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.6875rem 1.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: inherit;
-  color: var(--lp-btn-fg);
-  background: var(--lp-btn);
-  text-decoration: none;
-  border: none;
-  border-radius: 0.625rem;
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
-  transition: opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.lp-page .lp-cta:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
-}
-
 /* Auth pages — same CTA as landing (ink on canvas, not accent purple) */
 .auth-shell {
   --lp-ink: var(--text-primary);
@@ -1169,46 +1121,6 @@ html.dark .auth-shell {
 .auth-shell .lp-cta-ghost:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-}
-
-.lp-page .lp-cta-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.6875rem 1.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  font-family: inherit;
-  color: var(--lp-ink);
-  background: var(--lp-surface);
-  border: 1px solid var(--lp-border);
-  text-decoration: none;
-  border-radius: 0.625rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-}
-.lp-page .lp-cta-ghost:hover {
-  transform: translateY(-1px);
-}
-
-.lp-page .lp-cta-ghost:hover {
-  background: var(--hover-overlay-md);
-  border-color: var(--lp-muted);
-}
-
-.lp-page .lp-stat-value {
-  font-size: clamp(1.75rem, 3vw, 2.25rem);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  color: var(--lp-ink);
-  font-variant-numeric: tabular-nums;
-}
-
-.lp-page .lp-stat-label {
-  font-size: 0.875rem;
-  color: var(--lp-muted);
-  margin-top: 0.25rem;
 }
 
 /* Pricing page — monochrome, Cal.com-style */
@@ -1477,22 +1389,6 @@ html.dark .lp-page .lp-preview {
 /* ── Landing motion & atmosphere (monochrome — derived from existing tokens) ── */
 
 /* Hero backdrop: faint dot grid fading out downward, adds depth to the flat canvas */
-.lp-page .lp-hero-bg {
-  position: relative;
-}
-.lp-page .lp-hero-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(color-mix(in srgb, var(--lp-ink) 7%, transparent) 1px, transparent 1px);
-  background-size: 28px 28px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, black 30%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, black 30%, transparent 75%);
-  pointer-events: none;
-}
-.lp-page .lp-hero-bg > * {
-  position: relative;
-}
 
 /* Terminal caret */
 .lp-page .lp-caret {
@@ -1575,71 +1471,93 @@ html.dark .lp-page .lp-preview {
   animation-play-state: paused;
 }
 
-/* Card micro-interaction: quiet lift on hover */
+/* Card micro-interaction: the hairline brightens, nothing moves */
 .lp-page .lp-card {
-  transition:
-    transform 200ms ease,
-    box-shadow 200ms ease,
-    border-color 200ms ease;
+  transition: border-color 0.2s ease;
 }
 .lp-page .lp-card:hover {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--lp-ink) 22%, transparent);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
-}
-html.dark .lp-page .lp-card:hover {
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  border-color: var(--hp-line-strong, color-mix(in srgb, var(--lp-ink) 22%, transparent));
 }
 
+/* Legal pages: the site's reading type — Inter 500 headings, --hp-body text, hairline rules. */
 .lp-page .legal-content {
-  color: var(--lp-muted);
+  font-size: 1rem;
+  color: var(--hp-body);
   line-height: 1.75;
 }
 
 .lp-page .legal-content h2 {
-  font-size: 1.375rem;
-  font-weight: 600;
-  color: var(--lp-ink);
-  margin-top: 2.5rem;
+  font-size: clamp(1.375rem, 2.2vw, 1.625rem);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--hp-ink);
+  margin-top: 3.5rem;
   margin-bottom: 1rem;
-  letter-spacing: -0.02em;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--hp-line);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  scroll-margin-top: 6rem;
+}
+
+.lp-page .legal-content > :first-child,
+.lp-page .legal-content h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .lp-page .legal-content h3 {
-  font-size: 1.0625rem;
-  font-weight: 600;
-  color: var(--lp-ink);
-  margin-top: 1.75rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--hp-ink);
+  margin-top: 2rem;
   margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
 }
 
 .lp-page .legal-content p {
+  margin-bottom: 1rem;
+  text-wrap: pretty;
+}
+
+.lp-page .legal-content ul,
+.lp-page .legal-content ol {
+  padding-left: 1.375rem;
   margin-bottom: 1rem;
 }
 
 .lp-page .legal-content ul {
   list-style: disc;
-  padding-left: 1.5rem;
-  margin-bottom: 1rem;
 }
 
-.lp-page .legal-content ul li {
+.lp-page .legal-content li {
   margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.lp-page .legal-content li::marker {
+  color: var(--hp-muted);
 }
 
 .lp-page .legal-content strong {
-  color: var(--lp-ink);
-  font-weight: 600;
+  color: var(--hp-ink);
+  font-weight: 500;
 }
 
 .lp-page .legal-content a {
-  color: var(--lp-ink);
+  color: var(--hp-ink);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--hp-line-strong);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+  transition: text-decoration-color 0.15s ease;
 }
 
 .lp-page .legal-content a:hover {
-  opacity: 0.8;
+  text-decoration-color: var(--hp-ink);
 }
 
 /* Dashboard — billing plans (minimal compare) */
@@ -1723,4 +1641,56 @@ html.light .product-shot-light {
 
 html.light .product-shot-dark {
   display: none;
+}
+
+/* ── Product polish shared by every dashboard page ───────────────────────── */
+
+/* Native checkboxes, radios and ranges in ink, not the browser's blue. */
+.dash-app,
+.auth-shell {
+  accent-color: var(--text-primary);
+}
+
+/* Section and card titles share one weight: medium, as on the site. */
+.dash-app .dash-main :is(h2, h3):not(.ss-display, .dash-section-label, .dash-eyebrow, .dash-stat-label) {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* "Info" is not a status to alarm anyone with: ink on a hairline, no blue. */
+.dash-app {
+  --status-info: var(--text-secondary);
+}
+.dash-app .badge-info {
+  background: transparent;
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px var(--border-default);
+}
+
+/* ── Page-change progress (components/RouteProgress.tsx) ─────────────────── */
+
+.route-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 9999;
+  height: 2px;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+.route-progress[data-leaving] {
+  opacity: 0;
+}
+.route-progress-bar {
+  height: 100%;
+  transform-origin: left;
+  background: var(--text-primary);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--text-primary) 55%, transparent),
+    0 0 4px color-mix(in srgb, var(--text-primary) 40%, transparent);
+  transition: transform 220ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-progress-bar {
+    transition: none;
+  }
 }

@@ -1,4 +1,4 @@
-/* Site Studio — Cal.com–inspired minimal landing (scoped) */
+/* Site Studio — the site's language (Inter 500 display, bracketed mono eyebrow), scoped */
 
 .site-studio {
   --ss-font: var(--font-display);
@@ -28,16 +28,24 @@ html.dark .site-studio {
 
 .site-studio .ss-display {
   font-family: var(--ss-font);
-  letter-spacing: -0.03em;
-  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-weight: 500;
   color: var(--ss-ink);
 }
 
 .site-studio .ss-eyebrow {
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-family: var(--font-label);
+  font-size: 0.6875rem;
+  font-weight: 400;
   color: var(--ss-muted);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.site-studio .ss-eyebrow::before {
+  content: '[\00a0';
+}
+.site-studio .ss-eyebrow::after {
+  content: '\00a0]';
 }
 
 .site-studio .ss-lead {
@@ -69,7 +77,7 @@ html.dark .site-studio {
   color: var(--ss-ink);
   background: var(--ss-surface);
   border: 1px solid var(--ss-line);
-  border-radius: 0.5rem;
+  border-radius: 999px;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }

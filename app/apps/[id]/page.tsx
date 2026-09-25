@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   // The Pushify sentence goes first and the catalogue blurb second: the blurb is the same text
   // the upstream project uses everywhere, so it is the half worth losing to the 160-character cut.
   const description = clampDescription(
-    `Deploy ${app.name} on your own server with Pushify — HTTPS, health checks${app.requiresDatabase ? ', a managed database with tested backups' : ''} and updates handled. ${app.description}`
+    `Deploy ${app.name} on your own server with Pushify — HTTPS, health checks${app.requiresDatabase ? ', a managed database with tested backups' : ''}. ${app.description}`
   );
   return {
     title,

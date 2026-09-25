@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: OG_IMAGE,
     title: 'Features – Deploy, Databases, Marketplace & AI | Pushify',
-    description: 'Open-source cloud deployment with zero config on your VPS.',
+    description: 'Open-source deploys to your own VPS from a git push: builds, HTTPS, databases and monitoring.',
     url: 'https://pushify.dev/features',
   },
 };

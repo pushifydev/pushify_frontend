@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
+import { MSection } from '@/components/landing/MarketingKit';
 import { useTranslation } from '@/hooks';
 import { DOCS_API_BASE_URL } from '@/lib/api/public-url';
 
@@ -48,7 +50,12 @@ const copy = {
     uptime: (s: number) => `API uptime ${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m`,
     version: (v: string) => `v${v}`,
     checked: 'Last checked',
-    note: 'Your own apps run on your servers — their uptime is tracked per project under Health checks in the dashboard.',
+    nowEyebrow: 'Right now',
+    componentsEyebrow: 'Components',
+    word: { healthy: 'Operational', degraded: 'Degraded', unhealthy: 'Down', unknown: 'Unknown' },
+    yourAppsEyebrow: 'Your apps',
+    appsTitle: 'Your apps have their own checks',
+    note: 'They run on your servers. Track each one under Health checks in the dashboard.',
     changelog: 'Recent releases',
   },
   tr: {
@@ -70,16 +77,23 @@ const copy = {
     uptime: (s: number) => `API çalışma süresi ${Math.floor(s / 3600)}s ${Math.floor((s % 3600) / 60)}dk`,
     version: (v: string) => `v${v}`,
     checked: 'Son kontrol',
-    note: 'Kendi uygulamalarınız kendi sunucularınızda çalışır — onların erişilebilirliği panelde proje bazında Sağlık kontrolleri altında izlenir.',
+    nowEyebrow: 'Şu anda',
+    componentsEyebrow: 'Bileşenler',
+    word: { healthy: 'Çalışıyor', degraded: 'Bozulma var', unhealthy: 'Çalışmıyor', unknown: 'Bilinmiyor' },
+    yourAppsEyebrow: 'Uygulamalarınız',
+    appsTitle: 'Uygulamalarınızın kendi kontrolleri var',
+    note: 'Onlar sizin sunucularınızda çalışır. Her birini panelde Sağlık kontrolleri altında izleyin.',
     changelog: 'Son sürümler',
   },
 } as const;
 
+/* Green only means up. Degraded and down borrow the dashboard's amber and red tokens so a real
+   outage is not mistaken for a neutral grey; unknown (still loading, or no data) stays muted. */
 const DOT: Record<CheckStatus, string> = {
-  healthy: '#16a34a',
-  degraded: '#d97706',
-  unhealthy: '#dc2626',
-  unknown: '#9ca3af',
+  healthy: 'var(--hp-live)',
+  degraded: 'var(--accent-amber)',
+  unhealthy: 'var(--accent-red)',
+  unknown: 'var(--hp-muted)',
 };
 
 function normalize(status: string | undefined): CheckStatus {
@@ -140,42 +154,69 @@ export default function StatusPage() {
   ];
 
   return (
-    <MarketingShell>
+    <MarketingShell noPad>
       <MarketingPageHero label={c.label} title={c.title} description={c.intro} />
 
-      <div className="lp-container max-w-2xl pb-24 space-y-8">
-        <div
-          className="rounded-2xl border px-6 py-5 flex items-center gap-4"
-          style={{ borderColor: 'var(--lp-border)', background: 'var(--bg-secondary)' }}
-          role="status"
-          aria-live="polite"
-        >
-          <span className="w-3 h-3 rounded-full shrink-0" style={{ background: DOT[overall], boxShadow: `0 0 0 4px ${DOT[overall]}22` }} />
-          <div className="min-w-0">
-            <p className="text-lg font-semibold" style={{ color: 'var(--lp-ink)' }}>{overallLabel}</p>
-            <p className="text-xs tabular-nums" style={{ color: 'var(--lp-muted)' }}>
-              {checkedAt ? `${c.checked}: ${checkedAt.toLocaleTimeString()}` : '…'}
-              {health?.version ? ` · ${c.version(health.version)}` : ''}
-            </p>
+      {/* The board is the page: overall state on top, one hairline row per component. */}
+      <section className="pb-20 md:pb-24">
+        <div className="lp-container max-w-3xl">
+          <div className="hp-code">
+            <div className="hp-code-title flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+              <span>{c.nowEyebrow}</span>
+              <span className="tabular-nums normal-case tracking-normal">
+                {checkedAt ? `${c.checked}: ${checkedAt.toLocaleTimeString()}` : '…'}
+                {health?.version ? ` · ${c.version(health.version)}` : ''}
+              </span>
+            </div>
+            <div role="status" aria-live="polite" className="px-5 sm:px-8 py-8 sm:py-10 flex items-center gap-4">
+              <span
+                className="w-3 h-3 rounded-full shrink-0"
+                style={{ background: DOT[overall], boxShadow: `0 0 0 4px color-mix(in srgb, ${DOT[overall]} 15%, transparent)` }}
+                aria-hidden="true"
+              />
+              <h2 className="hp-h2" style={{ fontSize: 'clamp(1.6rem, 4vw, 2.4rem)' }}>
+                {overallLabel}
+              </h2>
+            </div>
+            <ul aria-label={c.componentsEyebrow} className="border-t" style={{ borderColor: 'var(--hp-line)' }}>
+              {rows.map((r) => (
+                <li
+                  key={r.key}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 sm:px-8 py-4 border-b last:border-b-0"
+                  style={{ borderColor: 'var(--hp-line)' }}
+                >
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: DOT[r.status] }} aria-hidden="true" />
+                  <span className="text-[15px] flex-1 min-w-[10rem]" style={{ color: 'var(--hp-ink)' }}>
+                    {r.label}
+                  </span>
+                  {r.detail && (
+                    <span className="hp-mono text-[12px] tabular-nums" style={{ color: 'var(--hp-muted)' }}>
+                      {r.detail}
+                    </span>
+                  )}
+                  <span
+                    className="hp-mono text-[11px] uppercase tracking-[0.1em]"
+                    style={{ color: r.status === 'healthy' ? 'var(--hp-live)' : 'var(--hp-body)' }}
+                  >
+                    {c.word[r.status]}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
+      </section>
 
-        <ul className="rounded-2xl border divide-y" style={{ borderColor: 'var(--lp-border)', background: 'var(--bg-secondary)' }}>
-          {rows.map((r) => (
-            <li key={r.key} className="flex items-center gap-3 px-6 py-3.5" style={{ borderColor: 'var(--lp-border)' }}>
-              <span className="w-2 h-2 rounded-full shrink-0" style={{ background: DOT[r.status] }} />
-              <span className="text-sm flex-1" style={{ color: 'var(--lp-ink)' }}>{r.label}</span>
-              {r.detail && <span className="text-xs tabular-nums" style={{ fontFamily: 'var(--font-mono)', color: 'var(--lp-muted)' }}>{r.detail}</span>}
-            </li>
-          ))}
-        </ul>
-
-        <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>{c.note}</p>
-
-        <p className="text-sm">
-          <Link href="/changelog" className="hover:underline underline-offset-4" style={{ color: 'var(--lp-ink)' }}>{c.changelog} →</Link>
-        </p>
-      </div>
+      <MSection eyebrow={c.yourAppsEyebrow} title={c.appsTitle} lead={c.note} width="narrow">
+        <Link
+          href="/changelog"
+          className="hp-mono inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.1em] hover:underline underline-offset-4"
+          style={{ color: 'var(--hp-ink)' }}
+        >
+          {c.changelog}
+          <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+        </Link>
+      </MSection>
     </MarketingShell>
   );
 }

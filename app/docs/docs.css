@@ -1,8 +1,8 @@
-/* Docs — theme-aware (light + dark), uses .lp-page tokens */
+/* Docs — the API reference in the site's language: Inter 500 headings, --hp-body text,
+   bracketed mono labels, hairline rules and cards. Reads the --hp-* tokens (dark + light).
+   These rules are unlayered on purpose, so they win over Tailwind utilities on the same element. */
 
 .lp-page.docs-page {
-  --docs-code-bg: var(--bg-tertiary);
-  --docs-code-fg: var(--text-secondary);
   /* navbar (3.5–4rem) + docs sub-header (3rem) */
   scroll-padding-top: 6.5rem;
 }
@@ -27,40 +27,64 @@
   }
 }
 
-html.dark .lp-page.docs-page {
-  --docs-code-bg: #111111;
-  --docs-code-fg: #d4d4d4;
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+
+.docs-sidebar-title,
+.docs-nav-group-label,
+.docs-label {
+  font-family: var(--font-label);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-eyebrow);
+}
+
+.docs-sidebar-title {
+  color: var(--hp-muted);
+}
+
+.docs-nav-group-label {
+  margin-bottom: 0.5rem;
+  padding: 0 0.75rem;
+}
+
+.docs-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.625rem;
+  color: var(--hp-muted);
 }
 
 .docs-sidebar-input {
   width: 100%;
-  padding: 0.5rem 0.75rem 0.5rem 2.25rem;
-  border-radius: 0.5rem;
+  height: 2.375rem;
+  padding: 0 0.875rem 0 2.25rem;
+  border-radius: 10px;
   font-size: 0.875rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--lp-border);
-  color: var(--lp-ink);
-  transition: border-color 0.15s ease;
+  background: var(--hp-card);
+  border: 1px solid var(--hp-line-strong);
+  color: var(--hp-ink);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .docs-sidebar-input::placeholder {
-  color: var(--lp-muted);
+  color: var(--hp-muted);
 }
 
-.docs-sidebar-input:focus {
+.docs-sidebar-input:hover {
+  border-color: var(--hp-muted);
+}
+
+.lp-page.docs-page .docs-sidebar-input:focus,
+.lp-page.docs-page .docs-sidebar-input:focus-visible {
   outline: none;
-  border-color: var(--border-strong);
-}
-
-.docs-nav-group-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--lp-muted);
-  margin-bottom: 0.5rem;
-  padding: 0 0.75rem;
-  opacity: 0.85;
+  border-color: var(--hp-ink);
+  box-shadow: 0 0 0 3px var(--hp-line);
 }
 
 .docs-nav-item {
@@ -68,150 +92,224 @@ html.dark .lp-page.docs-page {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
+  padding: 0.4375rem 0.75rem;
+  border-radius: 8px;
   text-align: left;
   font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--lp-muted);
-  transition: color 0.15s ease, background 0.15s ease;
+  font-weight: 400;
+  color: var(--hp-body);
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.docs-nav-item svg {
+  color: var(--hp-muted);
 }
 
 .docs-nav-item:hover {
-  color: var(--lp-ink);
-  background: var(--hover-overlay-md);
+  color: var(--hp-ink);
+  background: var(--hp-line);
 }
 
-.docs-nav-item-active {
-  color: var(--lp-ink);
-  background: var(--hover-overlay-lg);
-  font-weight: 600;
-}
-
-.docs-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
+.docs-nav-item-active,
+.docs-nav-item-active:hover {
+  color: var(--hp-ink);
+  background: var(--hp-line);
   font-weight: 500;
-  border: 1px solid var(--lp-border);
-  background: var(--hover-overlay-md);
-  color: var(--lp-muted);
 }
+
+.docs-nav-item-active svg {
+  color: var(--hp-ink);
+}
+
+/* ── Headings and text ──────────────────────────────────────────────────── */
 
 .docs-h1 {
-  font-size: 2.25rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--lp-ink);
-  margin-bottom: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--hp-ink);
+  text-wrap: balance;
 }
 
-.docs-h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--lp-ink);
+.docs-section-heading {
+  padding-bottom: 0.5rem;
+}
+
+.docs-section-heading h1,
+.docs-section-heading h2 {
+  font-size: clamp(1.875rem, 3.2vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--hp-ink);
   margin-bottom: 1rem;
+  text-wrap: balance;
+}
+
+.docs-section-heading p {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--hp-body);
+  max-width: 42rem;
+  text-wrap: pretty;
+}
+
+/* A sub-section title sits under a hairline, like the homepage's sections. */
+.docs-h2 {
+  padding-top: 2rem;
+  border-top: 1px solid var(--hp-line);
+  margin-bottom: 1rem;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--hp-ink);
 }
 
 .docs-h3 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--lp-muted);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--hp-ink);
   margin-bottom: 0.5rem;
 }
 
 .docs-lead {
-  font-size: 1.125rem;
-  line-height: 1.65;
-  color: var(--lp-body);
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--hp-body);
   max-width: 42rem;
+  text-wrap: pretty;
 }
 
 .docs-muted {
-  font-size: 0.875rem;
-  color: var(--lp-muted);
-  line-height: 1.6;
+  font-size: 0.9375rem;
+  color: var(--hp-body);
+  line-height: 1.65;
 }
 
 .docs-muted-sm {
-  font-size: 0.75rem;
-  color: var(--lp-muted);
-  line-height: 1.5;
-}
-
-.docs-card {
-  padding: 1.25rem;
-  border-radius: 0.75rem;
-  background: var(--lp-surface);
-  border: 1px solid var(--lp-border);
-}
-
-.docs-card-sm {
-  padding: 1rem;
-  border-radius: 0.75rem;
-  background: var(--lp-surface);
-  border: 1px solid var(--lp-border);
-  transition: border-color 0.15s ease;
-}
-
-.docs-card-interactive {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  background: var(--lp-surface);
-  border: 1px solid var(--lp-border);
-  text-align: left;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.docs-card-interactive:hover {
-  border-color: var(--border-default);
-  background: var(--hover-overlay-md);
+  font-size: 0.8125rem;
+  color: var(--hp-body);
+  line-height: 1.6;
 }
 
 .docs-link {
-  color: var(--lp-ink);
+  color: var(--hp-ink);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--hp-line-strong);
+  text-underline-offset: 4px;
 }
 
 .docs-link:hover {
-  opacity: 0.8;
+  text-decoration-color: var(--hp-ink);
 }
 
 .docs-inline-code {
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
+  padding: 0.1rem 0.375rem;
+  border-radius: 6px;
   font-size: 0.75rem;
   font-family: var(--font-mono);
-  background: var(--bg-tertiary);
-  color: var(--lp-ink);
-  border: 1px solid var(--lp-border);
+  background: var(--hp-card);
+  color: var(--hp-ink);
+  border: 1px solid var(--hp-line);
+  overflow-wrap: anywhere;
+}
+
+/* ── Grids, rows and steps ──────────────────────────────────────────────── */
+
+/* Cells inside .hp-rule-grid (hairline-divided grid from the marketing kit). */
+.docs-cell {
+  padding: 1.5rem;
+}
+
+.docs-cell-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--hp-ink);
+}
+
+.docs-cell-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--hp-ink);
+  margin-bottom: 1.25rem;
+}
+
+button.docs-cell {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.lp-page.docs-page .hp-rule-grid > button.docs-cell:hover {
+  background: var(--hp-card);
+}
+
+.lp-page.docs-page .hp-rule-grid > button.docs-cell:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Two-column rows between hairlines: a code or name on the left, what it means on the right. */
+.docs-rows {
+  border-top: 1px solid var(--hp-line);
+}
+
+.docs-rows > * {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.375rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--hp-line);
+}
+
+@media (min-width: 640px) {
+  .docs-rows > * {
+    grid-template-columns: minmax(11rem, 14rem) 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+}
+
+/* Numbered steps: the mono index carries the order. */
+.docs-steps {
+  border-top: 1px solid var(--hp-line);
+}
+
+.docs-steps > li {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--hp-line);
 }
 
 .docs-step-num {
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-family: var(--font-label);
   font-size: 0.75rem;
-  font-weight: 700;
-  flex-shrink: 0;
-  background: var(--lp-ink);
-  color: var(--bg-primary);
+  line-height: 1.4rem;
+  letter-spacing: 0.1em;
+  color: var(--hp-muted);
+  font-variant-numeric: tabular-nums;
 }
 
+/* ── Tables ─────────────────────────────────────────────────────────────── */
+
 .docs-table-wrap {
-  border-radius: 0.75rem;
-  border: 1px solid var(--lp-border);
-  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--hp-line);
+  overflow-x: auto;
 }
 
 .docs-table-wrap table {
@@ -222,73 +320,103 @@ html.dark .lp-page.docs-page {
 .docs-table-wrap th {
   text-align: left;
   padding: 0.75rem 1rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--lp-muted);
-  border-bottom: 1px solid var(--lp-border);
-  background: var(--hover-overlay);
+  font-family: var(--font-label);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-muted);
+  border-bottom: 1px solid var(--hp-line);
+  background: var(--hp-card);
 }
 
 .docs-table-wrap td {
   padding: 0.75rem 1rem;
-  color: var(--lp-body);
-  border-bottom: 1px solid var(--lp-border);
+  color: var(--hp-body);
+  border-bottom: 1px solid var(--hp-line);
+  vertical-align: top;
+}
+
+.docs-table-wrap tr {
+  border-color: var(--hp-line);
 }
 
 .docs-table-wrap tr:last-child td {
   border-bottom: none;
 }
 
+/* ── Code ───────────────────────────────────────────────────────────────── */
+
+/* The same object as the marketing kit's CodePanel. */
 .docs-code-block {
   position: relative;
 }
 
 .docs-code-block pre {
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background: var(--docs-code-bg);
-  border: 1px solid var(--lp-border);
+  padding: 1rem 3rem 1rem 1.25rem;
+  border-radius: 12px;
+  background: var(--hp-card);
+  border: 1px solid var(--hp-line);
   overflow-x: auto;
 }
 
 .docs-code-block code {
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 0.8125rem;
+  line-height: 1.75;
   font-family: var(--font-mono);
-  color: var(--docs-code-fg);
+  color: var(--hp-ink);
 }
 
 .docs-code-copy {
   position: absolute;
-  top: 0.625rem;
-  right: 0.625rem;
-  padding: 0.375rem;
-  border-radius: 0.375rem;
-  border: 1px solid var(--lp-border);
-  background: var(--lp-surface);
-  color: var(--lp-muted);
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  padding: 0.4rem;
+  border-radius: 8px;
+  border: 1px solid var(--hp-line);
+  background: var(--hp-bg);
+  color: var(--hp-muted);
   opacity: 0;
-  transition: opacity 0.15s ease, color 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
-.docs-code-block:hover .docs-code-copy {
+.docs-code-block:hover .docs-code-copy,
+.docs-code-copy:focus-visible,
+.docs-code-copy[data-copied='true'] {
   opacity: 1;
 }
 
-.docs-code-copy:hover {
-  color: var(--lp-ink);
+@media (hover: none) {
+  .docs-code-copy {
+    opacity: 1;
+  }
 }
 
+.docs-code-copy:hover {
+  color: var(--hp-ink);
+  border-color: var(--hp-line-strong);
+}
+
+.docs-code-copied {
+  color: var(--hp-live);
+}
+
+/* ── Endpoints ──────────────────────────────────────────────────────────── */
+
 .docs-endpoint-card {
-  border-radius: 0.75rem;
-  border: 1px solid var(--lp-border);
-  background: var(--lp-surface);
+  border-radius: 12px;
+  border: 1px solid var(--hp-line);
+  background: var(--hp-card);
   overflow: hidden;
   transition: border-color 0.15s ease;
 }
 
 .docs-endpoint-card:hover {
-  border-color: var(--border-default);
+  border-color: var(--hp-line-strong);
 }
 
 .docs-endpoint-header {
@@ -296,15 +424,30 @@ html.dark .lp-page.docs-page {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 1rem;
+  padding: 0.875rem 1rem;
   text-align: left;
+}
+
+.lp-page.docs-page .docs-endpoint-header:focus-visible {
+  outline-offset: -3px;
+  border-radius: 12px;
+}
+
+.docs-endpoint-body {
+  padding: 1.25rem 1rem 1.25rem;
+  border-top: 1px solid var(--hp-line);
+}
+
+.docs-endpoint-body > * + * {
+  margin-top: 1.25rem;
 }
 
 .docs-endpoint-path {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--lp-ink);
+  font-size: 0.8125rem;
+  color: var(--hp-ink);
   flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -313,12 +456,12 @@ html.dark .lp-page.docs-page {
 .docs-scope-badge {
   display: none;
   padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-family: var(--font-mono);
-  background: var(--hover-overlay-lg);
-  color: var(--lp-muted);
-  border: 1px solid var(--lp-border);
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-family: var(--font-label);
+  letter-spacing: 0.05em;
+  color: var(--hp-muted);
+  border: 1px solid var(--hp-line-strong);
   flex-shrink: 0;
 }
 
@@ -328,57 +471,54 @@ html.dark .lp-page.docs-page {
   }
 }
 
-.docs-callout-info {
-  padding: 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid var(--lp-border);
-  background: var(--hover-overlay-md);
-  color: var(--lp-body);
+.docs-required {
+  margin-left: 0.25rem;
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  color: var(--hp-ink);
 }
 
-.docs-callout-warning {
-  padding: 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  background: rgba(245, 158, 11, 0.08);
-  color: var(--lp-body);
-}
+/* ── Callouts ───────────────────────────────────────────────────────────── */
 
-html.light .docs-callout-warning {
-  border-color: rgba(217, 119, 6, 0.35);
-  background: rgba(245, 158, 11, 0.1);
-}
-
+.docs-callout-info,
+.docs-callout-warning,
 .docs-callout-success {
-  padding: 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(34, 197, 94, 0.35);
-  background: rgba(34, 197, 94, 0.08);
-  color: var(--lp-body);
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--hp-line);
+  background: var(--hp-card);
+  color: var(--hp-body);
 }
 
-.docs-section-heading h1,
-.docs-section-heading h2 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--lp-ink);
-  margin-bottom: 0.75rem;
+/* A warning is marked by a stronger rule on its leading edge — no alarm colours. */
+.docs-callout-warning {
+  border-color: var(--hp-line-strong);
+  box-shadow: inset 2px 0 0 var(--hp-ink);
 }
 
-.docs-section-heading p {
-  font-size: 1rem;
-  color: var(--lp-body);
-  line-height: 1.65;
-  max-width: 42rem;
+/* Green is kept for success / healthy. */
+.docs-callout-success {
+  border-color: var(--hp-live-line);
+  background: var(--hp-live-soft);
 }
 
-/* Guide prose — the SSO section is instructions rather than an endpoint list, so it needs
-   paragraphs, numbered steps and a problem/fix list that the API cards never did. */
+.docs-callout-title {
+  margin-bottom: 0.375rem;
+  font-family: var(--font-label);
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-ink);
+}
+
+/* ── Guide prose (SSO, monitoring, build sources) ───────────────────────── */
+
 .docs-p {
   font-size: 0.9375rem;
   line-height: 1.7;
-  color: var(--lp-body);
+  color: var(--hp-body);
   max-width: 44rem;
 }
 
@@ -387,7 +527,7 @@ html.light .docs-callout-warning {
   padding-left: 1.25rem;
   font-size: 0.9375rem;
   line-height: 1.75;
-  color: var(--lp-body);
+  color: var(--hp-body);
   max-width: 44rem;
 }
 
@@ -396,26 +536,32 @@ html.light .docs-callout-warning {
   padding-left: 0.25rem;
 }
 
-.docs-dl > div {
-  padding: 0.75rem 0;
-  border-top: 1px solid var(--lp-border);
+.docs-ol > li::marker {
+  color: var(--hp-muted);
+  font-family: var(--font-label);
+  font-size: 0.85em;
 }
 
-.docs-dl > div:first-child {
-  border-top: 0;
+.docs-dl {
+  border-top: 1px solid var(--hp-line);
+  max-width: 44rem;
+}
+
+.docs-dl > div {
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--hp-line);
 }
 
 .docs-dl dt {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--lp-ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--hp-ink);
   margin-bottom: 0.25rem;
 }
 
 .docs-dl dd {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   line-height: 1.65;
-  color: var(--lp-muted);
+  color: var(--hp-body);
   margin: 0;
-  max-width: 44rem;
 }

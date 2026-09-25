@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { MarketingShell, MarketingPageHero } from '@/components/landing';
-import { ChangelogEntryList, ChangelogUnavailable, PAGE_SIZE, getChangelogEntries } from './shared';
+import { MarketingShell } from '@/components/landing';
+import { ChangelogHero, LatestReleaseBoard, OlderReleasesLink } from './copy';
+import { ChangelogEntryList, ChangelogUnavailable, PAGE_SIZE, getChangelogEntries, latestPerSource } from './shared';
 
 // Re-render at most hourly; each release lands here without a frontend redeploy.
 export const revalidate = 3600;
@@ -14,28 +14,20 @@ export default async function ChangelogPage() {
   const archivedCount = Math.max(0, entries.length - PAGE_SIZE);
 
   return (
-    <MarketingShell>
-      <MarketingPageHero
-        label="Changelog"
-        title="What's new in Pushify"
-        description="Every release across the platform, API and dashboard — features, fixes and improvements as they ship."
-      />
+    <MarketingShell noPad>
+      <ChangelogHero />
 
-      <div className="lp-container max-w-3xl mx-auto pb-24 space-y-6">
+      {entries.length > 0 && (
+        <div className="lp-container max-w-3xl pb-16 md:pb-20">
+          <LatestReleaseBoard rows={latestPerSource(entries, latest)} />
+        </div>
+      )}
+
+      <div className="lp-container max-w-5xl mx-auto pb-24 md:pb-32">
         {entries.length === 0 && <ChangelogUnavailable />}
         <ChangelogEntryList entries={latest} />
 
-        {archivedCount > 0 && (
-          <div className="text-center pt-4">
-            <Link
-              href="/changelog/archive"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border transition-colors hover:underline underline-offset-4"
-              style={{ borderColor: 'var(--lp-border)', color: 'var(--lp-ink)' }}
-            >
-              View {archivedCount} older releases →
-            </Link>
-          </div>
-        )}
+        {archivedCount > 0 && <OlderReleasesLink count={archivedCount} />}
       </div>
     </MarketingShell>
   );

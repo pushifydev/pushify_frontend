@@ -4,15 +4,20 @@ import type { BlogBlock } from '@/lib/blog';
 
 /**
  * Server-rendered prose for blog posts. Inline markdown subset:
- * **bold**, `code`, [text](url). Links to pushify.dev render as <Link>.
+ * **bold**, *italic*, `code`, [text](url). Links to pushify.dev render as <Link>.
  */
 
-const INLINE_RE = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
+// *italic* needs a word character just inside both stars and none just outside, so `a * b`
+// and `2*3*4` stay literal text.
+const INLINE_RE = /(\*\*[^*]+\*\*|(?<![\w*])\*(?=\w)[^*\n]*\w\*(?![\w*])|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
 
 function renderInline(text: string): ReactNode[] {
   return text.split(INLINE_RE).map((part, idx) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return <strong key={idx}>{part.slice(2, -2)}</strong>;
+    }
+    if (part.length > 2 && part.startsWith('*') && part.endsWith('*')) {
+      return <em key={idx}>{part.slice(1, -1)}</em>;
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return <code key={idx}>{part.slice(1, -1)}</code>;
@@ -37,7 +42,7 @@ function renderInline(text: string): ReactNode[] {
 
 export function BlogProse({ blocks }: { blocks: BlogBlock[] }) {
   return (
-    <div className="blog-prose">
+    <div className="blog-prose" lang="en">
       {blocks.map((block, idx) => {
         switch (block.type) {
           case 'h2':

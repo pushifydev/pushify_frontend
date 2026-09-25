@@ -50,18 +50,9 @@ const getActionIcon = (action: string) => {
   return <Activity className="w-3.5 h-3.5" />;
 };
 
-const getActionAccent = (action: string): string => {
-  if (action.includes('created') || action.includes('added') || action.includes('enabled') || action.includes('succeeded') || action.includes('verified')) {
-    return STATUS_COLORS.success;
-  }
-  if (action.includes('deleted') || action.includes('removed') || action.includes('revoked') || action.includes('failed') || action.includes('disabled')) {
-    return STATUS_COLORS.error;
-  }
-  if (action.includes('updated') || action.includes('changed') || action.includes('redeployed') || action.includes('rolledback') || action.includes('cancelled')) {
-    return STATUS_COLORS.warning;
-  }
-  return STATUS_COLORS.neutral;
-};
+// Colour marks what went wrong; everything else in the log is ordinary work and stays grey.
+const getActionAccent = (action: string): string =>
+  action.includes('failed') ? STATUS_COLORS.error : STATUS_COLORS.cyan;
 
 export default function ActivityPage() {
   const { t } = useTranslation();
@@ -265,7 +256,7 @@ export default function ActivityPage() {
                       style={{ color: 'var(--text-muted)' }}
                       title={formatShortDate(log.createdAt)}
                     >
-                      {formatTimeAgo(log.createdAt)}
+                      {formatTimeAgo(log.createdAt, t)}
                     </p>
                     <span
                       className="text-xs px-1.5 py-0.5 rounded"

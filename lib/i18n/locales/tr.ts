@@ -33,9 +33,9 @@ export const tr: TranslationKeys = {
   },
   auth: {
     welcomeBack: 'Tekrar hoş geldiniz',
-    signInToContinue: 'Dağıtıma devam etmek için giriş yapın',
+    signInToContinue: 'Çalışma alanınıza giriş yapın.',
     createAccount: 'Hesap oluştur',
-    startDeploying: 'Saniyeler içinde dağıtıma başlayın',
+    startDeploying: 'Ücretsiz başlayın ve ilk deponuzu bağlayın.',
     email: 'E-posta',
     password: 'Şifre',
     name: 'İsim',
@@ -280,16 +280,17 @@ export const tr: TranslationKeys = {
     daysAgo: 'g önce',
   },
   branding: {
-    deployAt: 'Düşüncenin',
-    speedOfThought: 'hızında dağıtın',
-    description: 'Kodunuzu gönderin. Gerisini biz hallederiz. Altyapı, ölçekleme ve dağıtım — hepsi otomatik.',
-    zeroConfig: 'Sıfır yapılandırma ile dağıtım',
+    eyebrow: 'Açık kaynak PaaS',
+    deployAt: 'Uygulamalarınız,',
+    speedOfThought: 'kendi sunucularınızda.',
+    description: 'Bir depo bağlayın; Pushify derler, HTTPS ile yayınlar ve ayakta tutar — kendi getirdiğiniz VPS’te ya da panelden açtığınız bir Hetzner sunucusunda.',
+    zeroConfig: 'Framework depodan otomatik algılanır',
     zeroConfigDesc: 'Kodu gönderin, anında dağıtın. Framework algılama otomatiktir.',
-    autoHttps: 'Otomatik HTTPS & domainler',
+    autoHttps: 'HTTPS sertifikaları sizin yerinize alınır ve yenilenir',
     autoHttpsDesc: 'Ücretsiz SSL, özel domainler ve kurumsal güvenlik.',
-    realTimeLogs: 'Gerçek zamanlı loglar & metrikler',
+    realTimeLogs: 'Canlı loglar, metrikler ve uyarılar',
     realTimeLogsDesc: 'Canlı loglar, metrikler ve performans izleme.',
-    teamCollab: 'Dahili ekip işbirliği',
+    teamCollab: 'Tüm ekibiniz için roller ve erişim',
     teamCollabDesc: 'Ayrıntılı rol tabanlı erişim ile takım çalışma alanları.',
     documentation: 'Dökümanlar',
     github: 'GitHub',
@@ -312,10 +313,10 @@ export const tr: TranslationKeys = {
     sites: 'Siteler',
     exploreMore: 'Daha fazlasını keşfet',
     // Hero
-    openSourcePlatform: 'Açık Kaynak Bulut Platformu',
+    openSourcePlatform: 'Açık kaynak bulut platformu',
     heroTitleLead: 'Kendi sunucularınıza',
-    heroTitleEm: 'saniyeler içinde dağıtın',
-    getStartedFree: 'Ücretsiz Başlayın',
+    heroTitleEm: 'operasyon yükü olmadan dağıtın',
+    getStartedFree: 'Ücretsiz başlayın',
     openDashboard: 'Panele git',
     viewOnGithub: 'GitHub\'da Görüntüle',
     edgeLocations: 'Her VPS · Her bölge',
@@ -323,7 +324,7 @@ export const tr: TranslationKeys = {
     configRequired: 'Yapılandırma Gerekli',
     heroLead:
       'Vendor lock-in olmadan Vercel kalitesinde geliştirici deneyimi isteyen ekipler için açık kaynak PaaS. Bir repo bağlayın, bir sunucu seçin (sizin veya bizim), HTTPS, build ve sıfır kesinti ile saniyeler içinde üretime alın.',
-    heroStarGithub: "★ GitHub'da yıldız ver",
+    heroStarGithub: "GitHub'da yıldız ver",
     heroStatMitLicensed: 'MIT lisanslı',
     heroStatDeployFast: 'Git push → canlı',
     heroStatNoVendorLockIn: 'Vendor kilidi yok',
@@ -343,9 +344,9 @@ export const tr: TranslationKeys = {
     frameworkDetectedChip: 'Framework otomatik algılandı — sıfır yapılandırma',
     // Features page hero
     platform: 'Platform',
-    everythingYouNeedTo: 'Güvenle yayınlamak için',
-    shipWithConfidence: 'ihtiyacınız olan her şey',
-    featuresPageDescription: 'Git push\'tan üretime saniyeler içinde. Pushify altyapı, SSL, izleme ve ölçeklemeyi halleder — siz geliştirmeye odaklanın.',
+    everythingYouNeedTo: 'git push ile çalışan uygulama',
+    shipWithConfidence: 'arasındaki her şey',
+    featuresPageDescription: 'Git push\'tan yayına. Sunucuları, sertifikaları, veritabanlarını, izlemeyi ve ölçeklemeyi Pushify üstlenir — siz ürünü yazmaya devam edin.',
     // Features hero blocks
     deployLabel: 'Deploy',
     pushToDeployTitle: 'Push ile deploy edin. Gerçekten.',
@@ -365,7 +366,7 @@ export const tr: TranslationKeys = {
     siteBuilderDesc: 'Kod yazmadan tanıtım siteleri ve landing sayfaları yayınlayın. Çok sayfalı yönetim, hazır tasarım şablonları ve doğrudan kendi sunucunuza tek tıkla yayın sunan görsel sürükle-bırak editör — domain isteğe bağlı.',
     // Mini features grid
     andEverythingElse: 'Ve dahası',
-    everyFeatureBuiltIn: 'Modern bir dağıtım platformunun ihtiyaç duyduğu her özellik, ilk günden hazır.',
+    everyFeatureBuiltIn: 'Bir uygulamayı ayakta tutmak için gereken geri kalan her şey — ihtiyaç duyan her planda dahil.',
     customDomainsAndSsl: 'Özel Domain & SSL',
     customDomainsAndSslDesc: 'Otomatik Let\'s Encrypt sertifikaları ile domainlerinizi ekleyin. Sıfır yapılandırma gerekli.',
     teamCollaboration: 'Takım İşbirliği',
@@ -400,7 +401,7 @@ export const tr: TranslationKeys = {
       'İki net fatura: aylık platform aboneliği (dağıtım, API, ekip limitleri) ve yönetilen Hetzner sunucuları için ön ödemeli altyapı cüzdanı (çalıştığı sürece saatlik).',
     monthly: 'Aylık',
     yearly: 'Yıllık',
-    mostPopular: 'En Popüler',
+    mostPopular: 'Önerilen',
     forever: 'sonsuza kadar',
     month: 'ay',
     freeForever: 'Sonsuza kadar ücretsiz',
@@ -459,11 +460,11 @@ export const tr: TranslationKeys = {
     planBusinessDesc: 'Kurumsal düzeyde özellik ihtiyacı olan takımlar için',
     planEnterpriseDesc: 'Büyük organizasyonlar için sınırsız kaynaklar',
     // Plan button texts
-    planFreeButton: 'Ücretsiz Başla',
-    planHobbyButton: 'Hobby Başlat',
-    planProButton: 'Pro Denemeyi Başlat',
-    planBusinessButton: 'Başlayın',
-    planEnterpriseButton: 'Satışla İletişime Geç',
+    planFreeButton: 'Ücretsiz başla',
+    planHobbyButton: 'Hobby’yi seç',
+    planProButton: 'Pro’yu seç',
+    planBusinessButton: 'Business’ı seç',
+    planEnterpriseButton: 'Bize yazın',
     // Plan features
     planBuildMinutes: 'build dakikası',
     planProjects: 'proje',
@@ -527,6 +528,47 @@ export const tr: TranslationKeys = {
     forDevelopers: 'ile yapıldı',
   },
   homepage: {
+    homeHeroLead: 'Bir depo bağlayın, sunucunuzu seçin — sizinki ya da bizimki — HTTPS ve kesintisiz deploy ile yayına alın.',
+    homeFeaturesEyebrow: 'Temel özellikler',
+    homeFeaturesTitle: 'Barındırılan bir platformun rahatlığı. Sunucular sizin.',
+    homeFeaturesLead: 'Derlemeyi, proxy\'yi, sertifikaları ve geri almayı Pushify yapar. Sunucular, veri ve fatura sizde kalır.',
+    homeF1Title: 'Push ile deploy',
+    homeF1Body: 'Her push yeni bir imaj derler. Trafik, yeni konteyner sağlık kontrolünü geçtikten sonra taşınır.',
+    homeF2Title: 'Sizin sunucunuz ya da bizimki',
+    homeF2Body: 'Herhangi bir VPS\'i SSH ile bağlayın ya da yönetilen bir sunucuda çalışın. Aynı panel, aynı deploy.',
+    homeF3Title: 'Yedekli veritabanları',
+    homeF3Body: 'PostgreSQL, MySQL, MongoDB ve Redis birkaç tıkla; sunucunun dışında saklanabilen zamanlanmış yedeklerle.',
+    homeF4Title: 'Açık kaynak',
+    homeF4Body: 'API\'den panele MIT lisanslı. Kodu okuyun, platformun tamamını kendiniz barındırın, istediğiniz zaman ayrılın.',
+    homeDeployEyebrow: 'Yayında',
+    homeDeployTitle: 'git push\'tan yayına — ve sonrası.',
+    homeDeployLead: 'Deploy, önizleme, geri alma, ölçekleme, yedek ve uyarılar: Pushify\'ın sizin için yaptığı işler, satır satır.',
+    homeCostEyebrow: 'Şeffaf fiyat',
+    homeCostTitle: 'Faturanız, yan yana.',
+    homeCostLead: 'Yayınlanmış liste fiyatlarından kaba bir aylık tahmin. Kaydırıcıları kendi kurulumunuza göre ayarlayın.',
+    homeCostProjects: 'Proje',
+    homeCostSeats: 'Ekip üyesi',
+    homeCostServer: 'Sunucunuz',
+    homeCostServerHint: 'VPS sağlayıcınıza ödediğiniz',
+    homeCostCpu: 'Proje başına vCPU',
+    homeCostRam: 'Proje başına GB RAM',
+    homeCostPerMonth: '/ay',
+    homeCostEstimated: 'Tahmini aylık',
+    homeCostSources: 'Kaynaklar',
+    homeDiffEyebrow: 'Fark',
+    homeDiffTitle: 'Barındırılan platform ve Pushify',
+    homeDiffLead: 'Sunucular sizin olunca ne değişir?',
+    homeDiffHosted: 'Barındırılan platform',
+    homeDiffHosted1: 'Ekiple birlikte büyüyen koltuk başı ücret',
+    homeDiffHosted2: 'Bant genişliği ve kullanım ayrıca faturalanır',
+    homeDiffHosted3: 'Uygulamanız onların altyapısında çalışır',
+    homeDiffHosted4: 'Kapalı kaynak — kendiniz çalıştıramazsınız',
+    homeDiffPushify1: 'Sabit plan, üye limiti içinde koltuk ücreti yok',
+    homeDiffPushify2: 'GB başına ölçüm yok',
+    homeDiffPushify3: 'Kendi sunucunuzda ya da yönetilen bir sunucuda çalışır',
+    homeDiffPushify4: 'Açık kaynak — isterseniz kendiniz barındırın',
+    homeCtaTitle: 'Deploy etmeye hazır mısınız?',
+    homeCtaLead: 'Ücretsiz başlayın ve ilk deponuzu bağlayın.',
     // Stats
     stats: 'Dünya genelinde geliştiriciler tarafından tercih ediliyor',
     statsTrusted: 'Açık kaynak',
@@ -675,6 +717,7 @@ export const tr: TranslationKeys = {
     siteBuilderShotAlt: 'Pushify Site Studio ekranı: kullanım amacına ve platforma göre filtrelenebilen şablon kataloğu',
     siteBuilderShotCaption: 'Pushify içindeki Site Studio şablon kataloğu.',
     fullPlanComparisonTitle: 'Tüm planların karşılaştırması',
+    fullPlanComparisonLead: 'Tüm limitler yan yana. Yönetilen sunucular plandan değil, altyapı kredisinden ödenir.',
   },
   errors: {
     notFound: 'Bulunamadı',
@@ -1734,7 +1777,7 @@ export const tr: TranslationKeys = {
     notIncluded: 'Dahil değil',
     // Upgrade
     upgradePlan: 'Planı Yükselt',
-    comparePlans: 'Planları Karşılaştır',
+    comparePlans: 'Planları karşılaştır',
     currentPlanBadge: 'Mevcut',
     perMonth: '/ay',
     billingCycleMonthly: 'Aylık',
@@ -1770,7 +1813,7 @@ export const tr: TranslationKeys = {
       'Abonelik = platform limitleri (proje, dağıtım, ekip). Yönetilen Hetzner sunucuları aylık plana dahil değildir; saatlik olarak altyapı cüzdanından (sağlayıcı + marj) tahsil edilir.',
     plansFooterNeedCustom: 'Özel limitler mi gerekiyor?',
     plansContactUs: 'Bize ulaşın',
-    planMostPopular: 'En Popüler',
+    planMostPopular: 'Önerilen',
     upgradeButton: 'Yükselt',
     downgradeButton: 'Düşür',
     planPriceCustom: 'Özel',
@@ -2650,8 +2693,7 @@ export const tr: TranslationKeys = {
   vsCoolify: {
     eyebrow: 'Karşılaştırma',
     h1: 'Pushify vs Coolify',
-    subtitle:
-      'Kendi sunucunuzda uygulama yayınlamanın iki açık kaynaklı yolu. Hangisinin nereye uyduğuna dürüst, yan yana bir bakış.',
+    subtitle: "Kendi sunucularında uygulama deploy etmenin iki açık kaynak yolu — hangisi nerede uyar.",
     ctaPrimary: 'Pushify ile başla',
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Kısa özet',
@@ -2677,14 +2719,11 @@ export const tr: TranslationKeys = {
     rowBilling: 'Yerleşik takım faturalandırması',
     diffTitle: 'Temel farklar',
     diff1Title: 'Yönetilen vs kendin yönet',
-    diff1Body:
-      'İkisi de ücretsiz self-host imkanı verir. Pushify ayrıca yönetilen bir yol sunar — senin için Hetzner sunucusu kurup yönetebilir ve altyapı kullanımını ön ödemeli bir cüzdandan faturalandırır; böylece SSH’a hiç dokunmadan başlayabilirsin. Coolify, kendin çalıştırıp bakımını yaptığın bir self-host instance’a odaklanır (ücretli bir bulutu da var).',
+    diff1Body: "İkisi de ücretsiz self-host edilir. Pushify ayrıca Hetzner sunucu açıp ön ödemeli cüzdandan faturalayabilir.",
     diff2Title: 'Dağıtımın ötesinde',
-    diff2Body:
-      'Pushify küçük ekipler ve ajanslara yönelik ekstralar getirir: hata ayıklama ve yapılandırma için AI asistanı, rol tabanlı takım erişimi ve tanıtım siteleri yayınlamak için kodsuz site kurucu. Coolify dağıtımlara ve self-host servislere daha dar bir odakta kalır.',
+    diff2Body: "Pushify AI asistan, ekip rolleri ve kodsuz site oluşturucu ekler; Coolify deploy'a odaklı kalır.",
     diff3Title: 'Olgunluk ve topluluk',
-    diff3Body:
-      'Coolify daha uzun süredir var ve belirgin biçimde daha büyük bir topluluğa sahip; bu da daha fazla rehber, şablon ve gerçek dünyada test anlamına geliyor. Pushify daha yeni — büyük topluluk ve uzun geçmiş senin için belirleyiciyse, bu konuda şu an Coolify önde.',
+    diff3Body: "Coolify daha eski; topluluğu çok daha büyük, rehberi ve şablonu daha fazla.",
     faqTitle: 'Sıkça sorulan sorular',
     faq1Q: 'Coolify ücretsiz mi?',
     faq1A:
@@ -2705,8 +2744,7 @@ export const tr: TranslationKeys = {
   vsVercel: {
     eyebrow: 'Karşılaştırma',
     h1: 'Pushify vs Vercel',
-    subtitle:
-      'Vercel, frontend geliştirici deneyiminde çıtayı belirliyor — ama Vercel’in bulutunda çalışır ve kullanıma göre fiyatlanır. Altyapına sahip olmak istediğinde Pushify nasıl kıyaslanıyor, işte buna bir bakış.',
+    subtitle: "Vercel'in akıcı iş akışı, kendi sunucularında — ikisi nasıl karşılaştırılır.",
     ctaPrimary: 'Pushify ile başla',
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Kısa özet',
@@ -2731,14 +2769,11 @@ export const tr: TranslationKeys = {
     rowNoLockIn: 'Vendor lock-in yok',
     diffTitle: 'Temel farklar',
     diff1Title: 'Uygulamaların nerede çalışır',
-    diff1Body:
-      'Vercel uygulamalarını kendi yönetilen bulutunda ve edge ağında çalıştırır — bir sunucuya hiç dokunmazsın. Pushify senin sahip olduğun altyapıya dağıtır: herhangi bir VPS’i SSH ile bağla ya da Pushify’ın senin için bir Hetzner sunucusu kurup yönetmesine izin ver.',
+    diff1Body: "Vercel uygulamaları kendi bulutunda çalıştırır. Pushify senin VPS'ine ya da bir Hetzner sunucusuna deploy eder.",
     diff2Title: 'Nasıl ödersin',
-    diff2Body:
-      'Vercel kullanıma göre faturalandırır (bant genişliği, fonksiyon çağrıları, build dakikaları); bu sorunsuz ölçeklenir ama öngörülemez hale gelebilir. Pushify, sabit bir platform aboneliğini kendi sunucu maliyetinden ayırır; böylece fatura öngörülebilir olur — ve self-host ücretsizdir.',
+    diff2Body: "Vercel kullanıma göre faturalar. Pushify sabit abonelik artı sunucun — self-host ücretsiz.",
     diff3Title: 'Ne çalıştırabilirsin',
-    diff3Body:
-      'Vercel frontend ve serverless fonksiyonlar için optimizedir. Pushify, bir Docker konteynerinde gelen her şeyi çalıştırır — frontendler, backendler, worker’lar ve yönetilen veritabanları — sürekli çalışan sunucularda, ayrıca tek tıkla uygulama marketplace’i ve kodsuz site kurucu ile.',
+    diff3Body: "Vercel frontend ve serverless odaklı. Pushify her Docker konteynerini çalıştırır: backend, worker, veritabanı.",
     faqTitle: 'Sıkça sorulan sorular',
     faq1Q: 'Pushify bir Vercel alternatifi mi?',
     faq1A:
@@ -2805,29 +2840,21 @@ export const tr: TranslationKeys = {
   vsHeroku: {
     eyebrow: 'Dürüst karşılaştırma',
     h1: 'Pushify vs Heroku',
-    subtitle:
-      'Git-push ile deploy fikrini Heroku icat etti. Pushify aynı akışı sahibi olduğun sunuculara taşıyor — ücretsiz self-host seçeneği ve sabit sunucu fiyatlarıyla. Satış konuşması değil, teknik özet.',
+    subtitle: "Heroku'nun git push iş akışı, kendi sunucularında ve sabit sunucu fiyatıyla.",
     ctaPrimary: 'Ücretsiz başla',
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Özet',
     tldrBody:
       "Heroku tamamen yönetilen bir platform: sunucuya hiç dokunmazsın ve dyno başına ödersin — Basic dyno ayda $7, en küçük Postgres $5; yani sürekli açık küçük bir uygulama yaklaşık $12/ay'dan başlar (ücretsiz katman Kasım 2022'de kaldırıldı; $5'lık Eco planındaki dyno'lar 30 dakika hareketsizlikte uyur). Pushify, Heroku'nun push-to-deploy hissini korur ama kontrolü sende olan altyapıda çalışır: platformu ücretsiz self-host et, kendi VPS'ini getir ya da Pushify'ın sabit aylık fiyatlı yönetilen Hetzner sunucularını kullan. Sıfır sunucu sorumluluğu ve on yıllık eklenti ekosistemi istiyorsan Heroku hâlâ mükemmel. Sahiplik ve öngörülebilir fatura istiyorsan Pushify.",
     choosePushifyTitle: 'Şu durumda Pushify seç…',
-    choosePushify1:
-      'Her yeni servisle büyüyen dyno-başına/eklenti-başına faturalama yerine öngörülebilir, sabit sunucu fiyatı istiyorsan.',
-    choosePushify2:
-      'Uygulaman ve verin sahibi olduğun sunucularda dursun istiyorsan — platformu ücretsiz self-host et ya da herhangi bir VPS getir.',
-    choosePushify3:
-      "Gerçek bir ücretsiz seçenek özlüyorsan: Pushify'ın self-host seçeneği bedava, BYOS ise $5'lık bir VPS'te rahat çalışır.",
-    choosePushify4:
-      "Heroku'nun sunmadığı ekstraları istiyorsan — self-host uygulama marketi (Supabase, WordPress, n8n…), AI asistan, site kurucu, yerleşik alan adı satın alma.",
+    choosePushify1: "Dyno ve eklenti başına değil, sabit sunucu fiyatı istiyorsun.",
+    choosePushify2: "Uygulamaların ve verin kendi sunucularında olsun istiyorsun.",
+    choosePushify3: "Gerçek bir ücretsiz seçenek istiyorsun: Pushify'ı self-host et ya da 5$'lık bir VPS'te çalıştır.",
+    choosePushify4: "Uygulama pazarı, AI asistan, site oluşturucu ve alan adı satın alma istiyorsun.",
     chooseHerokuTitle: 'Şu durumda Heroku seç…',
-    chooseHeroku1:
-      'Sıfır sunucu sorumluluğuyla tamamen yönetilen bir platform istiyorsan — Heroku\'da operasyon yükü gerçekten sıfırdır.',
-    chooseHeroku2:
-      'Olgun ekosistemine güveniyorsan: 10+ yıllık eklentiler, buildpack\'ler ve kurumsal uyumluluk seçenekleri.',
-    chooseHeroku3:
-      'Ekibin zaten Heroku pipeline ve review app akışında yaşıyorsa ve taşınma maliyeti tasarrufu aşıyorsa.',
+    chooseHeroku1: "Hiç sunucu sorumluluğu istemiyorsun.",
+    chooseHeroku2: "10 yılı aşkın eklenti, buildpack ve uyumluluk seçeneklerine dayanıyorsun.",
+    chooseHeroku3: "Ekibin Heroku pipeline'larında yaşıyor ve taşınmak kazandırdığından pahalı.",
     tableTitle: 'Özellik karşılaştırması',
     tableNote:
       'Herkese açık bilgilere dayanır (Heroku fiyat sayfaları, Temmuz 2026). Değişmiş bir şey mi gördün? Bize yaz, düzeltelim.',
@@ -2838,14 +2865,11 @@ export const tr: TranslationKeys = {
     rowAddonEco: '10+ yıllık eklenti ekosistemi',
     diffTitle: 'Fark yaratan üç nokta',
     diff1Title: 'Uygulaman nerede çalışıyor',
-    diff1Body:
-      "Heroku her şeyi kendi yönetilen altyapısında çalıştırır — self-host edemez, sunucu getiremezsin. Pushify tam tersi: MIT lisanslı, tek komutla kendi makinene kurulur; getirdiğin herhangi bir VPS'e ya da senin için açtığı yönetilen Hetzner sunucularına deploy eder.",
+    diff1Body: "Heroku self-host edilemez. Pushify MIT lisanslı; herhangi bir VPS'e ya da yönetilen Hetzner sunucusuna deploy eder.",
     diff2Title: 'Fatura nasıl büyüyor',
-    diff2Body:
-      "Heroku dyno ve eklenti başına faturalar: sürekli açık bir Basic dyno $7/ay, en küçük Postgres $5/ay ve her ek servis ayrı kalemdir. Pushify'da sunucunun tek bir sabit aylık fiyatı vardır (saatlik oranlanır) — üzerinde kaldırabildiği kadar uygulama ve veritabanı çalıştır.",
+    diff2Body: "Heroku dyno ve eklenti başına faturalar. Pushify'da bir sunucunun tek bir sabit aylık fiyatı var.",
     diff3Title: "Ücretsiz katmana ne oldu",
-    diff3Body:
-      "Heroku ücretsiz katmanını Kasım 2022'de kaldırdı; bugünkü en yakın şey, dyno'ları 30 dakikada uyuyan $5'lık Eco planı. Pushify'ın self-host seçeneği gerçekten ücretsiz; kendi sunucunda scale-to-zero ise bir faturalama katmanı değil, bir özellik.",
+    diff3Body: "Heroku'nun ücretsiz planı 2022'de bitti. Pushify'ı self-host etmek ücretsiz; sıfıra ölçekleme bir özellik.",
     faqTitle: 'Sık sorulan sorular',
     faq1Q: 'Pushify iyi bir Heroku alternatifi mi?',
     faq1A:
@@ -2901,29 +2925,21 @@ export const tr: TranslationKeys = {
   vsRailway: {
     eyebrow: 'Dürüst karşılaştırma',
     h1: 'Pushify vs Railway',
-    subtitle:
-      'Railway, kullandıkça öde faturalandırmalı, cilalı bir yönetilen bulut. Pushify benzer git-push deneyimini sabit aylık fiyatlarla, senin sahip olduğun sunuculara getiriyor. Satış konuşması değil, teknik döküm.',
+    subtitle: "Railway kendi bulutunda kullanımı ölçer. Pushify senin sunucularında sabit fiyatla çalışır.",
     ctaPrimary: 'Ücretsiz başla',
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Özet',
     tldrBody:
       "Railway uygulamalarını kendi bulutunda çalıştırır ve kullandığını ölçer: Hobby planı $5/ay ($5 kullanım dahil), Pro koltuk başı $20'dan başlar, CPU/RAM tükettikçe üstüne faturalanır. Self-host seçeneği ve kendi sunucunu bağlama imkânı yoktur. Pushify bu modeli tersine çevirir: platform senin kontrolündeki altyapıya deploy eder — ücretsiz self-host et, herhangi bir VPS getir ya da sabit aylık fiyatlı yönetilen Hetzner sunucuları kullan — fatura bir sayaç değil, bir sunucu fiyatıdır. Sıfır operasyonlu şık bir bulut istiyorsan ve ölçülen faturalandırma iş yüküne uyuyorsa Railway gerçekten iyi. Sahiplik ve öngörülebilir fatura istiyorsan, o Pushify.",
     choosePushifyTitle: 'Şu durumda Pushify seç…',
-    choosePushify1:
-      'Seni asla şaşırtmayan bir fatura istiyorsun: sunucunun tek bir sabit aylık fiyatı var; trafik patlaması faturanı değil, gecikmeni değiştirir.',
-    choosePushify2:
-      'Uygulamaların ve verilerin sahip olduğun sunucularda dursun istiyorsun — platformu self-host et, herhangi bir VPS getir ya da root erişimli yönetilen sunucu kullan.',
-    choosePushify3:
-      "Gerçek bir ücretsiz yol istiyorsun: Pushify'ı self-host etmek hiçbir şey tutmaz, kendi sunucunu getirmek $5'lık bir VPS'te bile rahat çalışır.",
-    choosePushify4:
-      "Railway'de olmayan ekstraları istiyorsun — self-host uygulama marketi (Supabase, WordPress, n8n…), yapay zekâ asistanı, site kurucu, yerleşik alan adı satın alma.",
+    choosePushify1: "Trafikle değişmeyen bir fatura istiyorsun: sunucu başına tek sabit fiyat.",
+    choosePushify2: "Uygulamaların ve verin root erişimli kendi sunucularında olsun istiyorsun.",
+    choosePushify3: "Gerçek bir ücretsiz seçenek istiyorsun: Pushify'ı self-host et ya da 5$'lık bir VPS'te çalıştır.",
+    choosePushify4: "Uygulama pazarı, AI asistan, site oluşturucu ve alan adı satın alma istiyorsun.",
     chooseRailwayTitle: 'Şu durumda Railway seç…',
-    chooseRailway1:
-      "Tamamen yönetilen, çok bölgeli altyapı istiyorsun ve sunucu diye bir şey düşünmek istemiyorsun — Railway'in operasyon yükü gerçekten sıfır.",
-    chooseRailway2:
-      'İş yükün küçük ya da dalgalı ve ölçülen faturalandırma lehine işliyor — sürekli açık bir makine için değil, tükettiğin için ödüyorsun.',
-    chooseRailway3:
-      'Şablon ekosistemine ve ortak çalışmaya uygun paneline değer veriyorsun, ekibin orada zaten üretken.',
+    chooseRailway1: "Yönetilen, çok bölgeli altyapı istiyorsun ve sunucu düşünmek istemiyorsun.",
+    chooseRailway2: "İş yükün küçük ya da dalgalı; ölçülü faturalama senin lehine.",
+    chooseRailway3: "Ekibin şablonları ve paneliyle zaten verimli çalışıyor.",
     tableTitle: 'Özellik karşılaştırması',
     tableNote:
       'Kamuya açık bilgilere dayanır (Railway fiyat sayfaları, Ağustos 2026). Değişmiş olabilir — güncel olmayan bir şey mi gördün? Bize yaz, düzeltelim.',
@@ -2934,14 +2950,11 @@ export const tr: TranslationKeys = {
     rowPreviewEnvs: 'PR önizleme ortamları',
     diffTitle: 'Fark yaratan üç şey',
     diff1Title: 'Uygulaman nerede çalışır',
-    diff1Body:
-      "Railway her şeyi kendi yönetilen bulutunda çalıştırır — platformu self-host edemez, kendi makineni bağlayamazsın. Pushify tam tersi: tek komutla kendi donanımına kur, SSH ile herhangi bir VPS bağla ya da senin için yönetilen Hetzner sunucuları açsın.",
+    diff1Body: "Railway yalnızca kendi bulutunda çalışır. Pushify senin donanımında, herhangi bir VPS'te ya da yönetilen Hetzner'da çalışır.",
     diff2Title: 'Fatura nasıl büyür',
-    diff2Body:
-      "Railway kaynakları ölçer: abonelik artı saniye bazında CPU ve bellek ücretleri, Pro'da koltuk başı $20. Pushify sunucu başına sabit aylık fiyat alır, saatlik oranlanır — makinenin kaldırdığı kadar uygulama ve veritabanı çalıştır, fiyat aynı kalır.",
+    diff2Body: "Railway CPU ve belleği ölçer, Pro koltuğu 20$. Pushify sunucu başına tek sabit fiyat alır.",
     diff3Title: 'Giderken yanında ne götürürsün',
-    diff3Body:
-      "Railway'den ayrılmak yeniden platform kurmak demek: konfigürasyonlar, ağ ve veritabanları onların bulutunda yaşar. Pushify, SSH ile girebildiğin sunuculara düz Docker konteynerleri deploy eder — bir gün Pushify'ı bıraksan bile uygulamaların, verilerin ve sunucuların senin, çalışmaya devam eder.",
+    diff3Body: "Railway'den ayrılmak taşınmak demek. Pushify uygulamaları, sende kalan sunucularda düz Docker konteynerleridir.",
     faqTitle: 'Sık sorulan sorular',
     faq1Q: 'Pushify iyi bir Railway alternatifi mi?',
     faq1A:
@@ -2962,25 +2975,19 @@ export const tr: TranslationKeys = {
   vsRender: {
     eyebrow: 'Dürüst karşılaştırma',
     h1: 'Pushify vs Render',
-    subtitle:
-      'Render, servis başına sabit fiyatlı, sağlam bir yönetilen PaaS. Pushify aynı öngörülebilirliği senin sahip olduğun sunucularda sunuyor — servis başına değil, sunucu başına ekonomiyle. Satış konuşması değil, teknik döküm.',
+    subtitle: "Render servis başına fiyatlar. Pushify sunucu başına — hem de senin sunucularında.",
     ctaPrimary: 'Ücretsiz başla',
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Özet',
     tldrBody:
       "Render servislerini kendi bulutunda sabit fiyatlarla barındırır: statik siteler ücretsizdir, web servisleri yaklaşık $7/ay'dan başlar ve her uygulama, worker ve veritabanı ayrı bir fatura kalemidir. Ücretsiz web servisleri boşta kalınca uykuya geçer, gecikmeyle uyanır. Self-host ya da kendi sunucunu getirme seçeneği yoktur. Pushify senin kontrolündeki altyapıya deploy eder — ücretsiz self-host et, VPS getir ya da sabit fiyatlı yönetilen Hetzner sunucuları kullan — ve bir sunucu, kaldırabildiği kadar uygulamayı tek fiyata çalıştırır. Sıfır sunucu sorumluluğu ve öngörülebilir fiyat istiyorsan Render iyi bir seçim. Aynı öngörülebilirliğin yanına sahiplik de istiyorsan, o Pushify.",
     choosePushifyTitle: 'Şu durumda Pushify seç…',
-    choosePushify1:
-      "Birkaç servisten fazlasını çalıştırıyorsun: Render'da her uygulama, worker ve veritabanı ayrı bir aylık ücret; Pushify'da sabit fiyatlı tek sunucu hepsini barındırır.",
-    choosePushify2:
-      'Uygulamaların ve verilerin sahip olduğun sunucularda dursun istiyorsun — platformu self-host et, herhangi bir VPS getir ya da root erişimli yönetilen sunucu kullan.',
-    choosePushify3:
-      'Ücret ödemeden sürekli açık kalmak istiyorsun: kendi sunucunda hiçbir şey sen istemedikçe uykuya geçmez — scale-to-zero bir faturalandırma katmanı değil, kendi açtığın bir özelliktir.',
-    choosePushify4:
-      "Render'da olmayan ekstraları istiyorsun — self-host uygulama marketi (Supabase, WordPress, n8n…), yapay zekâ asistanı, site kurucu, yerleşik alan adı satın alma.",
+    choosePushify1: "Birkaç servis çalıştırıyorsun: Pushify'da tek sabit fiyatlı sunucu hepsini barındırır.",
+    choosePushify2: "Uygulamaların ve verin root erişimli kendi sunucularında olsun istiyorsun.",
+    choosePushify3: "Ücretsiz sürekli açık istiyorsun: sen açmadıkça sunucunda hiçbir şey uyumaz.",
+    choosePushify4: "Uygulama pazarı, AI asistan, site oluşturucu ve alan adı satın alma istiyorsun.",
     chooseRenderTitle: 'Şu durumda Render seç…',
-    chooseRender1:
-      'Sıfır sunucu sorumluluğu olan, tamamen yönetilen bir platform istiyorsun ve senin ölçeğinde servis başına fiyatlandırma sorun değil.',
+    chooseRender1: "Sunucu sorumluluğu istemiyorsun ve servis başına fiyat ölçeğine uyuyor.",
     chooseRender2:
       'Kutudan çıktığı gibi yönetilen otomatik ölçekleme ve statik siteler için global CDN gerekiyor.',
     chooseRender3:
@@ -2995,14 +3002,11 @@ export const tr: TranslationKeys = {
     rowAutoscale: 'Yönetilen otomatik ölçekleme',
     diffTitle: 'Fark yaratan üç şey',
     diff1Title: 'Uygulaman nerede çalışır',
-    diff1Body:
-      "Render her şeyi kendi yönetilen bulutunda çalıştırır — self-host seçeneği ve sunucu bağlama imkânı yoktur. Pushify tek komutla kendi donanımına kurulur, SSH ile herhangi bir VPS'i bağlar ya da senin için yönetilen Hetzner sunucuları açar.",
+    diff1Body: "Render yalnızca kendi bulutunda çalışır. Pushify senin donanımında, herhangi bir VPS'te ya da yönetilen Hetzner'da çalışır.",
     diff2Title: 'Servis başına mı, sunucu başına mı',
-    diff2Body:
-      'Render her servisi ayrı fiyatlandırır: bir web servisi, bir background worker ve bir veritabanı her ay üç ayrı kalemdir. Pushify sunucuyu fiyatlandırır: tek sabit aylık ücret, saatlik oranlanır — makineye ne sığıyorsa çalıştırırsın; tek makinede beş uygulama da tek uygulamayla aynı fiyattır.',
+    diff2Body: "Render servis başına, Pushify sunucu başına ücret alır: tek sunucuda beş uygulama, tek fiyat.",
     diff3Title: 'Ücretsiz gerçekte ne demek',
-    diff3Body:
-      "Render'ın ücretsiz web servisleri boşta kalınca uykuya geçer ve soğuk başlangıç gecikmesiyle uyanır. Pushify'ın ücretsiz yolu self-host: platform kendi donanımında hiçbir şey tutmaz, sürekli açık kalır; scale-to-zero ise yerleştirildiğin bir katman değil, proje bazında kendi açtığın bir tercihtir.",
+    diff3Body: "Render'ın ücretsiz servisleri boştayken uyur. Self-host Pushify açık kalır; sıfıra ölçekleme isteğe bağlı.",
     faqTitle: 'Sık sorulan sorular',
     faq1Q: 'Pushify iyi bir Render alternatifi mi?',
     faq1A:
@@ -3025,8 +3029,7 @@ export const tr: TranslationKeys = {
     h1: 'Self-host PaaS ve Heroku alternatifleri karşılaştırması',
     subtitle:
       'Coolify, Dokploy, CapRover, Dokku, Railway, Render, Heroku — ve Pushify nerede duruyor. Gerçek lisanslar, gerçek fiyatlar, sahte sıralama yok.',
-    intro:
-      'Aşağıdaki her araç bir konuda gerçekten iyi — birkaçını kendimiz de kullanıyoruz. Bu sayfa, herkese açık bilgilere dayanarak her birinin ne olduğunu, ne kadara mal olduğunu ve en çok kime uyduğunu söyler. Pushify\'ın zayıf olduğu yerde tablo bunu da söyler.',
+    intro: "Her aracın ne olduğu, ne tuttuğu ve kime uyduğu — Pushify'ın zayıf yanları dahil.",
     matrixTitle: 'Tek bakışta',
     matrixNote:
       'Temmuz 2026 itibarıyla herkese açık bilgiler — lisanslar ve fiyatlar değişebilir. Hata mı gördün? Yaz, düzeltelim.',
@@ -3043,7 +3046,7 @@ export const tr: TranslationKeys = {
       "En popüler self-host PaaS: Apache-2.0 lisanslı, self-host ücretsiz; isteğe bağlı yönetilen bulut $5/ay'dan başlar. Güçlü arayüz, PR önizleme deploy'ları, çoklu sunucu desteği ve çok büyük bir topluluk. v4, uzun bir betadan sonra 2026 başında stable oldu.",
     coolifyBest: 'En büyük topluluğu ve olgun, arayüz-öncelikli bir self-host platform isteyen ekipler.',
     dokployBody:
-      "Hızla yükselen alternatif (30k+ GitHub yıldızı): self-host ücretsiz, yönetilen seçenek sunucu başına ~$4.50/ay. Docker Swarm üzerine kurulu; sıkça Coolify'dan daha hafif ve hızlı diye anılır. Not: lisansı klasik OSI lisansı değil, source-available.",
+      "Hızla yükselen alternatif: self-host ücretsiz, yönetilen seçenek sunucu başına ~$4.50/ay. Docker Swarm üzerine kurulu; sıkça Coolify'dan daha hafif ve hızlı diye anılır. Not: lisansı klasik OSI lisansı değil, source-available.",
     dokployBest: 'Docker Swarm üzerinde hafif, hızlı bir arayüz isteyen ve source-available lisansa takılmayan geliştiriciler.',
     caproverBody:
       "Tamamen ücretsiz ve MIT lisanslı; hiç ücretli katmanı yok. Docker Swarm tabanlı, tek tık uygulama kataloglu. Çok stabil ve kanıtlanmış; ancak geliştirme temposu Coolify ve Dokploy'a göre yavaşladı.",

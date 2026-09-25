@@ -19,7 +19,7 @@ export function DatabaseStatsRow({ database, t }: { database: Database; t: T }) 
           value: `${formatStorage(used)} / ${formatStorage(total)}`,
           sub: (
             <div className="h-1 rounded-full mt-2 overflow-hidden" style={{ background: 'var(--bg-tertiary)' }}>
-              <div className="h-full rounded-full" style={{ width: `${pct}%`, background: STATUS_COLORS.purple }} />
+              <div className="h-full rounded-full" style={{ width: `${pct}%`, background: 'var(--text-primary)' }} />
             </div>
           ),
         },

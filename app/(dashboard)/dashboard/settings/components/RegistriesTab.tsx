@@ -91,7 +91,7 @@ export function RegistriesTab() {
                     </p>
                     <p className="text-xs text-[var(--text-muted)] mt-0.5">
                       {registry.lastUsedAt
-                        ? t('registries', 'lastUsed').replace('{time}', formatTimeAgo(registry.lastUsedAt))
+                        ? t('registries', 'lastUsed').replace('{time}', formatTimeAgo(registry.lastUsedAt, t))
                         : t('registries', 'neverUsed')}
                     </p>
                   </div>

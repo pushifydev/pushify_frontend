@@ -243,7 +243,7 @@ export function Sidebar() {
       <div className="px-2.5 pt-3 pb-0.5">
         <Link
           href="/dashboard/projects/new"
-          className={`dash-accent-fill flex items-center gap-2 h-9 rounded-md text-[13px] font-medium transition-opacity hover:opacity-90
+          className={`dash-accent-fill flex items-center gap-2 h-9 rounded-full text-[13px] font-medium transition-opacity hover:opacity-90
             ${collapsed ? 'md:justify-center md:px-0 px-3' : 'px-3'}`}
         >
           <Plus className="w-4 h-4 shrink-0" />

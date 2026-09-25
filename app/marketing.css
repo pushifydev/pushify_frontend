@@ -1,0 +1,1112 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   MARKETING SITE — monochrome, light-in-the-dark. Scoped to .hp (the root of every public
+   page); the dashboard never carries it.
+
+   Dark unless the visitor chose light (stores/theme.ts). Values measured from developer.x.com
+   (2026-09-25): #0a0a0a canvas, #151619-ish section rules, white/10 card borders on white/5
+   fills, gray-400 body copy. The one accent is "live" green, and it only marks live or healthy.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.hp {
+  --hp-bg: #0a0a0a;
+  --hp-ink: #f4f4f5;
+  --hp-body: #9ca3af;
+  --hp-muted: #6b7280;
+  --hp-eyebrow: #6b6b6b;
+  --hp-line: rgba(255, 255, 255, 0.065);
+  --hp-line-strong: rgba(255, 255, 255, 0.1);
+  --hp-card: #141414;
+  --hp-card-raised: #1a1a1a;
+  /* Light: the beam is added to the dark with a screen blend; in the light theme it is a shadow. */
+  --hp-light: 255, 255, 255;
+  --hp-light-blend: screen;
+  --hp-light-strength: 1;
+  --hp-live: #22c55e;
+  --hp-live-soft: rgba(34, 197, 94, 0.07);
+  --hp-live-line: rgba(34, 197, 94, 0.28);
+  --hp-beam: rgba(255, 255, 255, 0.5);
+  --hp-pool: rgba(255, 255, 255, 0.1);
+  --hp-btn: #fafafa;
+  --hp-btn-fg: #09090b;
+  --hp-btn-glow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 8px 30px rgba(255, 255, 255, 0.12);
+
+  /* The shared navbar/footer and anything nested read these. */
+  --lp-ink: var(--hp-ink);
+  --lp-body: var(--hp-body);
+  --lp-muted: var(--hp-muted);
+  --lp-surface: var(--hp-card);
+  --lp-border: var(--hp-line);
+  --lp-btn: var(--hp-btn);
+  --lp-btn-fg: var(--hp-btn-fg);
+  --lp-logo-cut: var(--hp-bg);
+  --bg-primary: var(--hp-bg);
+  --bg-secondary: var(--hp-card);
+  --text-primary: var(--hp-ink);
+  --text-secondary: var(--hp-body);
+  --text-muted: var(--hp-muted);
+
+  background: var(--hp-bg);
+  color: var(--hp-ink);
+  font-family: var(--font-display);
+  color-scheme: dark;
+}
+
+html.light .hp {
+  --hp-bg: #fafafa;
+  --hp-ink: #09090b;
+  --hp-body: #52525b;
+  --hp-muted: #71717a;
+  --hp-eyebrow: #8b8b8b;
+  --hp-line: rgba(0, 0, 0, 0.08);
+  --hp-line-strong: rgba(0, 0, 0, 0.16);
+  --hp-card: #ffffff;
+  --hp-card-raised: #ffffff;
+  --hp-light: 9, 9, 11;
+  --hp-light-blend: multiply;
+  --hp-light-strength: 0.18;
+  --hp-live: #15803d;
+  --hp-live-soft: rgba(21, 128, 61, 0.06);
+  --hp-live-line: rgba(21, 128, 61, 0.25);
+  --hp-beam: rgba(9, 9, 11, 0.13);
+  --hp-pool: rgba(9, 9, 11, 0.05);
+  --hp-btn: #09090b;
+  --hp-btn-fg: #fafafa;
+  --hp-btn-glow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  color-scheme: light;
+}
+
+.hp ::selection {
+  background: var(--hp-ink);
+  color: var(--hp-bg);
+}
+
+/* Horizontal margins only: these rules are unlayered and would beat Tailwind's mt-* utilities if
+   they set the vertical ones too (a `margin: 0 auto` here once glued blocks to their headings). */
+.hp-wrap {
+  width: 100%;
+  max-width: 76rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* ── Type ─────────────────────────────────────────────────────────────────── */
+
+/* Measured from developer.x.com (2026-09-24): Inter 500 / 72px / normal tracking for the
+   headline, Inter 400 / 48px / -1.2px for section titles, Inter 400 / 20px / 28px for leads,
+   Menlo 12px / 1.2px uppercase for eyebrows. */
+.hp-eyebrow {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-eyebrow);
+}
+
+.hp-h1 {
+  font-size: clamp(2.6rem, 5.2vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.1;
+  color: var(--hp-ink);
+  text-wrap: balance;
+}
+
+.hp-h2 {
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+  color: var(--hp-ink);
+  text-wrap: balance;
+}
+
+.hp-lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  line-height: 1.4;
+  color: var(--hp-body);
+  text-wrap: pretty;
+}
+
+.hp-mono {
+  font-family: var(--font-label);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+
+.hp-btn,
+.hp-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+.hp-btn {
+  background: var(--hp-btn);
+  color: var(--hp-btn-fg);
+}
+.hp-btn:hover {
+  box-shadow: var(--hp-btn-glow);
+  transform: translateY(-1px);
+}
+.hp-btn-ghost {
+  font-weight: 400;
+  color: var(--hp-ink);
+  border: 1px solid var(--hp-line-strong);
+}
+.hp-btn-ghost:hover {
+  border-color: var(--hp-muted);
+  background: var(--hp-line);
+}
+.hp-btn:focus-visible,
+.hp-btn-ghost:focus-visible,
+.hp a:focus-visible,
+.hp button:focus-visible,
+.hp summary:focus-visible,
+.hp input:focus-visible {
+  outline: 2px solid var(--hp-ink);
+  outline-offset: 3px;
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────────── */
+
+.hp-section {
+  border-top: 1px solid var(--hp-line);
+  padding: clamp(4rem, 8vw, 6rem) 0;
+}
+
+.hp-center {
+  text-align: center;
+}
+.hp-center .hp-lead {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Hero: the light beam (the page's one signature) ─────────────────────── */
+
+/* The recipe is developer.x.com's: a light cone drawn with a conic gradient on a huge rotated
+   square, blurred and screen-blended into the dark, a faint cool glow behind it, the top darkened
+   and both edges faded into the canvas. */
+.hp-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: min(56rem, 100svh);
+  display: flex;
+  align-items: center;
+  padding: 9rem 0 7rem;
+  border-bottom: 1px solid var(--hp-line-strong);
+}
+
+.hp-beam,
+.hp-pool {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  right: -26vw;
+  top: 18%;
+  width: 140vmax;
+  height: 140vmax;
+  translate: 0 -50%;
+  rotate: -8deg;
+  mix-blend-mode: var(--hp-light-blend);
+}
+
+.hp-beam {
+  background: conic-gradient(
+    from 200deg at 70% 50%,
+    rgba(var(--hp-light), 0) 0deg,
+    rgba(var(--hp-light), calc(0.2 * var(--hp-light-strength))) 6%,
+    rgba(var(--hp-light), calc(0.6 * var(--hp-light-strength))) 8%,
+    rgba(var(--hp-light), calc(0.2 * var(--hp-light-strength))) 10%,
+    rgba(var(--hp-light), 0) 14%
+  );
+  filter: blur(28px);
+  opacity: 0.9;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 70%, transparent 92%);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 70%, transparent 92%);
+}
+
+.hp-pool {
+  right: -28vw;
+  width: 120vmax;
+  height: 120vmax;
+  background: radial-gradient(50% 120% at 70% 52%, rgba(180, 200, 255, 0.08), transparent 60%);
+  filter: blur(36px);
+  opacity: 0.7;
+  -webkit-mask-image: radial-gradient(70% 70% at 70% 52%, #000, transparent);
+  mask-image: radial-gradient(70% 70% at 70% 52%, #000, transparent);
+}
+
+/* Darken the top, fade top and bottom edges into the canvas. */
+.hp-hero::before,
+.hp-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.hp-hero::before {
+  background: radial-gradient(100% 120% at 50% 0%, rgba(0, 0, 0, 0.6), transparent 60%);
+}
+html.light .hp-hero::before {
+  background: none;
+}
+.hp-hero::after {
+  background:
+    linear-gradient(var(--hp-bg), transparent 5rem),
+    linear-gradient(to top, var(--hp-bg), transparent 5rem);
+}
+
+/* On load the light comes up, then breathes very slowly. */
+@media (prefers-reduced-motion: no-preference) {
+  .hp-beam {
+    animation:
+      hp-beam-on 1.6s cubic-bezier(0.16, 1, 0.3, 1) both,
+      hp-beam-breathe 12s ease-in-out 1.6s infinite alternate;
+  }
+  .hp-pool {
+    animation: hp-fade 2.4s ease-out 0.3s both;
+  }
+  .hp-rise {
+    animation: hp-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes hp-beam-on {
+  from {
+    opacity: 0;
+    rotate: -2deg;
+  }
+  to {
+    opacity: 0.9;
+    rotate: -8deg;
+  }
+}
+@keyframes hp-beam-breathe {
+  from {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0.72;
+  }
+}
+@keyframes hp-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes hp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ── Features: four columns between hairlines ────────────────────────────── */
+
+.hp-features {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.hp-feature {
+  padding: 2.25rem 1.75rem 2.5rem;
+}
+.hp-feature + .hp-feature {
+  border-left: 1px solid var(--hp-line-strong);
+}
+.hp-feature svg {
+  color: var(--hp-ink);
+}
+@media (max-width: 900px) {
+  .hp-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hp-feature:nth-child(3) {
+    border-left: 0;
+  }
+  .hp-feature:nth-child(n + 3) {
+    border-top: 1px solid var(--hp-line);
+  }
+}
+@media (max-width: 560px) {
+  .hp-features {
+    grid-template-columns: 1fr;
+  }
+  .hp-feature + .hp-feature {
+    border-left: 0;
+    border-top: 1px solid var(--hp-line);
+  }
+}
+
+/* ── Deploy cards, drifting in rows ──────────────────────────────────────── */
+
+.hp-marquee {
+  --hp-edge: 8%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--hp-edge), #000 calc(100% - var(--hp-edge)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--hp-edge), #000 calc(100% - var(--hp-edge)), transparent);
+}
+.hp-marquee-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  padding: 0.5rem 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hp-marquee-track {
+    animation: hp-drift var(--hp-duration, 70s) linear infinite;
+  }
+  .hp-marquee-track[data-reverse='true'] {
+    animation-direction: reverse;
+  }
+  .hp-marquee:hover .hp-marquee-track {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hp-marquee {
+    overflow-x: auto;
+  }
+}
+@keyframes hp-drift {
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+.hp-card {
+  width: 22rem;
+  flex: none;
+  border: 1px solid var(--hp-line-strong);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--hp-ink) 4%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hp-ink) 3%, transparent);
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  line-height: 1.75;
+}
+.hp-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--hp-line);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-muted);
+}
+.hp-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--hp-live);
+  box-shadow: 0 0 0 3px var(--hp-live-soft);
+  margin-right: 0.5rem;
+  vertical-align: 1px;
+}
+.hp-dot[data-tone='event'] {
+  background: var(--hp-muted);
+  box-shadow: 0 0 0 3px var(--hp-line);
+}
+.hp-live {
+  color: var(--hp-live);
+}
+.hp-card-body {
+  padding: 0.85rem 1rem 1rem;
+  color: var(--hp-body);
+  white-space: pre;
+  overflow: hidden;
+}
+.hp-card-body .cmd {
+  color: var(--hp-ink);
+}
+.hp-card-body .ok {
+  color: var(--hp-live);
+}
+.hp-card-body .bad {
+  color: var(--hp-ink);
+}
+
+/* ── Cost calculator ─────────────────────────────────────────────────────── */
+
+.hp-calc {
+  max-width: 58rem;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid var(--hp-line);
+  border-radius: 18px;
+  background: var(--hp-card);
+  overflow: hidden;
+}
+.hp-calc-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) 6.5rem minmax(0, 1.4fr);
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.1rem 1.5rem;
+}
+.hp-calc-row + .hp-calc-row {
+  border-top: 1px solid var(--hp-line);
+}
+@media (max-width: 640px) {
+  .hp-calc-row {
+    grid-template-columns: 1fr auto;
+    gap: 0.6rem 1rem;
+  }
+  .hp-calc-row .hp-range {
+    grid-column: 1 / -1;
+  }
+}
+.hp-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--hp-ink) var(--hp-pct, 50%), var(--hp-line-strong) var(--hp-pct, 50%));
+  cursor: pointer;
+}
+.hp-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--hp-ink);
+  border: 3px solid var(--hp-card);
+  box-shadow: 0 0 0 1px var(--hp-line-strong);
+}
+.hp-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--hp-ink);
+  border: 3px solid var(--hp-card);
+}
+.hp-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--hp-line);
+}
+.hp-total {
+  padding: 1.5rem;
+}
+.hp-total + .hp-total {
+  border-left: 1px solid var(--hp-line);
+}
+.hp-total[data-ours='true'] {
+  background: var(--hp-live-soft);
+  box-shadow: inset 0 1px 0 var(--hp-live-line);
+}
+@media (max-width: 720px) {
+  .hp-totals {
+    grid-template-columns: 1fr;
+  }
+  .hp-total + .hp-total {
+    border-left: 0;
+    border-top: 1px solid var(--hp-line);
+  }
+}
+
+/* ── Difference ──────────────────────────────────────────────────────────── */
+
+.hp-diff {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 720px) {
+  .hp-diff {
+    grid-template-columns: 1fr;
+  }
+}
+.hp-diff-card {
+  border: 1px solid var(--hp-line);
+  border-radius: 16px;
+  padding: 1.75rem;
+  background: var(--hp-card);
+}
+.hp-diff-card[data-ours='true'] {
+  background: var(--hp-card-raised);
+  border-color: var(--hp-line-strong);
+  position: relative;
+}
+.hp-diff-card[data-ours='true']::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 1.75rem;
+  width: 3rem;
+  height: 1px;
+  background: var(--hp-ink);
+}
+
+/* ── FAQ ─────────────────────────────────────────────────────────────────── */
+
+.hp-faq {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  border-top: 1px solid var(--hp-line);
+}
+.hp-faq details {
+  border-bottom: 1px solid var(--hp-line);
+}
+.hp-faq summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.35rem 0.25rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--hp-ink);
+}
+.hp-faq summary::-webkit-details-marker {
+  display: none;
+}
+.hp-faq summary::after {
+  content: '+';
+  font-family: var(--font-label);
+  color: var(--hp-muted);
+  transition: transform 0.2s ease;
+}
+.hp-faq details[open] summary::after {
+  transform: rotate(45deg);
+}
+.hp-faq details > div {
+  padding: 0 0.25rem 1.5rem;
+  color: var(--hp-body);
+  line-height: 1.7;
+  max-width: 42rem;
+}
+
+/* ── Closing call and footer light ───────────────────────────────────────── */
+
+.hp-cta-glow {
+  box-shadow: var(--hp-btn-glow), 0 0 60px color-mix(in srgb, var(--hp-beam) 25%, transparent);
+}
+
+.hp-footer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* The mark stands above the links and fades out towards them (developer.x.com: white, 20%). */
+.hp-footer-mark {
+  display: flex;
+  justify-content: center;
+  padding: 5rem 0 2rem;
+  color: var(--hp-ink);
+  opacity: 0.2;
+  -webkit-mask-image: linear-gradient(#000, rgba(0, 0, 0, 0.1));
+  mask-image: linear-gradient(#000, rgba(0, 0, 0, 0.1));
+}
+
+/* Light rising from below the middle of the page, fanning out and fading upwards. */
+.hp-footer-glow {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: -7rem;
+  width: min(72rem, 160vw);
+  height: 24rem;
+  translate: -50% 0;
+  pointer-events: none;
+  background:
+    radial-gradient(30% 62% at 50% 100%, rgba(var(--hp-light), calc(0.85 * var(--hp-light-strength))), transparent 72%),
+    radial-gradient(62% 85% at 50% 100%, rgba(170, 184, 206, calc(0.22 * var(--hp-light-strength))), transparent 75%);
+  filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to top, #000 40%, transparent);
+  mask-image: linear-gradient(to top, #000 40%, transparent);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Shared vocabulary for every marketing page. The pages were built from these class names
+   (lp-*) before the redesign; they now speak the same language as the homepage.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* In the components layer so that Tailwind utilities on a page (max-w-3xl, text-3xl, mt-8…)
+   still win over these defaults. */
+@layer components {
+  .hp .lp-container {
+    width: 100%;
+    max-width: 76rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .hp .lp-section {
+    border-top: 1px solid var(--hp-line);
+    padding-top: clamp(4rem, 8vw, 6rem);
+    padding-bottom: clamp(4rem, 8vw, 6rem);
+  }
+
+  /* `[ LABEL ]` — the bracketed monospace eyebrow. */
+  .hp .lp-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hp-eyebrow);
+  }
+  .hp .lp-label::before {
+    content: '[';
+  }
+  .hp .lp-label::after {
+    content: ']';
+  }
+
+  .hp .lp-hero-title {
+    font-size: clamp(2.4rem, 4.8vw, 4rem);
+    font-weight: 500;
+    letter-spacing: normal;
+    line-height: 1.1;
+    color: var(--hp-ink);
+    text-wrap: balance;
+  }
+
+  .hp .lp-section-title {
+    font-size: clamp(1.9rem, 3.4vw, 3rem);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--hp-ink);
+    text-wrap: balance;
+  }
+
+  .hp .lp-lead {
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    line-height: 1.5;
+    color: var(--hp-body);
+    text-wrap: pretty;
+  }
+
+  .hp .lp-body {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--hp-body);
+  }
+
+  .hp .lp-card {
+    background: color-mix(in srgb, var(--hp-ink) 4%, transparent);
+    border: 1px solid var(--hp-line-strong);
+    border-radius: 16px;
+  }
+
+  .hp .lp-cta,
+  .hp .lp-cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.4rem;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease,
+      background 0.2s ease;
+  }
+  .hp .lp-cta {
+    font-weight: 500;
+    color: var(--hp-btn-fg);
+    background: var(--hp-btn);
+    border: 1px solid var(--hp-btn);
+  }
+  .hp .lp-cta:hover {
+    box-shadow: var(--hp-btn-glow);
+    transform: translateY(-1px);
+  }
+  .hp .lp-cta-ghost {
+    font-weight: 400;
+    color: var(--hp-ink);
+    background: transparent;
+    border: 1px solid var(--hp-line-strong);
+  }
+  .hp .lp-cta-ghost:hover {
+    border-color: var(--hp-muted);
+    background: var(--hp-line);
+  }
+  .hp .lp-cta:focus-visible,
+  .hp .lp-cta-ghost:focus-visible {
+    outline: 2px solid var(--hp-ink);
+    outline-offset: 3px;
+  }
+
+  .hp .lp-stat-value {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--hp-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .hp .lp-stat-label {
+    font-size: 0.875rem;
+    color: var(--hp-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Page heroes: not the homepage beam (that stays the homepage's signature) — a faint pool of
+     light from above, the same light seen from further away. */
+  .hp .lp-hero-bg,
+  .hp .hp-page-hero {
+    position: relative;
+    isolation: isolate;
+  }
+  .hp .lp-hero-bg::before,
+  .hp .hp-page-hero::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: -6rem;
+    width: min(56rem, 120vw);
+    height: 26rem;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at top, var(--hp-pool), transparent 70%);
+    pointer-events: none;
+  }
+  .hp .hp-page-hero {
+    padding-top: 9rem;
+    padding-bottom: 4rem;
+  }
+  @media (max-width: 640px) {
+    .hp .hp-page-hero {
+      padding-top: 7.5rem;
+    }
+  }
+}
+
+/* Older marketing sections colour their mockups with the dashboard accents; on these pages the
+   palette is monochrome and green is kept for "live / healthy". */
+.hp {
+  --accent-cyan: var(--hp-ink);
+  --accent-purple: var(--hp-body);
+  --accent-green: var(--hp-live);
+  /* The site-builder demo shows a customer's page, which has a brand colour of its own. */
+  --sb-brand: #4f46e5;
+}
+
+/* A grid whose cells are separated by hairlines (the gap shows the line colour through). */
+@layer components {
+  /* Open, as on developer.x.com: hairlines only between cells, no box around them. */
+  /* Every cell draws its left and top rule and is pulled 1px up-left; the outermost rules fall
+     outside the clip. So only inner hairlines show, and an unfilled last row stays empty. */
+  .hp .hp-rule-grid {
+    display: grid;
+    overflow: hidden;
+  }
+  .hp .hp-rule-grid > * {
+    margin: -1px 0 0 -1px;
+    border-left: 1px solid var(--hp-line-strong);
+    border-top: 1px solid var(--hp-line-strong);
+  }
+}
+
+/* ── Sign-in and sign-up: the site's door into the product ─────────────────── */
+
+.auth-shell.hp .lp-cta,
+.auth-shell.hp .lp-cta-ghost {
+  border-radius: 999px !important;
+}
+.auth-shell.hp .input {
+  background: var(--hp-card);
+  border-color: var(--hp-line-strong);
+  border-radius: 10px;
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+.auth-shell.hp .input:hover {
+  border-color: var(--hp-muted);
+}
+.auth-shell.hp .input:focus {
+  border-color: var(--hp-ink);
+  box-shadow: 0 0 0 3px var(--hp-line);
+}
+.auth-shell.hp label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-muted);
+}
+/* Text links (forgot password, sign up) were indigo; here they are ink with an underline on hover. */
+.auth-shell.hp a[class*='accent-cyan'] {
+  color: var(--hp-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--hp-line-strong);
+  text-underline-offset: 4px;
+}
+.auth-shell.hp a[class*='accent-cyan']:hover {
+  text-decoration-color: var(--hp-ink);
+  opacity: 1;
+}
+
+/* ── Marketing kit (components/landing/MarketingKit.tsx) ─────────────────── */
+
+@layer components {
+  .hp .hp-cell {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.75rem 2.25rem;
+  }
+  .hp .hp-cell-icon {
+    width: 1.375rem;
+    height: 1.375rem;
+    color: var(--hp-ink);
+    margin-bottom: 1.75rem;
+  }
+  .hp .hp-cell-title {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--hp-ink);
+  }
+  .hp .hp-cell-body {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--hp-body);
+  }
+  .hp .hp-cell-link {
+    margin-top: auto;
+    padding-top: 1.5rem;
+  }
+  .hp .hp-cell-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hp-ink);
+  }
+  .hp .hp-cell-link a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .hp .hp-steps {
+    border-top: 1px solid var(--hp-line);
+  }
+  .hp .hp-steps > li {
+    padding: 2rem 1.75rem 0 0;
+  }
+  .hp .hp-step-index {
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--hp-muted);
+  }
+
+  .hp .hp-code {
+    border: 1px solid var(--hp-line);
+    border-radius: 14px;
+    background: var(--hp-card);
+    overflow: hidden;
+  }
+  .hp .hp-code-title {
+    padding: 0.7rem 1.1rem;
+    border-bottom: 1px solid var(--hp-line);
+    font-family: var(--font-label);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hp-muted);
+  }
+  .hp .hp-code pre {
+    margin: 0;
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.75;
+    color: var(--hp-ink);
+  }
+}
+
+/* ── Pricing (app/pricing/PricingPlans.tsx) ──────────────────────────────── */
+
+@layer components {
+  .hp .hp-toggle {
+    display: inline-flex;
+    padding: 4px;
+    border: 1px solid var(--hp-line-strong);
+    border-radius: 999px;
+  }
+  .hp .hp-toggle button {
+    height: 2.25rem;
+    padding: 0 1.1rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    color: var(--hp-body);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .hp .hp-toggle button[aria-pressed='true'] {
+    background: var(--hp-btn);
+    color: var(--hp-btn-fg);
+  }
+  .hp .hp-toggle-save {
+    margin-left: 0.35rem;
+    font-family: var(--font-label);
+    font-size: 0.7rem;
+    opacity: 0.7;
+  }
+
+  /* Four plans in one open row, divided by hairlines like the feature grids. */
+  .hp .hp-plans {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--hp-line-strong);
+    border-bottom: 1px solid var(--hp-line-strong);
+  }
+  .hp .hp-plan {
+    position: relative;
+    padding: 2.25rem 1.75rem 2.5rem;
+  }
+  .hp .hp-plan + .hp-plan {
+    border-left: 1px solid var(--hp-line-strong);
+  }
+  /* The recommended plan is lit a little, with a bar of light along its top edge. */
+  .hp .hp-plan[data-recommended] {
+    background: color-mix(in srgb, var(--hp-ink) 4%, transparent);
+  }
+  .hp .hp-plan[data-recommended]::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--hp-ink), transparent);
+  }
+  .hp .hp-plan-tag {
+    font-family: var(--font-label);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hp-ink);
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--hp-line-strong);
+    border-radius: 999px;
+  }
+  .hp .hp-plan-price {
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    color: var(--hp-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .hp .hp-plan-wide {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+    padding: 1.75rem;
+    border-bottom: 1px solid var(--hp-line-strong);
+  }
+  @media (max-width: 1023px) {
+    .hp .hp-plans {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .hp .hp-plan:nth-child(3) {
+      border-left: 0;
+    }
+    .hp .hp-plan:nth-child(n + 3) {
+      border-top: 1px solid var(--hp-line-strong);
+    }
+  }
+  @media (max-width: 640px) {
+    .hp .hp-plans {
+      grid-template-columns: 1fr;
+    }
+    .hp .hp-plan + .hp-plan {
+      border-left: 0;
+      border-top: 1px solid var(--hp-line-strong);
+    }
+    .hp .hp-plan {
+      padding: 2rem 0.25rem 2.25rem;
+    }
+    .hp .hp-plan[data-recommended] {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+
+  /* Hairline data table (pricing comparison). */
+  .hp .hp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+  .hp .hp-table th,
+  .hp .hp-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--hp-line);
+    text-align: center;
+    color: var(--hp-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .hp .hp-table thead th {
+    font-family: var(--font-label);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hp-muted);
+    border-bottom-color: var(--hp-line-strong);
+  }
+  .hp .hp-table tbody th {
+    text-align: left;
+    font-weight: 400;
+    color: var(--hp-body);
+  }
+  .hp .hp-table thead th:first-child {
+    text-align: left;
+  }
+  .hp .hp-table [data-recommended] {
+    background: color-mix(in srgb, var(--hp-ink) 4%, transparent);
+  }
+  .hp .hp-table thead th[data-recommended] {
+    color: var(--hp-ink);
+  }
+}

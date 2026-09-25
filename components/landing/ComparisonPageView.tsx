@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Check, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Check, Minus, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { MarketingShell, MarketingPageHero } from './MarketingShell';
-import { LandingSectionHeader } from './LandingSectionHeader';
+import { MSection, RuleGrid, RuleCell, Faq } from './MarketingKit';
 import { JsonLd } from '@/components/JsonLd';
+import { useTranslation } from '@/hooks';
 
 export interface ComparisonRow {
   label: string;
@@ -41,22 +42,141 @@ export interface ComparisonPageViewProps {
   ctaButton: string;
 }
 
-function cell(val: boolean, highlight: boolean) {
-  return val ? (
-    <Check
-      className="w-5 h-5 mx-auto"
-      style={{ color: highlight ? 'var(--accent-cyan)' : 'var(--lp-ink)' }}
-      strokeWidth={2}
-    />
+/** Section labels the comparison copy doesn't carry; the rest comes from each page's namespace. */
+const copy = {
+  en: {
+    fitEyebrow: 'When to pick which',
+    fitTitle: 'Which one fits you?',
+    diffEyebrow: 'Differences',
+    faqEyebrow: 'FAQ',
+    summaryQ: (name: string) => `In short: how do Pushify and ${name} differ?`,
+    relatedTitle: 'Other comparisons and guides',
+    yes: 'Yes',
+    no: 'No',
+  },
+  tr: {
+    fitEyebrow: 'Hangisi ne zaman',
+    fitTitle: 'Hangisi size uygun?',
+    diffEyebrow: 'Farklar',
+    faqEyebrow: 'SSS',
+    summaryQ: (name: string) => `Kısaca: Pushify ile ${name} arasındaki fark ne?`,
+    relatedTitle: 'Diğer karşılaştırmalar ve rehberler',
+    yes: 'Var',
+    no: 'Yok',
+  },
+};
+
+function Mark({ value, ours, yes, no }: { value: boolean; ours: boolean; yes: string; no: string }) {
+  return value ? (
+    <>
+      <Check
+        className="w-[18px] h-[18px] mx-auto"
+        style={{ color: ours ? 'var(--hp-ink)' : 'var(--hp-body)' }}
+        strokeWidth={2}
+        aria-hidden="true"
+      />
+      <span className="sr-only">{yes}</span>
+    </>
   ) : (
-    <span className="text-[var(--lp-muted)] opacity-40">—</span>
+    <>
+      <Minus className="w-4 h-4 mx-auto" style={{ color: 'var(--hp-muted)', opacity: 0.6 }} aria-hidden="true" />
+      <span className="sr-only">{no}</span>
+    </>
+  );
+}
+
+/** The Pushify column's tint: a token blend, so it shows in both themes. */
+const OURS_BG = 'color-mix(in srgb, var(--hp-ink) 5%, transparent)';
+
+/** The page's one object: the side-by-side sheet, framed like a card and placed right under the hero. */
+function ComparisonTable({ p, yes, no }: { p: ComparisonPageViewProps; yes: string; no: string }) {
+  const head = 'hp-mono py-3.5 text-[11px] font-normal uppercase tracking-[0.1em]';
+  return (
+    <figure
+      className="overflow-hidden rounded-2xl border"
+      style={{ borderColor: 'var(--hp-line-strong)', background: 'var(--hp-card)' }}
+    >
+      <table className="w-full text-left border-collapse">
+        <caption className="sr-only">{p.tableTitle}</caption>
+        <thead>
+          <tr style={{ borderBottom: '1px solid var(--hp-line-strong)' }}>
+            <th scope="col" className={`${head} pl-5 md:pl-7 pr-3`} style={{ color: 'var(--hp-muted)' }}>
+              {p.colFeature}
+            </th>
+            <th
+              scope="col"
+              className={`${head} px-2 text-center w-[24%] sm:w-[20%]`}
+              style={{ color: 'var(--hp-ink)', background: OURS_BG }}
+            >
+              {p.colPushify}
+            </th>
+            <th scope="col" className={`${head} px-2 pr-4 md:pr-6 text-center w-[24%] sm:w-[20%]`} style={{ color: 'var(--hp-muted)' }}>
+              {p.colCompetitor}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {p.rows.map((row, i) => (
+            <tr key={row.label} style={i > 0 ? { borderTop: '1px solid var(--hp-line)' } : undefined}>
+              <th
+                scope="row"
+                className="py-3.5 pl-5 md:pl-7 pr-3 text-[0.95rem] font-normal leading-snug"
+                style={{ color: 'var(--hp-ink)' }}
+              >
+                {row.label}
+              </th>
+              <td className="py-3.5 px-2 text-center" style={{ background: OURS_BG }}>
+                <Mark value={row.pushify} ours yes={yes} no={no} />
+              </td>
+              <td className="py-3.5 px-2 pr-4 md:pr-6 text-center">
+                <Mark value={row.competitor} ours={false} yes={yes} no={no} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <figcaption
+        className="px-5 md:px-7 py-4 text-[13px] leading-relaxed"
+        style={{ color: 'var(--hp-muted)', borderTop: '1px solid var(--hp-line-strong)' }}
+      >
+        {p.tableNote}
+      </figcaption>
+    </figure>
+  );
+}
+
+/** One side of "choose X if…": short lines under hairlines, no icons. */
+function ReasonCard({ title, items, ours }: { title: string; items: string[]; ours: boolean }) {
+  return (
+    <div className="hp-diff-card" data-ours={ours ? 'true' : undefined}>
+      <h3 className="text-[1.25rem] font-medium tracking-[-0.01em]" style={{ color: 'var(--hp-ink)' }}>
+        {title}
+      </h3>
+      <ul className="mt-5">
+        {items.map((r) => (
+          <li
+            key={r}
+            className="py-3 text-[0.95rem] leading-relaxed"
+            style={{ borderTop: '1px solid var(--hp-line)', color: ours ? 'var(--hp-ink)' : 'var(--hp-body)' }}
+          >
+            {r}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
 export function ComparisonPageView(p: ComparisonPageViewProps) {
+  const { locale } = useTranslation();
+  const c = copy[locale === 'tr' ? 'tr' : 'en'];
+
+  // The long "short version" reads best as the first answer, not as a wall of text above the table.
+  const faqItems = [{ q: c.summaryQ(p.colCompetitor), a: p.tldrBody }, ...p.faqs];
+
   return (
     <>
-      {/* FAQ rich-result schema, built from the same FAQ content rendered below. */}
+      {/* FAQ rich-result schema, built from the page's FAQ content rendered below. */}
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -71,161 +191,79 @@ export function ComparisonPageView(p: ComparisonPageViewProps) {
       <MarketingShell noPad>
         <MarketingPageHero label={p.eyebrow} title={p.h1} description={p.subtitle} />
 
-      <div className="lp-container -mt-4 mb-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <Link href="/register" className="lp-cta group">
-          {p.ctaPrimary}
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-        </Link>
-        <Link href="/pricing" className="lp-cta-ghost">
-          {p.ctaSecondary}
-          <ArrowUpRight className="w-4 h-4" />
-        </Link>
-      </div>
-
-      {/* TL;DR */}
-      <section className="lp-section pt-10">
-        <div className="lp-container max-w-3xl">
-          <div className="lp-card p-6 md:p-8">
-            <h2 className="lp-section-title mb-3">{p.tldrTitle}</h2>
-            <p className="lp-body" style={{ color: 'var(--lp-body)' }}>{p.tldrBody}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Choose if */}
-      <section className="lp-section">
-        <div className="lp-container grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-4xl">
-          <div className="lp-card p-6" style={{ borderColor: 'var(--accent-cyan)' }}>
-            <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--lp-ink)' }}>
-              {p.choosePushifyTitle}
-            </h3>
-            <ul className="space-y-2.5">
-              {p.pushifyReasons.map((r) => (
-                <li key={r} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--lp-body)' }}>
-                  <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: 'var(--accent-cyan)' }} strokeWidth={2.5} />
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="lp-card p-6">
-            <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--lp-ink)' }}>
-              {p.chooseCompetitorTitle}
-            </h3>
-            <ul className="space-y-2.5">
-              {p.competitorReasons.map((r) => (
-                <li key={r} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--lp-body)' }}>
-                  <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: 'var(--lp-muted)' }} strokeWidth={2.5} />
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison table */}
-      <section className="lp-section">
-        <div className="lp-container max-w-4xl">
-          <LandingSectionHeader title={p.tableTitle} align="center" className="mx-auto text-center" />
-          <div className="lp-card overflow-hidden relative">
-            {/* Spotlight on the Pushify column (1.5fr + 1fr + 1fr grid) */}
-            <div
-              aria-hidden="true"
-              className="absolute top-0 bottom-0 pointer-events-none"
-              style={{
-                left: '42.85%',
-                width: '28.57%',
-                background: 'color-mix(in srgb, var(--lp-ink) 4%, transparent)',
-                borderLeft: '1px solid var(--lp-border)',
-                borderRight: '1px solid var(--lp-border)',
-              }}
-            />
-            <div
-              className="grid grid-cols-[1.5fr_1fr_1fr] gap-2 px-5 py-4 text-sm font-medium border-b border-[var(--lp-border)]"
-              style={{ color: 'var(--lp-muted)', background: 'var(--bg-tertiary)' }}
-            >
-              <div>{p.colFeature}</div>
-              <div className="text-center" style={{ color: 'var(--lp-ink)' }}>{p.colPushify}</div>
-              <div className="text-center">{p.colCompetitor}</div>
-            </div>
-            {p.rows.map((row) => (
-              <div
-                key={row.label}
-                className="grid grid-cols-[1.5fr_1fr_1fr] gap-2 px-5 py-3.5 border-b border-[var(--lp-border)] last:border-b-0 items-center"
-              >
-                <div className="text-sm" style={{ color: 'var(--lp-ink)' }}>{row.label}</div>
-                <div className="text-center">{cell(row.pushify, true)}</div>
-                <div className="text-center">{cell(row.competitor, false)}</div>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs mt-4 text-center max-w-2xl mx-auto" style={{ color: 'var(--lp-muted)' }}>
-            {p.tableNote}
-          </p>
-        </div>
-      </section>
-
-      {/* Key differences */}
-      <section className="lp-section">
-        <div className="lp-container max-w-4xl">
-          <LandingSectionHeader title={p.diffTitle} align="center" className="mx-auto text-center" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {p.diffs.map((d) => (
-              <div key={d.title} className="lp-card p-6">
-                <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>{d.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>{d.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="lp-section">
-        <div className="lp-container max-w-3xl">
-          <LandingSectionHeader title={p.faqTitle} align="center" className="mx-auto text-center" />
-          <div className="space-y-3">
-            {p.faqs.map((f) => (
-              <div key={f.q} className="lp-card p-5">
-                <h3 className="text-sm font-semibold mb-1.5" style={{ color: 'var(--lp-ink)' }}>{f.q}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>{f.a}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Related pages — internal linking for topical authority */}
-      {p.relatedLinks && p.relatedLinks.length > 0 && (
-        <section className="lp-section">
-          <div className="lp-container max-w-4xl">
-            {p.relatedTitle && (
-              <LandingSectionHeader title={p.relatedTitle} align="center" className="mx-auto text-center" />
-            )}
-            <div className="flex flex-wrap justify-center gap-3">
-              {p.relatedLinks.map((l) => (
-                <Link key={l.href} href={l.href} className="lp-cta-ghost">
-                  {l.label}
-                  <ArrowUpRight className="w-4 h-4" />
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* CTA */}
-      <section className="lp-section">
-        <div className="lp-container max-w-2xl text-center">
-          <h2 className="lp-section-title mb-3">{p.ctaTitle}</h2>
-          <p className="lp-lead mb-7">{p.ctaBody}</p>
-          <Link href="/register" className="lp-cta group inline-flex">
-            {p.ctaButton}
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+        <div className="lp-container -mt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link href="/register" className="lp-cta group">
+            {p.ctaPrimary}
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          </Link>
+          <Link href="/pricing" className="lp-cta-ghost">
+            {p.ctaSecondary}
+            <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
-      </section>
+
+        {/* The comparison sheet — the first thing under the hero */}
+        <div className="lp-container max-w-3xl pt-14 md:pt-16 pb-20 md:pb-24">
+          <ComparisonTable p={p} yes={c.yes} no={c.no} />
+        </div>
+
+        {/* Choose if… — the two sides, so these stay as a pair of cards. */}
+        <MSection eyebrow={c.fitEyebrow} title={c.fitTitle} align="center">
+          <div className="hp-diff">
+            <ReasonCard title={p.choosePushifyTitle} items={p.pushifyReasons} ours />
+            <ReasonCard title={p.chooseCompetitorTitle} items={p.competitorReasons} ours={false} />
+          </div>
+        </MSection>
+
+        {/* Key differences */}
+        <MSection eyebrow={c.diffEyebrow} title={p.diffTitle}>
+          <RuleGrid cols={3}>
+            {p.diffs.map((d) => (
+              <RuleCell key={d.title} title={d.title}>
+                {d.body}
+              </RuleCell>
+            ))}
+          </RuleGrid>
+        </MSection>
+
+        {/* FAQ */}
+        <MSection eyebrow={c.faqEyebrow} title={p.faqTitle} align="center">
+          <Faq items={faqItems} />
+        </MSection>
+
+        {/* Related pages — internal linking for topical authority */}
+        {p.relatedLinks && p.relatedLinks.length > 0 && (
+          <MSection eyebrow={p.relatedTitle} title={c.relatedTitle}>
+            <RuleGrid cols={p.relatedLinks.length % 4 === 0 ? 4 : p.relatedLinks.length % 3 === 0 ? 3 : 2}>
+              {p.relatedLinks.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="group flex items-start justify-between gap-4 p-6 md:p-7 transition-colors hover:bg-(--hp-card)"
+                >
+                  <span className="text-[1rem] font-medium leading-snug" style={{ color: 'var(--hp-ink)' }}>
+                    {l.label}
+                  </span>
+                  <ArrowUpRight
+                    className="w-4 h-4 mt-1 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
+                    style={{ color: 'var(--hp-muted)' }}
+                    aria-hidden="true"
+                  />
+                </Link>
+              ))}
+            </RuleGrid>
+          </MSection>
+        )}
+
+        {/* Closing call */}
+        <MSection title={p.ctaTitle} lead={p.ctaBody} align="center">
+          <div className="-mt-4 flex justify-center">
+            <Link href="/register" className="lp-cta group">
+              {p.ctaButton}
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </Link>
+          </div>
+        </MSection>
       </MarketingShell>
     </>
   );

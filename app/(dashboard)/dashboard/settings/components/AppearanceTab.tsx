@@ -23,8 +23,8 @@ const languages: { id: SupportedLocale; labelKey: 'english' | 'turkish'; flag: s
 ];
 
 const PREVIEW_COLORS = {
-  dark: { bg: '#0b0b10', panel: '#16161d', line: '#2b2b35', accent: '#6366f1' },
-  light: { bg: '#f3f4f6', panel: '#ffffff', line: '#e5e7eb', accent: '#6366f1' },
+  dark: { bg: '#030303', panel: '#0a0a0a', line: '#27272a', accent: '#f4f4f5' },
+  light: { bg: '#fafafa', panel: '#ffffff', line: '#e4e4e7', accent: '#09090b' },
 };
 
 /** Tiny dashboard mock rendered in the theme's own colors — the option shows itself. */

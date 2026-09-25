@@ -9,6 +9,7 @@ import { getApiErrorMessage } from '@/lib/api/get-error-message';
 import { appT } from '@/lib/i18n/app-translate';
 import { AfterHydration } from '@/components/AfterHydration';
 import { LocaleProvider } from '@/components/LocaleProvider';
+import { RouteProgress } from '@/components/RouteProgress';
 import type { SupportedLocale } from '@/lib/i18n';
 
 function resolveThemeMode(theme: Theme): 'light' | 'dark' {
@@ -84,6 +85,7 @@ export function Providers({
     <QueryClientProvider client={queryClient}>
       <LocaleProvider initialLocale={initialLocale}>
         <AfterHydration />
+        <RouteProgress />
         {children}
         <DynamicToaster />
         <ConfirmProvider />

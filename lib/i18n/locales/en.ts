@@ -280,6 +280,7 @@ export interface TranslationKeys {
     daysAgo: string;
   };
   branding: {
+    eyebrow: string;
     deployAt: string;
     speedOfThought: string;
     description: string;
@@ -511,6 +512,47 @@ export interface TranslationKeys {
     forDevelopers: string;
   };
   homepage: {
+    homeHeroLead: string;
+    homeFeaturesEyebrow: string;
+    homeFeaturesTitle: string;
+    homeFeaturesLead: string;
+    homeF1Title: string;
+    homeF1Body: string;
+    homeF2Title: string;
+    homeF2Body: string;
+    homeF3Title: string;
+    homeF3Body: string;
+    homeF4Title: string;
+    homeF4Body: string;
+    homeDeployEyebrow: string;
+    homeDeployTitle: string;
+    homeDeployLead: string;
+    homeCostEyebrow: string;
+    homeCostTitle: string;
+    homeCostLead: string;
+    homeCostProjects: string;
+    homeCostSeats: string;
+    homeCostServer: string;
+    homeCostServerHint: string;
+    homeCostCpu: string;
+    homeCostRam: string;
+    homeCostPerMonth: string;
+    homeCostEstimated: string;
+    homeCostSources: string;
+    homeDiffEyebrow: string;
+    homeDiffTitle: string;
+    homeDiffLead: string;
+    homeDiffHosted: string;
+    homeDiffHosted1: string;
+    homeDiffHosted2: string;
+    homeDiffHosted3: string;
+    homeDiffHosted4: string;
+    homeDiffPushify1: string;
+    homeDiffPushify2: string;
+    homeDiffPushify3: string;
+    homeDiffPushify4: string;
+    homeCtaTitle: string;
+    homeCtaLead: string;
     // Stats
     stats: string;
     statsTrusted: string;
@@ -658,6 +700,7 @@ export interface TranslationKeys {
     siteBuilderShotAlt: string;
     siteBuilderShotCaption: string;
     fullPlanComparisonTitle: string;
+    fullPlanComparisonLead: string;
   };
   errors: {
     notFound: string;
@@ -3037,9 +3080,9 @@ export const en: TranslationKeys = {
   },
   auth: {
     welcomeBack: 'Welcome back',
-    signInToContinue: 'Sign in to continue deploying',
+    signInToContinue: 'Sign in to your workspace.',
     createAccount: 'Create account',
-    startDeploying: 'Start deploying in seconds',
+    startDeploying: 'Start free and connect your first repository.',
     email: 'Email',
     password: 'Password',
     name: 'Name',
@@ -3283,16 +3326,17 @@ export const en: TranslationKeys = {
     daysAgo: 'd ago',
   },
   branding: {
-    deployAt: 'Deploy at the',
-    speedOfThought: 'speed of thought',
-    description: 'Push your code. We handle the rest. Infrastructure, scaling, and deployment — all automated.',
-    zeroConfig: 'Zero-config deployments',
+    eyebrow: 'Open-source PaaS',
+    deployAt: 'Your apps,',
+    speedOfThought: 'on servers you own.',
+    description: 'Connect a repository and Pushify builds it, serves it over HTTPS and keeps it running — on a VPS you bring or a Hetzner server from the dashboard.',
+    zeroConfig: 'Framework detected from the repository',
     zeroConfigDesc: 'Push code, deploy instantly. Framework detection is automatic.',
-    autoHttps: 'Automatic HTTPS & domains',
+    autoHttps: 'HTTPS certificates issued and renewed for you',
     autoHttpsDesc: 'Free SSL, custom domains, and enterprise-grade security.',
-    realTimeLogs: 'Real-time logs & metrics',
+    realTimeLogs: 'Live logs, metrics and alerts',
     realTimeLogsDesc: 'Live logs, metrics, and performance monitoring.',
-    teamCollab: 'Team collaboration built-in',
+    teamCollab: 'Roles and access for your whole team',
     teamCollabDesc: 'Team workspaces with granular role-based access.',
     documentation: 'Documentation',
     github: 'GitHub',
@@ -3315,10 +3359,10 @@ export const en: TranslationKeys = {
     sites: 'Sites',
     exploreMore: 'Explore more',
     // Hero
-    openSourcePlatform: 'Open Source Cloud Platform',
+    openSourcePlatform: 'Open-source cloud platform',
     heroTitleLead: 'Deploy to your own servers',
-    heroTitleEm: 'in seconds',
-    getStartedFree: 'Get Started Free',
+    heroTitleEm: 'without the ops work',
+    getStartedFree: 'Get started free',
     openDashboard: 'Open dashboard',
     viewOnGithub: 'View on GitHub',
     edgeLocations: 'Any VPS · Any region',
@@ -3326,7 +3370,7 @@ export const en: TranslationKeys = {
     configRequired: 'Config Required',
     heroLead:
       'Open-source PaaS for teams that want Vercel-grade developer experience without the vendor lock-in. Connect a repository, choose a server (yours or ours), and ship to production with HTTPS, builds, and zero-downtime cutover — in under a minute.',
-    heroStarGithub: '★ Star on GitHub',
+    heroStarGithub: 'Star on GitHub',
     heroStatMitLicensed: 'MIT licensed',
     heroStatDeployFast: 'Git push → live',
     heroStatNoVendorLockIn: 'No vendor lock-in',
@@ -3346,9 +3390,9 @@ export const en: TranslationKeys = {
     frameworkDetectedChip: 'Framework auto-detected — zero config',
     // Features page hero
     platform: 'Platform',
-    everythingYouNeedTo: 'Everything you need to',
-    shipWithConfidence: 'ship with confidence',
-    featuresPageDescription: 'From git push to production in seconds. Pushify handles infrastructure, SSL, monitoring, and scaling — so you can focus on building.',
+    everythingYouNeedTo: 'Everything between git push',
+    shipWithConfidence: 'and a running app',
+    featuresPageDescription: 'From git push to production. Pushify handles the servers, certificates, databases, monitoring and scaling — you keep writing the product.',
     // Features hero blocks
     deployLabel: 'Deploy',
     pushToDeployTitle: 'Push to deploy. Literally.',
@@ -3368,7 +3412,7 @@ export const en: TranslationKeys = {
     siteBuilderDesc: 'Launch marketing sites and landing pages without writing code. A visual drag-and-drop editor with multi-page management, ready-made design templates, and one-click publish straight to your own server — domain optional.',
     // Mini features grid
     andEverythingElse: 'And everything else',
-    everyFeatureBuiltIn: 'Every feature a modern deployment platform needs, built-in from day one.',
+    everyFeatureBuiltIn: 'The rest of what running an app takes — included in every plan that needs it.',
     customDomainsAndSsl: 'Custom Domains & SSL',
     customDomainsAndSslDesc: "Add your domains with automatic Let's Encrypt certificates. Zero configuration required.",
     teamCollaboration: 'Team Collaboration',
@@ -3403,7 +3447,7 @@ export const en: TranslationKeys = {
       'Two clear bills: a monthly platform subscription (deploy, API, team limits) and a prepaid infrastructure wallet for managed Hetzner servers (hourly while running).',
     monthly: 'Monthly',
     yearly: 'Yearly',
-    mostPopular: 'Most Popular',
+    mostPopular: 'Recommended',
     forever: 'forever',
     month: 'month',
     freeForever: 'Free forever',
@@ -3462,11 +3506,11 @@ export const en: TranslationKeys = {
     planBusinessDesc: 'For teams that need enterprise-grade features',
     planEnterpriseDesc: 'Unlimited resources for large organizations',
     // Plan button texts
-    planFreeButton: 'Get Started Free',
-    planHobbyButton: 'Start Hobby',
-    planProButton: 'Start Pro Trial',
-    planBusinessButton: 'Get Started',
-    planEnterpriseButton: 'Contact Sales',
+    planFreeButton: 'Get started free',
+    planHobbyButton: 'Choose Hobby',
+    planProButton: 'Choose Pro',
+    planBusinessButton: 'Choose Business',
+    planEnterpriseButton: 'Talk to us',
     // Plan features
     planBuildMinutes: 'build minutes',
     planProjects: 'projects',
@@ -3530,6 +3574,47 @@ export const en: TranslationKeys = {
     forDevelopers: 'for developers',
   },
   homepage: {
+    homeHeroLead: 'Connect a repository, pick a server — yours or ours — and ship with HTTPS and zero-downtime deploys.',
+    homeFeaturesEyebrow: 'Key features',
+    homeFeaturesTitle: 'A hosted platform’s workflow. Servers you own.',
+    homeFeaturesLead: 'Pushify runs the builds, the proxy, the certificates and the rollbacks. You keep the servers, the data and the bill.',
+    homeF1Title: 'Push to deploy',
+    homeF1Body: 'Every push builds a fresh image. Traffic moves only after the new container passes its health check.',
+    homeF2Title: 'Your server or ours',
+    homeF2Body: 'Connect any VPS over SSH, or run on a managed server. Same dashboard, same deploys.',
+    homeF3Title: 'Databases, backed up',
+    homeF3Body: 'PostgreSQL, MySQL, MongoDB and Redis in a few clicks, with scheduled backups you can keep off the server.',
+    homeF4Title: 'Open source',
+    homeF4Body: 'MIT licensed, API to dashboard. Read the code, self-host the whole platform, leave whenever you like.',
+    homeDeployEyebrow: 'In production',
+    homeDeployTitle: 'From git push to live — and after.',
+    homeDeployLead: 'Deploys, previews, rollbacks, scaling, backups and alerts: the work Pushify does for you, line by line.',
+    homeCostEyebrow: 'Transparent pricing',
+    homeCostTitle: 'Your bill, side by side.',
+    homeCostLead: 'A rough monthly estimate from published list prices. Move the sliders to match your setup.',
+    homeCostProjects: 'Projects',
+    homeCostSeats: 'Team members',
+    homeCostServer: 'Your server',
+    homeCostServerHint: 'What you pay your VPS provider',
+    homeCostCpu: 'vCPU per project',
+    homeCostRam: 'GB RAM per project',
+    homeCostPerMonth: '/mo',
+    homeCostEstimated: 'Estimated monthly',
+    homeCostSources: 'Sources',
+    homeDiffEyebrow: 'The difference',
+    homeDiffTitle: 'Hosted platform vs. Pushify',
+    homeDiffLead: 'What changes when the servers are yours.',
+    homeDiffHosted: 'Hosted platform',
+    homeDiffHosted1: 'Per-seat pricing that grows with the team',
+    homeDiffHosted2: 'Bandwidth and usage billed on top',
+    homeDiffHosted3: 'Your app runs on their infrastructure',
+    homeDiffHosted4: 'Closed source — you can’t run it yourself',
+    homeDiffPushify1: 'Flat plan, no per-seat fee within its member limit',
+    homeDiffPushify2: 'No per-GB metering',
+    homeDiffPushify3: 'Runs on your own server, or a managed one',
+    homeDiffPushify4: 'Open source — self-host it if you want',
+    homeCtaTitle: 'Ready to deploy?',
+    homeCtaLead: 'Start free and connect your first repository.',
     // Stats
     stats: 'Trusted by developers worldwide',
     statsTrusted: 'Open source',
@@ -3678,6 +3763,7 @@ export const en: TranslationKeys = {
     siteBuilderShotAlt: 'Site Studio in Pushify, showing the template catalog filtered by use case and platform',
     siteBuilderShotCaption: 'The Site Studio template catalog, as it looks inside Pushify.',
     fullPlanComparisonTitle: 'Full plan comparison',
+    fullPlanComparisonLead: 'Every limit, side by side. Managed servers are paid from infrastructure credits, not from the plan.',
   },
   errors: {
     notFound: 'Not found',
@@ -4736,7 +4822,7 @@ export const en: TranslationKeys = {
     notIncluded: 'Not included',
     // Upgrade
     upgradePlan: 'Upgrade Plan',
-    comparePlans: 'Compare Plans',
+    comparePlans: 'Compare plans',
     currentPlanBadge: 'Current',
     perMonth: '/month',
     billingCycleMonthly: 'Monthly',
@@ -4772,7 +4858,7 @@ export const en: TranslationKeys = {
       'Subscription = platform limits (projects, deploys, team). Managed Hetzner servers are billed hourly from your infrastructure wallet (provider cost + margin), not included in the monthly plan price.',
     plansFooterNeedCustom: 'Need custom limits?',
     plansContactUs: 'Contact us',
-    planMostPopular: 'Most Popular',
+    planMostPopular: 'Recommended',
     upgradeButton: 'Upgrade',
     downgradeButton: 'Downgrade',
     planPriceCustom: 'Custom',
@@ -5651,8 +5737,7 @@ export const en: TranslationKeys = {
   vsCoolify: {
     eyebrow: 'Comparison',
     h1: 'Pushify vs Coolify',
-    subtitle:
-      'Two open-source ways to deploy apps on servers you own. Here is an honest, side-by-side look at where each one fits.',
+    subtitle: "Two open-source ways to deploy apps on servers you own — where each one fits.",
     ctaPrimary: 'Start with Pushify',
     ctaSecondary: 'See pricing',
     tldrTitle: 'The short version',
@@ -5678,14 +5763,11 @@ export const en: TranslationKeys = {
     rowBilling: 'Built-in team billing',
     diffTitle: 'Key differences',
     diff1Title: 'Managed vs self-managed',
-    diff1Body:
-      'Both let you self-host for free. Pushify also offers a managed path — it can create and manage Hetzner servers for you and bill infrastructure usage from a prepaid wallet, so you can start without touching SSH. Coolify centers on a self-hosted instance you run and maintain yourself (it also has a paid cloud).',
+    diff1Body: "Both self-host free. Pushify can also provision Hetzner servers and bill them from a prepaid wallet.",
     diff2Title: 'Beyond deployments',
-    diff2Body:
-      'Pushify bundles extras aimed at small teams and agencies: an AI assistant for debugging and config, role-based team access, and a no-code site builder for publishing marketing sites. Coolify keeps a tighter focus on deployments and self-hosted services.',
+    diff2Body: "Pushify adds an AI assistant, team roles and a no-code site builder; Coolify stays deploy-focused.",
     diff3Title: 'Maturity and community',
-    diff3Body:
-      'Coolify has been around longer and has a significantly larger community, which means more guides, templates, and real-world battle-testing. Pushify is newer — if a large community and long track record are decisive for you, Coolify currently leads there.',
+    diff3Body: "Coolify is older, with a far larger community and more guides and templates.",
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Coolify free?',
     faq1A:
@@ -5706,8 +5788,7 @@ export const en: TranslationKeys = {
   vsVercel: {
     eyebrow: 'Comparison',
     h1: 'Pushify vs Vercel',
-    subtitle:
-      'Vercel sets the bar for frontend developer experience — but it runs on Vercel’s cloud, priced by usage. Here is how Pushify compares when you want to own your infrastructure.',
+    subtitle: "Vercel's polished workflow, on servers you own — how the two compare.",
     ctaPrimary: 'Start with Pushify',
     ctaSecondary: 'See pricing',
     tldrTitle: 'The short version',
@@ -5732,14 +5813,11 @@ export const en: TranslationKeys = {
     rowNoLockIn: 'No vendor lock-in',
     diffTitle: 'Key differences',
     diff1Title: 'Where your apps run',
-    diff1Body:
-      'Vercel runs your apps on its own managed cloud and edge network — you never touch a server. Pushify deploys to infrastructure you own: connect any VPS over SSH, or let Pushify provision and manage a Hetzner server for you.',
+    diff1Body: "Vercel runs apps on its own cloud. Pushify deploys to your VPS or a Hetzner server.",
     diff2Title: 'How you pay',
-    diff2Body:
-      'Vercel bills by usage (bandwidth, function invocations, build minutes), which scales smoothly but can become unpredictable. Pushify separates a flat platform subscription from your own server costs, so the bill is predictable — and self-hosting is free.',
+    diff2Body: "Vercel bills by usage. Pushify is a flat subscription plus your server — self-hosting is free.",
     diff3Title: 'What you can run',
-    diff3Body:
-      'Vercel is optimized for frontends and serverless functions. Pushify runs anything that ships in a Docker container — frontends, backends, workers, and managed databases — on long-running servers, plus a one-click app marketplace and a no-code site builder.',
+    diff3Body: "Vercel targets frontends and serverless. Pushify runs any Docker container: backends, workers, databases.",
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a Vercel alternative?',
     faq1A:
@@ -5806,29 +5884,21 @@ export const en: TranslationKeys = {
   vsHeroku: {
     eyebrow: 'Honest comparison',
     h1: 'Pushify vs Heroku',
-    subtitle:
-      'Heroku invented git-push deployments. Pushify brings the same workflow to servers you own — with a free self-host option and flat server pricing. A spec sheet, not a pitch.',
+    subtitle: "Heroku's git-push workflow on servers you own, with flat server pricing.",
     ctaPrimary: 'Get started free',
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
       "Heroku is a fully managed platform: you never touch a server, and you pay per dyno — a Basic dyno is $7/mo, the smallest Postgres is $5/mo, so a small always-on app starts around $12/mo (the free tier was removed in November 2022; the $5 Eco plan sleeps after 30 minutes of inactivity). Pushify keeps Heroku's push-to-deploy feel but runs on infrastructure you control: self-host the whole platform for free, bring your own VPS, or let Pushify provision managed Hetzner servers at flat monthly prices. If you want zero server responsibility and a decade-old add-on ecosystem, Heroku is still excellent. If you want ownership and predictable bills, that's Pushify.",
     choosePushifyTitle: 'Choose Pushify if…',
-    choosePushify1:
-      'You want predictable, flat server pricing instead of per-dyno, per-add-on billing that grows with every service you add.',
-    choosePushify2:
-      'You want your app and data on servers you own — self-host the platform for free, or bring any VPS.',
-    choosePushify3:
-      "You miss a real free tier: Pushify's self-host option costs nothing, and BYOS runs fine on a $5 VPS.",
-    choosePushify4:
-      'You want extras Heroku does not ship — a marketplace of self-hosted apps (Supabase, WordPress, n8n…), an AI assistant, a site builder, built-in domain purchasing.',
+    choosePushify1: "You want flat server pricing, not per-dyno and per-add-on billing.",
+    choosePushify2: "You want apps and data on servers you own.",
+    choosePushify3: "You want a real free option: self-host Pushify, or run it on a $5 VPS.",
+    choosePushify4: "You want an app marketplace, AI assistant, site builder and domain purchasing.",
     chooseHerokuTitle: 'Choose Heroku if…',
-    chooseHeroku1:
-      "You want a fully managed platform with zero server responsibility — Heroku's ops burden really is zero.",
-    chooseHeroku2:
-      'You rely on its mature ecosystem: 10+ years of add-ons, buildpacks and enterprise compliance options.',
-    chooseHeroku3:
-      'Your team already lives in Heroku pipelines and review apps, and migration cost outweighs the savings.',
+    chooseHeroku1: "You want zero server responsibility.",
+    chooseHeroku2: "You rely on 10+ years of add-ons, buildpacks and compliance options.",
+    chooseHeroku3: "Your team lives in Heroku pipelines and migrating costs more than it saves.",
     tableTitle: 'Feature comparison',
     tableNote:
       'Based on publicly available information (Heroku pricing pages, July 2026). This may change — spot something out of date? Email us and we will fix it.',
@@ -5839,14 +5909,11 @@ export const en: TranslationKeys = {
     rowAddonEco: '10+ year add-on ecosystem',
     diffTitle: 'The three differences that matter',
     diff1Title: 'Where your app runs',
-    diff1Body:
-      'Heroku runs everything on its own managed infrastructure — you cannot self-host it or bring a server. Pushify is the opposite: MIT-licensed, installable on your own machine with one command, and happy to deploy to any VPS you bring or to managed Hetzner servers it provisions for you.',
+    diff1Body: "Heroku can't be self-hosted. Pushify is MIT-licensed and deploys to any VPS or managed Hetzner server.",
     diff2Title: 'How the bill grows',
-    diff2Body:
-      'Heroku bills per dyno and per add-on: $7/mo for one always-on Basic dyno, $5/mo for the smallest Postgres, and every extra service adds its own line item. On Pushify a server has one flat monthly price, prorated hourly — run as many apps and databases on it as it can handle.',
+    diff2Body: "Heroku bills per dyno and add-on. On Pushify, one server has one flat monthly price.",
     diff3Title: 'What happened to free',
-    diff3Body:
-      "Heroku removed its free tier in November 2022; the closest thing today is the $5 Eco plan, whose dynos sleep after 30 minutes. Pushify's self-host option is genuinely free, and scale-to-zero on your own server is a feature, not a billing tier.",
+    diff3Body: "Heroku's free tier ended in 2022. Self-hosting Pushify is free, and scale-to-zero is a feature.",
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Heroku alternative?',
     faq1A:
@@ -5902,29 +5969,21 @@ export const en: TranslationKeys = {
   vsRailway: {
     eyebrow: 'Honest comparison',
     h1: 'Pushify vs Railway',
-    subtitle:
-      'Railway is a polished managed cloud with usage-based billing. Pushify brings a similar git-push experience to servers you own, at flat monthly prices. A spec sheet, not a pitch.',
+    subtitle: "Railway meters usage on its cloud. Pushify runs on your servers at flat prices.",
     ctaPrimary: 'Get started free',
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
       "Railway runs your apps on its own cloud and meters what you use: the Hobby plan is $5/mo (including $5 of usage), Pro starts at $20 per seat, and CPU/RAM are billed on top as you consume them. There is no self-host option and no way to bring your own server. Pushify flips that model: the platform deploys to infrastructure you control — self-host it for free, bring any VPS, or use managed Hetzner servers at flat monthly prices — so the bill is a server price, not a meter. If you want a beautiful zero-ops cloud and metered billing suits your workload, Railway is genuinely good. If you want ownership and a bill you can predict, that's Pushify.",
     choosePushifyTitle: 'Choose Pushify if…',
-    choosePushify1:
-      'You want a bill that never surprises you: a server has one flat monthly price, and a traffic spike changes your latency, not your invoice.',
-    choosePushify2:
-      'You want your apps and data on servers you own — self-host the platform, bring any VPS, or use managed servers with root access.',
-    choosePushify3:
-      'You want a real free path: self-hosting Pushify costs nothing, and bring-your-own-server runs fine on a $5 VPS.',
-    choosePushify4:
-      'You want extras Railway does not ship — a marketplace of self-hosted apps (Supabase, WordPress, n8n…), an AI assistant, a site builder, built-in domain purchasing.',
+    choosePushify1: "You want a bill that doesn't move with traffic: one flat price per server.",
+    choosePushify2: "You want apps and data on servers you own, with root access.",
+    choosePushify3: "You want a real free option: self-host Pushify, or run it on a $5 VPS.",
+    choosePushify4: "You want an app marketplace, AI assistant, site builder and domain purchasing.",
     chooseRailwayTitle: 'Choose Railway if…',
-    chooseRailway1:
-      'You want fully managed, multi-region infrastructure and never want to think about a server — Railway’s ops burden is zero.',
-    chooseRailway2:
-      'Your workload is small or spiky and metered billing works in your favor — you pay for what you consume, not for an always-on box.',
-    chooseRailway3:
-      'You value its template ecosystem and collaborative dashboard, and your team is already productive there.',
+    chooseRailway1: "You want managed multi-region infrastructure and never want to think about servers.",
+    chooseRailway2: "Your workload is small or spiky, so metered billing works in your favor.",
+    chooseRailway3: "Your team is already productive with its templates and dashboard.",
     tableTitle: 'Feature comparison',
     tableNote:
       'Based on publicly available information (Railway pricing pages, August 2026). This may change — spot something out of date? Email us and we will fix it.',
@@ -5935,14 +5994,11 @@ export const en: TranslationKeys = {
     rowPreviewEnvs: 'PR preview environments',
     diffTitle: 'The three differences that matter',
     diff1Title: 'Where your app runs',
-    diff1Body:
-      'Railway runs everything on its own managed cloud — you cannot self-host the platform or attach your own machine. Pushify is the opposite: install it on your own hardware with one command, bring any VPS over SSH, or let it provision managed Hetzner servers for you.',
+    diff1Body: "Railway runs only on its cloud. Pushify runs on your hardware, any VPS, or managed Hetzner.",
     diff2Title: 'How the bill grows',
-    diff2Body:
-      'Railway meters resources: a subscription plus per-second CPU and memory charges, and Pro seats at $20 each. Pushify charges a flat monthly price per server, prorated hourly — run as many apps and databases on it as it can handle, and the price stays the same.',
+    diff2Body: "Railway meters CPU and memory, plus $20 Pro seats. Pushify charges one flat price per server.",
     diff3Title: 'What you can walk away with',
-    diff3Body:
-      'On Railway, leaving means re-platforming: configs, networking and databases live in their cloud. Pushify deploys plain Docker containers to servers you can SSH into — if you ever stop using Pushify, your apps, data and servers are still yours, still running.',
+    diff3Body: "Leaving Railway means re-platforming. Pushify apps are plain Docker containers on servers you keep.",
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Railway alternative?',
     faq1A:
@@ -5963,25 +6019,19 @@ export const en: TranslationKeys = {
   vsRender: {
     eyebrow: 'Honest comparison',
     h1: 'Pushify vs Render',
-    subtitle:
-      'Render is a solid managed PaaS with fixed per-service pricing. Pushify offers the same predictability on servers you own — with per-server, not per-service, economics. A spec sheet, not a pitch.',
+    subtitle: "Render prices per service. Pushify prices per server — on servers you own.",
     ctaPrimary: 'Get started free',
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
       "Render hosts your services on its own cloud at fixed instance prices: static sites are free, web services start around $7/mo, and every app, worker and database is its own line item. Free web services spin down when idle and wake with a delay. There is no self-host or bring-your-own-server option. Pushify deploys to infrastructure you control — self-host for free, bring any VPS, or use flat-priced managed Hetzner servers — and one server runs as many apps as it can handle for one price. If you want zero server responsibility with predictable pricing, Render is a fine choice. If you want that predictability plus ownership, that's Pushify.",
     choosePushifyTitle: 'Choose Pushify if…',
-    choosePushify1:
-      'You run more than a couple of services: on Render each app, worker and database is a separate monthly charge; on Pushify one flat-priced server hosts them all.',
-    choosePushify2:
-      'You want your apps and data on servers you own — self-host the platform, bring any VPS, or use managed servers with root access.',
-    choosePushify3:
-      'You want always-on without a fee: nothing on your own server ever spins down unless you enable scale-to-zero yourself — it is a feature, not a billing tier.',
-    choosePushify4:
-      'You want extras Render does not ship — a marketplace of self-hosted apps (Supabase, WordPress, n8n…), an AI assistant, a site builder, built-in domain purchasing.',
+    choosePushify1: "You run several services: on Pushify one flat-priced server hosts them all.",
+    choosePushify2: "You want apps and data on servers you own, with root access.",
+    choosePushify3: "You want always-on for free: nothing on your server sleeps unless you opt in.",
+    choosePushify4: "You want an app marketplace, AI assistant, site builder and domain purchasing.",
     chooseRenderTitle: 'Choose Render if…',
-    chooseRender1:
-      'You want a fully managed platform with zero server responsibility, and per-service pricing is fine at your scale.',
+    chooseRender1: "You want zero server responsibility and per-service pricing suits your scale.",
     chooseRender2:
       'You need managed autoscaling and a global CDN for static sites out of the box.',
     chooseRender3:
@@ -5996,14 +6046,11 @@ export const en: TranslationKeys = {
     rowAutoscale: 'Managed autoscaling',
     diffTitle: 'The three differences that matter',
     diff1Title: 'Where your app runs',
-    diff1Body:
-      'Render runs everything on its own managed cloud — there is no self-host option and no way to bring a server. Pushify installs on your own hardware with one command, attaches any VPS over SSH, or provisions managed Hetzner servers for you.',
+    diff1Body: "Render runs only on its cloud. Pushify runs on your hardware, any VPS, or managed Hetzner.",
     diff2Title: 'Per-service vs per-server pricing',
-    diff2Body:
-      'Render prices each service separately: a web service, a background worker and a database are three line items, every month. Pushify prices the server: one flat monthly cost, prorated hourly, and you run whatever fits on it — five apps on one box cost the same as one.',
+    diff2Body: "Render charges per service; Pushify per server — five apps on one box, one price.",
     diff3Title: 'What free actually means',
-    diff3Body:
-      'Render’s free web services spin down when idle and wake with a cold-start delay. Pushify’s free path is self-hosting: the platform costs nothing on your own hardware, stays always-on, and scale-to-zero is something you opt into per project, not a tier you are placed in.',
+    diff3Body: "Render's free services sleep when idle. Self-hosted Pushify stays on; scale-to-zero is opt-in.",
     faqTitle: 'Frequently asked questions',
     faq1Q: 'Is Pushify a good Render alternative?',
     faq1A:
@@ -6026,8 +6073,7 @@ export const en: TranslationKeys = {
     h1: 'Self-hosted PaaS & Heroku alternatives compared',
     subtitle:
       'Coolify, Dokploy, CapRover, Dokku, Railway, Render, Heroku — and where Pushify fits. Real licenses, real prices, no fake rankings.',
-    intro:
-      'Every tool below is genuinely good at something — we use several of them ourselves. This page states what each one is, what it costs, and who it fits best, based on public information. Where Pushify is weaker, the table says so.',
+    intro: "What each tool is, what it costs and who it fits — Pushify's weak spots included.",
     matrixTitle: 'At a glance',
     matrixNote:
       'Public information as of July 2026 — licenses and prices change. Spot an error? Email us and we will correct it.',
@@ -6044,7 +6090,7 @@ export const en: TranslationKeys = {
       'The most popular self-hosted PaaS: Apache-2.0 licensed, free to self-host, with an optional managed cloud from $5/mo. Strong GUI, PR preview deployments, multi-server support and a very large community. v4 reached stable in early 2026 after a long beta.',
     coolifyBest: 'Teams that want the biggest community and a mature GUI-first self-hosted platform.',
     dokployBody:
-      'A fast-rising alternative (30k+ GitHub stars): free to self-host, with a managed option around $4.50/server/mo. Built on Docker Swarm, often described as lighter and snappier than Coolify. Note the license is source-available rather than a classic OSI license.',
+      'A fast-rising alternative: free to self-host, with a managed option around $4.50/server/mo. Built on Docker Swarm, often described as lighter and snappier than Coolify. Note the license is source-available rather than a classic OSI license.',
     dokployBest: 'Developers who want a light, quick UI on Docker Swarm and are fine with a source-available license.',
     caproverBody:
       'Free and MIT-licensed with no paid tier at all. Docker Swarm based with a one-click app catalog. Very stable and battle-tested, though development pace has slowed compared to Coolify and Dokploy.',

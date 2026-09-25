@@ -53,7 +53,11 @@ function parseFrontmatter(raw: string): { meta: Record<string, string>; body: st
   for (const line of raw.slice(3, end).split('\n')) {
     const idx = line.indexOf(':');
     if (idx === -1) continue;
-    meta[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
+    // YAML-style quoting (`title: "a: b"`) is how a value keeps its colon; the quotes are not text.
+    meta[line.slice(0, idx).trim()] = line
+      .slice(idx + 1)
+      .trim()
+      .replace(/^(["'])(.*)\1$/, '$2');
   }
   return { meta, body: raw.slice(end + 4) };
 }

@@ -44,8 +44,18 @@ export function CodeBlock({ code }: { code: string; language?: string }) {
       <pre>
         <code>{code}</code>
       </pre>
-      <button type="button" onClick={handleCopy} className="docs-code-copy" aria-label={content.labels.copyCode}>
-        {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+      <button
+        type="button"
+        onClick={handleCopy}
+        className="docs-code-copy"
+        aria-label={content.labels.copyCode}
+        data-copied={copied || undefined}
+      >
+        {copied ? (
+          <Check className="w-3.5 h-3.5 docs-code-copied" aria-hidden="true" />
+        ) : (
+          <Copy className="w-3.5 h-3.5" aria-hidden="true" />
+        )}
       </button>
     </div>
   );
@@ -83,27 +93,29 @@ export function EndpointCard({
 
   return (
     <div className="docs-endpoint-card">
-      <button type="button" onClick={() => setExpanded(!expanded)} className="docs-endpoint-header">
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="docs-endpoint-header"
+        aria-expanded={expanded}
+      >
         <MethodBadge method={method} />
         <code className="docs-endpoint-path">{path}</code>
         {scope && <code className="docs-scope-badge">{scope}</code>}
         {expanded ? (
-          <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--lp-muted)' }} />
+          <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--hp-muted)' }} aria-hidden="true" />
         ) : (
-          <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--lp-muted)' }} />
+          <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--hp-muted)' }} aria-hidden="true" />
         )}
       </button>
 
       {expanded && (
-        <div
-          className="px-4 pb-4 space-y-4 pt-4"
-          style={{ borderTop: '1px solid var(--lp-border)' }}
-        >
+        <div className="docs-endpoint-body">
           <p className="docs-muted">{description}</p>
 
           {params && params.length > 0 && (
             <div>
-              <h4 className="docs-h3 uppercase tracking-wider">{labels.parameters}</h4>
+              <h4 className="docs-label">{labels.parameters}</h4>
               <div className="docs-table-wrap">
                 <table>
                   <thead>
@@ -119,10 +131,10 @@ export function EndpointCard({
                         <td>
                           <code className="docs-inline-code">{p.name}</code>
                           {p.required && (
-                            <span className="ml-1 text-red-500 text-[10px]">*</span>
+<span className="docs-required">*</span>
                           )}
                         </td>
-                        <td className="font-mono text-xs" style={{ color: 'var(--lp-muted)' }}>
+                        <td className="font-mono text-xs" style={{ color: 'var(--hp-muted)' }}>
                           {p.type}
                         </td>
                         <td className="docs-muted-sm">{p.desc}</td>
@@ -136,8 +148,8 @@ export function EndpointCard({
 
           {request && (
             <div>
-              <h4 className="docs-h3 uppercase tracking-wider flex items-center gap-1.5 mb-2">
-                <Terminal className="w-3.5 h-3.5" /> {labels.request}
+              <h4 className="docs-label">
+                <Terminal className="w-3.5 h-3.5" aria-hidden="true" /> {labels.request}
               </h4>
               <CodeBlock code={request} language="bash" />
             </div>
@@ -145,8 +157,8 @@ export function EndpointCard({
 
           {response && (
             <div>
-              <h4 className="docs-h3 uppercase tracking-wider flex items-center gap-1.5 mb-2">
-                <Code2 className="w-3.5 h-3.5" /> {labels.response}
+              <h4 className="docs-label">
+                <Code2 className="w-3.5 h-3.5" aria-hidden="true" /> {labels.response}
               </h4>
               <CodeBlock code={response} language="json" />
             </div>
@@ -186,7 +198,7 @@ export function Callout({
 
   return (
     <div className={className}>
-      {title && <h4 className="font-semibold mb-1 text-sm" style={{ color: 'var(--lp-ink)' }}>{title}</h4>}
+      {title && <h4 className="docs-callout-title">{title}</h4>}
       <div className="text-sm leading-relaxed">{children}</div>
     </div>
   );

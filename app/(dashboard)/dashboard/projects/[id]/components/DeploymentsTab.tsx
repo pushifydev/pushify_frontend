@@ -191,9 +191,6 @@ export function DeploymentsTab({
                       : undefined
                   }
                 >
-                  {deployment.dockerImageId && (
-                    <span className="text-[var(--status-success)]">⚡</span>
-                  )}
                   <RotateCcw className="w-3 h-3 shrink-0" />
                   {t('projectDetail', 'rollbackToVersion')}
                 </button>

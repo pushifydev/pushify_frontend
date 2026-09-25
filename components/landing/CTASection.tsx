@@ -31,13 +31,11 @@ export function CTASection() {
         <Reveal>
           <div className="max-w-2xl mx-auto text-center">
             <p className="lp-label mb-4">{t('homepage', 'ctaSectionEyebrow')}</p>
-            <h2 className="lp-section-title mb-5">
-              {t('landing', 'readyToLaunch')} {t('landing', 'launch')}.
-            </h2>
-            <p className="lp-lead mx-auto mb-8">{t('landing', 'ctaDescription')}</p>
+            <h2 className="lp-section-title mb-5">{t('homepage', 'homeCtaTitle')}</h2>
+            <p className="lp-lead mx-auto mb-10">{t('homepage', 'homeCtaLead')}</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href={signedIn ? '/dashboard' : '/register'} className="lp-cta group w-full sm:w-auto">
-                {signedIn ? t('landing', 'openDashboard') : t('landing', 'startDeployingFree')}
+                {signedIn ? t('landing', 'openDashboard') : t('landing', 'getStartedFree')}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <a

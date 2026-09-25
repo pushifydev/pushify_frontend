@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { isMarketingPath } from '@/lib/marketing-routes';
 
 export type Theme = 'light' | 'dark' | 'system';
 
@@ -13,7 +14,8 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      theme: 'system',
+      // Pushify opens dark; light and 'follow my OS' are there for whoever chooses them.
+      theme: 'dark',
       isHydrated: false,
       setTheme: (theme) => {
         set({ theme });
@@ -23,6 +25,15 @@ export const useThemeStore = create<ThemeState>()(
     }),
     {
       name: 'pushify-theme',
+      // v0 defaulted to 'system', so nearly every stored 'system' is a default nobody chose.
+      // Moving those to the new default once is what makes the product open dark for existing
+      // visitors too; a 'system' picked after this (v1) is a real choice and is kept.
+      version: 1,
+      migrate: (persisted, version) => {
+        const state = persisted as { theme?: Theme } | undefined;
+        if (version < 1 && state?.theme === 'system') return { ...state, theme: 'dark' as Theme };
+        return state as ThemeState;
+      },
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.setHydrated();
@@ -39,14 +50,14 @@ export function applyTheme(theme: Theme) {
 
   const root = document.documentElement;
 
-  if (theme === 'system') {
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    root.classList.toggle('dark', systemDark);
-    root.classList.toggle('light', !systemDark);
-  } else {
-    root.classList.toggle('dark', theme === 'dark');
-    root.classList.toggle('light', theme === 'light');
-  }
+  // The public site is dark-only for now; the preference applies to the product.
+  const dark = isMarketingPath(window.location.pathname)
+    ? true
+    : theme === 'system'
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches
+      : theme === 'dark';
+  root.classList.toggle('dark', dark);
+  root.classList.toggle('light', !dark);
 }
 
 // Listen for system theme changes

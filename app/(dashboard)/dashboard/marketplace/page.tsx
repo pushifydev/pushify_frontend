@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Store, PackageOpen } from 'lucide-react';
+import { Search, PackageOpen } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useMarketplaceTemplates } from '@/hooks/useMarketplace';
 import { InstalledAppsPanel } from '@/components/marketplace/InstalledAppsPanel';
@@ -11,14 +11,14 @@ import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
 import { CrossPromoBanner } from '@/components/dashboard/CrossPromoBanner';
 
 const CATEGORIES: { key: MarketplaceCategory | 'all'; color: string }[] = [
-  { key: 'all', color: '#8a8a9a' },
-  { key: 'cms', color: '#6366f1' },
-  { key: 'automation', color: '#a78bfa' },
-  { key: 'monitoring', color: '#22c55e' },
-  { key: 'storage', color: '#f59e0b' },
-  { key: 'devtools', color: '#3b82f6' },
-  { key: 'analytics', color: '#ec4899' },
-  { key: 'database', color: '#f97316' },
+  { key: 'all', color: 'var(--text-primary)' },
+  { key: 'cms', color: 'var(--text-primary)' },
+  { key: 'automation', color: 'var(--text-primary)' },
+  { key: 'monitoring', color: 'var(--text-primary)' },
+  { key: 'storage', color: 'var(--text-primary)' },
+  { key: 'devtools', color: 'var(--text-primary)' },
+  { key: 'analytics', color: 'var(--text-primary)' },
+  { key: 'database', color: 'var(--text-primary)' },
 ];
 
 const CATEGORY_I18N: Record<string, string> = {
@@ -62,15 +62,6 @@ export default function MarketplacePage() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{
-              background: 'var(--dash-accent-bg)',
-              border: '1px solid var(--dash-accent-border)',
-            }}
-          >
-            <Store className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />
-          </div>
           <div>
             <h1
               className="text-2xl font-bold tracking-tight"
@@ -139,11 +130,11 @@ export default function MarketplacePage() {
               <button
                 key={key}
                 onClick={() => setActiveCategory(key)}
-                className="px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200"
+                className="px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all duration-200"
                 style={{
-                  background: isActive ? `${color}18` : 'var(--hover-overlay)',
-                  color: isActive ? color : 'var(--text-secondary)',
-                  border: `1px solid ${isActive ? `${color}35` : 'var(--border-subtle)'}`,
+                  background: isActive ? color : 'transparent',
+                  color: isActive ? 'var(--on-accent)' : 'var(--text-secondary)',
+                  border: `1px solid ${isActive ? color : 'var(--border-default)'}`,
                 }}
               >
                 {t('marketplace', CATEGORY_I18N[key] as any)}

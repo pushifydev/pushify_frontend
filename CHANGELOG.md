@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.67] - 2026-09-25
+
+### Changed
+- **The site, redesigned in the language of developer.x.com.** A `#0a0a0a` canvas, hairline rules, bracketed monospace eyebrows (`[ PRICING ]`), Inter 500 headings with light 48px section titles, pill buttons, and colour kept for status only — green means live. The homepage opens under a light cone drawn with a conic gradient (the same technique developer.x.com uses, measured from its page), shows fifteen real deploy-log cards drifting in three rows, compares a month's bill against Vercel and Railway from their published prices, and ends on a faint mark lit from below. Every public page — features, pricing, sites, apps, domains, open source, about, partners, comparisons, alternatives, deploy button, pushify.yaml, status, guides, framework pages, docs, blog, changelog, legal, 404 — is built from the same kit (`components/landing/MarketingKit.tsx`, styles in `app/marketing.css`): one section under a hairline, an eyebrow and a title, open grids divided by lines, numbered steps only where order is real, one designed object per page.
+- **Copy cut to one or two lines per item.** Long explanations moved into FAQs and expandable rows; nothing was dropped. Icons stay on each page's headline block only.
+- **Pricing rebuilt.** Four plans side by side with thin prices and short limit lines, the recommended plan lit, Enterprise on one row, the two bills (platform plan, infrastructure credits) in two short columns, a hairline comparison table, then the cost estimate and the FAQ.
+- **The dashboard in the same language.** Black canvas and white/8 hairlines, bracketed labels, one page-title style for every page, pill buttons, ink instead of indigo, monochrome charts and gauges (colour only past a real threshold), category colours removed from the marketplace and billing.
+- **Sign-in and sign-up** under the same light, with the site's form and button styles.
+- **Dark by default everywhere.** The public site is dark-only for now (the navbar's theme button is gone); the dashboard opens dark and keeps light and "system" for whoever picks them. Visitors who never chose — whose stored preference was the old `system` default — move to dark once.
+
+### Added
+- **A page-change progress bar.** A 2px ink line with a soft glow runs across the top on every navigation, NProgress-style: it starts on the click, creeps towards 90%, completes when the new page renders, and stays on screen for a moment so even a prefetched page reads as loaded. Hash-only changes don't start it; a click that never navigates gives up after ten seconds.
+- **Blog posts render `*italics*`**, and quoted front-matter titles lose their quotes.
+- **Marketplace descriptions render their markdown** (lists and bold) on /apps/[id] and in the dashboard.
+- **The open-source page lists the CLI repository** and the one-command self-host install.
+
+### Fixed
+- **Claims the code doesn't back, removed:** "in seconds" in the hero and features, "in under 60 seconds" on framework pages, "Start Pro trial" (there is no trial), "Most popular" (now "Recommended"), invented timings in mockups, "No credit card required", "Instant rollbacks", "we use several of them ourselves", a star count, "Agencies use Pushify", a one-business-day reply promise, "migrations" for Laravel, and a CLI mockup that uploaded artifacts the CLI never uploads. The Coolify comparison now shows Pushify's one-command self-host install. pushify.yaml's reference now matches the parser: an invalid file is a warning, synced resources are only added or updated on production deploys, volume names are 31 characters, up to 5 workers, cron timeout defaults to 120s.
+- **Billing showed "Personal" after a reload** instead of the organisation's name.
+- **The dashboard breadcrumb was English-only** and read "Dashboard" on Domains and Admin; it now uses the sidebar's translated names.
+- **Relative times on Activity, Cron and Registries were English** in Turkish ("12m ago"); they now use the translated form.
+- **Legal pages said "Son güncelleme" in English** too.
+
 ### Added
 - **The Domains page says what happens after the search box.** It was a heading, a search field and then the footer — a page in the main navigation with ninety-five words on it. It now lists the ten TLDs one keyword search covers, and what the registrar integration actually does: registration for up to five years with WHOIS privacy on from the start and auto-renew under your control, the records and the certificate written in the same step when you point it at a project, A/AAAA/CNAME/MX/TXT/SRV/NS editable in the dashboard, transfers in that include a year of renewal, and transferring out by unlocking the domain and reading your own auth code.
 - **Real screenshots of the product, on the landing page.** The marketplace and Site Studio sections were illustrated with drawn mockups only. They are good mockups, but they prove the design, not the product — a visitor cannot tell a screenshot from a picture of one. Both sections now carry a shot of the running app, with its real app names, versions, memory figures and template counts. One file per theme, swapped in CSS because dark mode here is a class on `<html>` rather than a media query; the hidden one is never downloaded.

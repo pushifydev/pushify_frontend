@@ -24,7 +24,7 @@ export default function OpenSourceLayout({ children }: { children: React.ReactNo
           '@id': 'https://pushify.dev/open-source#sourcecode',
           name: 'Pushify',
           description:
-            'Open-source cloud deployment platform. MIT-licensed, self-hostable, community-driven.',
+            'Open-source cloud deployment platform. MIT-licensed and self-hostable.',
           url: 'https://pushify.dev/open-source',
           codeRepository: 'https://github.com/pushifydev',
           license: 'https://opensource.org/licenses/MIT',

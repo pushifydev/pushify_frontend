@@ -61,7 +61,7 @@ const sectionIcons: Record<DocsSectionId, typeof BookOpen> = {
 };
 
 function DocsPageContent() {
-  const { content: c } = useDocsContent();
+  const { content: c, locale } = useDocsContent();
   const [activeSection, setActiveSection] = useState<DocsSectionId>('intro');
   const [mobileNav, setMobileNav] = useState(false);
   const [search, setSearch] = useState('');
@@ -96,7 +96,7 @@ function DocsPageContent() {
     : c.navGroups;
 
   return (
-    <div className="lp-page docs-page min-h-screen">
+    <div className="lp-page hp docs-page min-h-screen overflow-x-clip">
       <LandingNavbar />
 
       <div className="pt-14 md:pt-16">
@@ -104,20 +104,21 @@ function DocsPageContent() {
           sidebar carries the title and actions so the landing navbar stands alone. */}
       <header
         className="lg:hidden sticky top-14 md:top-16 z-40 border-b backdrop-blur-xl"
-        style={{ borderColor: 'var(--lp-border)', background: 'color-mix(in srgb, var(--bg-primary) 92%, transparent)' }}
+        style={{ borderColor: 'var(--hp-line)', background: 'color-mix(in srgb, var(--hp-bg) 92%, transparent)' }}
       >
         <div className="lp-container flex items-center gap-3 h-12">
           <button
             type="button"
             onClick={() => setMobileNav(true)}
             className="p-1.5 -ml-1.5 rounded-md hover:opacity-70"
-            style={{ color: 'var(--lp-muted)' }}
+            style={{ color: 'var(--hp-ink)' }}
+            aria-label={c.shell.navigation}
+            aria-expanded={mobileNav}
+            aria-controls="docs-sidebar"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-5 h-5" aria-hidden="true" />
           </button>
-          <span className="text-sm font-medium" style={{ color: 'var(--lp-muted)' }}>
-            {c.shell.title}
-          </span>
+          <span className="docs-sidebar-title">{c.shell.title}</span>
         </div>
       </header>
 
@@ -130,41 +131,40 @@ function DocsPageContent() {
         )}
 
         <aside
-          className={`fixed lg:sticky top-14 md:top-28 lg:top-16 left-0 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] w-72 lg:w-64 border-r lg:border-0 z-50 lg:z-0 transition-transform lg:translate-x-0 shrink-0 ${
+          id="docs-sidebar"
+          className={`fixed lg:sticky top-14 md:top-28 lg:top-16 left-0 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] w-72 lg:w-64 border-r z-50 lg:z-0 transition-transform lg:translate-x-0 shrink-0 ${
             mobileNav ? 'translate-x-0' : '-translate-x-full'
           }`}
-          style={{ background: 'var(--bg-primary)', borderColor: 'var(--lp-border)' }}
+          style={{ background: 'var(--hp-bg)', borderColor: 'var(--hp-line)' }}
         >
           <div className="flex flex-col h-full p-4 lg:py-8 lg:pr-6 lg:pl-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4 lg:hidden">
-              <span className="text-sm font-semibold docs-h3 mb-0">{c.shell.navigation}</span>
+              <span className="docs-sidebar-title">{c.shell.navigation}</span>
               <button
                 type="button"
                 onClick={() => setMobileNav(false)}
-                className="p-1 rounded-md hover:bg-[var(--hover-overlay-md)]"
-                style={{ color: 'var(--lp-muted)' }}
+                className="p-1 rounded-md hover:bg-[var(--hp-line)]"
+                style={{ color: 'var(--hp-muted)' }}
+                aria-label={locale === 'tr' ? 'Kapat' : 'Close'}
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
 
-            <p
-              className="hidden lg:block px-3 mb-4 text-[11px] font-semibold uppercase tracking-[0.08em]"
-              style={{ color: 'var(--lp-muted)' }}
-            >
-              {c.shell.title}
-            </p>
+            <p className="hidden lg:block px-3 mb-4 docs-sidebar-title">{c.shell.title}</p>
 
             <div className="relative mb-5">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none"
-                style={{ color: 'var(--lp-muted)' }}
+                style={{ color: 'var(--hp-muted)' }}
+                aria-hidden="true"
               />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={c.shell.searchPlaceholder}
+                aria-label={c.shell.searchPlaceholder}
                 className="docs-sidebar-input"
               />
             </div>
@@ -183,8 +183,9 @@ function DocsPageContent() {
                           type="button"
                           onClick={() => navigate(item.id)}
                           className={isActive ? 'docs-nav-item docs-nav-item-active' : 'docs-nav-item'}
+                          aria-current={isActive ? 'page' : undefined}
                         >
-                          <Icon className="w-4 h-4 shrink-0" />
+                          <Icon className="w-4 h-4 shrink-0" strokeWidth={1.5} aria-hidden="true" />
                           <span className="truncate">{item.label}</span>
                         </button>
                       );
@@ -194,21 +195,15 @@ function DocsPageContent() {
               ))}
             </nav>
 
-            <div className="pt-4 mt-4 space-y-2" style={{ borderTop: '1px solid var(--lp-border)' }}>
-              <Link
-                href="/dashboard/settings"
-                className="lp-cta w-full text-sm py-2 px-4 h-auto min-h-0"
-              >
+            <div className="pt-5 mt-5 space-y-2" style={{ borderTop: '1px solid var(--hp-line)' }}>
+              <Link href="/dashboard/settings" className="lp-cta w-full">
                 {c.shell.getApiKey}
               </Link>
-              <Link
-                href="/dashboard"
-                className="docs-nav-item justify-center text-center"
-              >
+              <Link href="/dashboard" className="lp-cta-ghost w-full">
                 {c.shell.dashboard}
               </Link>
-              <div className="flex items-center gap-2 px-3 pt-1 docs-muted-sm">
-                <Gauge className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2 px-3 pt-2 docs-sidebar-title">
+                <Gauge className="w-3.5 h-3.5" strokeWidth={1.5} aria-hidden="true" />
                 <span>{c.shell.apiVersion}</span>
               </div>
             </div>

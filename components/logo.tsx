@@ -1,4 +1,20 @@
-export function LogoMark({ size = 32, className = '' }: { size?: number; className?: string }) {
+/**
+ * `tone="page"` takes its colours from the surrounding page (--lp-ink / --lp-logo-cut) instead of
+ * the site-wide dark class: the homepage is dark even on a light OS, and there a class-driven
+ * logo would draw a dark tile on a dark page.
+ */
+export function LogoMark({ size = 32, className = '', tone = 'auto' }: { size?: number; className?: string; tone?: 'auto' | 'page' }) {
+  if (tone === 'page') {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" width={size} height={size} className={className}>
+        <rect width="64" height="64" rx="14" style={{ fill: 'var(--lp-ink)' }} />
+        <path
+          d="M22 48V16H34C38.4 16 42 17.6 44.2 20.2C46.4 22.8 47 26 47 28.5C47 31 46.4 34.2 44.2 36.8C42 39.4 38.4 41 34 41H30V48H22ZM30 33.5H33.5C35 33.5 36.2 33 37 32.2C37.8 31.4 38.2 30.2 38.2 28.5C38.2 26.8 37.8 25.6 37 24.8C36.2 24 35 23.5 33.5 23.5H30V33.5Z"
+          style={{ fill: 'var(--lp-logo-cut, var(--bg-primary))' }}
+        />
+      </svg>
+    );
+  }
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,6 +28,18 @@ export function LogoMark({ size = 32, className = '' }: { size?: number; classNa
       <path
         d="M22 48V16H34C38.4 16 42 17.6 44.2 20.2C46.4 22.8 47 26 47 28.5C47 31 46.4 34.2 44.2 36.8C42 39.4 38.4 41 34 41H30V48H22ZM30 33.5H33.5C35 33.5 36.2 33 37 32.2C37.8 31.4 38.2 30.2 38.2 28.5C38.2 26.8 37.8 25.6 37 24.8C36.2 24 35 23.5 33.5 23.5H30V33.5Z"
         className="fill-white dark:fill-neutral-900"
+      />
+    </svg>
+  );
+}
+
+/** The P alone, without its tile — for large, quiet uses such as the footer mark. */
+export function LogoGlyph({ size = 192, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="20 14 29 36" width={size * (29 / 36)} height={size} className={className} aria-hidden="true">
+      <path
+        d="M22 48V16H34C38.4 16 42 17.6 44.2 20.2C46.4 22.8 47 26 47 28.5C47 31 46.4 34.2 44.2 36.8C42 39.4 38.4 41 34 41H30V48H22ZM30 33.5H33.5C35 33.5 36.2 33 37 32.2C37.8 31.4 38.2 30.2 38.2 28.5C38.2 26.8 37.8 25.6 37 24.8C36.2 24 35 23.5 33.5 23.5H30V33.5Z"
+        fill="currentColor"
       />
     </svg>
   );

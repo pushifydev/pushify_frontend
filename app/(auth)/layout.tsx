@@ -36,8 +36,10 @@ export default function AuthLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#0a0a0a]">
-        <span className="text-sm text-neutral-500">{t('common', 'loading')}</span>
+      <div className="hp min-h-screen flex items-center justify-center" style={{ background: 'var(--hp-bg)' }}>
+        <span className="hp-mono text-[12px] uppercase tracking-[0.1em]" style={{ color: 'var(--hp-muted)' }}>
+          {t('common', 'loading')}
+        </span>
       </div>
     );
   }
@@ -54,11 +56,21 @@ export default function AuthLayout({
   ];
 
   return (
-    <div className="auth-shell min-h-screen flex bg-white dark:bg-[#0a0a0a]">
-      <div className="hidden lg:flex w-1/2 flex-col justify-between p-12 border-r border-neutral-200 dark:border-neutral-800">
+    <div className="auth-shell hp min-h-screen flex overflow-x-clip" style={{ background: 'var(--hp-bg)' }}>
+      {/* The same light as the homepage hero, so signing in feels like walking through its door. */}
+      <div
+        className="hidden lg:flex w-1/2 flex-col justify-between p-12 relative isolate overflow-hidden border-r"
+        style={{ borderColor: 'var(--hp-line)' }}
+      >
+        {/* Dimmer than on the homepage: here the light sits behind a paragraph of text. */}
+        <div className="absolute inset-0 -z-10 opacity-45 pointer-events-none" aria-hidden="true">
+          <div className="hp-beam" />
+          <div className="hp-pool" />
+        </div>
+
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 text-neutral-900 dark:text-white hover:opacity-90 transition-opacity">
-            <LogoMark size={28} />
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity" style={{ color: 'var(--hp-ink)' }}>
+            <LogoMark size={28} tone="page" />
             <span className="text-xl font-semibold tracking-tight">Pushify</span>
           </Link>
           <div className="flex items-center gap-1">
@@ -66,47 +78,54 @@ export default function AuthLayout({
           </div>
         </div>
 
-        <div className="space-y-8 max-w-md">
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-neutral-900 dark:text-white">
+        <div className="max-w-md">
+          <p className="hp-eyebrow" aria-hidden="false">
+            <span aria-hidden="true">[&nbsp;</span>
+            {t('branding', 'eyebrow')}
+            <span aria-hidden="true">&nbsp;]</span>
+          </p>
+          <h1 className="mt-7 text-[2.75rem] leading-[1.1] font-medium" style={{ color: 'var(--hp-ink)' }}>
             {t('branding', 'deployAt')}
             <br />
-            {t('branding', 'speedOfThought')}
+            <span style={{ color: 'var(--hp-muted)' }}>{t('branding', 'speedOfThought')}</span>
           </h1>
-          <p className="text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="mt-6 text-[17px] leading-relaxed" style={{ color: 'var(--hp-body)' }}>
             {t('branding', 'description')}
           </p>
 
-          <ul className="space-y-3 pt-2">
+          <ul className="mt-10 border-t" style={{ borderColor: 'var(--hp-line)' }}>
             {features.map((feature, i) => (
-              <li key={i} className="flex items-center gap-3 text-sm text-neutral-600 dark:text-neutral-400">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-900 dark:bg-white">
-                  <Check className="h-3 w-3 text-white dark:text-neutral-900" strokeWidth={3} />
-                </span>
+              <li
+                key={i}
+                className="flex items-center gap-3 py-3 border-b text-[14px]"
+                style={{ borderColor: 'var(--hp-line)', color: 'var(--hp-body)' }}
+              >
+                <Check className="h-3.5 w-3.5 shrink-0" style={{ color: 'var(--hp-ink)' }} strokeWidth={2.5} aria-hidden="true" />
                 {feature}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="flex items-center gap-6 text-sm text-neutral-500">
-          <Link href="/docs" className="hover:text-neutral-900 dark:hover:text-white transition-colors">
+        <div className="flex items-center gap-6 hp-mono text-[12px] uppercase tracking-[0.1em]" style={{ color: 'var(--hp-muted)' }}>
+          <Link href="/docs" className="hover:text-[var(--hp-ink)] transition-colors">
             {t('branding', 'documentation')}
           </Link>
           <a
             href="https://github.com/pushifydev"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-neutral-900 dark:hover:text-white transition-colors"
+            className="hover:text-[var(--hp-ink)] transition-colors"
           >
             {t('branding', 'github')}
           </a>
-          <Link href="/about" className="hover:text-neutral-900 dark:hover:text-white transition-colors">
+          <Link href="/about" className="hover:text-[var(--hp-ink)] transition-colors">
             {t('legal', 'about')}
           </Link>
         </div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-8 relative">
         <div className="lg:hidden absolute top-4 right-4 flex items-center gap-1">
           <AuthThemeToggle />
         </div>

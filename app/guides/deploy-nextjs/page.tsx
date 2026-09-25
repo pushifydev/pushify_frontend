@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
+import { MSection, CodePanel } from '@/components/landing/MarketingKit';
 import { JsonLd } from '@/components/JsonLd';
 import { OG_IMAGE } from '@/lib/seo';
 
@@ -26,41 +27,61 @@ export const metadata: Metadata = {
   },
 };
 
-function Code({ children }: { children: string }) {
+const OUTLINE = [
+  { id: 'node', title: 'Install Node.js 22', tool: 'nodesource' },
+  { id: 'build', title: 'Clone and build', tool: 'npm' },
+  { id: 'pm2', title: 'Keep it running', tool: 'pm2' },
+  { id: 'nginx', title: 'Reverse proxy', tool: 'nginx' },
+  { id: 'ssl', title: 'Free SSL', tool: 'certbot' },
+  { id: 'redeploy', title: 'Redeploys', tool: 'deploy.sh' },
+];
+
+function Code({ children, title = 'bash' }: { children: string; title?: string }) {
   return (
-    <pre
-      className="rounded-xl p-4 overflow-x-auto text-[13px] leading-relaxed my-4"
-      style={{
-        background: '#0a0a0f',
-        border: '1px solid rgba(255,255,255,0.08)',
-        color: 'rgba(255,255,255,0.85)',
-        fontFamily: 'var(--font-mono)',
-      }}
-    >
-      {children}
-    </pre>
+    <div className="my-6">
+      <CodePanel title={title}>{children}</CodePanel>
+    </div>
   );
 }
 
-function H2({ children, id }: { children: React.ReactNode; id: string }) {
+function H2({ children, id, step }: { children: React.ReactNode; id: string; step?: number }) {
   return (
-    <h2 id={id} className="text-xl font-semibold tracking-tight mt-12 mb-3" style={{ color: 'var(--lp-ink)' }}>
-      {children}
+    <h2 id={id} className="scroll-mt-28 mt-16 mb-4 pt-10 border-t" style={{ borderColor: 'var(--hp-line)' }}>
+      {step !== undefined && (
+        <span className="hp-eyebrow block mb-3">
+          <span aria-hidden="true">[&nbsp;</span>Step {step}
+          <span aria-hidden="true">&nbsp;]</span>
+        </span>
+      )}
+      <span
+        className="block text-[1.6rem] md:text-[1.85rem] leading-tight font-medium"
+        style={{ color: 'var(--hp-ink)', letterSpacing: '-0.02em' }}
+      >
+        {children}
+      </span>
     </h2>
   );
 }
 
 function P({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[15px] leading-relaxed mb-4" style={{ color: 'var(--lp-body)' }}>
+    <p className="text-[16px] leading-[1.75] mb-5" style={{ color: 'var(--hp-body)' }}>
       {children}
     </p>
   );
 }
 
+function C({ children }: { children: React.ReactNode }) {
+  return (
+    <code className="text-[0.9em] px-1.5 py-0.5 rounded border" style={{ fontFamily: 'var(--font-mono)', color: 'var(--hp-ink)', borderColor: 'var(--hp-line)', background: 'var(--hp-card)' }}>
+      {children}
+    </code>
+  );
+}
+
 export default function DeployNextjsGuide() {
   return (
-    <MarketingShell>
+    <MarketingShell noPad>
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -82,43 +103,66 @@ export default function DeployNextjsGuide() {
       <MarketingPageHero
         label="Guide"
         title="Deploy Next.js to your own server"
-        description="The complete manual path — Node 22, PM2, nginx, free SSL — on any Ubuntu VPS. About 30 minutes the first time. (There's a one-command shortcut at the end.)"
-        align="left"
+        description="Node 22, PM2, nginx and free SSL on any Ubuntu VPS, step by step. The automated route is at the end."
       />
 
-      <article className="lp-container max-w-3xl pb-20 md:pb-28">
-        <P>
-          Running Next.js on your own VPS is entirely practical: you get full control, flat
-          server pricing, and no platform limits on execution time or regions. This guide uses
-          Ubuntu 22.04/24.04, works for both the App and Pages routers, and assumes a plain{' '}
-          <code style={{ fontFamily: 'var(--font-mono)' }}>next build</code> app (no static export).
-        </P>
+      {/* The route at a glance: each step, the tool it sets up, a jump link. */}
+      <nav aria-label="Steps in this guide" className="lp-container max-w-3xl pb-6">
+        <div className="hp-code">
+          <div className="hp-code-title flex items-center justify-between gap-3">
+            <span>The manual route</span>
+            <span>Ubuntu 22.04 / 24.04</span>
+          </div>
+          <ol>
+            {OUTLINE.map((step, i) => (
+              <li key={step.id} className="border-t first:border-t-0" style={{ borderColor: 'var(--hp-line)' }}>
+                <a
+                  href={`#${step.id}`}
+                  className="grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3 hover:bg-[var(--hp-line)] focus-visible:bg-[var(--hp-line)] transition-colors"
+                >
+                  <span className="hp-mono text-[12px] tabular-nums" style={{ color: 'var(--hp-muted)' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-[15px]" style={{ color: 'var(--hp-ink)' }}>
+                    {step.title}
+                  </span>
+                  <span className="hp-mono text-[12px]" style={{ color: 'var(--hp-muted)' }}>
+                    {step.tool}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </nav>
 
+      <article className="lp-container max-w-3xl pb-20 md:pb-28">
         <H2 id="prerequisites">Prerequisites</H2>
         <P>
           A VPS with at least 1 GB RAM (2 GB is comfortable for builds), SSH access as root or a
           sudo user, your app in a git repository, and — for HTTPS — a domain with an A record
-          pointing at the server&apos;s IP.
+          pointing at the server&apos;s IP. The steps work for both the App and Pages routers with a
+          plain <C>next build</C> (no static export).
         </P>
 
-        <H2 id="node">Step 1 — Install Node.js 22</H2>
+        <H2 id="node" step={1}>Install Node.js 22</H2>
         <Code>{`curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs git nginx
 node -v   # v22.x`}</Code>
 
-        <H2 id="build">Step 2 — Clone and build</H2>
+        <H2 id="build" step={2}>Clone and build</H2>
         <Code>{`cd /var/www
 sudo git clone https://github.com/you/my-app.git
 cd my-app
 sudo npm ci
 sudo npm run build`}</Code>
         <P>
-          If the build gets killed on a 1 GB server, add temporary swap first:{' '}
+          If the build gets killed on a 1 GB server, add temporary swap first:
         </P>
         <Code>{`sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile
 sudo mkswap /swapfile && sudo swapon /swapfile`}</Code>
 
-        <H2 id="pm2">Step 3 — Keep it running with PM2</H2>
+        <H2 id="pm2" step={3}>Keep it running with PM2</H2>
         <P>
           PM2 restarts the app on crashes and on reboot. Next.js serves on port 3000 by default.
         </P>
@@ -127,11 +171,11 @@ pm2 start npm --name my-app -- start
 pm2 startup systemd   # prints a command — run it
 pm2 save`}</Code>
 
-        <H2 id="nginx">Step 4 — nginx reverse proxy</H2>
+        <H2 id="nginx" step={4}>nginx reverse proxy</H2>
         <P>
-          Create <code style={{ fontFamily: 'var(--font-mono)' }}>/etc/nginx/sites-available/my-app</code>:
+          Create <C>/etc/nginx/sites-available/my-app</C>:
         </P>
-        <Code>{`server {
+        <Code title="/etc/nginx/sites-available/my-app">{`server {
     listen 80;
     server_name example.com;
 
@@ -149,7 +193,7 @@ pm2 save`}</Code>
         <Code>{`sudo ln -s /etc/nginx/sites-available/my-app /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx`}</Code>
 
-        <H2 id="ssl">Step 5 — Free SSL with certbot</H2>
+        <H2 id="ssl" step={5}>Free SSL with certbot</H2>
         <Code>{`sudo snap install --classic certbot
 sudo certbot --nginx -d example.com`}</Code>
         <P>
@@ -157,9 +201,9 @@ sudo certbot --nginx -d example.com`}</Code>
           Encrypt certificate. Your app is now live at https://example.com.
         </P>
 
-        <H2 id="redeploy">Step 6 — Redeploys</H2>
+        <H2 id="redeploy" step={6}>Redeploys</H2>
         <P>Each update is a pull, build and restart. Save this as deploy.sh:</P>
-        <Code>{`#!/usr/bin/env bash
+        <Code title="deploy.sh">{`#!/usr/bin/env bash
 set -e
 cd /var/www/my-app
 git pull
@@ -167,7 +211,7 @@ npm ci
 npm run build
 pm2 restart my-app`}</Code>
         <P>
-          Note the trade-off: between <code style={{ fontFamily: 'var(--font-mono)' }}>pm2 restart</code>{' '}
+          Note the trade-off: between <C>pm2 restart</C>{' '}
           and the app finishing boot there are a few seconds of downtime, and a failed build can
           leave the previous process serving a half-updated directory. Solving that properly means
           building in isolation and switching atomically — which is exactly what the automated
@@ -175,7 +219,7 @@ pm2 restart my-app`}</Code>
         </P>
 
         <H2 id="gotchas">Gotchas worth knowing</H2>
-        <ul className="space-y-2 mb-4">
+        <ul className="mb-4 border-t" style={{ borderColor: 'var(--hp-line)' }}>
           {[
             'Set output: "standalone" in next.config to shrink what has to exist on the server at runtime.',
             'Environment variables: PM2 does not read .env.production automatically for npm start — Next.js does, at build and runtime, as long as the file sits in the app directory.',
@@ -184,44 +228,37 @@ pm2 restart my-app`}</Code>
           ].map((item) => (
             <li
               key={item}
-              className="text-[15px] leading-relaxed pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.55em] before:w-1.5 before:h-1.5 before:rounded-full before:bg-[var(--lp-border)]"
-              style={{ color: 'var(--lp-body)' }}
+              className="text-[16px] leading-[1.7] py-4 border-b"
+              style={{ color: 'var(--hp-body)', borderColor: 'var(--hp-line)' }}
             >
               {item}
             </li>
           ))}
         </ul>
 
-        <H2 id="automated">The automated route</H2>
-        <P>
-          Everything above — the Docker build, nginx config, SSL, restarts — is what Pushify
-          automates on the same servers. Connect the repo, pick the server (your own VPS or a
-          managed one), and every git push builds in isolation and goes live with a zero-downtime
-          blue-green switch. Framework detection covers Next.js out of the box.
-        </P>
-        <div
-          className="rounded-xl p-6 my-6 flex flex-col sm:flex-row sm:items-center gap-4"
-          style={{ background: 'var(--lp-surface)', border: '1px solid var(--lp-border)' }}
-        >
-          <div className="flex-1">
-            <p className="font-semibold mb-1" style={{ color: 'var(--lp-ink)' }}>
-              Same server. One push.
-            </p>
-            <p className="text-sm" style={{ color: 'var(--lp-body)' }}>
-              git push → framework detected → Docker build → live with SSL, in under a minute.
-            </p>
-          </div>
-          <Link href="/deploy/nextjs" className="lp-cta shrink-0">
-            Deploy Next.js with Pushify
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <p className="text-xs" style={{ color: 'var(--lp-muted)' }}>
-          Commands verified on Ubuntu 22.04/24.04 with Node 22 and Next.js 14/15, July 2026.
-          Something not working? Email support@pushify.dev and we&apos;ll fix the guide.
+        <p className="text-[13px] mt-12" style={{ color: 'var(--hp-muted)' }}>
+          Written for Ubuntu 22.04/24.04, Node 22 and Next.js 14/15, July 2026. Something off? Email{' '}
+          <a href="mailto:support@pushify.dev" className="underline underline-offset-4" style={{ color: 'var(--hp-ink)' }}>
+            support@pushify.dev
+          </a>{' '}
+          and we&apos;ll fix the guide.
         </p>
       </article>
+
+      <MSection
+        id="automated"
+        eyebrow="The automated route"
+        title="Same server. One push."
+        lead="Pushify does all of the above on the same kind of server: each git push builds in isolation and goes live with a zero-downtime switch."
+        align="center"
+      >
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link href="/deploy/nextjs" className="lp-cta w-full sm:w-auto">
+            Deploy Next.js with Pushify
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </MSection>
     </MarketingShell>
   );
 }

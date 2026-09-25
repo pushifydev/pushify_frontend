@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useLocaleStore, migrateLegacyLocale } from '@/stores/locale';
 import { useThemeStore, applyTheme } from '@/stores/theme';
 
@@ -16,10 +17,17 @@ import { useThemeStore, applyTheme } from '@/stores/theme';
 export function AfterHydration() {
   const locale = useLocaleStore((s) => s.locale);
 
+  const pathname = usePathname();
+
   useEffect(() => {
     migrateLegacyLocale();
-    applyTheme(useThemeStore.getState().theme);
   }, []);
+
+  // Also on every route change: the public site is always dark, the dashboard follows the
+  // preference, so moving between them can change the class on <html>.
+  useEffect(() => {
+    applyTheme(useThemeStore.getState().theme);
+  }, [pathname]);
 
   useEffect(() => {
     document.documentElement.lang = locale;

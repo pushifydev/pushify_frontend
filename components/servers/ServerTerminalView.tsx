@@ -128,7 +128,7 @@ export function ServerTerminalView({ serverId, projectId, onStatusChange }: Serv
         theme: {
           background: '#0a0a0f',
           foreground: '#e4e4e7',
-          cursor: '#6366f1',
+          cursor: '#f4f4f5',
           selectionBackground: 'rgba(99, 102, 241, 0.35)',
         },
       });
