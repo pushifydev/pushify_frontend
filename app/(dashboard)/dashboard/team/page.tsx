@@ -22,6 +22,7 @@ import { formatShortDate } from '@/lib/formatters';
 import { ROLE_COLORS, STATUS_COLORS } from '@/lib/constants';
 import type { OrganizationMember, MemberRole, StudioAccess } from '@/lib/api';
 import { Skeleton, SkeletonPageHeader, SkeletonTeamPanel } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
 
 const roleIcons: Record<MemberRole, typeof Shield> = {
   owner:  Crown,
@@ -288,10 +289,7 @@ export default function TeamPage() {
           </div>
 
           {invitations.length === 0 ? (
-            <div className="py-10 text-center">
-              <Mail className="w-7 h-7 mx-auto mb-2" style={{ color: 'var(--text-muted)', opacity: 0.4 }} />
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{t('team', 'noPendingInvitations')}</p>
-            </div>
+            <EmptyState variant="bare" title={t('team', 'noPendingInvitations')} />
           ) : (
             <div>
               {invitations.map((invitation, idx) => (

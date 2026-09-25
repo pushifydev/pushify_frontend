@@ -1,14 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  Copy,
-  Check,
-  Terminal,
-  Code2,
-  ChevronDown,
-  ChevronRight,
-} from 'lucide-react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Copy, Check, ChevronDown } from 'lucide-react';
 import { useDocsContent } from '@/hooks/useDocsContent';
 
 export function MethodBadge({ method }: { method: string }) {
@@ -20,43 +13,76 @@ export function MethodBadge({ method }: { method: string }) {
     DELETE: 'bg-red-500/15 text-red-700 border-red-500/30 dark:text-red-400 dark:border-red-500/25',
   };
 
-  return (
-    <span
-      className={`px-2.5 py-1 rounded-md text-xs font-bold font-mono border shrink-0 ${colors[method] || ''}`}
-    >
-      {method}
-    </span>
-  );
+  return <span className={`docs-method ${colors[method] || ''}`}>{method}</span>;
 }
 
-export function CodeBlock({ code }: { code: string; language?: string }) {
+/** What the title bar says when a block has no filename of its own. */
+const LANGUAGE_LABELS: Record<string, string> = {
+  bash: 'shell',
+  json: 'json',
+  yaml: 'yaml',
+  javascript: 'javascript',
+  http: 'http',
+  text: 'text',
+};
+
+/**
+ * The marketing kit's `.hp-code` panel with a working title bar: a name on the left
+ * (a filename, or what the block is), the language on the right, then a copy button.
+ */
+export function CodeBlock({
+  code,
+  language,
+  title,
+}: {
+  code: string;
+  language?: string;
+  title?: string;
+}) {
   const { content } = useDocsContent();
   const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current);
+  }, []);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard blocked (insecure context, permissions) — the code stays selectable.
+    }
   };
 
+  const lang = language ? (LANGUAGE_LABELS[language] ?? language) : undefined;
+
   return (
-    <div className="docs-code-block group">
+    <div className="hp-code docs-code">
+      <div className="hp-code-title docs-code-bar">
+        {title && <span className="docs-code-name">{title}</span>}
+        {lang && lang !== title && <span className="docs-code-lang">{lang}</span>}
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="docs-code-copy"
+          aria-label={copied ? content.labels.copied : content.labels.copyCode}
+          data-copied={copied || undefined}
+        >
+          {copied ? (
+            <Check className="w-3.5 h-3.5" aria-hidden="true" />
+          ) : (
+            <Copy className="w-3.5 h-3.5" aria-hidden="true" />
+          )}
+          <span aria-hidden="true">{copied ? content.labels.copied : content.labels.copy}</span>
+        </button>
+      </div>
       <pre>
         <code>{code}</code>
       </pre>
-      <button
-        type="button"
-        onClick={handleCopy}
-        className="docs-code-copy"
-        aria-label={content.labels.copyCode}
-        data-copied={copied || undefined}
-      >
-        {copied ? (
-          <Check className="w-3.5 h-3.5 docs-code-copied" aria-hidden="true" />
-        ) : (
-          <Copy className="w-3.5 h-3.5" aria-hidden="true" />
-        )}
-      </button>
     </div>
   );
 }
@@ -92,7 +118,7 @@ export function EndpointCard({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="docs-endpoint-card">
+    <div className="docs-endpoint-card" data-open={expanded || undefined}>
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
@@ -102,16 +128,17 @@ export function EndpointCard({
         <MethodBadge method={method} />
         <code className="docs-endpoint-path">{path}</code>
         {scope && <code className="docs-scope-badge">{scope}</code>}
-        {expanded ? (
-          <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--hp-muted)' }} aria-hidden="true" />
-        ) : (
-          <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--hp-muted)' }} aria-hidden="true" />
-        )}
+        <ChevronDown className="docs-endpoint-chevron" aria-hidden="true" />
       </button>
 
       {expanded && (
         <div className="docs-endpoint-body">
           <p className="docs-muted">{description}</p>
+          {scope && (
+            <p className="docs-endpoint-scope md:hidden">
+              <code className="docs-scope-badge docs-scope-badge-inline">{scope}</code>
+            </p>
+          )}
 
           {params && params.length > 0 && (
             <div>
@@ -120,24 +147,20 @@ export function EndpointCard({
                 <table>
                   <thead>
                     <tr>
-                      <th>{labels.paramName}</th>
-                      <th>{labels.paramType}</th>
-                      <th>{labels.paramDesc}</th>
+                      <th scope="col">{labels.paramName}</th>
+                      <th scope="col">{labels.paramType}</th>
+                      <th scope="col">{labels.paramDesc}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {params.map((p) => (
                       <tr key={p.name}>
-                        <td>
-                          <code className="docs-inline-code">{p.name}</code>
-                          {p.required && (
-<span className="docs-required">*</span>
-                          )}
+                        <td className="docs-td-name">
+                          <code>{p.name}</code>
+                          {p.required && <span className="docs-required">{content.labels.required}</span>}
                         </td>
-                        <td className="font-mono text-xs" style={{ color: 'var(--hp-muted)' }}>
-                          {p.type}
-                        </td>
-                        <td className="docs-muted-sm">{p.desc}</td>
+                        <td className="docs-td-type">{p.type}</td>
+                        <td>{p.desc}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -146,37 +169,63 @@ export function EndpointCard({
             </div>
           )}
 
-          {request && (
-            <div>
-              <h4 className="docs-label">
-                <Terminal className="w-3.5 h-3.5" aria-hidden="true" /> {labels.request}
-              </h4>
-              <CodeBlock code={request} language="bash" />
-            </div>
-          )}
-
-          {response && (
-            <div>
-              <h4 className="docs-label">
-                <Code2 className="w-3.5 h-3.5" aria-hidden="true" /> {labels.response}
-              </h4>
-              <CodeBlock code={response} language="json" />
-            </div>
-          )}
+          {request && <CodeBlock code={request} language="bash" title={labels.request} />}
+          {response && <CodeBlock code={response} language="json" title={labels.response} />}
         </div>
       )}
     </div>
   );
 }
 
-export function SectionHeading({ title, description }: { title: string; description: string }) {
+/** The link that appears next to a heading on hover, so any heading can be shared. */
+function HeadingAnchor({ id, label }: { id: string; label: string }) {
+  return (
+    <a href={`#${id}`} className="docs-anchor" aria-label={`${label}: ${id}`}>
+      #
+    </a>
+  );
+}
+
+export function SectionHeading({
+  id,
+  title,
+  description,
+}: {
+  id: string;
+  title: string;
+  description: string;
+}) {
+  const { content } = useDocsContent();
   // h2, not h1 — the page's single h1 lives in IntroSection; 10 h1s flatten the
   // document outline for crawlers and AI section-extractors.
   return (
-    <div className="docs-section-heading mb-8">
-      <h2>{title}</h2>
+    <div className="docs-section-heading">
+      <h2 id={id} className="docs-heading">
+        {title}
+        <HeadingAnchor id={id} label={content.labels.linkToSection} />
+      </h2>
       <p>{description}</p>
     </div>
+  );
+}
+
+/** A sub-section title under a hairline, with an anchor. `size="sm"` is a group inside one. */
+export function DocsHeading({
+  id,
+  children,
+  size = 'md',
+}: {
+  id: string;
+  children: ReactNode;
+  size?: 'md' | 'sm';
+}) {
+  const { content } = useDocsContent();
+  const Tag = size === 'sm' ? 'h4' : 'h3';
+  return (
+    <Tag id={id} className={`docs-heading ${size === 'sm' ? 'docs-h3' : 'docs-h2'}`}>
+      {children}
+      <HeadingAnchor id={id} label={content.labels.linkToSection} />
+    </Tag>
   );
 }
 
@@ -187,19 +236,12 @@ export function Callout({
 }: {
   type?: 'info' | 'warning' | 'success';
   title?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const className =
-    type === 'warning'
-      ? 'docs-callout-warning'
-      : type === 'success'
-        ? 'docs-callout-success'
-        : 'docs-callout-info';
-
   return (
-    <div className={className}>
-      {title && <h4 className="docs-callout-title">{title}</h4>}
-      <div className="text-sm leading-relaxed">{children}</div>
+    <div className={`docs-callout docs-callout-${type}`} role="note">
+      {title && <p className="docs-callout-title">{title}</p>}
+      <div className="docs-callout-body">{children}</div>
     </div>
   );
 }

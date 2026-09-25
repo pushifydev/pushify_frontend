@@ -9,7 +9,6 @@ import {
   Plus,
   Search,
   Globe,
-  Rocket,
   MoreVertical,
   ExternalLink,
   Trash2,
@@ -31,6 +30,7 @@ import { PROJECT_STATUS_COLORS } from '@/lib/constants';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { SkeletonProjectCard } from '@/components/Skeleton';
 import type { Project } from '@/lib/api';
+import { EmptyState } from '@/components/EmptyState';
 
 type ListableStatus = 'active' | 'paused';
 type FilterStatus = 'all' | ListableStatus;
@@ -243,21 +243,16 @@ export default function ProjectsPage() {
           ))}
         </div>
       ) : filteredProjects.length === 0 ? (
-        <div className="dash-panel p-8 sm:p-12 text-center">
-          <Rocket className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
-          <h3 className="font-medium mb-1">
-            {searchQuery || filterStatus !== 'all' ? t('projects', 'noProjectsFound') : t('projects', 'noProjectsYet')}
-          </h3>
-          <p className="text-sm mb-5" style={{ color: 'var(--text-secondary)' }}>
-            {searchQuery || filterStatus !== 'all' ? t('projects', 'adjustCriteria') : t('projects', 'createProjectDesc')}
-          </p>
-          {!searchQuery && filterStatus === 'all' && (
-            <Link href="/dashboard/projects/new" className="btn btn-primary">
-              <Plus className="w-4 h-4" />
-              {t('projects', 'createProject')}
-            </Link>
-          )}
-        </div>
+        <EmptyState
+          label={t('navigation', 'projects')}
+          title={searchQuery || filterStatus !== 'all' ? t('projects', 'noProjectsFound') : t('projects', 'noProjectsYet')}
+          description={searchQuery || filterStatus !== 'all' ? t('projects', 'adjustCriteria') : t('projects', 'createProjectDesc')}
+          action={
+            !searchQuery && filterStatus === 'all'
+              ? { label: t('projects', 'createProject'), href: '/dashboard/projects/new', icon: <Plus className="w-4 h-4" /> }
+              : undefined
+          }
+        />
       ) : viewMode === 'table' ? (
         renderTable()
       ) : (
@@ -300,11 +295,11 @@ export default function ProjectsPage() {
                   {/* Dropdown */}
                   <div className="relative shrink-0">
                     <button
+                      type="button"
                       onClick={() => setOpenDropdown(openDropdown === project.id ? null : project.id)}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-                      style={{ color: 'var(--text-muted)' }}
-                      onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
-                      onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
+                      aria-haspopup="menu"
+                      aria-expanded={openDropdown === project.id}
+                      className="dash-icon-action"
                     >
                       <MoreVertical className="w-4 h-4" />
                     </button>
@@ -313,18 +308,12 @@ export default function ProjectsPage() {
                       <>
                         <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)} />
                         <div
-                          className="absolute right-0 top-full mt-1 w-44 py-1 rounded-xl shadow-xl z-20"
-                          style={{
-                            background: 'var(--bg-elevated)',
-                            border: '1px solid var(--glass-border-md)',
-                          }}
+                          className="dash-menu absolute right-0 top-full mt-1 w-48 z-20"
+                          role="menu"
                         >
                           <Link
                             href={`/dashboard/projects/${project.id}`}
-                            className="flex items-center gap-2 px-3 py-2 text-sm transition-colors"
-                            style={{ color: 'var(--text-secondary)' }}
-                            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-primary)')}
-                            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
+                            className="dash-menu-item"
                           >
                             <Settings className="w-3.5 h-3.5" />
                             {t('common', 'settings')}
@@ -334,23 +323,17 @@ export default function ProjectsPage() {
                               href={project.productionUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 px-3 py-2 text-sm transition-colors"
-                              style={{ color: 'var(--text-secondary)' }}
-                              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-primary)')}
-                              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
+                              className="dash-menu-item"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
                               {t('projects', 'visitSite')}
                             </a>
                           )}
-                          <div className="my-1 mx-3" style={{ height: 1, background: 'var(--glass-divider-md)' }} />
+                          <div className="dash-menu-separator" />
                           {project.status === 'active' ? (
                             <button
                               onClick={() => handleStatusChange(project.id, 'paused')}
-                              className="flex items-center gap-2 px-3 py-2 text-sm w-full text-left transition-colors"
-                              style={{ color: 'var(--text-secondary)' }}
-                              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-primary)')}
-                              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
+                              className="dash-menu-item"
                             >
                               <Pause className="w-3.5 h-3.5" />
                               {t('projects', 'pause')}
@@ -358,10 +341,7 @@ export default function ProjectsPage() {
                           ) : (
                             <button
                               onClick={() => handleStatusChange(project.id, 'active')}
-                              className="flex items-center gap-2 px-3 py-2 text-sm w-full text-left transition-colors"
-                              style={{ color: 'var(--text-secondary)' }}
-                              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-primary)')}
-                              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
+                              className="dash-menu-item"
                             >
                               <Play className="w-3.5 h-3.5" />
                               {t('projects', 'resume')}
@@ -369,8 +349,7 @@ export default function ProjectsPage() {
                           )}
                           <button
                             onClick={() => handleDeleteClick(project)}
-                            className="flex items-center gap-2 px-3 py-2 text-sm w-full text-left"
-                            style={{ color: 'var(--status-error)' }}
+                            className="dash-menu-item is-danger"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             {t('common', 'delete')}

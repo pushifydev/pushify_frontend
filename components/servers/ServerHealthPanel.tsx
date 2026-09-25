@@ -17,17 +17,17 @@ export function ServerHealthPanel({ server }: { server: Server }) {
   if (!canScan) return null;
 
   return (
-    <div className="p-4 sm:p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
+    <section className="dash-panel p-4 sm:p-5 space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <HardDrive className="w-5 h-5 text-[var(--text-muted)]" />
-          <h3 className="text-lg font-semibold">{t('servers', 'serverHealthTitle')}</h3>
-        </div>
+        <h3 className="dash-panel-title">
+          <HardDrive className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
+          {t('servers', 'serverHealthTitle')}
+        </h3>
         <button
           type="button"
           onClick={() => refetch()}
           disabled={isLoading || isFetching}
-          className="btn btn-secondary text-sm inline-flex items-center gap-2"
+          className="btn btn-secondary btn-sm inline-flex items-center gap-2"
         >
           {isLoading || isFetching ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -44,28 +44,57 @@ export function ServerHealthPanel({ server }: { server: Server }) {
 
       {health && (
         <>
-          <div
-            className={`p-3 rounded-lg text-sm border ${
-              health.disk.critical
-                ? 'bg-[var(--status-error)]/10 border-[var(--status-error)]/30 text-[var(--status-error)]'
-                : health.disk.warn
-                  ? 'bg-[var(--status-warning)]/10 border-[var(--status-warning)]/30 text-[var(--status-warning)]'
-                  : 'bg-[var(--bg-tertiary)] border-[var(--border-subtle)] text-[var(--text-secondary)]'
-            }`}
-          >
-            <p className="font-medium">
-              {t('servers', 'diskUsage')}: {health.disk.usedPercent}% — {health.disk.availGb} GB{' '}
-              {t('servers', 'diskFree')}
-            </p>
-            <p className="text-xs mt-1 opacity-90">{health.disk.message}</p>
+          <div className="space-y-2">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="dash-stat-label !mt-0">{t('servers', 'diskUsage')}</span>
+              <span
+                className={`font-mono text-xs tabular-nums ${
+                  health.disk.critical
+                    ? 'text-[var(--status-error)]'
+                    : health.disk.warn
+                      ? 'text-[var(--status-warning)]'
+                      : 'text-[var(--text-primary)]'
+                }`}
+              >
+                {health.disk.usedPercent}% · {health.disk.availGb} GB {t('servers', 'diskFree')}
+              </span>
+            </div>
+            <div
+              className="dash-metric-track"
+              role="progressbar"
+              aria-label={t('servers', 'diskUsage')}
+              aria-valuenow={health.disk.usedPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className={`dash-metric-fill ${
+                  health.disk.critical ? 'is-critical' : health.disk.warn ? 'is-warning' : ''
+                }`}
+                style={{ width: `${Math.min(Math.max(health.disk.usedPercent, 0), 100)}%` }}
+              />
+            </div>
+            {health.disk.message && (
+              <p
+                className={`text-xs ${
+                  health.disk.critical
+                    ? 'text-[var(--status-error)]'
+                    : health.disk.warn
+                      ? 'text-[var(--status-warning)]'
+                      : 'text-[var(--text-muted)]'
+                }`}
+              >
+                {health.disk.message}
+              </p>
+            )}
           </div>
 
           {health.orphans.length > 0 ? (
-            <div className="p-3 rounded-lg border border-[var(--status-warning)]/40 bg-[var(--status-warning)]/5">
+            <div className="dash-callout dash-callout-attention">
               <div className="flex items-start gap-2 mb-2">
-                <AlertTriangle className="w-4 h-4 text-[var(--status-warning)] shrink-0 mt-0.5" />
+                <AlertTriangle className="w-4 h-4 text-[var(--status-warning)] shrink-0 mt-0.5" aria-hidden="true" />
                 <div>
-                  <p className="text-sm font-medium text-[var(--status-warning)]">
+                  <p className="text-sm font-medium text-[var(--text-primary)]">
                     {formatMessage(t('servers', 'orphanContainersTitle'), {
                       count: health.orphans.length,
                     })}
@@ -75,14 +104,14 @@ export function ServerHealthPanel({ server }: { server: Server }) {
                   </p>
                 </div>
               </div>
-              <ul className="space-y-2 text-xs font-mono">
+              <ul className="rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] overflow-hidden text-xs font-mono">
                 {health.orphans.map((o: { name: string; slug: string; status: string; ports: string }) => (
                   <li
                     key={o.name}
-                    className="flex flex-wrap gap-x-3 gap-y-1 p-2 rounded bg-[var(--bg-tertiary)]"
+                    className="flex flex-wrap gap-x-3 gap-y-1 px-3 py-2"
                   >
                     <span className="flex items-center gap-1">
-                      <Box className="w-3 h-3" />
+                      <Box className="w-3 h-3 text-[var(--text-muted)]" aria-hidden="true" />
                       {o.name}
                     </span>
                     {o.ports && <span className="text-[var(--text-muted)]">{o.ports}</span>}
@@ -100,6 +129,6 @@ export function ServerHealthPanel({ server }: { server: Server }) {
           )}
         </>
       )}
-    </div>
+    </section>
   );
 }

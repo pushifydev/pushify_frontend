@@ -82,56 +82,46 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
     : formData.name.trim() && formData.region && formData.size && formData.image;
 
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    // dash-app: the portal renders outside the dashboard layout.
+    <div className="dash-app dash-modal-root">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 backdrop-blur-sm"
-        style={{ background: 'rgba(0,0,0,0.5)' }}
-        onClick={resetAndClose}
-      />
+      <div className="dash-modal-overlay" onClick={resetAndClose} aria-hidden />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-2xl rounded-xl animate-in fade-in zoom-in-95 duration-200 min-h-[600px] max-h-[90vh] flex flex-col"
-        style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.35), 0 0 0 1px var(--border-subtle)',
-        }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-server-title"
+        className="dash-modal is-flush max-w-2xl min-h-[600px]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[var(--border-subtle)] shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-[var(--accent-cyan)]/20 to-[var(--accent-purple)]/20">
-              <Server className="w-6 h-6 text-[var(--accent-cyan)]" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold">{t('servers', 'createServer')}</h2>
-              <p className="text-sm text-[var(--text-muted)]">
-                {mode === 'managed' ? t('servers', 'hetzner') : t('servers', 'byosTitle')}
-              </p>
-            </div>
+        <div className="dash-modal-bar shrink-0" style={{ padding: '1.25rem 1.5rem', alignItems: 'flex-start' }}>
+          <div className="min-w-0">
+            <span className="dash-eyebrow block mb-2">{t('navigation', 'servers')}</span>
+            <h2 id="create-server-title" className="dash-modal-title">{t('servers', 'createServer')}</h2>
+            <p className="dash-modal-description">
+              {mode === 'managed' ? t('servers', 'hetzner') : t('servers', 'byosTitle')}
+            </p>
           </div>
           <button
+            type="button"
             onClick={resetAndClose}
-            className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+            className="dash-modal-close"
+            aria-label={t('common', 'close')}
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Form - Scrollable */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
           {/* Mode Tabs */}
-          <div className="flex gap-2 px-6 pt-4 pb-2">
+          <div className="px-6 pt-5 pb-2">
+          <div className="dash-segmented" role="group">
             <button
               type="button"
               onClick={() => setMode('managed')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
-                mode === 'managed'
-                  ? 'dash-accent-fill'
-                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-subtle)]'
-              }`}
+              aria-pressed={mode === 'managed'}
             >
               <Globe className="w-3.5 h-3.5" />
               {t('servers', 'cloudProvider')}
@@ -139,15 +129,12 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
             <button
               type="button"
               onClick={() => setMode('byos')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
-                mode === 'byos'
-                  ? 'dash-accent-fill'
-                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-subtle)]'
-              }`}
+              aria-pressed={mode === 'byos'}
             >
               <Key className="w-3.5 h-3.5" />
               {t('servers', 'existingServer')}
             </button>
+          </div>
           </div>
 
           {mode === 'managed' && (
@@ -348,10 +335,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
           {/* Actions - Fixed at bottom */}
           <div
             className="flex items-center justify-between px-6 py-4 shrink-0"
-            style={{
-              borderTop: '1px solid var(--border-default)',
-              background: 'var(--bg-secondary)',
-            }}
+            style={{ borderTop: '1px solid var(--border-subtle)' }}
           >
             <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
               {isValid ? t('servers', 'readyToCreate') : t('servers', 'fillRequiredFields')}
@@ -360,18 +344,18 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
               <button
                 type="button"
                 onClick={resetAndClose}
-                className="btn btn-secondary px-5"
+                className="btn btn-secondary"
               >
                 {t('common', 'cancel')}
               </button>
               <button
                 type="submit"
                 disabled={!isValid || createServer.isPending}
-                className="btn btn-primary px-5"
+                className="btn btn-primary"
               >
                 {createServer.isPending ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                     {t('servers', 'creating')}
                   </>
                 ) : (

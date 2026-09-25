@@ -2,28 +2,24 @@
 
 import type { HTMLAttributes } from 'react';
 
-const skeletonBg = { background: 'var(--bg-tertiary)' } as const;
-
+/** A quiet shimmer block on --bg-tertiary (see .dash-skeleton in globals.css). */
 export function Skeleton({ className = '', ...props }: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={`animate-pulse rounded-md ${className}`}
-      style={skeletonBg}
-      aria-hidden
-      {...props}
-    />
-  );
+  return <div className={`dash-skeleton rounded-md ${className}`} aria-hidden {...props} />;
 }
 
-/** Projects grid — matches glass card height ~160px */
+/** Card shell shared by the skeletons: the same hairline card the real content sits in. */
+const cardShell = {
+  background: 'var(--bg-secondary)',
+  border: '1px solid var(--border-subtle)',
+  borderRadius: 14,
+} as const;
+
+/** Projects grid — matches the project card height ~160px */
 export function SkeletonProjectCard() {
   return (
     <div
-      className="rounded-xl p-5"
-      style={{
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--glass-border)',
-      }}
+      className="p-5"
+      style={cardShell}
     >
       <div className="flex gap-3 mb-4">
         <Skeleton className="w-9 h-9 shrink-0 rounded-lg" />
@@ -45,14 +41,8 @@ export function SkeletonProjectCard() {
 export function SkeletonServerCard() {
   return (
     <div
-      className="rounded-xl p-5"
-      style={{
-        background: 'var(--bg-secondary)',
-        borderWidth: '2px 1px 1px 1px',
-        borderStyle: 'solid',
-        borderColor: 'var(--glass-border)',
-        borderRadius: 12,
-      }}
+      className="p-5"
+      style={cardShell}
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -78,10 +68,10 @@ export function SkeletonServerCard() {
 export function SkeletonDashboardProjectRow() {
   return (
     <div
-      className="flex items-stretch rounded-xl overflow-hidden min-h-[56px]"
-      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+      className="flex items-stretch overflow-hidden min-h-[56px]"
+      style={cardShell}
     >
-      <div className="w-[3px] shrink-0 self-stretch animate-pulse" style={skeletonBg} />
+      
       <div className="flex items-center gap-3 flex-1 min-w-0 px-4 py-3">
         <div className="flex-1 min-w-0 space-y-2">
           <Skeleton className="h-4 w-[45%] max-w-[200px]" />
@@ -123,12 +113,8 @@ export function SkeletonPageHeader() {
 export function SkeletonBillingSummaryCard() {
   return (
     <div
-      className="rounded-xl p-5 overflow-hidden"
-      style={{
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--glass-border)',
-        borderRadius: 12,
-      }}
+      className="p-5 overflow-hidden"
+      style={cardShell}
     >
       <div className="flex flex-col sm:flex-row gap-4">
         <Skeleton className="w-11 h-11 rounded-xl shrink-0" />
@@ -146,12 +132,12 @@ export function SkeletonBillingSummaryCard() {
 export function SkeletonTeamPanel() {
   return (
     <div
-      className="rounded-xl overflow-hidden"
-      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
+      className="overflow-hidden"
+      style={cardShell}
     >
       <div
         className="flex items-center gap-2.5 px-5 py-3.5"
-        style={{ borderBottom: '1px solid var(--glass-border)' }}
+        style={{ borderBottom: '1px solid var(--border-subtle)' }}
       >
         <Skeleton className="w-7 h-7 rounded-lg shrink-0" />
         <Skeleton className="h-4 w-28" />
@@ -161,7 +147,7 @@ export function SkeletonTeamPanel() {
           key={i}
           className="flex items-center gap-3 px-5 py-3.5"
           style={{
-            borderTop: i === 0 ? 'none' : '1px solid var(--glass-divider)',
+            borderTop: i === 0 ? 'none' : '1px solid var(--border-subtle)',
           }}
         >
           <Skeleton className="w-8 h-8 rounded-full shrink-0" />
@@ -169,7 +155,7 @@ export function SkeletonTeamPanel() {
             <Skeleton className="h-4 w-40 max-w-[70%]" />
             <Skeleton className="h-3 w-56 max-w-[85%]" />
           </div>
-          <Skeleton className="h-8 w-16 rounded-lg shrink-0 hidden sm:block" />
+          <Skeleton className="h-8 w-16 rounded-full shrink-0 hidden sm:block" />
         </div>
       ))}
     </div>
@@ -179,7 +165,7 @@ export function SkeletonTeamPanel() {
 /** Monitoring gauge cards (matches GaugeCard layout) */
 export function SkeletonMonitoringGaugeCard() {
   return (
-    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+    <div className="p-5" style={cardShell}>
       <div className="flex items-center justify-between mb-3">
         <Skeleton className="h-4 w-24" />
         <Skeleton className="w-9 h-9 rounded-lg shrink-0" />
@@ -195,8 +181,8 @@ export function SkeletonMonitoringGaugeCard() {
 export function SkeletonMonitoringChartBlock() {
   return (
     <div
-      className="h-72 rounded-xl border border-[var(--border-subtle)] p-5 flex flex-col gap-4"
-      style={{ background: 'var(--bg-secondary)' }}
+      className="h-72 p-5 flex flex-col gap-4"
+      style={cardShell}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <Skeleton className="h-5 w-48 max-w-full" />
@@ -211,12 +197,8 @@ export function SkeletonMonitoringChartBlock() {
 export function SkeletonMarketplaceTemplateCard() {
   return (
     <div
-      className="rounded-xl h-52 flex flex-col overflow-hidden"
-      style={{
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--glass-border)',
-        borderRadius: 12,
-      }}
+      className="h-52 flex flex-col overflow-hidden"
+      style={cardShell}
     >
       <Skeleton className="h-[120px] w-full rounded-none shrink-0" />
       <div className="p-4 flex-1 flex flex-col gap-2 min-h-0">
@@ -235,27 +217,21 @@ export function SkeletonMarketplaceTemplateCard() {
 export function SkeletonPlanCompareCard() {
   return (
     <div
-      className="flex flex-col rounded-xl p-5 min-h-[300px]"
-      style={{
-        background: 'var(--bg-secondary)',
-        borderWidth: '2px 1px 1px 1px',
-        borderStyle: 'solid',
-        borderColor: 'var(--glass-border)',
-        borderRadius: 12,
-      }}
+      className="flex flex-col p-5 min-h-[300px]"
+      style={cardShell}
     >
       <div className="flex items-center gap-2.5 mb-4">
         <Skeleton className="w-9 h-9 rounded-lg shrink-0" />
         <Skeleton className="h-4 w-20" />
       </div>
       <Skeleton className="h-10 w-28 mb-5" />
-      <div className="h-px w-full mb-4 shrink-0" style={{ background: 'var(--glass-border)' }} />
+      <div className="h-px w-full mb-4 shrink-0" style={{ background: 'var(--border-subtle)' }} />
       <div className="space-y-2 flex-1">
         {[...Array(8)].map((_, i) => (
           <Skeleton key={i} className="h-3 w-full" />
         ))}
       </div>
-      <Skeleton className="h-10 w-full rounded-lg mt-4 shrink-0" />
+      <Skeleton className="h-10 w-full rounded-full mt-4 shrink-0" />
     </div>
   );
 }
@@ -275,8 +251,8 @@ export function SkeletonProjectDetailPage() {
           <Skeleton className="h-4 w-72 max-w-full" />
         </div>
         <div className="flex gap-2 shrink-0">
-          <Skeleton className="h-9 w-24 rounded-lg" />
-          <Skeleton className="h-9 w-28 rounded-lg" />
+          <Skeleton className="h-9 w-24 rounded-full" />
+          <Skeleton className="h-9 w-28 rounded-full" />
         </div>
       </div>
       <div className="flex gap-1 overflow-hidden border-b border-[var(--border-subtle)] pb-px">
@@ -285,10 +261,10 @@ export function SkeletonProjectDetailPage() {
         ))}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Skeleton className="h-32 rounded-xl lg:col-span-2" />
-        <Skeleton className="h-32 rounded-xl" />
+        <Skeleton className="h-32 rounded-[14px] lg:col-span-2" />
+        <Skeleton className="h-32 rounded-[14px]" />
       </div>
-      <Skeleton className="h-48 rounded-xl w-full" />
+      <Skeleton className="h-48 rounded-[14px] w-full" />
     </div>
   );
 }

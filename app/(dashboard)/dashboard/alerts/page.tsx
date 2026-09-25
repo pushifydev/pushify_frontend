@@ -19,6 +19,7 @@ import { useAlertsOverview, useTranslation, useBillingInfo } from '@/hooks';
 import { STATUS_COLORS } from '@/lib/constants';
 import { formatTimeAgo } from '@/lib/formatters';
 import { Skeleton } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
 
 type AlertsTab = 'channels' | 'health' | 'delivery';
 
@@ -403,8 +404,8 @@ export default function AlertsPage() {
   );
 }
 
+/** Alerts' empty tabs: the shared empty state; `icon` is kept for the call sites but not drawn. */
 function EmptyBlock({
-  icon: Icon,
   title,
   description,
   href,
@@ -416,21 +417,13 @@ function EmptyBlock({
   href?: string;
   cta?: string;
 }) {
+  const { t } = useTranslation();
   return (
-    <div
-      className="rounded-xl p-10 text-center"
-      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-    >
-      <Icon className="w-6 h-6 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
-      <p className="font-semibold mb-1">{title}</p>
-      <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-        {description}
-      </p>
-      {href && cta && (
-        <Link href={href} className="btn btn-primary">
-          {cta}
-        </Link>
-      )}
-    </div>
+    <EmptyState
+      label={t('navigation', 'alerts')}
+      title={title}
+      description={description}
+      action={href && cta ? { label: cta, href } : undefined}
+    />
   );
 }

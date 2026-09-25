@@ -124,27 +124,26 @@ export function HistoricalLogsModal({
 
   const modalContent = (
     <div
-      className="fixed inset-0 z-100 flex items-center justify-center p-4"
-      style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+      className="dash-app fixed inset-0 z-100 flex items-center justify-center p-4"
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/70"
-        onClick={onClose}
-      />
+      <div className="dash-modal-overlay" onClick={onClose} aria-hidden />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-5xl h-[85vh] flex flex-col rounded-xl overflow-hidden
-                   bg-[var(--bg-primary)] border border-[var(--border-subtle)]
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="historical-logs-title"
+        className="relative w-full max-w-5xl h-[85vh] flex flex-col rounded-2xl overflow-hidden
+                   bg-[var(--bg-primary)] border border-[var(--border-default)]
                    shadow-2xl animate-scale-in"
       >
         {/* Header */}
         <div className="flex-shrink-0 flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
           <div className="flex items-center gap-3">
-            <History className="w-5 h-5 text-[var(--accent-purple)]" />
+            <History className="w-4 h-4 text-[var(--text-muted)]" />
             <div>
-              <h2 className="text-lg font-semibold">Historical Container Logs</h2>
+              <h2 id="historical-logs-title" className="dash-modal-title">Historical Container Logs</h2>
               <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
                 <span className="terminal-text">{projectName}</span>
                 <span>/</span>
@@ -167,10 +166,12 @@ export function HistoricalLogsModal({
 
             {/* Close */}
             <button
+              type="button"
               onClick={onClose}
-              className="btn btn-ghost h-8 w-8 p-0 flex items-center justify-center hover:bg-white/10"
+              className="dash-modal-close"
+              aria-label="Close"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -185,7 +186,7 @@ export function HistoricalLogsModal({
         {/* Logs Container */}
         <div
           ref={logsContainerRef}
-          className="flex-1 min-h-0 overflow-auto p-4 bg-[#0d1117]"
+          className="flex-1 min-h-0 overflow-auto p-4 bg-black"
         >
           {isLoading ? (
             <div className="flex items-center justify-center h-full text-[var(--text-muted)]">
@@ -204,8 +205,8 @@ export function HistoricalLogsModal({
                     className="w-full flex items-center justify-between px-4 py-2 bg-[var(--bg-secondary)] hover:bg-[var(--bg-tertiary)] transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <Terminal className={`w-4 h-4 ${chunk.logType === 'stderr' ? 'text-[var(--status-error)]' : 'text-[var(--accent-cyan)]'}`} />
-                      <span className={`text-xs font-medium uppercase ${chunk.logType === 'stderr' ? 'text-[var(--status-error)]' : 'text-[var(--accent-cyan)]'}`}>
+                      <Terminal className={`w-4 h-4 ${chunk.logType === 'stderr' ? 'text-[var(--status-error)]' : 'text-[var(--text-muted)]'}`} />
+                      <span className={`text-xs font-medium uppercase ${chunk.logType === 'stderr' ? 'text-[var(--status-error)]' : 'text-[var(--text-muted)]'}`}>
                         {chunk.logType}
                       </span>
                       <span className="text-xs text-[var(--text-muted)]">
@@ -226,8 +227,8 @@ export function HistoricalLogsModal({
 
                   {/* Chunk content */}
                   {expandedChunks.has(chunk.id) && (
-                    <div className="p-4 font-mono text-sm bg-[#0d1117]">
-                      <div className="text-[#c9d1d9] leading-relaxed">
+                    <div className="p-4 font-mono text-sm bg-black">
+                      <div className="text-[#e7e7e4] leading-relaxed">
                         {chunk.logContent.split('\n').map((line, i) => {
                           // Color different types of log lines
                           let lineClass = '';
@@ -238,11 +239,11 @@ export function HistoricalLogsModal({
                           } else if (lowerLine.includes('warn')) {
                             lineClass = 'text-[#d29922]';
                           } else if (lowerLine.includes('info')) {
-                            lineClass = 'text-[#58a6ff]';
+                            lineClass = 'text-[#e7e7e4]';
                           } else if (lowerLine.includes('debug')) {
-                            lineClass = 'text-[#8b949e]';
+                            lineClass = 'text-[#8a8a86]';
                           } else if (lowerLine.includes('success') || lowerLine.includes('ready') || lowerLine.includes('listening')) {
-                            lineClass = 'text-[#3fb950]';
+                            lineClass = 'text-[#4ade80]';
                           }
 
                           return (

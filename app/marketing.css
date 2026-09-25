@@ -11,8 +11,9 @@
   --hp-bg: #0a0a0a;
   --hp-ink: #f4f4f5;
   --hp-body: #9ca3af;
-  --hp-muted: #6b7280;
-  --hp-eyebrow: #6b6b6b;
+  /* Both at or above 4.5:1 on the canvas: they label small mono text. */
+  --hp-muted: #8a91a0;
+  --hp-eyebrow: #8a8a8a;
   --hp-line: rgba(255, 255, 255, 0.065);
   --hp-line-strong: rgba(255, 255, 255, 0.1);
   --hp-card: #141414;
@@ -284,6 +285,14 @@ html.light .hp-hero::before {
   }
   .hp-rise {
     animation: hp-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hp-rise-solid {
+    animation: hp-rise-solid 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+@keyframes hp-rise-solid {
+  from {
+    transform: translateY(14px);
   }
 }
 
@@ -987,7 +996,7 @@ html.light .hp-hero::before {
     margin-left: 0.35rem;
     font-family: var(--font-label);
     font-size: 0.7rem;
-    opacity: 0.7;
+    opacity: 0.85;
   }
 
   /* Four plans in one open row, divided by hairlines like the feature grids. */
@@ -1109,4 +1118,48 @@ html.light .hp-hero::before {
   .hp .hp-table thead th[data-recommended] {
     color: var(--hp-ink);
   }
+}
+
+/* ── Product screenshots (components/landing/home/HomeProduct.tsx) ─────── */
+
+.hp-shot {
+  position: relative;
+}
+/* A framed window whose lower edge dissolves into the page, lit faintly from above. */
+.hp-shot-frame {
+  position: relative;
+  border: 1px solid var(--hp-line-strong);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--hp-card);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--hp-ink) 3%, transparent) inset,
+    0 40px 120px -40px rgba(0, 0, 0, 0.8);
+  -webkit-mask-image: linear-gradient(#000 70%, transparent);
+  mask-image: linear-gradient(#000 70%, transparent);
+}
+.hp-shot::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 10%;
+  right: 10%;
+  top: -3rem;
+  height: 10rem;
+  background: radial-gradient(50% 100% at 50% 0%, color-mix(in srgb, var(--hp-ink) 9%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.hp-shot-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hp-shot-caption {
+  margin-top: 1rem;
+  text-align: center;
+  font-family: var(--font-label);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-muted);
 }

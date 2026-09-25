@@ -25,6 +25,7 @@ export function DomainsTab({
   isVerifying: boolean;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
+  const { locale } = useTranslation();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newDomain, setNewDomain] = useState('');
   const [expandedDomain, setExpandedDomain] = useState<string | null>(null);
@@ -57,55 +58,18 @@ export function DomainsTab({
   const getSslStatusBadge = (sslStatus: string | null) => {
     switch (sslStatus) {
       case 'active':
-        return { class: 'badge-success', text: 'SSL Active' };
+        return { class: 'badge-success', text: t('projectDetail', 'sslActive') };
       case 'configuring':
-        return { class: 'badge-warning', text: 'SSL Configuring' };
+        return { class: 'badge-warning', text: locale === 'tr' ? 'SSL yapılandırılıyor' : 'SSL configuring' };
       case 'failed':
-        return { class: 'badge-error', text: 'SSL Failed' };
+        return { class: 'badge-error', text: locale === 'tr' ? 'SSL başarısız' : 'SSL failed' };
       default:
-        return { class: 'badge-neutral', text: 'SSL Pending' };
+        return { class: 'badge-neutral', text: locale === 'tr' ? 'SSL bekliyor' : 'SSL pending' };
     }
   };
 
   return (
     <div className="space-y-4 min-w-0">
-      {/* Auto-generated Pushify URL */}
-      {autoSubdomain && (
-        <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--accent-cyan)]/30 border-l-4 border-l-[var(--accent-cyan)] min-w-0">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-start gap-3 min-w-0 flex-1">
-              <Globe className="w-5 h-5 text-[var(--accent-cyan)] shrink-0 mt-0.5" />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-medium text-[var(--accent-cyan)] uppercase tracking-wider">Pushify URL</span>
-                  <span className="badge badge-success text-xs">SSL Active</span>
-                </div>
-                <a
-                  href={`https://${autoSubdomain.domain}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="terminal-text font-medium text-[var(--text-primary)] hover:text-[var(--accent-cyan)] transition-colors flex items-center gap-1 mt-0.5 break-all"
-                >
-                  <span className="truncate">{autoSubdomain.domain}</span>
-                  <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-                </a>
-              </div>
-            </div>
-            <button
-              onClick={() => copyAutoUrl(`https://${autoSubdomain.domain}`)}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] transition-colors"
-            >
-              {copiedAutoUrl ? (
-                <Check className="w-4 h-4 text-[var(--status-success)]" />
-              ) : (
-                <Copy className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Custom Domains Section */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-[var(--text-secondary)] min-w-0">
           {t('projectDetail', 'domainsDesc')}
@@ -117,62 +81,105 @@ export function DomainsTab({
       </div>
 
       {showAddForm && (
-        <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t('projectDetail', 'domain')}</label>
+        <form
+          className="dash-card p-4 flex flex-col gap-3 sm:flex-row sm:items-end"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleAdd();
+          }}
+        >
+          <label className="flex-1 min-w-0">
+            <span className="dash-section-label block mb-2">{t('projectDetail', 'domain')}</span>
             <input
               type="text"
               value={newDomain}
               onChange={(e) => setNewDomain(e.target.value)}
               placeholder="example.com"
               className="input terminal-text"
+              autoFocus
             />
+          </label>
+          <div className="flex items-center justify-end gap-2 shrink-0">
+            <button type="button" onClick={() => setShowAddForm(false)} className="btn btn-ghost">{t('common', 'cancel')}</button>
+            <button type="submit" className="btn btn-primary">{t('projectDetail', 'addDomain')}</button>
           </div>
-          <div className="flex items-center justify-end gap-2">
-            <button onClick={() => setShowAddForm(false)} className="btn btn-ghost">{t('common', 'cancel')}</button>
-            <button onClick={handleAdd} className="btn btn-primary">{t('projectDetail', 'addDomain')}</button>
-          </div>
-        </div>
+        </form>
       )}
 
-      {customDomains.length === 0 && !showAddForm ? (
-        <div className="p-12 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center">
-          <Globe className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-3" />
-          <h3 className="text-lg font-medium mb-2">{t('projectDetail', 'noCustomDomains')}</h3>
-          <p className="text-[var(--text-secondary)]">{t('projectDetail', 'noCustomDomainsDesc')}</p>
-        </div>
-      ) : customDomains.length > 0 && (
-        <div className="space-y-3">
-          {customDomains.map((domain) => (
-            <DomainCard
-              key={domain.id}
-              projectId={projectId}
-              domain={domain}
-              isExpanded={expandedDomain === domain.id}
-              onToggleExpand={() => setExpandedDomain(expandedDomain === domain.id ? null : domain.id)}
-              onVerify={onVerify}
-              onSetPrimary={onSetPrimary}
-              onDelete={onDelete}
-              onOpenSettings={() => setSettingsDomainId(domain.id)}
-              isVerifying={isVerifying}
-              copiedIp={copiedIp}
-              onCopyIp={copyToClipboard}
-              getSslStatusBadge={getSslStatusBadge}
-              t={t}
-            />
-          ))}
+      <div className="dash-rows">
+        {/* Auto-generated Pushify URL */}
+        {autoSubdomain && (
+          <div className="dash-row flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <span className="dash-status-dot is-success" aria-hidden />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                  <a
+                    href={`https://${autoSubdomain.domain}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="terminal-text text-[13px] text-[var(--text-primary)] hover:underline underline-offset-2 inline-flex items-center gap-1 min-w-0"
+                  >
+                    <span className="truncate">{autoSubdomain.domain}</span>
+                    <ExternalLink className="w-3 h-3 shrink-0 text-[var(--text-muted)]" />
+                  </a>
+                  <span className="dash-section-label">{t('projectDetail', 'pushifyUrl')}</span>
+                  <span className="badge badge-success">{t('projectDetail', 'sslActive')}</span>
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => copyAutoUrl(`https://${autoSubdomain.domain}`)}
+              aria-label={t('projectDetail', 'copyUrl')}
+              title={t('projectDetail', 'copyUrl')}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] transition-colors shrink-0"
+            >
+              {copiedAutoUrl ? (
+                <Check className="w-4 h-4 text-[var(--status-success)]" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+        )}
 
-          {/* Nginx Settings Modal */}
-          {settingsDomainId && (
-            <NginxSettingsModal
-              projectId={projectId}
-              domainId={settingsDomainId}
-              domainName={domains?.find(d => d.id === settingsDomainId)?.domain || ''}
-              onClose={() => setSettingsDomainId(null)}
-              t={t}
-            />
-          )}
-        </div>
+        {customDomains.map((domain) => (
+          <DomainCard
+            key={domain.id}
+            projectId={projectId}
+            domain={domain}
+            isExpanded={expandedDomain === domain.id}
+            onToggleExpand={() => setExpandedDomain(expandedDomain === domain.id ? null : domain.id)}
+            onVerify={onVerify}
+            onSetPrimary={onSetPrimary}
+            onDelete={onDelete}
+            onOpenSettings={() => setSettingsDomainId(domain.id)}
+            isVerifying={isVerifying}
+            copiedIp={copiedIp}
+            onCopyIp={copyToClipboard}
+            getSslStatusBadge={getSslStatusBadge}
+            t={t}
+          />
+        ))}
+
+        {customDomains.length === 0 && (
+          <div className="dash-row py-8 text-center">
+            <p className="text-sm text-[var(--text-primary)]">{t('projectDetail', 'noCustomDomains')}</p>
+            <p className="text-[13px] text-[var(--text-muted)] mt-1">{t('projectDetail', 'noCustomDomainsDesc')}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Nginx Settings Modal */}
+      {settingsDomainId && (
+        <NginxSettingsModal
+          projectId={projectId}
+          domainId={settingsDomainId}
+          domainName={domains?.find(d => d.id === settingsDomainId)?.domain || ''}
+          onClose={() => setSettingsDomainId(null)}
+          t={t}
+        />
       )}
     </div>
   );

@@ -118,7 +118,7 @@ export function DeploymentLogsModal({
       case 'building':
       case 'deploying':
       case 'pending':
-        return <Loader2 className="w-5 h-5 text-[var(--accent-cyan)] animate-spin shrink-0" />;
+        return <Loader2 className="w-5 h-5 text-[var(--text-muted)] animate-spin shrink-0" />;
       default:
         return <AlertCircle className="w-5 h-5 text-[var(--text-muted)] shrink-0" />;
     }
@@ -151,29 +151,28 @@ export function DeploymentLogsModal({
 
   const modalContent = (
     <div
-      className="fixed inset-0 z-100 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+      className="dash-app fixed inset-0 z-100 flex items-end sm:items-center justify-center p-0 sm:p-4"
     >
-      <div className="absolute inset-0 bg-black/70" onClick={onClose} aria-hidden />
+      <div className="dash-modal-overlay" onClick={onClose} aria-hidden />
 
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="deployment-logs-title"
         className="relative w-full max-w-4xl h-[100dvh] sm:h-[85vh] max-h-[100dvh] sm:max-h-[90vh] flex flex-col
-                   rounded-t-2xl sm:rounded-xl overflow-hidden
-                   bg-[var(--bg-primary)] border border-[var(--border-subtle)] sm:border
+                   rounded-t-2xl sm:rounded-2xl overflow-hidden
+                   bg-[var(--bg-primary)] border border-[var(--border-default)] sm:border
                    shadow-2xl animate-scale-in pb-[env(safe-area-inset-bottom)]"
       >
         <div className="flex-shrink-0 border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
           <div className="flex items-center justify-between gap-2 px-3 pt-3 sm:px-5 sm:py-4 sm:gap-3">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-              <FileText className="w-5 h-5 text-[var(--accent-cyan)] shrink-0 sm:hidden" />
+              <FileText className="w-4 h-4 text-[var(--text-muted)] shrink-0 sm:hidden" />
               <div className="hidden sm:block shrink-0">{getStatusIcon()}</div>
               <div className="min-w-0">
                 <h2
                   id="deployment-logs-title"
-                  className="text-base sm:text-lg font-semibold truncate"
+                  className="dash-modal-title truncate"
                 >
                   Deployment Logs
                 </h2>
@@ -203,17 +202,17 @@ export function DeploymentLogsModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[var(--border-default)] bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] active:scale-95 transition-colors"
+              className="dash-modal-close"
               aria-label={t('common', 'close')}
             >
-              <X className="w-5 h-5" strokeWidth={2.25} />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 px-3 pb-3 sm:px-5 sm:pb-4 overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
             {isConnected ? (
-              <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--accent-cyan)] shrink-0 mr-1">
-                <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] animate-pulse" />
+              <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--status-warning)] shrink-0 mr-1">
+                <span className="w-2 h-2 rounded-full bg-[var(--status-warning)] animate-pulse" />
                 Live
               </span>
             ) : isComplete ? (
@@ -250,13 +249,13 @@ export function DeploymentLogsModal({
         <div
           ref={logsContainerRef}
           onScroll={handleScroll}
-          className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 bg-[#0d1117] font-mono text-xs sm:text-sm touch-pan-y"
+          className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 bg-black font-mono text-xs sm:text-sm touch-pan-y"
         >
           {(errorMessage || status === 'failed') && (
             <DeploymentFailureSummary logs={logs} errorMessage={errorMessage} />
           )}
           {logLines.length > 0 ? (
-            <div className="text-[#c9d1d9] leading-relaxed">
+            <div className="text-[#e7e7e4] leading-relaxed">
               {logLines.map((line, i) => {
                 let lineClass = '';
                 if (line.includes('[') && line.includes(']')) {
@@ -274,7 +273,7 @@ export function DeploymentLogsModal({
                     afterTimestamp.includes('completed') ||
                     line.includes('✅')
                   ) {
-                    lineClass = 'text-[#3fb950]';
+                    lineClass = 'text-[#4ade80]';
                   } else if (
                     afterTimestamp.includes('Warning') ||
                     afterTimestamp.includes('warning')
@@ -291,11 +290,11 @@ export function DeploymentLogsModal({
                     line.includes('failureCategory=') ||
                     afterTimestamp.includes('💡')
                   ) {
-                    lineClass = 'text-[#58a6ff]';
+                    lineClass = 'text-[#e7e7e4]';
                   } else if (line.includes('Status:') || line.includes('📦') || line.includes('🚀')) {
-                    lineClass = 'text-[#58a6ff]';
+                    lineClass = 'text-[#e7e7e4]';
                   } else if (line.includes('📥') || line.includes('🔨') || line.includes('🐳')) {
-                    lineClass = 'text-[#a371f7]';
+                    lineClass = 'text-[#8a8a86]';
                   }
                 }
 
@@ -331,7 +330,7 @@ export function DeploymentLogsModal({
                 <button
                   type="button"
                   onClick={handleJumpToBottom}
-                  className="text-[var(--accent-cyan)] hover:underline truncate"
+                  className="text-[var(--text-primary)] underline underline-offset-2 truncate"
                 >
                   Jump to bottom
                 </button>

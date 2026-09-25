@@ -44,16 +44,16 @@ export function DesignGallery({ projectId, currentPrimary, onApplyTheme }: Desig
   return (
     <div className="space-y-3">
       <div>
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
-          <LayoutTemplate className="w-4 h-4 text-[var(--accent-primary)]" />
+        <h2 className="dash-section-label flex items-center gap-2">
+          <LayoutTemplate className="w-3.5 h-3.5 text-[var(--text-muted)]" aria-hidden="true" />
           {t('siteEditor', 'designsTitle')}
         </h2>
-        <p className="text-[11px] text-[var(--text-muted)] mt-1 leading-snug">
+        <p className="text-xs text-[var(--text-muted)] mt-1.5 leading-snug">
           {t('siteEditor', 'designsHint')}
         </p>
       </div>
 
-      {isLoading && <div className="h-24 rounded-lg bg-[var(--bg-tertiary)] animate-pulse" />}
+      {isLoading && <div className="h-24 rounded-[10px] bg-[var(--bg-tertiary)] animate-pulse" />}
 
       <div className="grid grid-cols-2 gap-2">
         {(designs ?? []).map((d) => {
@@ -61,15 +61,15 @@ export function DesignGallery({ projectId, currentPrimary, onApplyTheme }: Desig
           return (
             <div
               key={d.key}
-              className={`group rounded-lg border overflow-hidden bg-[var(--bg-primary)] transition-colors ${
-                active ? 'border-[var(--accent-primary)]' : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
+              className={`group rounded-[10px] border overflow-hidden bg-[var(--bg-primary)] transition-colors ${
+                active ? 'border-[var(--text-primary)]' : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
               }`}
             >
-              <button type="button" onClick={() => onApplyTheme(d.theme)} title={d.label} className="block w-full text-left">
+              <button type="button" onClick={() => onApplyTheme(d.theme)} title={d.label} aria-pressed={active} className="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] focus-visible:-outline-offset-2">
                 <DesignThumb theme={d.theme} />
                 <div className="flex items-center justify-between gap-1 px-2 py-1.5">
                   <span className="text-[11px] font-medium truncate text-[var(--text-primary)]">{d.label}</span>
-                  {active && <Check className="w-3 h-3 text-[var(--accent-primary)] shrink-0" />}
+                  {active && <Check className="w-3 h-3 text-[var(--text-primary)] shrink-0" aria-hidden="true" />}
                 </div>
               </button>
               <button
@@ -80,7 +80,7 @@ export function DesignGallery({ projectId, currentPrimary, onApplyTheme }: Desig
                   apply.mutate(d.key, { onSettled: () => setApplying(null) });
                 }}
                 disabled={apply.isPending}
-                className="w-full text-[10px] py-1 border-t border-[var(--border-subtle)] text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-secondary)] flex items-center justify-center gap-1 disabled:opacity-50"
+                className="w-full text-[11px] py-1.5 border-t border-[var(--border-subtle)] text-[var(--text-muted)] hover:bg-[var(--hover-overlay)] hover:text-[var(--text-primary)] flex items-center justify-center gap-1 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] focus-visible:-outline-offset-2"
               >
                 {applying === d.key && <RefreshCw className="w-3 h-3 animate-spin" />}
                 {t('siteEditor', 'useTemplate')}

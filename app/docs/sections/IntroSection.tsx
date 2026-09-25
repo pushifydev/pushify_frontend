@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Terminal, Shield, Rocket, Folder, Server, Database, ArrowRight } from 'lucide-react';
-import { CodeBlock, Callout } from '../components';
+import { CodeBlock, Callout, DocsHeading } from '../components';
 import type { DocsSectionId } from '@/lib/i18n/docs';
 import type { SectionProps } from './shared';
 
@@ -25,7 +25,7 @@ export function IntroSection({
         <h1 className="docs-h1">{c.intro.title}</h1>
         <p className="docs-lead">{c.intro.lead}</p>
         <div className="mt-8 max-w-2xl space-y-3">
-          <Callout type="info" title={c.labels.description}>
+          <Callout type="info" title={c.intro.idNoteTitle}>
             {c.intro.idNote}
           </Callout>
           <Callout type="info" title={c.intro.infraNoteTitle}>
@@ -47,13 +47,10 @@ export function IntroSection({
         })}
       </div>
 
-      <div>
-        <h3 className="docs-label">{c.labels.baseUrl}</h3>
-        <CodeBlock code={apiBase} />
-      </div>
+      <CodeBlock code={apiBase} title={c.labels.baseUrl} />
 
       <div>
-        <h2 className="docs-h2">{c.labels.quickStart}</h2>
+        <DocsHeading id="intro-quick-start">{c.labels.quickStart}</DocsHeading>
         <ol className="docs-steps">
           {c.intro.steps.map((s, i) => (
             <li key={i}>
@@ -80,7 +77,7 @@ export function IntroSection({
       </div>
 
       <div>
-        <h2 className="docs-h2">{c.labels.explore}</h2>
+        <DocsHeading id="intro-explore">{c.labels.explore}</DocsHeading>
         <div className="hp-rule-grid grid-cols-1 sm:grid-cols-2">
           {c.intro.exploreLinks.map((link, i) => {
             const Icon = exploreIcons[i];

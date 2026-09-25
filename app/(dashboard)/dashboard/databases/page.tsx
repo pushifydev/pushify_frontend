@@ -28,6 +28,7 @@ import { CreateDatabaseModal } from './components/CreateDatabaseModal';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { SkeletonServerCard } from '@/components/Skeleton';
 import type { Database as DatabaseType, DatabaseStatus } from '@/lib/api';
+import { EmptyState } from '@/components/EmptyState';
 
 export default function DatabasesPage() {
   const { t } = useTranslation();
@@ -116,26 +117,17 @@ export default function DatabasesPage() {
           ))}
         </div>
       ) : databases.length === 0 ? (
-        <div className="dash-panel p-12 text-center">
-          <div
-            className="w-14 h-14 rounded-xl mx-auto mb-4 flex items-center justify-center"
-            style={{ background: 'var(--dash-accent-bg)' }}
-          >
-            <Database className="w-7 h-7" style={{ color: 'var(--accent-cyan)' }} />
-          </div>
-          <h3 className="font-semibold mb-1">{t('databases', 'noDatabases')}</h3>
-          <p className="text-sm mb-5 max-w-xs mx-auto" style={{ color: 'var(--text-muted)' }}>
-            {t('databases', 'noDatabasesDesc')}
-          </p>
-          <button
-            onClick={() => setCreateModalOpen(true)}
-            disabled={readyServers.length === 0}
-            className="btn btn-primary"
-          >
-            <Plus className="w-4 h-4" />
-            {t('databases', 'createFirst')}
-          </button>
-        </div>
+        <EmptyState
+          label={t('databases', 'title')}
+          title={t('databases', 'noDatabases')}
+          description={t('databases', 'noDatabasesDesc')}
+          action={{
+            label: t('databases', 'createFirst'),
+            onClick: () => setCreateModalOpen(true),
+            disabled: readyServers.length === 0,
+            icon: <Plus className="w-4 h-4" />,
+          }}
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {databases.map((db) => (

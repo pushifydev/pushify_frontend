@@ -14,16 +14,21 @@
 }
 
 .lp-page.docs-page .docs-h1,
-.lp-page.docs-page .docs-section-heading h1,
-.lp-page.docs-page .docs-h2 {
+.lp-page.docs-page .docs-heading {
   scroll-margin-top: 6.5rem;
 }
 
 @media (min-width: 768px) {
   .lp-page.docs-page .docs-h1,
-  .lp-page.docs-page .docs-section-heading h1,
-  .lp-page.docs-page .docs-h2 {
+  .lp-page.docs-page .docs-heading {
     scroll-margin-top: 7rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lp-page.docs-page .docs-h1,
+  .lp-page.docs-page .docs-heading {
+    scroll-margin-top: 5.5rem;
   }
 }
 
@@ -138,6 +143,7 @@
 
 .docs-section-heading {
   padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .docs-section-heading h1,
@@ -178,6 +184,40 @@
   letter-spacing: -0.01em;
   color: var(--hp-ink);
   margin-bottom: 0.5rem;
+}
+
+/* Every titled heading carries a `#` link that shows on hover or focus. */
+.docs-heading {
+  position: relative;
+}
+
+.docs-anchor {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.75em;
+  color: var(--hp-muted);
+  text-decoration: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+.docs-heading:hover .docs-anchor,
+.docs-anchor:focus-visible {
+  opacity: 1;
+}
+
+.docs-anchor:hover {
+  color: var(--hp-ink);
+}
+
+@media (hover: none) {
+  .docs-anchor {
+    display: none;
+  }
 }
 
 .docs-lead {
@@ -306,20 +346,22 @@ button.docs-cell {
 
 /* ── Tables ─────────────────────────────────────────────────────────────── */
 
+/* Hairline tables: a rule above and below, hairlines between rows, no box. */
 .docs-table-wrap {
-  border-radius: 12px;
-  border: 1px solid var(--hp-line);
+  border-top: 1px solid var(--hp-line-strong);
+  border-bottom: 1px solid var(--hp-line);
   overflow-x: auto;
 }
 
 .docs-table-wrap table {
   width: 100%;
+  border-collapse: collapse;
   font-size: 0.875rem;
 }
 
 .docs-table-wrap th {
   text-align: left;
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 1.25rem 0.625rem 0;
   font-family: var(--font-label);
   font-size: 0.6875rem;
   font-weight: 400;
@@ -327,95 +369,151 @@ button.docs-cell {
   text-transform: uppercase;
   color: var(--hp-muted);
   border-bottom: 1px solid var(--hp-line);
-  background: var(--hp-card);
+  white-space: nowrap;
 }
 
 .docs-table-wrap td {
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1.25rem 0.75rem 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
   color: var(--hp-body);
   border-bottom: 1px solid var(--hp-line);
-  vertical-align: top;
+  vertical-align: baseline;
 }
 
-.docs-table-wrap tr {
-  border-color: var(--hp-line);
+.docs-table-wrap th:last-child,
+.docs-table-wrap td:last-child {
+  padding-right: 0;
 }
 
 .docs-table-wrap tr:last-child td {
   border-bottom: none;
 }
 
-/* ── Code ───────────────────────────────────────────────────────────────── */
-
-/* The same object as the marketing kit's CodePanel. */
-.docs-code-block {
-  position: relative;
+.docs-td-name {
+  white-space: nowrap;
 }
 
-.docs-code-block pre {
-  padding: 1rem 3rem 1rem 1.25rem;
-  border-radius: 12px;
-  background: var(--hp-card);
-  border: 1px solid var(--hp-line);
-  overflow-x: auto;
-}
-
-.docs-code-block code {
-  font-size: 0.8125rem;
-  line-height: 1.75;
+.docs-td-name code {
   font-family: var(--font-mono);
+  font-size: 0.8125rem;
   color: var(--hp-ink);
 }
 
-.docs-code-copy {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  display: inline-flex;
-  padding: 0.4rem;
-  border-radius: 8px;
-  border: 1px solid var(--hp-line);
-  background: var(--hp-bg);
+.docs-td-type {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   color: var(--hp-muted);
-  opacity: 0;
+  white-space: nowrap;
+}
+
+.docs-required {
+  margin-left: 0.5rem;
+  font-family: var(--font-label);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-muted);
+}
+
+/* ── Code ───────────────────────────────────────────────────────────────── */
+
+/* `.hp-code` from the marketing kit, with a copy button in its title bar. */
+.lp-page.docs-page .docs-code {
+  border-radius: 12px;
+}
+
+.lp-page.docs-page .docs-code-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.5rem;
+  padding: 0.25rem 0.375rem 0.25rem 1.1rem;
+}
+
+.docs-code-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--hp-body);
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+/* Filenames keep their case; plain labels (REQUEST) are already uppercase in the bar. */
+.docs-code-name:not(:has(+ .docs-code-lang)) {
+  flex: 1;
+}
+
+.docs-code-lang {
+  flex: 1;
+  color: var(--hp-muted);
+}
+
+.docs-code-name + .docs-code-lang {
+  text-align: right;
+}
+
+.docs-code-copy {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.875rem;
+  padding: 0 0.625rem;
+  border-radius: 999px;
+  font-family: var(--font-label);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hp-muted);
   transition:
-    opacity 0.15s ease,
     color 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.docs-code-block:hover .docs-code-copy,
-.docs-code-copy:focus-visible,
-.docs-code-copy[data-copied='true'] {
-  opacity: 1;
-}
-
-@media (hover: none) {
-  .docs-code-copy {
-    opacity: 1;
-  }
+    background 0.15s ease;
 }
 
 .docs-code-copy:hover {
   color: var(--hp-ink);
-  border-color: var(--hp-line-strong);
+  background: var(--hp-line);
 }
 
-.docs-code-copied {
+.docs-code-copy[data-copied='true'] {
   color: var(--hp-live);
 }
 
+.lp-page.docs-page .docs-code-copy:focus-visible {
+  outline-offset: 0;
+}
+
+.lp-page.docs-page .docs-code pre {
+  padding: 1rem 1.1rem;
+}
+
+.lp-page.docs-page .docs-code code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  color: var(--hp-ink);
+}
+
 /* ── Endpoints ──────────────────────────────────────────────────────────── */
+
+.docs-endpoints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
 .docs-endpoint-card {
   border-radius: 12px;
   border: 1px solid var(--hp-line);
   background: var(--hp-card);
-  overflow: hidden;
   transition: border-color 0.15s ease;
 }
 
-.docs-endpoint-card:hover {
+.docs-endpoint-card:hover,
+.docs-endpoint-card[data-open='true'] {
   border-color: var(--hp-line-strong);
 }
 
@@ -424,22 +522,26 @@ button.docs-cell {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.875rem 1rem;
+  padding: 0.75rem 1rem;
   text-align: left;
-}
-
-.lp-page.docs-page .docs-endpoint-header:focus-visible {
-  outline-offset: -3px;
   border-radius: 12px;
 }
 
-.docs-endpoint-body {
-  padding: 1.25rem 1rem 1.25rem;
-  border-top: 1px solid var(--hp-line);
+.lp-page.docs-page .docs-endpoint-header:focus-visible {
+  outline-offset: -2px;
 }
 
-.docs-endpoint-body > * + * {
-  margin-top: 1.25rem;
+.docs-method {
+  flex-shrink: 0;
+  min-width: 3.75rem;
+  padding: 0.1875rem 0.5rem;
+  border: 1px solid;
+  border-radius: 6px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .docs-endpoint-path {
@@ -453,8 +555,41 @@ button.docs-cell {
   white-space: nowrap;
 }
 
+.docs-endpoint-chevron {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--hp-muted);
+  transform: rotate(-90deg);
+  transition: transform 0.15s ease;
+}
+
+.docs-endpoint-card[data-open='true'] .docs-endpoint-chevron {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-endpoint-chevron {
+    transition: none;
+  }
+}
+
+.docs-endpoint-body {
+  padding: 1.25rem 1rem;
+  border-top: 1px solid var(--hp-line);
+}
+
+.docs-endpoint-body > * + * {
+  margin-top: 1.25rem;
+}
+
+.docs-endpoint-body > .docs-endpoint-scope {
+  margin-top: 0.75rem;
+}
+
 .docs-scope-badge {
   display: none;
+  flex-shrink: 0;
   padding: 0.125rem 0.5rem;
   border-radius: 999px;
   font-size: 0.6875rem;
@@ -462,7 +597,10 @@ button.docs-cell {
   letter-spacing: 0.05em;
   color: var(--hp-muted);
   border: 1px solid var(--hp-line-strong);
-  flex-shrink: 0;
+}
+
+.docs-scope-badge-inline {
+  display: inline-block;
 }
 
 @media (min-width: 768px) {
@@ -471,35 +609,27 @@ button.docs-cell {
   }
 }
 
-.docs-required {
-  margin-left: 0.25rem;
-  font-family: var(--font-label);
-  font-size: 0.75rem;
-  color: var(--hp-ink);
-}
-
 /* ── Callouts ───────────────────────────────────────────────────────────── */
 
-.docs-callout-info,
-.docs-callout-warning,
-.docs-callout-success {
+.docs-callout {
   padding: 1rem 1.25rem;
   border-radius: 12px;
   border: 1px solid var(--hp-line);
   background: var(--hp-card);
   color: var(--hp-body);
+  max-width: 48rem;
 }
 
-/* A warning is marked by a stronger rule on its leading edge — no alarm colours. */
+/* A warning is marked by an ink rule on its leading edge — no alarm colours. */
 .docs-callout-warning {
   border-color: var(--hp-line-strong);
   box-shadow: inset 2px 0 0 var(--hp-ink);
 }
 
-/* Green is kept for success / healthy. */
+/* Green only for success / healthy. */
 .docs-callout-success {
   border-color: var(--hp-live-line);
-  background: var(--hp-live-soft);
+  box-shadow: inset 2px 0 0 var(--hp-live);
 }
 
 .docs-callout-title {
@@ -513,7 +643,33 @@ button.docs-cell {
   color: var(--hp-ink);
 }
 
+.docs-callout-success .docs-callout-title {
+  color: var(--hp-live);
+}
+
+.docs-callout-body {
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
 /* ── Guide prose (SSO, monitoring, build sources) ───────────────────────── */
+
+/* Plain <code> inside prose and callouts reads like the inline-code chip. */
+.docs-p code,
+.docs-ol code,
+.docs-ul code,
+.docs-dl code,
+.docs-callout-body code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--hp-ink);
+}
+
+.docs-empty {
+  padding: 0 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--hp-muted);
+}
 
 .docs-p {
   font-size: 0.9375rem;
@@ -534,6 +690,24 @@ button.docs-cell {
 .docs-ol > li {
   margin-bottom: 0.375rem;
   padding-left: 0.25rem;
+}
+
+.docs-ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--hp-body);
+  max-width: 44rem;
+}
+
+.docs-ul > li {
+  margin-bottom: 0.375rem;
+  padding-left: 0.25rem;
+}
+
+.docs-ul > li::marker {
+  color: var(--hp-muted);
 }
 
 .docs-ol > li::marker {
@@ -564,4 +738,10 @@ button.docs-cell {
   line-height: 1.65;
   color: var(--hp-body);
   margin: 0;
+}
+
+.docs-status {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
 }

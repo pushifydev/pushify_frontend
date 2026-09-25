@@ -112,12 +112,12 @@ export function LandingFooter({ lit = false }: { lit?: boolean } = {}) {
 
           {Object.entries(links).map(([title, items]) => (
             <div key={title}>
-              <h4
+              <h2
                 className="text-[12px] uppercase tracking-[0.1em] mb-4"
                 style={{ color: 'var(--lp-muted)', fontFamily: 'var(--font-label)' }}
               >
                 {title}
-              </h4>
+              </h2>
               <ul className="space-y-2.5">
                 {items.map((link) => {
                   const isExternal = (link as { external?: boolean }).external;

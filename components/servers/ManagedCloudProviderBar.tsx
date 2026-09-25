@@ -18,23 +18,23 @@ export function ManagedCloudProviderBar() {
       </p>
       <div className="flex flex-wrap items-center gap-2">
         <div
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
+          className="inline-flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-[12px] text-sm font-medium"
           style={{
-            background: 'var(--dash-accent-bg)',
-            border: '1px solid var(--dash-accent-border)',
+            background: 'var(--bg-tertiary)',
+            border: '1px solid var(--border-default)',
             color: 'var(--text-primary)',
           }}
         >
           <ProviderIcon provider={MANAGED_CLOUD_PROVIDER} size="sm" />
           <span>{t('servers', MANAGED_CLOUD_PROVIDER)}</span>
-          <Check className="w-3.5 h-3.5" style={{ color: 'var(--status-success)' }} />
+          <Check className="w-3.5 h-3.5" style={{ color: 'var(--status-success)' }} aria-hidden="true" />
         </div>
         {COMING_SOON_CLOUD_PROVIDERS.map((provider) => (
           <div
             key={provider}
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm opacity-60"
+            className="inline-flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-[12px] text-sm opacity-60"
             style={{
-              background: 'var(--bg-tertiary)',
+              background: 'transparent',
               border: '1px solid var(--border-subtle)',
               color: 'var(--text-muted)',
             }}
@@ -42,11 +42,11 @@ export function ManagedCloudProviderBar() {
           >
             <ProviderIcon provider={provider} size="sm" />
             <span>{t('servers', provider)}</span>
-            <span className="text-xs uppercase tracking-wide">{t('servers', 'comingSoonBadge')}</span>
+            <span className="dash-stat-label !mt-0">{t('servers', 'comingSoonBadge')}</span>
           </div>
         ))}
       </div>
-      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+      <p className="dash-caption">
         {t('servers', 'managedProvidersComingSoon')}
       </p>
     </div>

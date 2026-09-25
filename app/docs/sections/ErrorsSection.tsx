@@ -1,6 +1,6 @@
 'use client';
 
-import { CodeBlock, SectionHeading } from '../components';
+import { CodeBlock, SectionHeading, DocsHeading } from '../components';
 import type { SectionProps } from './shared';
 
 const statusCodeColors: Record<string, string> = {
@@ -18,23 +18,23 @@ const statusCodeColors: Record<string, string> = {
 export function ErrorsSection({ c, apiBase }: SectionProps) {
   return (
     <div className="space-y-8">
-      <SectionHeading title={c.errors.title} description={c.errors.description} />
+      <SectionHeading id="errors" title={c.errors.title} description={c.errors.description} />
 
       <div>
-        <h2 className="docs-h2">{c.errors.httpStatusTitle}</h2>
+        <DocsHeading id="errors-status-codes">{c.errors.httpStatusTitle}</DocsHeading>
         <div className="docs-table-wrap">
-          <table className="w-full text-sm">
+          <table>
             <thead>
               <tr>
-                <th>{c.labels.code}</th>
-                <th>{c.labels.description}</th>
+                <th scope="col">{c.labels.code}</th>
+                <th scope="col">{c.labels.description}</th>
               </tr>
             </thead>
             <tbody>
               {c.errors.statusRows.map((item) => (
                 <tr key={item.code}>
-                  <td>
-                    <span className={`font-mono font-medium text-sm ${statusCodeColors[item.code]}`}>{item.code}</span>
+                  <td className="docs-td-name">
+                    <span className={`docs-status ${statusCodeColors[item.code] ?? ''}`}>{item.code}</span>
                   </td>
                   <td>{item.desc}</td>
                 </tr>
@@ -45,7 +45,7 @@ export function ErrorsSection({ c, apiBase }: SectionProps) {
       </div>
 
       <div>
-        <h2 className="docs-h2">{c.errors.responseFormatTitle}</h2>
+        <DocsHeading id="errors-response-format">{c.errors.responseFormatTitle}</DocsHeading>
         <CodeBlock
           code={`{
   "error": {
@@ -58,7 +58,7 @@ export function ErrorsSection({ c, apiBase }: SectionProps) {
       </div>
 
       <div>
-        <h2 className="docs-h2">{c.errors.commonCodesTitle}</h2>
+        <DocsHeading id="errors-codes">{c.errors.commonCodesTitle}</DocsHeading>
         <dl className="docs-rows">
           {c.errors.errorCodes.map((item) => (
             <div key={item.code}>
@@ -72,23 +72,23 @@ export function ErrorsSection({ c, apiBase }: SectionProps) {
       </div>
 
       <div>
-        <h2 className="docs-h2">{c.errors.rateLimitsTitle}</h2>
+        <DocsHeading id="errors-rate-limits">{c.errors.rateLimitsTitle}</DocsHeading>
         <p className="docs-muted mb-5">
           {c.errors.rateLimitsIntro}
         </p>
         <div className="docs-table-wrap">
-          <table className="w-full text-sm">
+          <table>
             <thead>
               <tr>
-                <th>{c.labels.plan}</th>
-                <th>{c.labels.rateLimit}</th>
+                <th scope="col">{c.labels.plan}</th>
+                <th scope="col">{c.labels.rateLimit}</th>
               </tr>
             </thead>
             <tbody>
               {c.errors.rateLimitRows.map((item) => (
                 <tr key={item.plan}>
                   <td style={{ color: 'var(--hp-ink)' }}>{item.plan}</td>
-                  <td className="font-mono text-xs">{item.limit}</td>
+                  <td className="docs-td-type">{item.limit}</td>
                 </tr>
               ))}
             </tbody>
@@ -100,7 +100,7 @@ export function ErrorsSection({ c, apiBase }: SectionProps) {
       </div>
 
       <div>
-        <h2 className="docs-h2">{c.errors.exampleTitle}</h2>
+        <DocsHeading id="errors-example">{c.errors.exampleTitle}</DocsHeading>
         <CodeBlock
           code={`async function apiRequest(endpoint, options = {}) {
   const response = await fetch('${apiBase}' + endpoint, {

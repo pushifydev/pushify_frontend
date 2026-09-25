@@ -37,6 +37,7 @@ export interface DocsContent {
     dashboard: string;
     getApiKey: string;
     apiVersion: string;
+    noResults: string;
   };
   labels: {
     parameters: string;
@@ -46,6 +47,10 @@ export interface DocsContent {
     request: string;
     response: string;
     copyCode: string;
+    copy: string;
+    copied: string;
+    required: string;
+    linkToSection: string;
     baseUrl: string;
     headerFormat: string;
     exampleRequest: string;
@@ -63,6 +68,7 @@ export interface DocsContent {
     badge: string;
     title: string;
     lead: string;
+    idNoteTitle: string;
     idNote: string;
     infraNoteTitle: string;
     infraNote: string;
@@ -181,6 +187,7 @@ export interface DocsContent {
     recipientsText: string;
     logsTitle: string;
     logsText: string;
+    retentionLabel: string;
     logRetention: { plan: string; kept: string }[];
     backupsTitle: string;
     backupsText: string;
@@ -200,6 +207,7 @@ export interface DocsContent {
     imageTitle: string;
     imageText: string;
     imageExample: string;
+    imageRefLabel: string;
     imageNotes: string[];
     composeTitle: string;
     composeText: string;
@@ -214,10 +222,12 @@ export interface DocsContent {
     beforeTitle: string;
     beforeText: string;
     redirectExample: string;
+    redirectLabel: string;
     redirectWarningTitle: string;
     redirectWarning: string;
     issuerLabel: string;
-    providers: { name: string; steps: string[]; issuer: string }[];
+    /** `slug` is the stable anchor id (#sso-okta); it is not translated. */
+    providers: { slug: string; name: string; steps: string[]; issuer: string }[];
     finishTitle: string;
     finishSteps: string[];
     enforceTitle: string;

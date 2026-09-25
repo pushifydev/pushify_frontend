@@ -11,6 +11,80 @@ import {
 import { toast } from 'sonner';
 import { ToggleOption } from './ToggleOption';
 
+/** Nginx modal copy (no locale keys for these yet). */
+const COPY = {
+  en: {
+    portSection: 'Port Configuration',
+    proxyPort: 'Proxy Port',
+    proxyPortPlaceholder: 'Use project default',
+    proxyPortHint: 'Leave empty to use the project\'s default port. Override if this domain should route to a different port.',
+    basicSection: 'Basic Settings',
+    proxyTimeout: 'Proxy Timeout (seconds)',
+    proxyTimeoutHint: 'Max: 86400 (24 hours)',
+    maxBody: 'Max Body Size',
+    maxBodyHint: 'e.g., 100m, 1g',
+    websocket: 'Enable WebSocket Support',
+    websocketDesc: 'Allow WebSocket connections through the proxy',
+    gzip: 'Enable Gzip Compression',
+    gzipDesc: 'Compress responses to reduce bandwidth',
+    https: 'Force HTTPS',
+    httpsDesc: 'Redirect all HTTP requests to HTTPS',
+    rateSection: 'Rate Limiting',
+    rate: 'Enable Rate Limiting',
+    rateDesc: 'Limit requests per IP address',
+    rps: 'Requests per Second',
+    burst: 'Burst Size',
+    cacheSection: 'Caching',
+    cache: 'Enable Proxy Caching',
+    cacheDesc: 'Cache responses from your application',
+    cacheMaxAge: 'Cache Max Age (seconds)',
+    cacheMaxAgeHint: 'How long to cache successful responses',
+    headersSection: 'Custom Headers',
+    addHeader: 'Add Header',
+    headerName: 'Header Name',
+    headerValue: 'Header Value',
+    noHeaders: 'No custom headers configured',
+    locationsSection: 'Custom Location Blocks',
+    saving: 'Saving...',
+    save: 'Save Settings',
+  },
+  tr: {
+    portSection: 'Port yapılandırması',
+    proxyPort: 'Proxy portu',
+    proxyPortPlaceholder: 'Proje varsayılanını kullan',
+    proxyPortHint: 'Projenin varsayılan portu için boş bırakın. Bu alan adı farklı bir porta yönlenecekse değiştirin.',
+    basicSection: 'Temel ayarlar',
+    proxyTimeout: 'Proxy zaman aşımı (saniye)',
+    proxyTimeoutHint: 'En fazla: 86400 (24 saat)',
+    maxBody: 'En büyük gövde boyutu',
+    maxBodyHint: 'örn. 100m, 1g',
+    websocket: 'WebSocket desteğini aç',
+    websocketDesc: 'Proxy üzerinden WebSocket bağlantılarına izin ver',
+    gzip: 'Gzip sıkıştırmayı aç',
+    gzipDesc: 'Bant genişliğini azaltmak için yanıtları sıkıştır',
+    https: 'HTTPS’i zorunlu kıl',
+    httpsDesc: 'Tüm HTTP isteklerini HTTPS’e yönlendir',
+    rateSection: 'Hız sınırlama',
+    rate: 'Hız sınırlamayı aç',
+    rateDesc: 'IP adresi başına istekleri sınırla',
+    rps: 'Saniye başına istek',
+    burst: 'Ani artış boyutu',
+    cacheSection: 'Önbellek',
+    cache: 'Proxy önbelleğini aç',
+    cacheDesc: 'Uygulamanızın yanıtlarını önbelleğe al',
+    cacheMaxAge: 'Önbellek süresi (saniye)',
+    cacheMaxAgeHint: 'Başarılı yanıtların ne kadar süre önbellekte tutulacağı',
+    headersSection: 'Özel başlıklar',
+    addHeader: 'Başlık ekle',
+    headerName: 'Başlık adı',
+    headerValue: 'Başlık değeri',
+    noHeaders: 'Özel başlık tanımlı değil',
+    locationsSection: 'Özel location blokları',
+    saving: 'Kaydediliyor…',
+    save: 'Ayarları kaydet',
+  },
+} as const;
+
 // Nginx Settings Modal Component
 export function NginxSettingsModal({
   projectId,
@@ -25,6 +99,8 @@ export function NginxSettingsModal({
   onClose: () => void;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
+  const { locale } = useTranslation();
+  const c = locale === 'tr' ? COPY.tr : COPY.en;
   const { data: settings, isLoading } = useNginxSettings(projectId, domainId);
   const updateSettings = useUpdateNginxSettings(projectId, domainId);
 
@@ -42,6 +118,15 @@ export function NginxSettingsModal({
   const [cachingMaxAge, setCachingMaxAge] = useState(3600);
   const [customHeaders, setCustomHeaders] = useState<Array<{ key: string; value: string }>>([]);
   const [customLocationBlocks, setCustomLocationBlocks] = useState('');
+
+  // Esc closes, like every other dialog
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   // Load settings when data arrives
   useEffect(() => {
@@ -122,32 +207,32 @@ export function NginxSettingsModal({
   if (typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-100 flex items-center justify-center">
-      <div className="absolute inset-0 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose} />
+    <div className="dash-app dash-modal-root !z-[100]">
+      <div className="dash-modal-overlay" onClick={onClose} aria-hidden />
       <div
-        className="relative rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden"
-        style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.35), 0 0 0 1px var(--glass-border)',
-        }}
+        className="dash-modal is-flush max-w-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="nginx-settings-title"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[var(--border-subtle)]">
-          <div>
-            <h2 className="text-lg font-semibold">Nginx Settings</h2>
-            <p className="text-sm text-[var(--text-secondary)]">{domainName}</p>
+        <div className="dash-modal-bar">
+          <div className="min-w-0">
+            <span className="dash-eyebrow block mb-1.5">Nginx</span>
+            <h2 id="nginx-settings-title" className="dash-modal-title terminal-text !text-[15px] truncate">{domainName}</h2>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
+            aria-label={t('common', 'close')}
+            className="dash-modal-close"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-4 overflow-y-auto max-h-[calc(90vh-140px)] space-y-6">
+        <div className="px-5 py-5 overflow-y-auto flex-1 min-h-0 space-y-7">
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <RefreshCw className="w-6 h-6 animate-spin text-[var(--text-muted)]" />
@@ -156,24 +241,24 @@ export function NginxSettingsModal({
             <>
               {/* Port Configuration */}
               <section className="space-y-4">
-                <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Port Configuration</h3>
-                <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+                <h3 className="dash-section-label">{c.portSection}</h3>
+                <div className="p-4 rounded-[12px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
                   <div className="flex items-start gap-4">
                     <div className="flex-1">
-                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                        Proxy Port
+                      <label className="block text-[13px] font-medium text-[var(--text-primary)] mb-1.5">
+                        {c.proxyPort}
                       </label>
                       <input
                         type="number"
                         value={proxyPort}
                         onChange={(e) => setProxyPort(e.target.value ? parseInt(e.target.value) : '')}
-                        placeholder="Use project default"
+                        placeholder={c.proxyPortPlaceholder}
                         min={1}
                         max={65535}
                         className="input terminal-text w-48"
                       />
                       <p className="text-xs text-[var(--text-muted)] mt-1">
-                        Leave empty to use the project&apos;s default port. Override if this domain should route to a different port.
+                        {c.proxyPortHint}
                       </p>
                     </div>
                   </div>
@@ -182,12 +267,12 @@ export function NginxSettingsModal({
 
               {/* Basic Settings */}
               <section className="space-y-4">
-                <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Basic Settings</h3>
+                <h3 className="dash-section-label">{c.basicSection}</h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                      Proxy Timeout (seconds)
+                    <label className="block text-[13px] font-medium text-[var(--text-primary)] mb-1.5">
+                      {c.proxyTimeout}
                     </label>
                     <input
                       type="number"
@@ -197,11 +282,11 @@ export function NginxSettingsModal({
                       max={86400}
                       className="input terminal-text w-full"
                     />
-                    <p className="text-xs text-[var(--text-muted)] mt-1">Max: 86400 (24 hours)</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">{c.proxyTimeoutHint}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                      Max Body Size
+                    <label className="block text-[13px] font-medium text-[var(--text-primary)] mb-1.5">
+                      {c.maxBody}
                     </label>
                     <input
                       type="text"
@@ -210,27 +295,27 @@ export function NginxSettingsModal({
                       placeholder="100m"
                       className="input terminal-text w-full"
                     />
-                    <p className="text-xs text-[var(--text-muted)] mt-1">e.g., 100m, 1g</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">{c.maxBodyHint}</p>
                   </div>
                 </div>
 
                 {/* Toggle Options */}
                 <div className="space-y-3">
                   <ToggleOption
-                    label="Enable WebSocket Support"
-                    description="Allow WebSocket connections through the proxy"
+                    label={c.websocket}
+                    description={c.websocketDesc}
                     enabled={enableWebsocket}
                     onChange={setEnableWebsocket}
                   />
                   <ToggleOption
-                    label="Enable Gzip Compression"
-                    description="Compress responses to reduce bandwidth"
+                    label={c.gzip}
+                    description={c.gzipDesc}
                     enabled={enableGzip}
                     onChange={setEnableGzip}
                   />
                   <ToggleOption
-                    label="Force HTTPS"
-                    description="Redirect all HTTP requests to HTTPS"
+                    label={c.https}
+                    description={c.httpsDesc}
                     enabled={forceHttps}
                     onChange={setForceHttps}
                   />
@@ -239,11 +324,11 @@ export function NginxSettingsModal({
 
               {/* Rate Limiting */}
               <section className="space-y-4">
-                <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Rate Limiting</h3>
+                <h3 className="dash-section-label">{c.rateSection}</h3>
 
                 <ToggleOption
-                  label="Enable Rate Limiting"
-                  description="Limit requests per IP address"
+                  label={c.rate}
+                  description={c.rateDesc}
                   enabled={rateLimitEnabled}
                   onChange={setRateLimitEnabled}
                 />
@@ -251,8 +336,8 @@ export function NginxSettingsModal({
                 {rateLimitEnabled && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-4 border-l-2 border-[var(--border-subtle)]">
                     <div>
-                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                        Requests per Second
+                      <label className="block text-[13px] font-medium text-[var(--text-primary)] mb-1.5">
+                        {c.rps}
                       </label>
                       <input
                         type="number"
@@ -264,8 +349,8 @@ export function NginxSettingsModal({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                        Burst Size
+                      <label className="block text-[13px] font-medium text-[var(--text-primary)] mb-1.5">
+                        {c.burst}
                       </label>
                       <input
                         type="number"
@@ -282,19 +367,19 @@ export function NginxSettingsModal({
 
               {/* Caching */}
               <section className="space-y-4">
-                <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Caching</h3>
+                <h3 className="dash-section-label">{c.cacheSection}</h3>
 
                 <ToggleOption
-                  label="Enable Proxy Caching"
-                  description="Cache responses from your application"
+                  label={c.cache}
+                  description={c.cacheDesc}
                   enabled={cachingEnabled}
                   onChange={setCachingEnabled}
                 />
 
                 {cachingEnabled && (
                   <div className="pl-4 border-l-2 border-[var(--border-subtle)]">
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                      Cache Max Age (seconds)
+                    <label className="block text-[13px] font-medium text-[var(--text-primary)] mb-1.5">
+                      {c.cacheMaxAge}
                     </label>
                     <input
                       type="number"
@@ -304,7 +389,7 @@ export function NginxSettingsModal({
                       max={31536000}
                       className="input terminal-text w-48"
                     />
-                    <p className="text-xs text-[var(--text-muted)] mt-1">How long to cache successful responses</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">{c.cacheMaxAgeHint}</p>
                   </div>
                 )}
               </section>
@@ -312,13 +397,13 @@ export function NginxSettingsModal({
               {/* Custom Headers */}
               <section className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Custom Headers</h3>
+                  <h3 className="dash-section-label">{c.headersSection}</h3>
                   <button
                     onClick={addCustomHeader}
-                    className="btn btn-secondary h-7 text-xs"
+                    className="btn btn-secondary btn-sm"
                   >
                     <Plus className="w-3 h-3" />
-                    Add Header
+                    {c.addHeader}
                   </button>
                 </div>
 
@@ -330,19 +415,20 @@ export function NginxSettingsModal({
                           type="text"
                           value={header.key}
                           onChange={(e) => updateCustomHeader(index, 'key', e.target.value)}
-                          placeholder="Header Name"
+                          placeholder={c.headerName}
                           className="input terminal-text flex-1"
                         />
                         <input
                           type="text"
                           value={header.value}
                           onChange={(e) => updateCustomHeader(index, 'value', e.target.value)}
-                          placeholder="Header Value"
+                          placeholder={c.headerValue}
                           className="input terminal-text flex-1"
                         />
                         <button
                           onClick={() => removeCustomHeader(index)}
-                          className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
+                          aria-label={t('common', 'delete')}
+                          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -350,13 +436,13 @@ export function NginxSettingsModal({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-[var(--text-muted)]">No custom headers configured</p>
+                  <p className="text-sm text-[var(--text-muted)]">{c.noHeaders}</p>
                 )}
               </section>
 
               {/* Custom Location Blocks */}
               <section className="space-y-4">
-                <h3 className="text-sm font-medium text-[var(--text-secondary)] uppercase tracking-wider">Custom Location Blocks</h3>
+                <h3 className="dash-section-label">{c.locationsSection}</h3>
                 <p className="text-xs text-[var(--text-muted)]">
                   {t('projectDetail', 'nginxCustomLocationsHint')}
                 </p>
@@ -373,7 +459,7 @@ export function NginxSettingsModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 mb-3 pt-2 px-4 border-t border-[var(--border-subtle)]">
+        <div className="dash-modal-footer">
           <button onClick={onClose} className="btn btn-ghost">
             {t('common', 'cancel')}
           </button>
@@ -385,12 +471,12 @@ export function NginxSettingsModal({
             {updateSettings.isPending ? (
               <>
                 <RefreshCw className="w-4 h-4 animate-spin" />
-                Saving...
+                {c.saving}
               </>
             ) : (
               <>
                 <Check className="w-4 h-4" />
-                Save Settings
+                {c.save}
               </>
             )}
           </button>

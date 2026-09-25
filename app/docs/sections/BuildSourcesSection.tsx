@@ -1,6 +1,6 @@
 'use client';
 
-import { Callout, CodeBlock, SectionHeading } from '../components';
+import { Callout, CodeBlock, DocsHeading, SectionHeading } from '../components';
 import type { SectionProps } from './shared';
 
 /**
@@ -13,16 +13,16 @@ export function BuildSourcesSection({ c }: SectionProps) {
 
   return (
     <div className="space-y-8">
-      <SectionHeading title={s.title} description={s.description} />
+      <SectionHeading id="buildSources" title={s.title} description={s.description} />
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.registriesTitle}</h3>
+        <DocsHeading id="build-sources-registries">{s.registriesTitle}</DocsHeading>
         <p className="docs-p">{s.registriesText}</p>
         {s.registries.map((registry) => (
-          <div key={registry.name} className="space-y-2">
-            <p className="docs-p">
-              <strong>{registry.name}</strong> — <code>{registry.host}</code>
-            </p>
+          <div key={registry.name} className="pt-3">
+            <h4 className="docs-h3">
+              {registry.name} <code className="docs-inline-code ml-1 align-middle">{registry.host}</code>
+            </h4>
             <ol className="docs-ol">
               {registry.steps.map((step, i) => (
                 <li key={i}>{step}</li>
@@ -36,10 +36,10 @@ export function BuildSourcesSection({ c }: SectionProps) {
       </div>
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.imageTitle}</h3>
+        <DocsHeading id="build-sources-image">{s.imageTitle}</DocsHeading>
         <p className="docs-p">{s.imageText}</p>
-        <CodeBlock code={s.imageExample} />
-        <ul className="docs-ol" style={{ listStyle: 'disc' }}>
+        <CodeBlock code={s.imageExample} title={s.imageRefLabel} />
+        <ul className="docs-ul">
           {s.imageNotes.map((note, i) => (
             <li key={i}>{note}</li>
           ))}
@@ -47,10 +47,10 @@ export function BuildSourcesSection({ c }: SectionProps) {
       </div>
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.composeTitle}</h3>
+        <DocsHeading id="build-sources-compose">{s.composeTitle}</DocsHeading>
         <p className="docs-p">{s.composeText}</p>
-        <CodeBlock code={s.composeExample} />
-        <ul className="docs-ol" style={{ listStyle: 'disc' }}>
+        <CodeBlock code={s.composeExample} language="yaml" title="compose.yaml" />
+        <ul className="docs-ul">
           {s.composeNotes.map((note, i) => (
             <li key={i}>{note}</li>
           ))}

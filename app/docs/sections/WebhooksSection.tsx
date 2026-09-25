@@ -1,21 +1,21 @@
 'use client';
 
-import { CodeBlock, SectionHeading, Callout } from '../components';
+import { CodeBlock, SectionHeading, Callout, DocsHeading } from '../components';
 import type { SectionProps } from './shared';
 
 export function WebhooksSection({ c, apiBase }: SectionProps) {
   return (
     <div className="space-y-8">
-      <SectionHeading title={c.webhooks.title} description={c.webhooks.description} />
+      <SectionHeading id="webhooks" title={c.webhooks.title} description={c.webhooks.description} />
 
       <div>
-        <h2 className="docs-h2">{c.webhooks.howItWorks}</h2>
+        <DocsHeading id="webhooks-how-it-works">{c.webhooks.howItWorks}</DocsHeading>
         <ol className="docs-steps">
           {c.webhooks.steps.map((s, i) => (
             <li key={i}>
               <span className="docs-step-num">{String(i + 1).padStart(2, '0')}</span>
               <div>
-                <h3 className="docs-cell-title">{s.title}</h3>
+                <h4 className="docs-cell-title">{s.title}</h4>
                 <p className="docs-muted-sm mt-0.5">{s.desc}</p>
               </div>
             </li>
@@ -24,7 +24,7 @@ export function WebhooksSection({ c, apiBase }: SectionProps) {
       </div>
 
       <div>
-        <h2 className="docs-h2">{c.webhooks.manualTitle}</h2>
+        <DocsHeading id="webhooks-manual">{c.webhooks.manualTitle}</DocsHeading>
         <p className="docs-muted mb-4">
           {c.webhooks.manualDesc}
         </p>
@@ -43,12 +43,12 @@ Body:
     "message": "Deploy new feature"
   }
 }`}
-          language="text"
+          language="http"
         />
       </div>
 
       <div>
-        <h2 className="docs-h2">{c.webhooks.githubTitle}</h2>
+        <DocsHeading id="webhooks-github-actions">{c.webhooks.githubTitle}</DocsHeading>
         <p className="docs-muted mb-4">
           {c.webhooks.githubDesc}
         </p>
@@ -74,6 +74,7 @@ jobs:
               "commitMessage": "\${{ github.event.head_commit.message }}"
             }'`}
           language="yaml"
+          title=".github/workflows/deploy.yml"
         />
       </div>
 

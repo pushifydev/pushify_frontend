@@ -14,22 +14,23 @@ interface PagesPanelProps {
 }
 
 export function PagesPanel({ pages, activePageId, onSelect, onAdd, onRename, onDelete }: PagesPanelProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const pageFallback = locale === 'tr' ? 'Sayfa' : 'Page';
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
-          <Files className="w-4 h-4 text-[var(--accent-primary)]" />
+        <h2 className="dash-section-label flex items-center gap-2">
+          <Files className="w-3.5 h-3.5 text-[var(--text-muted)]" aria-hidden="true" />
           {t('siteEditor', 'navPages')}
         </h2>
         <button
           type="button"
           onClick={onAdd}
           title={t('siteEditor', 'addPage')}
-          className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10"
+          className="btn btn-ghost btn-sm"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-3.5 h-3.5" aria-hidden="true" />
           {t('siteEditor', 'addPage')}
         </button>
       </div>
@@ -40,38 +41,41 @@ export function PagesPanel({ pages, activePageId, onSelect, onAdd, onRename, onD
           return (
             <div
               key={p.id}
-              className={`group flex items-center gap-1 rounded-lg border px-2 py-2 text-sm transition-colors ${
+              className={`group flex items-center gap-1 rounded-[10px] border px-2 py-2 text-sm transition-colors ${
                 active
-                  ? 'border-[var(--accent-primary)] bg-[var(--accent-primary)]/10'
+                  ? 'border-[var(--border-strong)] bg-[var(--hover-overlay-md)]'
                   : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:border-[var(--border-default)]'
               }`}
             >
               <button
                 type="button"
                 onClick={() => onSelect(p.id)}
-                className="flex-1 flex items-center gap-2 text-left min-w-0 font-medium text-[var(--text-primary)]"
+                aria-current={active ? 'page' : undefined}
+                className="flex-1 flex items-center gap-2 text-left min-w-0 font-medium text-[var(--text-primary)] rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
               >
                 {i === 0 ? (
                   <Home className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)]" />
                 ) : (
                   <Files className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)]" />
                 )}
-                <span className="truncate">{p.title || 'Page'}</span>
+                <span className="truncate">{p.title || pageFallback}</span>
               </button>
               <button
                 type="button"
                 onClick={() => onRename(p.id)}
-                className="p-1 opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                aria-label={`${t('siteEditor', 'renamePage')}: ${p.title || pageFallback}`}
+                className="p-1 rounded-full opacity-0 group-hover:opacity-100 focus-visible:opacity-100 text-[var(--text-muted)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
               >
-                <Pencil className="w-3.5 h-3.5" />
+                <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
               {i !== 0 && (
                 <button
                   type="button"
                   onClick={() => onDelete(p.id)}
-                  className="p-1 opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-red-500"
+                  aria-label={`${t('common', 'delete')}: ${p.title || pageFallback}`}
+                  className="p-1 rounded-full opacity-0 group-hover:opacity-100 focus-visible:opacity-100 text-[var(--text-muted)] hover:text-[var(--status-error)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
                 </button>
               )}
             </div>

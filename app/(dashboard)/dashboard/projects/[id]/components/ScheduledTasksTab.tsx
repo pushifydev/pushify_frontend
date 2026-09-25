@@ -128,7 +128,7 @@ export function ScheduledTasksTab({
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-4">
-        <div className="h-32 bg-[var(--bg-secondary)] rounded-lg" />
+        <div className="h-32 bg-[var(--bg-secondary)] rounded-[14px]" />
       </div>
     );
   }
@@ -149,13 +149,13 @@ export function ScheduledTasksTab({
 
       {/* Add/Edit form */}
       {showForm && (
-        <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
-          <h3 className="text-lg font-semibold">
+        <div className="dash-card p-4 sm:p-5 space-y-5">
+          <h3 className="dash-section-label">
             {editingTask ? t('cron', 'editTask') : t('cron', 'addTask')}
           </h3>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+            <label className="dash-section-label block mb-2">
               {t('cron', 'name')}
             </label>
             <input
@@ -169,19 +169,16 @@ export function ScheduledTasksTab({
 
           {!editingTask && (
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              <label className="dash-section-label block mb-2">
                 {t('cron', 'taskType')}
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="dash-segmented" role="group">
                 {(['command', 'http'] as ScheduledTaskType[]).map((type) => (
                   <button
                     key={type}
+                    type="button"
                     onClick={() => setTaskType(type)}
-                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                      taskType === type
-                        ? 'dash-accent-fill border'
-                        : 'bg-[var(--bg-tertiary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)]'
-                    }`}
+                    aria-pressed={taskType === type}
                   >
                     {type === 'command' ? t('cron', 'typeCommand') : t('cron', 'typeHttp')}
                   </button>
@@ -192,7 +189,7 @@ export function ScheduledTasksTab({
 
           {taskType === 'command' ? (
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              <label className="dash-section-label block mb-2">
                 {t('cron', 'command')}
               </label>
               <textarea
@@ -205,7 +202,7 @@ export function ScheduledTasksTab({
             </div>
           ) : (
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              <label className="dash-section-label block mb-2">
                 {t('cron', 'url')}
               </label>
               <input
@@ -220,18 +217,20 @@ export function ScheduledTasksTab({
 
           <div className="flex flex-col sm:flex-row gap-3">
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              <label className="dash-section-label block mb-2">
                 {t('cron', 'schedule')}
               </label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {PRESETS.map((preset) => (
                   <button
                     key={preset.cron}
+                    type="button"
                     onClick={() => setSchedule(preset.cron)}
-                    className={`px-2.5 py-1 rounded-md border text-xs transition-colors ${
+                    aria-pressed={schedule === preset.cron}
+                    className={`h-7 px-3 rounded-full border text-xs transition-colors ${
                       schedule === preset.cron
-                        ? 'dash-accent-fill border'
-                        : 'bg-[var(--bg-tertiary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)]'
+                        ? 'dash-accent-fill'
+                        : 'border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-default)]'
                     }`}
                   >
                     {t('cron', preset.key)}
@@ -245,11 +244,11 @@ export function ScheduledTasksTab({
                 placeholder={t('cron', 'schedulePlaceholder')}
                 className="input max-w-xs terminal-text text-sm"
               />
-              <p className="text-xs text-[var(--text-muted)] mt-1.5">{t('cron', 'scheduleHelp')}</p>
+              <p className="dash-field-hint">{t('cron', 'scheduleHelp')}</p>
             </div>
             <div className="flex gap-3">
               <div>
-                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                <label className="dash-section-label block mb-2">
                   {t('cron', 'timezone')}
                 </label>
                 <input
@@ -261,7 +260,7 @@ export function ScheduledTasksTab({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                <label className="dash-section-label block mb-2">
                   {t('cron', 'timeoutSeconds')}
                 </label>
                 <input
@@ -293,38 +292,37 @@ export function ScheduledTasksTab({
 
       {/* Task list */}
       {tasks.length === 0 && !showForm ? (
-        <div className="p-10 rounded-lg border border-dashed border-[var(--border-subtle)] text-center">
-          <Clock className="w-8 h-8 mx-auto mb-3 text-[var(--text-muted)]" />
-          <p className="font-medium mb-1">{t('cron', 'noTasks')}</p>
+        <div className="dash-card px-6 py-14 text-center">
+          <Clock className="dash-empty-icon mb-3" />
+          <p className="text-[15px] font-medium mb-1">{t('cron', 'noTasks')}</p>
           <p className="text-sm text-[var(--text-secondary)]">{t('cron', 'noTasksDesc')}</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="dash-rows">
           {tasks.map((task) => (
-            <div
-              key={task.id}
-              className="rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
-            >
-              <div className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div key={task.id} className="dash-row !p-0">
+              <div className="px-4 py-3 sm:px-5 flex flex-col gap-2.5 sm:flex-row sm:items-center">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <span
-                    className="w-2 h-2 rounded-full shrink-0"
+                    className="dash-status-dot"
                     style={{ background: statusColor(task.lastStatus) }}
                     title={statusLabel(task.lastStatus)}
+                    aria-label={statusLabel(task.lastStatus)}
+                    role="img"
                   />
                   {task.type === 'command' ? (
-                    <Terminal className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
+                    <Terminal className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)]" aria-hidden />
                   ) : (
-                    <Globe className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
+                    <Globe className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)]" aria-hidden />
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium truncate">{task.name}</span>
-                      <code className="text-xs px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+                      <span className="text-sm font-medium truncate">{task.name}</span>
+                      <code className="terminal-text text-xs px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
                         {task.schedule}
                       </code>
                       {!task.enabled && (
-                        <span className="text-[11px] px-1.5 py-0.5 rounded-full border border-[var(--border-subtle)] text-[var(--text-muted)]">
+                        <span className="badge badge-neutral">
                           {t('cron', 'pause')}
                         </span>
                       )}
@@ -341,11 +339,11 @@ export function ScheduledTasksTab({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 shrink-0 flex-wrap">
+                <div className="flex items-center gap-0.5 shrink-0 flex-wrap">
                   <button
                     onClick={() => runTask.mutate(task.id)}
                     disabled={runTask.isPending}
-                    className="btn btn-ghost h-8 text-xs"
+                    className="btn btn-secondary btn-sm"
                   >
                     <Play className="w-3.5 h-3.5" />
                     {runTask.isPending && runTask.variables === task.id
@@ -356,7 +354,7 @@ export function ScheduledTasksTab({
                     onClick={() =>
                       updateTask.mutate({ taskId: task.id, input: { enabled: !task.enabled } })
                     }
-                    className="btn btn-ghost h-8 text-xs"
+                    className="btn btn-ghost btn-sm"
                   >
                     {task.enabled ? (
                       <>
@@ -370,20 +368,28 @@ export function ScheduledTasksTab({
                       </>
                     )}
                   </button>
-                  <button onClick={() => startEdit(task)} className="btn btn-ghost h-8 text-xs">
+                  <button
+                    onClick={() => startEdit(task)}
+                    className="btn btn-ghost btn-sm !px-2"
+                    aria-label={t('cron', 'editTask')}
+                    title={t('cron', 'editTask')}
+                  >
                     <Pencil className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() =>
                       setExpandedRunsTaskId(expandedRunsTaskId === task.id ? null : task.id)
                     }
-                    className="btn btn-ghost h-8 text-xs"
+                    aria-expanded={expandedRunsTaskId === task.id}
+                    className="btn btn-ghost btn-sm"
                   >
                     {expandedRunsTaskId === task.id ? t('cron', 'hideRuns') : t('cron', 'showRuns')}
                   </button>
                   <button
                     onClick={() => handleDelete(task)}
-                    className="btn btn-ghost h-8 text-xs text-[var(--status-error)]"
+                    className="btn btn-ghost btn-sm !px-2 hover:!text-[var(--status-error)]"
+                    aria-label={`${t('common', 'delete')} ${task.name}`}
+                    title={t('common', 'delete')}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -392,7 +398,7 @@ export function ScheduledTasksTab({
 
               {/* Run history */}
               {expandedRunsTaskId === task.id && (
-                <div className="border-t border-[var(--border-subtle)] p-4 space-y-2">
+                <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-3 sm:px-5 space-y-1">
                   {runs.length === 0 ? (
                     <p className="text-sm text-[var(--text-muted)]">{t('cron', 'noRuns')}</p>
                   ) : (
@@ -400,16 +406,17 @@ export function ScheduledTasksTab({
                       <details key={run.id} className="group">
                         <summary className="flex items-center gap-2 text-xs cursor-pointer list-none py-1">
                           <span
-                            className="w-1.5 h-1.5 rounded-full shrink-0"
+                            className="dash-status-dot"
                             style={{ background: statusColor(run.status) }}
+                            aria-hidden
                           />
                           <span className="font-medium">{statusLabel(run.status)}</span>
                           {run.trigger === 'manual' && (
-                            <span className="px-1.5 rounded-full border border-[var(--border-subtle)] text-[var(--text-muted)]">
+                            <span className="badge badge-neutral">
                               {t('cron', 'manualTrigger')}
                             </span>
                           )}
-                          <span className="text-[var(--text-muted)]">
+                          <span className="terminal-text text-[var(--text-muted)]">
                             {formatTimeAgo(run.startedAt, t)}
                             {run.durationMs !== null && ` · ${(run.durationMs / 1000).toFixed(1)}s`}
                             {run.exitCode !== null && ` · ${t('cron', 'exitCode')}: ${run.exitCode}`}
@@ -418,7 +425,7 @@ export function ScheduledTasksTab({
                           </span>
                         </summary>
                         {(run.output || run.errorMessage) && (
-                          <pre className="mt-1 mb-2 p-3 rounded-md bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-xs overflow-x-auto whitespace-pre-wrap max-h-64 overflow-y-auto">
+                          <pre className="mt-1 mb-2 p-3 rounded-[10px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] terminal-text text-xs text-[var(--text-secondary)] overflow-x-auto whitespace-pre-wrap max-h-64 overflow-y-auto">
                             {run.errorMessage ? `${run.errorMessage}\n` : ''}
                             {run.output ?? ''}
                           </pre>

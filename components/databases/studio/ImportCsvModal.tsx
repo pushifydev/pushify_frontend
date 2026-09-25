@@ -5,7 +5,7 @@ import { FileUp, Loader2 } from 'lucide-react';
 import { Modal, ModalActions, AlertBox } from '@/components/Modal';
 import type { StudioColumn } from '@/lib/api';
 import { detectDelimiter, parseCsv } from '@/lib/csv-parse';
-import type { T } from './_shared';
+import { monoStyle, type T } from './_shared';
 
 interface ImportCsvModalProps {
   table: string;
@@ -16,7 +16,7 @@ interface ImportCsvModalProps {
   t: T;
 }
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
+const mono = monoStyle;
 const BATCH_SIZE = 500;
 const PREVIEW_ROWS = 5;
 
@@ -111,17 +111,17 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
     >
       <div className="space-y-4">
         <label
-          className="flex items-center gap-3 px-4 py-4 rounded-lg cursor-pointer"
-          style={{ border: '1px dashed var(--glass-border-md)', background: 'var(--bg-tertiary)' }}
+          className="flex items-center gap-3 px-4 py-4 rounded-[10px] cursor-pointer transition-colors hover:border-(--border-strong)! focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-(--text-primary)"
+          style={{ border: '1px dashed var(--border-default)', background: 'var(--bg-tertiary)' }}
         >
-          <FileUp className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
-          <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+          <FileUp className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
+          <span className={`text-sm truncate ${fileName ? 'font-mono' : ''}`} style={{ color: 'var(--text-secondary)' }}>
             {fileName ?? t('databases', 'studioChooseCsv')}
           </span>
           <input
             type="file"
             accept=".csv,text/csv,text/plain"
-            className="hidden"
+            className="sr-only"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) void readFile(file);
@@ -131,13 +131,13 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
 
         {rows.length > 0 && (
           <>
-            <div className="flex flex-wrap items-center gap-4 text-xs" style={{ color: 'var(--text-muted)' }}>
+            <div className="flex flex-wrap items-center gap-4 text-[13px]" style={{ color: 'var(--text-secondary)' }}>
               <label className="flex items-center gap-1.5 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={hasHeader}
                   onChange={(e) => setHasHeader(e.target.checked)}
-                  className="cursor-pointer"
+                  className="cursor-pointer accent-(--text-primary)"
                 />
                 {t('databases', 'studioCsvHasHeader')}
               </label>
@@ -146,11 +146,11 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
                   type="checkbox"
                   checked={emptyAsNull}
                   onChange={(e) => setEmptyAsNull(e.target.checked)}
-                  className="cursor-pointer"
+                  className="cursor-pointer accent-(--text-primary)"
                 />
                 {t('databases', 'studioCsvEmptyAsNull')}
               </label>
-              <span>
+              <span className="dash-mono-caption tabular-nums ml-auto">
                 {dataRows.length.toLocaleString()} {t('databases', 'studioRowsLabel')}
               </span>
             </div>
@@ -158,10 +158,10 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
             {malformed && <AlertBox variant="warning">{t('databases', 'studioCsvMalformed')}</AlertBox>}
 
             {/* Mapping + preview in one table: each column header is its target picker. */}
-            <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--glass-border)' }}>
+            <div className="overflow-x-auto rounded-[10px]" style={{ border: '1px solid var(--border-subtle)' }}>
               <table className="w-full text-sm border-collapse">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                  <tr style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}>
                     {mapping.map((column, index) => (
                       <th key={index} className="px-2 py-2 text-left align-top">
                         <select
@@ -173,8 +173,9 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
                               )
                             )
                           }
-                          className="input text-xs w-full"
+                          className="select text-xs! py-1.5! w-full"
                           style={{ ...mono, minWidth: 130 }}
+                          aria-label={headerRow?.[index] ?? `#${index + 1}`}
                         >
                           <option value="">{t('databases', 'studioCsvSkipColumn')}</option>
                           {editable.map((candidate) => (
@@ -184,10 +185,7 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
                           ))}
                         </select>
                         {headerRow && (
-                          <span
-                            className="block text-[10px] mt-1 truncate"
-                            style={{ color: 'var(--text-muted)' }}
-                          >
+                          <span className="block dash-mono-caption text-[10px]! font-normal mt-1 truncate">
                             {headerRow[index]}
                           </span>
                         )}
@@ -197,14 +195,14 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
                 </thead>
                 <tbody>
                   {dataRows.slice(0, PREVIEW_ROWS).map((row, rowIndex) => (
-                    <tr key={rowIndex} style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                    <tr key={rowIndex} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                       {mapping.map((_, columnIndex) => (
                         <td
                           key={columnIndex}
                           className="px-2 py-1.5 text-xs"
                           style={{ ...mono, color: 'var(--text-secondary)' }}
                         >
-                          <span className="block max-w-[200px] truncate">
+                          <span className="block max-w-50 truncate">
                             {row[columnIndex] ?? ''}
                           </span>
                         </td>
@@ -219,16 +217,19 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
 
         {progress && (
           <div className="space-y-1">
-            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-tertiary)' }}>
+            <div
+              className="dash-metric-track"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={progress.total}
+              aria-valuenow={progress.done}
+            >
               <div
-                className="h-full transition-all"
-                style={{
-                  width: `${Math.round((progress.done / Math.max(1, progress.total)) * 100)}%`,
-                  background: 'var(--accent-cyan)',
-                }}
+                className="dash-metric-fill"
+                style={{ width: `${Math.round((progress.done / Math.max(1, progress.total)) * 100)}%` }}
               />
             </div>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p className="dash-mono-caption tabular-nums">
               {progress.done.toLocaleString()} / {progress.total.toLocaleString()}
             </p>
           </div>

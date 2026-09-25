@@ -13,9 +13,9 @@ export function DatabasesSection({ c, apiBase }: SectionProps) {
 
   return (
     <div className="space-y-6">
-      <SectionHeading title={c.databases.title} description={c.databases.description} />
+      <SectionHeading id="databases" title={c.databases.title} description={c.databases.description} />
 
-      <div className="space-y-3">
+      <div className="docs-endpoints">
         <EndpointCard
           method="GET"
           path="/databases"

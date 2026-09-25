@@ -2,20 +2,32 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Terminal as TerminalIcon, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { useTranslation } from '@/hooks';
+
+/** Strings with no locale key yet. */
+const COPY = {
+  en: { error: 'Error', session: 'root@server — interactive shell' },
+  tr: { error: 'Hata', session: 'root@sunucu — etkileşimli kabuk' },
+} as const;
+
+function TerminalLoading() {
+  const { t } = useTranslation();
+  return (
+    <div className="flex items-center justify-center h-full min-h-[400px]" role="status">
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#8a8a86' }} aria-label={t('common', 'loading')} />
+    </div>
+  );
+}
 
 const ServerTerminalView = dynamic(
   () =>
     import('@/components/servers/ServerTerminalView').then((m) => m.ServerTerminalView),
   {
     ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center h-full min-h-[400px]">
-        <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-cyan)]" />
-      </div>
-    ),
+    loading: () => <TerminalLoading />,
   },
 );
 
@@ -25,81 +37,62 @@ export default function ServerTerminalPage() {
   const { id: serverId } = useParams<{ id: string }>();
   const router = useRouter();
   const [status, setStatus] = useState<TerminalStatus>('connecting');
+  const { t, locale } = useTranslation();
+  const copy = COPY[locale === 'tr' ? 'tr' : 'en'];
 
   const statusLabel: Record<TerminalStatus, string> = {
-    connecting: 'Connecting…',
-    connected: 'Connected',
-    disconnected: 'Disconnected',
-    error: 'Error',
+    connecting: t('logs', 'connecting'),
+    connected: t('logs', 'connected'),
+    disconnected: t('logs', 'disconnected'),
+    error: copy.error,
   };
 
+  // Status is the only colour in the terminal chrome.
   const statusColor: Record<TerminalStatus, string> = {
     connecting: '#fbbf24',
-    connected: '#28c840',
-    disconnected: 'rgba(255,255,255,0.4)',
+    connected: 'var(--term-prompt)',
+    disconnected: 'var(--term-dim)',
     error: '#f87171',
   };
 
   return (
     <div className="max-w-6xl mx-auto space-y-4 animate-slide-in">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4 min-w-0">
           <Link
             href={`/dashboard/servers/${serverId}`}
-            className="flex items-center gap-1.5 text-sm transition-colors"
-            style={{ color: 'var(--text-muted)' }}
+            className="dash-icon-row gap-1.5 text-sm rounded-full transition-colors text-[var(--text-muted)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--text-primary)]"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back
+            <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
+            {t('common', 'back')}
           </Link>
-          <div className="flex items-center gap-2">
-            <TerminalIcon className="w-4 h-4" style={{ color: 'var(--accent-cyan)' }} />
-            <h1
-              className="text-lg font-bold"
-              style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}
-            >
-              Web Terminal
-            </h1>
-          </div>
+          <h1 className="text-lg font-medium truncate" style={{ color: 'var(--text-primary)' }}>
+            {t('servers', 'terminalTitle')}
+          </h1>
         </div>
         <button
           type="button"
           onClick={() => router.push(`/dashboard/servers/${serverId}`)}
-          className="text-xs px-3 py-1.5 rounded-lg border border-[var(--glass-border)] text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+          className="btn btn-secondary btn-sm"
         >
-          Exit
+          {t('common', 'exit')}
         </button>
       </div>
 
-      <div
-        className="rounded-xl overflow-hidden"
-        style={{
-          background: '#0a0a0f',
-          border: '1px solid var(--glass-border)',
-        }}
-      >
-        <div
-          className="flex items-center gap-2 px-4 py-2.5"
-          style={{
-            background: '#111118',
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
-          }}
-        >
-          <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
-            <div className="w-3 h-3 rounded-full" style={{ background: '#febc2e' }} />
-            <div className="w-3 h-3 rounded-full" style={{ background: '#28c840' }} />
-          </div>
+      <div className="dash-terminal">
+        <div className="dash-terminal-bar">
+          <span className="truncate">{copy.session}</span>
           <span
-            className="text-xs ml-2"
-            style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-mono)' }}
+            className="ml-auto inline-flex items-center gap-1.5 uppercase shrink-0"
+            style={{ color: statusColor[status], letterSpacing: '0.1em' }}
+            role="status"
+            aria-live="polite"
           >
-            root@server — interactive shell
-          </span>
-          <span
-            className="text-xs ml-auto"
-            style={{ color: statusColor[status], fontFamily: 'var(--font-mono)' }}
-          >
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: 'currentColor' }}
+              aria-hidden="true"
+            />
             {statusLabel[status]}
           </span>
         </div>

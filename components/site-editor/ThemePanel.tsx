@@ -18,13 +18,13 @@ function ColorField({
   onChange: (v: string) => void;
 }) {
   return (
-    <label className="flex items-center justify-between gap-2 text-sm">
+    <label className="flex items-center justify-between gap-2 py-2 text-sm">
       <span className="text-[var(--text-secondary)]">{label}</span>
       <input
         type="color"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-8 w-12 cursor-pointer rounded border border-[var(--border-subtle)] bg-transparent"
+        className="h-7 w-10 cursor-pointer rounded-md border border-[var(--border-subtle)] bg-transparent"
       />
     </label>
   );
@@ -33,10 +33,10 @@ function ColorField({
 export function ThemePanel({ theme, onChange, t }: ThemePanelProps) {
   return (
     <div className="space-y-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+      <p className="dash-section-label">
         {t('themeTitle')}
       </p>
-      <div className="space-y-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-3">
+      <div className="rounded-[10px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-3 divide-y divide-[var(--border-subtle)]">
         <ColorField label={t('primaryColor')} value={theme.primaryColor} onChange={(v) => onChange({ primaryColor: v })} />
         <ColorField label={t('accentColor')} value={theme.accentColor} onChange={(v) => onChange({ accentColor: v })} />
         <ColorField label={t('backgroundColor')} value={theme.backgroundColor} onChange={(v) => onChange({ backgroundColor: v })} />

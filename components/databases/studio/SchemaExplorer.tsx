@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, Eye, Search, Table2 } from 'lucide-react';
 import type { StudioSchemaTable } from '@/lib/api';
-import { panelStyle, type T } from './_shared';
+import { monoStyle, panelStyle, type T } from './_shared';
 
 interface SchemaExplorerProps {
   tables: StudioSchemaTable[];
@@ -14,7 +14,7 @@ interface SchemaExplorerProps {
   t: T;
 }
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
+const mono = monoStyle;
 
 export function SchemaExplorer({ tables, loading, truncated, onInsert, t }: SchemaExplorerProps) {
   const [search, setSearch] = useState('');
@@ -42,7 +42,8 @@ export function SchemaExplorer({ tables, loading, truncated, onInsert, t }: Sche
 
   return (
     <div className="flex flex-col overflow-hidden" style={{ ...panelStyle, maxHeight: '70vh' }}>
-      <div className="px-3 py-3" style={{ borderBottom: '1px solid var(--glass-border)' }}>
+      <div className="px-3 py-3 space-y-2" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+        <h2 className="dash-section-label px-1">{t('databases', 'studioTables')}</h2>
         <div className="relative">
           <Search
             className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
@@ -52,7 +53,8 @@ export function SchemaExplorer({ tables, loading, truncated, onInsert, t }: Sche
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('databases', 'studioSearchSchema')}
-            className="input w-full text-sm"
+            aria-label={t('databases', 'studioSearchSchema')}
+            className="input w-full text-sm py-2!"
             style={{ paddingLeft: 32 }}
           />
         </div>
@@ -87,9 +89,9 @@ export function SchemaExplorer({ tables, loading, truncated, onInsert, t }: Sche
                     <button
                       type="button"
                       onClick={() => toggle(key)}
-                      className="p-1 rounded"
-                      style={{ color: 'var(--text-muted)' }}
+                      className="p-1 rounded-sm transition-colors text-(--text-muted) hover:text-(--text-primary) hover:bg-(--hover-overlay-md) focus-visible:outline-2 focus-visible:outline-(--text-primary)"
                       aria-label={label}
+                      aria-expanded={isOpen}
                     >
                       {isOpen ? (
                         <ChevronDown className="w-3 h-3" />
@@ -100,7 +102,7 @@ export function SchemaExplorer({ tables, loading, truncated, onInsert, t }: Sche
                     <button
                       type="button"
                       onClick={() => onInsert(label)}
-                      className="flex-1 min-w-0 flex items-center gap-1.5 px-1 py-1 rounded text-left"
+                      className="flex-1 min-w-0 flex items-center gap-1.5 px-1 py-1 rounded-sm text-left transition-colors hover:bg-(--hover-overlay-md) focus-visible:outline-2 focus-visible:outline-(--text-primary)"
                       title={t('databases', 'studioInsertName')}
                     >
                       <Icon className="w-3 h-3 shrink-0" style={{ color: 'var(--text-muted)' }} />
@@ -120,7 +122,7 @@ export function SchemaExplorer({ tables, loading, truncated, onInsert, t }: Sche
                           <button
                             type="button"
                             onClick={() => onInsert(column.name)}
-                            className="w-full text-left px-1.5 py-0.5 rounded flex items-baseline gap-2"
+                            className="w-full text-left px-1.5 py-0.5 rounded-sm flex items-baseline gap-2 transition-colors hover:bg-(--hover-overlay-md) focus-visible:outline-2 focus-visible:outline-(--text-primary)"
                             title={t('databases', 'studioInsertName')}
                           >
                             <span
@@ -129,10 +131,7 @@ export function SchemaExplorer({ tables, loading, truncated, onInsert, t }: Sche
                             >
                               {column.name}
                             </span>
-                            <span
-                              className="text-[10px] truncate"
-                              style={{ color: 'var(--text-muted)' }}
-                            >
+                            <span className="dash-mono-caption text-[10px]! truncate">
                               {column.dataType}
                             </span>
                           </button>
@@ -147,7 +146,7 @@ export function SchemaExplorer({ tables, loading, truncated, onInsert, t }: Sche
         )}
 
         {truncated && (
-          <p className="px-3 py-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
+          <p className="dash-mono-caption px-3 py-2">
             {t('databases', 'studioSchemaTruncated')}
           </p>
         )}

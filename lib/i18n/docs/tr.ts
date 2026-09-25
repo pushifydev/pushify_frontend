@@ -6,8 +6,9 @@ export const docsTr: DocsContent = {
     searchPlaceholder: 'Ara...',
     navigation: 'Gezinti',
     dashboard: 'Kontrol Paneli',
-    getApiKey: 'API Anahtarı Al',
+    getApiKey: 'API anahtarı al',
     apiVersion: 'API v1.0',
+    noResults: 'Eşleşen bölüm yok.',
   },
   labels: {
     parameters: 'Parametreler',
@@ -17,33 +18,37 @@ export const docsTr: DocsContent = {
     request: 'İstek',
     response: 'Yanıt',
     copyCode: 'Kodu kopyala',
+    copy: 'Kopyala',
+    copied: 'Kopyalandı',
+    required: 'zorunlu',
+    linkToSection: 'Bu başlığa bağlantı',
     baseUrl: 'Temel URL',
-    headerFormat: 'Başlık Formatı',
-    exampleRequest: 'Örnek İstek',
-    availableScopes: 'Mevcut Kapsamlar',
-    scopesIntro: 'Anahtar oluştururken belirli kapsamları seçerek API anahtarı erişimini sınırlayın.',
+    headerFormat: 'Başlık',
+    exampleRequest: 'Örnek istek',
+    availableScopes: 'Kapsamlar',
+    scopesIntro: 'Anahtarı oluştururken yalnızca ihtiyaç duyduğu kapsamları verin.',
     explore: 'Keşfet',
-    quickStart: 'Hızlı Başlangıç',
+    quickStart: 'Hızlı başlangıç',
     code: 'Kod',
     description: 'Açıklama',
     plan: 'Plan',
-    rateLimit: 'Hız Limiti',
+    rateLimit: 'Hız limiti',
   },
   navGroups: [
     {
       label: 'Başlangıç',
       items: [
         { id: 'intro', label: 'Giriş' },
-        { id: 'auth', label: 'Kimlik Doğrulama' },
+        { id: 'auth', label: 'Kimlik doğrulama' },
       ],
     },
     {
-      label: 'API Referansı',
+      label: 'API referansı',
       items: [
         { id: 'projects', label: 'Projeler' },
         { id: 'deployments', label: 'Dağıtımlar' },
-        { id: 'envvars', label: 'Ortam Değişkenleri' },
-        { id: 'domains', label: 'Alan Adları' },
+        { id: 'envvars', label: 'Ortam değişkenleri' },
+        { id: 'domains', label: 'Alan adları' },
       ],
     },
     {
@@ -65,39 +70,40 @@ export const docsTr: DocsContent = {
     {
       label: 'Referans',
       items: [
-        { id: 'errors', label: 'Hata Yönetimi' },
+        { id: 'errors', label: 'Hata yönetimi' },
       ],
     },
   ],
   intro: {
     badge: 'REST API',
     title: 'Pushify API Dokümantasyonu',
-    lead: 'Uygulamalarınızı programatik olarak dağıtın, yönetin ve izleyin. CI/CD hatları, otomasyon betikleri ve özel entegrasyonlar için idealdir.',
+    lead: 'Uygulamalarınızı CI/CD hatlarından, betiklerden ve kendi araçlarınızdan dağıtın, yönetin ve izleyin.',
+    idNoteTitle: 'Kaynak kimlikleri',
     idNote:
       'Yol ve yanıtlardaki kaynak kimlikleri UUID biçimindedir (örn. 550e8400-e29b-41d4-a716-446655440000). Listeleme veya oluşturma uç noktalarının döndürdüğü id değerini kullanın — proj_abc123 gibi örnek değerler geçerli değildir.',
     infraNoteTitle: 'Yönetilen sunucu faturalandırması',
     infraNote:
-      'Pushify\'da iki ücret vardır: (1) platform aboneliği — dağıtım/API/ekip limitleri; (2) altyapı kredileri — yönetilen Hetzner çalışırken saatlik düşen ön ödemeli USD cüzdan. BYOS (SSH) sunucuları cüzdanı kullanmaz. Bakiye ve yükleme: Panel → Faturalandırma. Kredi biterse sunucu durur. Platform ödemesi başarısızsa kart güncellenene kadar yeni kaynak oluşturulamaz.',
+      'İki ayrı ücret vardır: (1) dağıtım, API ve ekip limitlerini belirleyen platform aboneliği; (2) yönetilen Hetzner sunucuları çalıştıkça saatlik düşülen, ön ödemeli USD cüzdan olan altyapı kredileri. BYOS (SSH) sunucuları cüzdanı kullanmaz. Bakiye ve yükleme: Panel → Faturalandırma. Kredi biterse yönetilen sunucular siz yükleme yapana kadar durur. Platform ödemesi başarısız olursa kart güncellenene kadar yeni kaynak oluşturulamaz.',
     features: [
-      { title: 'RESTful API', desc: 'JSON yanıtlı basit REST uç noktaları' },
-      { title: 'Güvenli', desc: 'Kapsam tabanlı API anahtarı izinleri' },
-      { title: 'CI/CD Hazır', desc: 'Webhook tetikleyicileri ve dağıtım API\'si' },
+      { title: 'REST ve JSON', desc: 'Sade REST uç noktaları, JSON yanıtlar' },
+      { title: 'Kapsamlı anahtarlar', desc: 'Her API anahtarı yalnızca verdiğiniz kapsamlara sahip olur' },
+      { title: 'CI/CD için', desc: 'Webhook tetikleyicileri ve bir dağıtım API\'si' },
     ],
     steps: [
       {
-        title: 'API Anahtarı Oluşturun',
+        title: 'API anahtarı oluşturun',
         desc: '',
         descBefore: 'Gerekli kapsamlarla bir anahtar oluşturmak için ',
         linkText: 'Ayarlar → API Anahtarları',
         descAfter: ' bölümüne gidin.',
       },
       {
-        title: 'İstek Gönderin',
-        desc: 'Kimlik doğrulama için API anahtarınızı Authorization başlığında kullanın.',
+        title: 'İstek gönderin',
+        desc: 'Anahtarı Authorization başlığında gönderin.',
       },
       {
         title: 'Otomatikleştirin',
-        desc: 'GitHub Actions, GitLab CI veya herhangi bir CI/CD aracıyla entegre edin.',
+        desc: 'GitHub Actions, GitLab CI veya başka bir CI/CD aracından çağırın.',
       },
     ],
     exploreLinks: [
@@ -108,10 +114,10 @@ export const docsTr: DocsContent = {
     ],
   },
   auth: {
-    title: 'Kimlik Doğrulama',
-    description: 'Tüm API istekleri bir API anahtarı gerektirir. Bearer token olarak Authorization başlığına ekleyin.',
+    title: 'Kimlik doğrulama',
+    description: 'Her istek bir API anahtarı ister; anahtar Authorization başlığında Bearer token olarak gönderilir.',
     securityTitle: 'Güvenlik',
-    securityText: 'API anahtarlarını istemci tarafı kodda veya herkese açık depolarda asla paylaşmayın. Ortam değişkenlerinde saklayın.',
+    securityText: 'API anahtarlarını istemci tarafı koda veya herkese açık depolara asla koymayın. Ortam değişkenlerinde saklayın.',
     sessionOnlyTitle: 'Yalnızca panel oturumu',
     sessionOnlyText:
       'Bazı uç noktalar API anahtarı yerine giriş yapılmış panel oturumu (JWT) gerektirir — örneğin GET /servers/:id/ssh-key ve POST /servers/:id/terminal. API anahtarları bu uç noktalarda 403 döner.',
@@ -134,13 +140,13 @@ export const docsTr: DocsContent = {
   },
   projects: {
     title: 'Projeler',
-    description: 'Projelerinizi programatik olarak yönetin. Proje oluşturun, güncelleyin, yapılandırın ve silin.',
+    description: 'Proje oluşturun, yapılandırın, güncelleyin ve silin.',
     endpoints: {
       list: {
         description: 'Organizasyonunuzdaki tüm projeleri listeler.',
       },
       get: {
-        description: 'Derleme yapılandırması ve alan adları dahil belirli bir proje hakkında ayrıntılı bilgi alır.',
+        description: 'Derleme yapılandırması ve alan adlarıyla birlikte tek bir projeyi getirir.',
       },
       create: {
         description: 'Yeni bir proje oluşturur. Git alanları Git olmadan dağıtım için isteğe bağlıdır.',
@@ -170,7 +176,7 @@ export const docsTr: DocsContent = {
   },
   deployments: {
     title: 'Dağıtımlar',
-    description: 'Dağıtımları tetikleyin ve yönetin. Derleme ilerlemesini izleyin, günlükleri görüntüleyin ve gerektiğinde geri alın.',
+    description: 'Dağıtımları tetikleyin, günlüklerini izleyin ve gerektiğinde geri alın.',
     endpoints: {
       list: {
         description: 'Bir proje için tüm dağıtımları en yeniden eskiye sıralı listeler.',
@@ -209,13 +215,13 @@ export const docsTr: DocsContent = {
     },
   },
   envvars: {
-    title: 'Ortam Değişkenleri',
-    description: 'Projeleriniz için ortam değişkenlerini yönetin. Değişiklikler bir sonraki dağıtımda geçerli olur.',
-    sensitiveTitle: 'Hassas Değerler',
+    title: 'Ortam değişkenleri',
+    description: 'Bir projenin ortam değişkenlerini yönetin. Değişiklikler bir sonraki dağıtımda geçerli olur.',
+    sensitiveTitle: 'Hassas değerler',
     sensitiveText: 'Ortam değişkeni değerleri depolamada şifrelenir ve API yanıtlarında maskelenir. Yalnızca ilk ve son karakterler görünür.',
     endpoints: {
       list: {
-        description: 'Bir proje için tüm ortam değişkenlerini listeler. Güvenlik için değerler maskelenir.',
+        description: 'Bir projenin ortam değişkenlerini listeler. Değerler maskelenir.',
         params: {
           environment: 'Ortama göre filtre: production veya preview (isteğe bağlı)',
         },
@@ -248,8 +254,8 @@ export const docsTr: DocsContent = {
     },
   },
   domains: {
-    title: 'Alan Adları',
-    description: 'Projelerinize özel alan adları ekleyin. DNS ayarlarını, SSL sertifikalarını ve Nginx yapılandırmasını yönetin.',
+    title: 'Alan adları',
+    description: 'Bir projeye özel alan adı ekleyin. DNS doğrulaması, SSL sertifikaları ve Nginx yapılandırması sizin yerinize yapılır.',
     endpoints: {
       list: {
         description: 'Bir proje için yapılandırılmış tüm alan adlarını listeler.',
@@ -277,7 +283,7 @@ export const docsTr: DocsContent = {
   },
   servers: {
     title: 'Sunucular',
-    description: 'Sunucuları sağlayın ve yönetin. Bulut sunucuları oluşturun, durumlarını kontrol edin ve izleyin.',
+    description: 'Bulut sunucuları oluşturun; başlatın, durdurun, yeniden başlatın ve durumlarını izleyin.',
     sessionOnlyTitle: 'API anahtarı ile kullanılamaz',
     sessionOnlyText:
       'SSH özel anahtarları (GET /servers/:id/ssh-key) ve tarayıcı web terminali (POST /servers/:id/terminal) yalnızca aktif panel oturumu ile kullanılabilir.',
@@ -318,7 +324,7 @@ export const docsTr: DocsContent = {
   },
   databases: {
     title: 'Veritabanları',
-    description: 'Sunucularınızda veritabanları oluşturun ve yönetin. PostgreSQL, MySQL, Redis ve MongoDB desteklenir.',
+    description: 'Sunucularınızda yedekleriyle birlikte PostgreSQL, MySQL, Redis ve MongoDB çalıştırın.',
     endpoints: {
       list: {
         description: 'Organizasyonunuzdaki tüm veritabanlarını listeler.',
@@ -368,25 +374,25 @@ export const docsTr: DocsContent = {
   },
   webhooks: {
     title: 'Webhook ve CI/CD',
-    description: 'GitHub\'a push yaptığınızda otomatik olarak dağıtın. Pushify webhook olaylarını dinler ve dağıtımları tetikler.',
-    howItWorks: 'Nasıl Çalışır',
+    description: 'GitHub\'a her push\'ta dağıtın: Pushify webhook\'u alır ve bir dağıtım başlatır.',
+    howItWorks: 'Nasıl çalışır',
     steps: [
-      { title: 'GitHub Bağlayın', desc: 'Proje ayarlarından GitHub hesabınızı bağlayın.' },
-      { title: 'Dala Push Yapın', desc: 'Yapılandırılmış dala kod push edin (örn. main).' },
-      { title: 'Otomatik Dağıtım', desc: 'Pushify webhook\'u alır ve otomatik olarak bir dağıtım başlatır.' },
+      { title: 'GitHub\'ı bağlayın', desc: 'Proje ayarlarından GitHub hesabınızı bağlayın.' },
+      { title: 'Dala push yapın', desc: 'Yapılandırılmış dala kod push edin (örn. main).' },
+      { title: 'Dağıtım başlar', desc: 'Pushify webhook\'u alır ve bir dağıtım başlatır.' },
     ],
-    manualTitle: 'Manuel Webhook URL\'si',
-    manualDesc: 'Her projenin diğer Git sağlayıcılarıyla manuel entegrasyon için benzersiz bir webhook URL\'si vardır.',
-    githubTitle: 'GitHub Actions Örneği',
-    githubDesc: 'Dağıtımlar API\'sini kullanarak dağıtımları doğrudan GitHub Actions\'tan tetikleyin.',
-    secretTitle: 'Webhook Gizli Anahtarı',
+    manualTitle: 'Manuel webhook URL\'si',
+    manualDesc: 'Her projenin, diğer Git sağlayıcılarını elle bağlamak için kendi webhook URL\'si vardır.',
+    githubTitle: 'GitHub Actions',
+    githubDesc: 'Dağıtımlar API\'siyle bir workflow içinden dağıtım tetikleyin.',
+    secretTitle: 'Webhook gizli anahtarı',
     secretText:
       'Webhook yükleri HMAC-SHA256 ile imzalanır. Webhook gizli anahtarınızı proje ayarlarından veya GET /projects/:id/webhook uç noktasından alın.',
   },
   monitoring: {
     title: 'İzleme, loglar ve yedekler',
     description:
-      'Pushify\'ın sizin adınıza neleri izlediği, e-posta gelip gelmeyeceğine karar veren eşikler ve topladıklarını ne kadar sakladığı.',
+      'Pushify\'ın neyi izlediği, ne zaman e-posta atacağını belirleyen eşikler ve topladığını ne kadar sakladığı.',
     alertsTitle: 'Ne zaman e-posta gelir',
     alertsText:
       'Canlı bir deploy\'u ve adresi olan her aktif proje dakikada bir aranır — ayar gerekmez. E-posta gönderen durumlar şunlar:',
@@ -425,6 +431,7 @@ export const docsTr: DocsContent = {
     logsTitle: 'Loglar ne kadar saklanır',
     logsText:
       'Container çıktısı, projenin çalıştırdığı her container\'dan toplanır — uygulama, replikaları, worker\'ları ve staging kopyası — ve terime, zaman aralığına ve container\'a göre aranabilir. Ne kadar kalacağı plana bağlıdır:',
+    retentionLabel: 'Saklama süresi',
     logRetention: [
       { plan: 'Free', kept: '3 gün' },
       { plan: 'Hobby', kept: '7 gün' },
@@ -458,7 +465,7 @@ export const docsTr: DocsContent = {
   buildSources: {
     title: 'Özel imajlar ve compose yığınları',
     description:
-      'Bir proje depoyu build edebilir, hazır bir imajı çalıştırabilir ya da bütün bir compose yığınını ayağa kaldırabilir. Her birinin gerektirdiği kimlik bilgileri ve registry\'lerin gerçekten istediği izinler burada.',
+      'Bir proje depoyu build edebilir, hazır bir imajı çalıştırabilir ya da bir compose yığınını ayağa kaldırabilir. Her birinin neye ihtiyaç duyduğu ve registry\'lerin gerçekten istediği izinler burada.',
     registriesTitle: 'Özel registry\'ler',
     registriesText:
       'Ayarlar → Özel registry\'ler, tüm kuruluş için registry başına tek bir giriş saklar. İki şey için kullanılır: FROM satırı özel bir base imaj olan Dockerfile\'lar ve hazır imaj deploy eden projeler. Token yalnızca yazılır — bir kez gönderilir, bir daha gösterilmez, sadece değiştirilebilir.',
@@ -498,6 +505,7 @@ export const docsTr: DocsContent = {
     imageText:
       'Proje ayarları → Docker imajı: bir referans girin, proje depoyu build etmek yerine o imajı deploy etsin. Her deploy referansı yeniden çeker, yani etiketi taşıyıp deploy almak yeni imajı yayınlar.',
     imageExample: 'ghcr.io/acme/api:1.4',
+    imageRefLabel: 'İmaj referansı',
     imageNotes: [
       'İmaj kendi tanımlarını korur — CMD, ENV ve açtığı port olduğu gibi kullanılır.',
       'Build edilen bir uygulamayla aynı muameleyi görür: blue-green geçiş, replikalar, staging, volume\'ler, alan adları ve HTTPS.',
@@ -531,17 +539,19 @@ export const docsTr: DocsContent = {
   sso: {
     title: 'Tek oturum açma (OIDC)',
     description:
-      'Ekibinizin kendi kimlik sağlayıcınız üzerinden giriş yapmasını sağlayın. Yanlış yapılması kolay olan kısımların hepsi sağlayıcı tarafında, o yüzden burada orada ne gireceğiniz anlatılıyor.',
+      'Ekibiniz kendi kimlik sağlayıcınız üzerinden giriş yapsın. Hatalar neredeyse hep sağlayıcı tarafında olur; bu yüzden burada orada ne gireceğiniz anlatılıyor.',
     beforeTitle: 'Başlamadan önce',
     beforeText:
       'Kuruluşun sahibi olmanız gerekiyor. Ayarlar → Tek oturum açma ekranını açın: sağlayıcınızın kullanıcıları geri göndereceği yönlendirme adresini gösterir. Şimdi kopyalayın — her sağlayıcı önce onu ister.',
     redirectExample: 'https://api.pushify.dev/api/v1/sso/callback',
+    redirectLabel: 'Yönlendirme URI',
     redirectWarningTitle: 'Yönlendirme adresi birebir aynı olmalı',
     redirectWarning:
       'Harfi harfine — https dahil, sonundaki yol dahil. En sık yapılan hata budur ve girişin en sonunda, Pushify\'dan değil sağlayıcıdan gelen bir hata olarak ortaya çıkar; yani bir ayar sorunu değil de onların sorunu gibi görünür.',
     issuerLabel: 'Pushify\'a girilecek issuer',
     providers: [
       {
+        slug: 'okta',
         name: 'Okta',
         steps: [
           'Okta yönetim konsolunda Applications → Create App Integration.',
@@ -553,6 +563,7 @@ export const docsTr: DocsContent = {
         issuer: 'https://KURULUSUNUZ.okta.com',
       },
       {
+        slug: 'entra',
         name: 'Microsoft Entra ID (Azure AD)',
         steps: [
           'Azure portalında Microsoft Entra ID → App registrations → New registration.',
@@ -564,6 +575,7 @@ export const docsTr: DocsContent = {
         issuer: 'https://login.microsoftonline.com/TENANT-ID/v2.0',
       },
       {
+        slug: 'google',
         name: 'Google Workspace',
         steps: [
           'Google Cloud Console\'da kuruluşunuzun projesini seçip APIs & Services → Credentials bölümünü açın.',
@@ -614,21 +626,21 @@ export const docsTr: DocsContent = {
     ],
   },
   errors: {
-    title: 'Hata Yönetimi',
-    description: 'API standart HTTP durum kodlarını kullanır ve ayrıntılı hata mesajlarını JSON formatında döndürür.',
-    httpStatusTitle: 'HTTP Durum Kodları',
+    title: 'Hata yönetimi',
+    description: 'Standart HTTP durum kodları ve neyin ters gittiğini söyleyen bir JSON gövdesi.',
+    httpStatusTitle: 'HTTP durum kodları',
     statusRows: [
       { code: '200', desc: 'Başarılı' },
-      { code: '201', desc: 'Oluşturuldu - Kaynak başarıyla oluşturuldu' },
-      { code: '400', desc: 'Hatalı İstek - Geçersiz parametreler' },
-      { code: '401', desc: 'Yetkisiz - Geçersiz veya eksik API anahtarı' },
-      { code: '403', desc: 'Yasak - Yetersiz izin / kapsam' },
-      { code: '404', desc: 'Bulunamadı - Kaynak mevcut değil' },
-      { code: '429', desc: 'Çok Fazla İstek - Hız limiti aşıldı' },
-      { code: '500', desc: 'Dahili Sunucu Hatası' },
+      { code: '201', desc: 'Oluşturuldu — kaynak oluşturuldu' },
+      { code: '400', desc: 'Hatalı istek — geçersiz parametreler' },
+      { code: '401', desc: 'Yetkisiz — geçersiz veya eksik API anahtarı' },
+      { code: '403', desc: 'Yasak — yetersiz izin veya kapsam' },
+      { code: '404', desc: 'Bulunamadı — kaynak mevcut değil' },
+      { code: '429', desc: 'Çok fazla istek — hız limiti aşıldı' },
+      { code: '500', desc: 'Dahili sunucu hatası' },
     ],
-    responseFormatTitle: 'Hata Yanıt Formatı',
-    commonCodesTitle: 'Yaygın Hata Kodları',
+    responseFormatTitle: 'Hata yanıtı',
+    commonCodesTitle: 'Yaygın hata kodları',
     errorCodes: [
       { code: 'UNAUTHORIZED', desc: 'API anahtarı eksik, geçersiz veya süresi dolmuş' },
       { code: 'INSUFFICIENT_SCOPE', desc: 'API anahtarı gerekli izinlere sahip değil' },
@@ -637,8 +649,8 @@ export const docsTr: DocsContent = {
       { code: 'RATE_LIMITED', desc: 'Çok fazla istek, yavaşlayın' },
       { code: 'CONFLICT', desc: 'Kaynak zaten mevcut veya durum çakışması' },
     ],
-    rateLimitsTitle: 'Hız Limitleri',
-    rateLimitsIntro: 'API istekleri API anahtarı başına hız sınırlıdır. Limitler plana göre değişir.',
+    rateLimitsTitle: 'Hız limitleri',
+    rateLimitsIntro: 'Limitler API anahtarı başınadır ve plana göre değişir.',
     rateLimitRows: [
       { plan: 'Free', limit: '60 istek/dk' },
       { plan: 'Hobby', limit: '120 istek/dk' },
@@ -647,7 +659,7 @@ export const docsTr: DocsContent = {
       { plan: 'Enterprise', limit: 'Sınırsız' },
     ],
     rateLimitFooter:
-      'Hız limiti başlıkları her yanıtta dahil edilir: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset',
-    exampleTitle: 'Hata Yönetimi Örneği',
+      'Her yanıtta X-RateLimit-Limit, X-RateLimit-Remaining ve X-RateLimit-Reset başlıkları bulunur.',
+    exampleTitle: 'Kodda hata yönetimi',
   },
 };

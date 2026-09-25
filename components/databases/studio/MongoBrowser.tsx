@@ -24,7 +24,7 @@ import {
   useMongoDocuments,
   useReplaceMongoDocument,
 } from '@/hooks';
-import { panelStyle, type T } from './_shared';
+import { iconButtonClass, panelStyle, type T } from './_shared';
 
 interface MongoBrowserProps {
   databaseId: string;
@@ -32,7 +32,7 @@ interface MongoBrowserProps {
   t: T;
 }
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
+const mono = { fontFamily: 'var(--font-mono)' } as const;
 const PAGE_SIZE = 25;
 
 /** The `_id` as extended JSON — what the API needs to address a single document. */
@@ -126,11 +126,15 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
     <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-5">
       {/* Collections */}
       <div className="flex flex-col overflow-hidden" style={{ ...panelStyle, maxHeight: '72vh' }}>
-        <div className="px-3 py-3" style={{ borderBottom: '1px solid var(--glass-border)' }}>
+        <div className="px-3 py-3 space-y-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <p className="dash-section-label flex items-center justify-between">
+            <span>{t('databases', 'studioCollections')}</span>
+            <span className="tabular-nums">{collections.length}</span>
+          </p>
           <button
             type="button"
             onClick={() => setNewCollection('')}
-            className="btn btn-secondary text-sm w-full"
+            className="btn btn-secondary btn-sm w-full"
           >
             <Plus className="w-3.5 h-3.5" />
             {t('databases', 'studioNewCollection')}
@@ -161,24 +165,20 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                     <button
                       type="button"
                       onClick={() => selectCollection(entry.name)}
-                      className="w-full text-left px-2.5 py-2 rounded-lg flex items-start gap-2.5"
-                      style={{
-                        background: isActive ? 'var(--dash-accent-bg-md)' : 'transparent',
-                        border: `1px solid ${isActive ? 'var(--accent-cyan)' : 'transparent'}`,
-                      }}
+                      aria-current={isActive ? 'true' : undefined}
+                      className="w-full text-left px-2.5 py-2 rounded-md flex items-start gap-2.5 transition-colors hover:bg-(--hover-overlay-md) focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-(--text-primary)"
+                      style={isActive ? { background: 'var(--hover-overlay-lg)' } : undefined}
                     >
                       <FileJson
                         className="w-3.5 h-3.5 mt-0.5 shrink-0"
-                        style={{ color: isActive ? 'var(--accent-cyan)' : 'var(--text-muted)' }}
+                        style={{ color: isActive ? 'var(--text-primary)' : 'var(--text-muted)' }}
+                        aria-hidden="true"
                       />
                       <span className="min-w-0 flex-1">
                         <span className="block text-sm truncate" style={mono}>
                           {entry.name}
                         </span>
-                        <span
-                          className="block text-[11px] mt-0.5"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
+                        <span className="block dash-mono-caption mt-0.5 tabular-nums">
                           ~{entry.count.toLocaleString()} {t('databases', 'studioDocuments')}
                         </span>
                       </span>
@@ -199,28 +199,25 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
           </div>
         ) : (
           <>
-            <div
-              className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
-              style={{ borderBottom: '1px solid var(--glass-border)' }}
-            >
+            <div className="dash-toolbar justify-between gap-3! px-4! py-2.5!">
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate" style={mono}>
+                <p className="text-[13px] font-medium truncate" style={mono}>
                   {active}
                 </p>
                 {documents && (
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                  <p className="dash-mono-caption mt-0.5 tabular-nums">
                     {documents.totalCapped ? '10.000+' : documents.total.toLocaleString()}{' '}
                     {t('databases', 'studioDocuments')}
                   </p>
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => refetch()}
                   disabled={isFetching}
-                  className="btn btn-secondary text-sm"
+                  className="btn btn-secondary btn-sm"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
                   {t('databases', 'studioRefresh')}
@@ -230,7 +227,7 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                   <button
                     type="button"
                     onClick={() => setConfirmDelete(true)}
-                    className="btn btn-secondary text-sm"
+                    className="btn btn-secondary btn-sm"
                     style={{ color: 'var(--status-error)' }}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -241,7 +238,7 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                 <button
                   type="button"
                   onClick={() => setConfirmDrop(true)}
-                  className="btn btn-secondary text-sm"
+                  className="btn btn-secondary btn-sm"
                   style={{ color: 'var(--status-error)' }}
                 >
                   {t('databases', 'studioDropCollection')}
@@ -253,7 +250,7 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                     setEditorError(null);
                     setEditor({ mode: 'insert', value: '{\n  \n}' });
                   }}
-                  className="btn btn-primary text-sm"
+                  className="btn btn-primary btn-sm"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   {t('databases', 'studioNewDocument')}
@@ -264,7 +261,7 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
             {/* Query bar */}
             <div
               className="flex flex-wrap items-center gap-2 px-4 py-2.5"
-              style={{ borderBottom: '1px solid var(--glass-border)' }}
+              style={{ borderBottom: '1px solid var(--border-subtle)' }}
             >
               <div className="relative flex-1" style={{ minWidth: 220 }}>
                 <Search
@@ -275,7 +272,8 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                   placeholder='{"status":"active"}'
-                  className="input w-full text-sm"
+                  aria-label={t('common', 'filter')}
+                  className="input w-full text-sm py-1.5!"
                   style={{ ...mono, paddingLeft: 32 }}
                 />
               </div>
@@ -283,7 +281,8 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
                 placeholder='{"createdAt":-1}'
-                className="input text-sm"
+                aria-label={t('databases', 'studioSortLabel')}
+                className="input w-auto! text-sm py-1.5!"
                 style={{ ...mono, minWidth: 180 }}
               />
               <button
@@ -292,7 +291,7 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                   setAppliedQuery({ filter, sort });
                   setPage(1);
                 }}
-                className="btn btn-secondary text-sm"
+                className="btn btn-secondary btn-sm"
               >
                 {t('databases', 'studioApply')}
               </button>
@@ -327,8 +326,8 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                       key={id}
                       className="px-4 py-3"
                       style={{
-                        borderBottom: '1px solid var(--glass-border)',
-                        background: isSelected ? 'var(--dash-accent-bg-md)' : 'transparent',
+                        borderBottom: '1px solid var(--border-subtle)',
+                        background: isSelected ? 'var(--hover-overlay-lg)' : 'transparent',
                       }}
                     >
                       <div className="flex items-start gap-3">
@@ -343,7 +342,7 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                               return next;
                             })
                           }
-                          className="mt-1 cursor-pointer"
+                          className="mt-1 cursor-pointer accent-(--text-primary)"
                           aria-label="select document"
                         />
                         <pre
@@ -362,9 +361,9 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                               value: JSON.stringify(document, null, 2),
                             });
                           }}
-                          className="p-1.5 rounded-md shrink-0"
-                          style={{ color: 'var(--text-muted)' }}
+                          className={iconButtonClass}
                           title={t('databases', 'studioEditDocument')}
+                          aria-label={t('databases', 'studioEditDocument')}
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
@@ -378,17 +377,18 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
             {documents && documents.documents.length > 0 && (
               <div
                 className="flex items-center justify-between gap-3 px-4 py-2.5"
-                style={{ borderTop: '1px solid var(--glass-border)' }}
+                style={{ borderTop: '1px solid var(--border-subtle)' }}
               >
-                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                <span className="dash-mono-caption tabular-nums">
                   {t('databases', 'studioPageInfo')} {documents.page} / {totalPages}
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={documents.page <= 1}
-                    className="btn btn-secondary text-sm"
+                    className="btn btn-secondary btn-sm"
+                    aria-label={t('databases', 'studioPrevPage')}
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
@@ -396,7 +396,8 @@ export function MongoBrowser({ databaseId, enabled, t }: MongoBrowserProps) {
                     type="button"
                     onClick={() => setPage((p) => p + 1)}
                     disabled={documents.documents.length < documents.pageSize}
-                    className="btn btn-secondary text-sm"
+                    className="btn btn-secondary btn-sm"
+                    aria-label={t('databases', 'studioNextPage')}
                   >
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>

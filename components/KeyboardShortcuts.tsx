@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Keyboard, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 /**
  * Linear-style keyboard navigation for the dashboard.
@@ -97,21 +97,14 @@ export function KeyboardShortcuts() {
     };
   }, [open, pendingG, router]);
 
-  const kbd = (k: string) => (
-    <kbd
-      className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded text-[11px]"
-      style={{ background: 'var(--hover-overlay-md)', border: '1px solid var(--glass-border)', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}
-    >
-      {k}
-    </kbd>
-  );
+  const kbd = (k: string) => <kbd className="dash-kbd">{k}</kbd>;
 
   return (
     <>
       {pendingG && (
         <div
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[90] px-3 py-1.5 rounded-lg text-xs flex items-center gap-2"
-          style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
+          className="dash-menu fixed bottom-4 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-2 text-xs text-[var(--text-secondary)]"
+          style={{ padding: '6px 10px' }}
           aria-live="polite"
         >
           {kbd('g')} then {Object.keys(GO).map((k) => <span key={k}>{kbd(k)}</span>)}
@@ -120,36 +113,36 @@ export function KeyboardShortcuts() {
 
       {open && (
         <>
-          <div className="fixed inset-0 z-[100]" style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }} onClick={() => setOpen(false)} />
+          <div className="dash-modal-overlay z-[100]" onClick={() => setOpen(false)} aria-hidden />
           <div
-            className="fixed z-[101] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl overflow-hidden animate-slide-in"
-            style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}
+            className="dash-modal is-centered z-[101] max-w-md"
             role="dialog"
-            aria-label="Keyboard shortcuts"
+            aria-modal="true"
+            aria-labelledby="kbd-shortcuts-title"
           >
-            <div className="flex items-center justify-between px-4 h-12" style={{ borderBottom: '1px solid var(--glass-border-md)' }}>
-              <span className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                <Keyboard className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                Keyboard shortcuts
-              </span>
-              <button type="button" onClick={() => setOpen(false)} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} aria-label="Close">
+            <div className="dash-modal-header">
+              <div className="min-w-0">
+                <span className="dash-eyebrow">Shortcuts</span>
+                <h2 id="kbd-shortcuts-title" className="dash-modal-title">Keyboard shortcuts</h2>
+              </div>
+              <button type="button" onClick={() => setOpen(false)} className="dash-modal-close" aria-label="Close">
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="px-4 py-3 space-y-4 text-sm" style={{ color: 'var(--text-secondary)' }}>
+            <div className="space-y-5 text-sm text-[var(--text-secondary)]">
               <section>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-2" style={{ color: 'var(--text-muted)' }}>General</p>
-                <ul className="space-y-1.5">
-                  <li className="flex items-center justify-between"><span>Command palette — search &amp; actions</span><span className="flex gap-1">{kbd('⌘')}{kbd('K')}</span></li>
-                  <li className="flex items-center justify-between"><span>New project</span>{kbd('n')}</li>
-                  <li className="flex items-center justify-between"><span>This sheet</span>{kbd('?')}</li>
+                <p className="dash-section-label mb-2.5">General</p>
+                <ul className="space-y-2">
+                  <li className="flex items-center justify-between gap-3"><span>Command palette — search &amp; actions</span><span className="flex gap-1">{kbd('⌘')}{kbd('K')}</span></li>
+                  <li className="flex items-center justify-between gap-3"><span>New project</span>{kbd('n')}</li>
+                  <li className="flex items-center justify-between gap-3"><span>This sheet</span>{kbd('?')}</li>
                 </ul>
               </section>
-              <section>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-2" style={{ color: 'var(--text-muted)' }}>Go to — press {kbd('g')} then</p>
-                <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+              <section className="pt-5 border-t border-[var(--border-subtle)]">
+                <p className="dash-section-label mb-2.5 flex items-center gap-1.5">Go to — press {kbd('g')} then</p>
+                <ul className="grid grid-cols-2 gap-x-6 gap-y-2">
                   {Object.entries(GO).map(([k, v]) => (
-                    <li key={k} className="flex items-center justify-between"><span>{v.label}</span>{kbd(k)}</li>
+                    <li key={k} className="flex items-center justify-between gap-3"><span>{v.label}</span>{kbd(k)}</li>
                   ))}
                 </ul>
               </section>

@@ -30,6 +30,7 @@ export interface TranslationKeys {
     closeMenu: string;
     menuTitle: string;
     githubAria: string;
+    exit: string;
   };
   auth: {
     welcomeBack: string;
@@ -241,6 +242,7 @@ export interface TranslationKeys {
     pause: string;
     resume: string;
     deleteConfirm: string;
+    shellTitle: string;
   };
   header: {
     searchPlaceholder: string;
@@ -958,6 +960,9 @@ export interface TranslationKeys {
     dangerZoneDesc: string;
     deleteProject: string;
     deleteProjectConfirm: string;
+    pushifyUrl: string;
+    sslActive: string;
+    deleteEnvVarTitle: string;
   };
   newProject: {
     githubAppLinking: string;
@@ -1121,6 +1126,7 @@ export interface TranslationKeys {
     noResults: string;
     retentionNote: string;
     shell: string;
+    reconnect: string;
   };
   volumes: {
     title: string;
@@ -1228,6 +1234,7 @@ export interface TranslationKeys {
     // Status
     active: string;
     inactive: string;
+    deleteChannelTitle: string;
   };
   healthChecks: {
     title: string;
@@ -2030,6 +2037,7 @@ export interface TranslationKeys {
     byosStep4: string;
     readyToCreate: string;
     fillRequiredFields: string;
+    terminalTitle: string;
   };
   databases: {
     title: string;
@@ -2370,6 +2378,14 @@ export interface TranslationKeys {
     studioOpIsNull: string;
     studioOpIsNotNull: string;
     newCredentials: string;
+    copyField: string;
+    studioPrevPage: string;
+    studioNextPage: string;
+    envVarLabel: string;
+    newCredentialsTitle: string;
+    detailsTitle: string;
+    studioCollections: string;
+    studioSortLabel: string;
   };
   marketplace: {
     title: string;
@@ -2633,6 +2649,9 @@ export interface TranslationKeys {
     fullPreview: string;
     uploadImage: string;
     uploading: string;
+    viewportDesktop: string;
+    viewportMobile: string;
+    renamePage: string;
   };
   vsCoolify: {
     eyebrow: string;
@@ -3077,6 +3096,7 @@ export const en: TranslationKeys = {
     closeMenu: 'Close menu',
     menuTitle: 'Menu',
     githubAria: 'Pushify on GitHub',
+    exit: "Exit",
   },
   auth: {
     welcomeBack: 'Welcome back',
@@ -3287,6 +3307,7 @@ export const en: TranslationKeys = {
     pause: 'Pause',
     resume: 'Resume',
     deleteConfirm: 'Are you sure you want to delete this project? This action cannot be undone.',
+    shellTitle: "App shell",
   },
   header: {
     searchPlaceholder: 'Search projects, deployments...',
@@ -4022,6 +4043,9 @@ export const en: TranslationKeys = {
     dangerZoneDesc: 'Deleting this project will permanently remove all deployments, environment variables, and domains. This action cannot be undone.',
     deleteProject: 'Delete Project',
     deleteProjectConfirm: 'Are you sure you want to delete this project? This action cannot be undone.',
+    pushifyUrl: "Pushify URL",
+    sslActive: "SSL active",
+    deleteEnvVarTitle: "Delete environment variable",
   },
   newProject: {
     githubAppLinking: 'Linking your GitHub App installation…',
@@ -4189,6 +4213,7 @@ export const en: TranslationKeys = {
     noResults: 'No matching log lines.',
     retentionNote: 'Your plan keeps {days} days of runtime logs. Timestamps in history mode are chunk-level; Download saves the full result, not just the lines shown.',
     shell: 'Shell',
+    reconnect: "Reconnect",
   },
   volumes: {
     title: 'Persistent Volumes',
@@ -4296,6 +4321,7 @@ export const en: TranslationKeys = {
     // Status
     active: 'Active',
     inactive: 'Inactive',
+    deleteChannelTitle: "Delete notification channel",
   },
   healthChecks: {
     title: 'Health Checks',
@@ -5124,6 +5150,7 @@ export const en: TranslationKeys = {
     byosStep4: 'Your server is ready to deploy projects',
     readyToCreate: 'Ready to create',
     fillRequiredFields: 'Fill all required fields',
+    terminalTitle: "Web terminal",
   },
   databases: {
     title: 'Databases',
@@ -5464,6 +5491,14 @@ export const en: TranslationKeys = {
     studioOpIsNull: 'is null',
     studioOpIsNotNull: 'is not null',
     newCredentials: 'New Credentials',
+    copyField: "Copy",
+    studioPrevPage: "Previous page",
+    studioNextPage: "Next page",
+    envVarLabel: "Environment variable",
+    newCredentialsTitle: "New credentials",
+    detailsTitle: "Details",
+    studioCollections: "Collections",
+    studioSortLabel: "Sort",
   },
   marketplace: {
     title: 'Marketplace',
@@ -5733,6 +5768,9 @@ export const en: TranslationKeys = {
     fullPreview: 'Preview',
     uploadImage: 'Upload image',
     uploading: 'Uploading…',
+    viewportDesktop: "Desktop",
+    viewportMobile: "Mobile",
+    renamePage: "Rename page",
   },
   vsCoolify: {
     eyebrow: 'Comparison',

@@ -121,8 +121,8 @@ export function EnvironmentTab({
   return (
     <div className="space-y-4 min-w-0 overflow-hidden">
       {marketplaceTemplateId === 'supabase' && (
-        <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-4 flex gap-3">
-          <Info className="w-4 h-4 mt-0.5 shrink-0 text-[var(--accent-cyan)]" />
+        <div className="dash-callout">
+          <Info className="w-4 h-4 mt-0.5 shrink-0 text-[var(--text-muted)]" />
           <div className="min-w-0 text-sm">
             <p className="font-medium text-[var(--text-primary)] mb-1">
               {t('projectDetail', 'oauthHintTitle')}
@@ -178,11 +178,11 @@ export function EnvironmentTab({
 
       {/* Clone between environments */}
       {showCloneForm && (
-        <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
-          <h3 className="text-sm font-semibold">{t('projectDetail', 'cloneEnv')}</h3>
+        <div className="dash-card p-4 sm:p-5 space-y-4">
+          <h3 className="dash-section-label">{t('projectDetail', 'cloneEnv')}</h3>
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+              <label className="dash-section-label block mb-2">
                 {t('projectDetail', 'sourceEnvironment')}
               </label>
               <select
@@ -196,7 +196,7 @@ export function EnvironmentTab({
               </select>
             </div>
             <div className="flex-1">
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+              <label className="dash-section-label block mb-2">
                 {t('projectDetail', 'targetEnvironment')}
               </label>
               <select
@@ -239,9 +239,9 @@ export function EnvironmentTab({
 
       {/* Paste .env Form */}
       {showPasteForm && (
-        <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
+        <div className="dash-card p-4 sm:p-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+            <label className="dash-section-label block mb-2">
               {t('projectDetail', 'pasteEnvContent')}
             </label>
             <textarea
@@ -255,14 +255,14 @@ export function EnvironmentTab({
 
           {/* Preview parsed variables */}
           {parsedVars.length > 0 && (
-            <div className="p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
-              <p className="text-xs text-[var(--text-muted)] mb-2">
+            <div className="p-3 rounded-[10px] bg-[var(--bg-primary)] border border-[var(--border-subtle)]">
+              <p className="dash-section-label mb-2">
                 {t('projectDetail', 'parsedVariables')} ({parsedVars.length})
               </p>
               <div className="space-y-1 max-h-32 overflow-y-auto">
                 {parsedVars.map((v, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm">
-                    <span className="terminal-text font-medium text-[var(--accent-cyan)]">{v.key}</span>
+                  <div key={i} className="flex items-center gap-2 text-[13px] min-w-0">
+                    <span className="terminal-text text-[var(--text-primary)]">{v.key}</span>
                     <span className="text-[var(--text-muted)]">=</span>
                     <span className="text-[var(--text-secondary)] truncate">{v.value.substring(0, 30)}{v.value.length > 30 ? '...' : ''}</span>
                   </div>
@@ -291,10 +291,10 @@ export function EnvironmentTab({
 
       {/* Single variable form */}
       {showAddForm && (
-        <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
+        <div className="dash-card p-4 sm:p-5 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t('projectDetail', 'key')}</label>
+              <label className="dash-section-label block mb-2">{t('projectDetail', 'key')}</label>
               <input
                 type="text"
                 value={newKey}
@@ -304,7 +304,7 @@ export function EnvironmentTab({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t('projectDetail', 'value')}</label>
+              <label className="dash-section-label block mb-2">{t('projectDetail', 'value')}</label>
               <textarea
                 value={newValue}
                 onChange={(e) => setNewValue(e.target.value)}
@@ -322,22 +322,24 @@ export function EnvironmentTab({
       )}
 
       {(!envVars || envVars.length === 0) && !showAddForm && !showPasteForm ? (
-        <div className="p-12 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center">
-          <Key className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-3" />
-          <h3 className="text-lg font-medium mb-2">{t('projectDetail', 'noEnvVariables')}</h3>
-          <p className="text-[var(--text-secondary)]">{t('projectDetail', 'noEnvVariablesDesc')}</p>
+        <div className="dash-card px-6 py-14 text-center">
+          <Key className="dash-empty-icon mb-3" />
+          <h3 className="text-[15px] mb-1">{t('projectDetail', 'noEnvVariables')}</h3>
+          <p className="text-sm text-[var(--text-secondary)]">{t('projectDetail', 'noEnvVariablesDesc')}</p>
         </div>
       ) : envVars && envVars.length > 0 && (
-        <div className="rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-hidden">
-          {envVars.map((envVar, index) => (
+        <div className="dash-rows">
+          <div className="hidden sm:grid grid-cols-[minmax(10rem,16rem)_1fr] gap-4 px-5 py-2 border-b border-[var(--border-subtle)]">
+            <span className="dash-section-label">{t('projectDetail', 'key')}</span>
+            <span className="dash-section-label">{t('projectDetail', 'value')}</span>
+          </div>
+          {envVars.map((envVar) => (
             <div
               key={envVar.id}
-              className={`p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${
-                index !== envVars.length - 1 ? 'border-b border-[var(--border-subtle)]' : ''
-              }`}
+              className="dash-row !py-2.5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 w-full">
-                <span className="terminal-text font-medium">{envVar.key}</span>
+              <div className="flex flex-col gap-1 sm:grid sm:grid-cols-[minmax(10rem,16rem)_1fr] sm:items-center sm:gap-4 flex-1 min-w-0 w-full">
+                <span className="terminal-text text-[13px] text-[var(--text-primary)] truncate" title={envVar.key}>{envVar.key}</span>
                 {editingId === envVar.id ? (
                   <textarea
                     autoFocus
@@ -352,7 +354,7 @@ export function EnvironmentTab({
                     className="input terminal-text flex-1 min-w-0 text-xs resize-y min-h-[32px] py-1"
                   />
                 ) : (
-                  <span className="text-[var(--text-muted)] terminal-text truncate">
+                  <span className="text-[var(--text-muted)] terminal-text text-[13px] truncate">
                     {revealedIds.has(envVar.id) ? envVar.value : '••••••••'}
                   </span>
                 )}
@@ -363,32 +365,33 @@ export function EnvironmentTab({
                     <button
                       onClick={() => saveEdit(envVar.id)}
                       disabled={editValue.trim() === ''}
-                      className="btn btn-primary h-8 text-xs flex items-center gap-1 disabled:opacity-50"
+                      className="btn btn-primary btn-sm"
                     >
                       <Check className="w-4 h-4" />
                       {t('common', 'save')}
                     </button>
-                    <button onClick={cancelEdit} className="btn btn-ghost h-8 text-xs">
+                    <button onClick={cancelEdit} className="btn btn-ghost btn-sm">
                       {t('common', 'cancel')}
                     </button>
                   </>
                 ) : (
                   <>
-                    <button onClick={() => toggleReveal(envVar.id)} className="btn btn-ghost h-8 text-xs">
+                    <button onClick={() => toggleReveal(envVar.id)} className="btn btn-ghost btn-sm">
                       {revealedIds.has(envVar.id) ? t('projectDetail', 'hide') : t('projectDetail', 'reveal')}
                     </button>
                     <button
                       onClick={() => startEdit(envVar.id, envVar.value)}
                       title={t('common', 'edit')}
-                      className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10 transition-colors"
+                      aria-label={`${t('common', 'edit')} ${envVar.key}`}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] transition-colors"
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Pencil className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={async () => {
                         const ok = await confirm({
                           variant: 'danger',
-                          title: 'Delete environment variable',
+                          title: t('projectDetail', 'deleteEnvVarTitle'),
                           description: t('projectDetail', 'deleteEnvVarConfirm'),
                           confirmText: t('common', 'delete'),
                           cancelText: t('common', 'cancel'),
@@ -397,9 +400,11 @@ export function EnvironmentTab({
                           onDelete(envVar.id);
                         }
                       }}
-                      className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
+                      title={t('common', 'delete')}
+                      aria-label={`${t('common', 'delete')} ${envVar.key}`}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </>
                 )}

@@ -79,12 +79,12 @@ export function ServerNextStepsCard({ server }: { server: Server }) {
 
   return (
     <div className="dash-panel p-4 sm:p-5">
-      <h3 className="text-sm font-semibold mb-3">{t('servers', 'hubNextStepsTitle')}</h3>
-      <ul className="space-y-2">
+      <h3 className="dash-section-label mb-3">{t('servers', 'hubNextStepsTitle')}</h3>
+      <ul className="space-y-1">
         {steps.map((step) => {
           const content = (
             <span className="flex items-start gap-2.5 text-sm text-[var(--text-secondary)]">
-              <span className="mt-0.5 text-[var(--accent-cyan)]">{step.icon}</span>
+              <span className="mt-0.5 text-[var(--text-muted)]" aria-hidden="true">{step.icon}</span>
               <span>{t('servers', step.labelKey)}</span>
             </span>
           );
@@ -94,10 +94,10 @@ export function ServerNextStepsCard({ server }: { server: Server }) {
               <li key={step.id}>
                 <Link
                   href={step.href}
-                  className="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 -mx-2 hover:bg-[var(--bg-tertiary)] transition-colors group"
+                  className="flex items-center justify-between gap-2 rounded-[10px] px-2 py-1.5 -mx-2 hover:bg-[var(--hover-overlay)] transition-colors group focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
                 >
                   {content}
-                  <ChevronRight className="w-4 h-4 shrink-0 text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" />
+                  <ChevronRight className="w-4 h-4 shrink-0 text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" aria-hidden="true" />
                 </Link>
               </li>
             );
@@ -111,14 +111,13 @@ export function ServerNextStepsCard({ server }: { server: Server }) {
 }
 
 function ProjectRow({ project }: { project: Project }) {
-  const { t } = useTranslation();
   const statusClass =
     project.status === 'active' ? 'badge-success' : project.status === 'paused' ? 'badge-warning' : 'badge-error';
 
   return (
     <Link
       href={`/dashboard/projects/${project.id}`}
-      className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors group"
+      className="flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-[var(--hover-overlay)] transition-colors group focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--text-primary)]"
     >
       <div className="min-w-0 flex items-center gap-2">
         <Folder className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
@@ -128,8 +127,8 @@ function ProjectRow({ project }: { project: Project }) {
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <span className={`badge text-[10px] ${statusClass}`}>{project.status}</span>
-        <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" />
+        <span className={`badge ${statusClass}`}>{project.status}</span>
+        <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" aria-hidden="true" />
       </div>
     </Link>
   );
@@ -144,7 +143,7 @@ export function ServerProjectsSection({ serverId }: { serverId: string }) {
     <div id="server-hub-projects" className="dash-panel p-4 sm:p-5 scroll-mt-6">
       <div className="dash-panel-header !mb-3">
         <div className="dash-panel-title">
-          <Folder className="w-4 h-4 text-[var(--text-secondary)]" />
+          <Folder className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
           {t('servers', 'hubProjectsTitle')}
         </div>
         <Link
@@ -152,18 +151,18 @@ export function ServerProjectsSection({ serverId }: { serverId: string }) {
           className="dash-link flex items-center gap-1 shrink-0"
         >
           {t('servers', 'hubNewProject')}
-          <Plus className="w-3 h-3" />
+          <Plus className="w-3 h-3" aria-hidden="true" />
         </Link>
       </div>
 
       {isLoading ? (
         <div className="flex justify-center py-6">
-          <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-cyan)]" />
+          <Loader2 className="w-5 h-5 animate-spin text-[var(--text-muted)]" />
         </div>
       ) : onServer.length === 0 ? (
         <p className="text-sm text-[var(--text-muted)]">{t('servers', 'hubProjectsEmpty')}</p>
       ) : (
-        <div className="rounded-lg border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] overflow-hidden">
+        <div className="rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] overflow-hidden">
           {onServer.map((p) => (
             <ProjectRow key={p.id} project={p} />
           ))}
@@ -174,16 +173,24 @@ export function ServerProjectsSection({ serverId }: { serverId: string }) {
 }
 
 function DatabaseRow({ database }: { database: DatabaseType }) {
+  const statusClass =
+    database.status === 'running'
+      ? 'badge-success'
+      : database.status === 'error'
+        ? 'badge-error'
+        : database.status === 'provisioning'
+          ? 'badge-warning'
+          : 'badge-neutral';
   return (
     <div className="flex items-center justify-between gap-3 px-3 py-2.5">
       <div className="min-w-0 flex items-center gap-2">
         <Database className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
         <div className="min-w-0">
           <p className="text-sm font-medium truncate">{database.name}</p>
-          <p className="text-xs text-[var(--text-muted)] capitalize">{database.type}</p>
+          <p className="text-xs text-[var(--text-muted)] font-mono">{database.type}</p>
         </div>
       </div>
-      <span className="badge text-[10px] capitalize shrink-0">{database.status}</span>
+      <span className={`badge shrink-0 ${statusClass}`}>{database.status}</span>
     </div>
   );
 }
@@ -211,7 +218,7 @@ export function ServerDatabasesSection({
       <div id="server-hub-databases" className="dash-panel p-4 sm:p-5 scroll-mt-6">
         <div className="dash-panel-header !mb-3">
           <div className="dash-panel-title">
-            <Database className="w-4 h-4 text-[var(--text-secondary)]" />
+            <Database className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
             {t('servers', 'hubDatabasesTitle')}
           </div>
           {canCreate && (
@@ -221,19 +228,19 @@ export function ServerDatabasesSection({
               className="dash-link flex items-center gap-1 shrink-0"
             >
               {t('servers', 'hubAddDatabase')}
-              <Plus className="w-3 h-3" />
+              <Plus className="w-3 h-3" aria-hidden="true" />
             </button>
           )}
         </div>
 
         {isLoading ? (
           <div className="flex justify-center py-6">
-            <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-cyan)]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[var(--text-muted)]" />
           </div>
         ) : onServer.length === 0 ? (
           <p className="text-sm text-[var(--text-muted)]">{t('servers', 'hubDatabasesEmpty')}</p>
         ) : (
-          <div className="rounded-lg border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
+          <div className="rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] overflow-hidden">
             {onServer.map((d) => (
               <DatabaseRow key={d.id} database={d} />
             ))}

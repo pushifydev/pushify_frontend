@@ -67,23 +67,22 @@ export function CancelSubscriptionModal({
       title={t('billing', 'cancelTitle')}
       description={t('billing', 'cancelDesc')}
     >
-        <p className="text-sm font-medium mb-2.5">{t('billing', 'cancelReasonLabel')}</p>
-        <div className="space-y-1.5 mb-4">
+        <p className="dash-section-label mb-2.5" id="cancel-reason-label">{t('billing', 'cancelReasonLabel')}</p>
+        <div className="space-y-1.5 mb-4" role="radiogroup" aria-labelledby="cancel-reason-label">
           {REASONS.map((r) => (
             <label
               key={r}
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg border cursor-pointer text-sm transition-colors ${
-                reason === r
-                  ? 'border-[var(--border-default)] bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
-                  : 'border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]/50'
+              className={`dash-option text-sm ${
+                reason === r ? 'is-active text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'
               }`}
+              style={{ alignItems: 'center', padding: '0.625rem 0.875rem' }}
             >
               <input
                 type="radio"
                 name="cancel-reason"
                 checked={reason === r}
                 onChange={() => setReason(r)}
-                className="accent-[var(--accent-cyan)]"
+                className="shrink-0"
               />
               {reasonLabel(r)}
             </label>
@@ -96,11 +95,12 @@ export function CancelSubscriptionModal({
           placeholder={t('billing', 'cancelCommentPh')}
           rows={2}
           maxLength={1000}
-          className="w-full p-3 mb-5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)] resize-none"
+          className="input mb-1 resize-none"
         />
 
         <ModalActions>
           <button
+            type="button"
             onClick={onClose}
             disabled={cancelSubscription.isPending}
             className="btn btn-secondary"
@@ -108,9 +108,10 @@ export function CancelSubscriptionModal({
             {t('billing', 'cancelKeep')}
           </button>
           <button
+            type="button"
             onClick={handleCancel}
             disabled={!reason || cancelSubscription.isPending}
-            className="btn bg-red-500 hover:bg-red-600 text-white disabled:opacity-50"
+            className="btn btn-danger"
           >
             {cancelSubscription.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             {t('billing', 'cancelConfirm')}

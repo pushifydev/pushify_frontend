@@ -6,6 +6,7 @@ import type { SiteBlock, SiteSeo } from '@/lib/api';
 import type { SiteTheme } from '@/lib/site-editor/theme';
 import { renderSiteHtmlClient } from '@/lib/site-editor/render-html';
 import { EditableSiteCanvas } from './EditableSiteCanvas';
+import { useTranslation } from '@/hooks';
 
 export type PreviewMode = 'canvas' | 'iframe';
 
@@ -55,6 +56,7 @@ export function SitePagePreview({
   clickToEditHint,
   chromeless,
 }: SitePagePreviewProps) {
+  const { t } = useTranslation();
   const html = useMemo(
     () => renderSiteHtmlClient(seo, blocks, siteName, theme),
     [seo, blocks, siteName, theme],
@@ -68,15 +70,16 @@ export function SitePagePreview({
     >
       {!chromeless && (
       <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
-        <span className="text-xs font-medium text-[var(--text-muted)]">{previewLabel}</span>
+        <span className="dash-section-label">{previewLabel}</span>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => onModeChange('canvas')}
             title={canvasModeLabel}
-            className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
+            aria-pressed={mode === 'canvas'}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs ${
               mode === 'canvas'
-                ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]'
+                ? 'bg-[var(--hover-overlay-lg)] text-[var(--text-primary)]'
                 : 'text-[var(--text-muted)]'
             }`}
           >
@@ -87,9 +90,10 @@ export function SitePagePreview({
             type="button"
             onClick={() => onModeChange('iframe')}
             title={fullPreviewLabel}
-            className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
+            aria-pressed={mode === 'iframe'}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs ${
               mode === 'iframe'
-                ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]'
+                ? 'bg-[var(--hover-overlay-lg)] text-[var(--text-primary)]'
                 : 'text-[var(--text-muted)]'
             }`}
           >
@@ -100,14 +104,18 @@ export function SitePagePreview({
           <button
             type="button"
             onClick={() => onViewportChange('desktop')}
-            className={`p-1.5 rounded ${viewport === 'desktop' ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]' : 'text-[var(--text-muted)]'}`}
+            aria-label={t('siteEditor', 'viewportDesktop')}
+            aria-pressed={viewport === 'desktop'}
+            className={`p-1.5 rounded-full ${viewport === 'desktop' ? 'bg-[var(--hover-overlay-lg)] text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}
           >
             <Monitor className="w-4 h-4" />
           </button>
           <button
             type="button"
             onClick={() => onViewportChange('mobile')}
-            className={`p-1.5 rounded ${viewport === 'mobile' ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]' : 'text-[var(--text-muted)]'}`}
+            aria-label={t('siteEditor', 'viewportMobile')}
+            aria-pressed={viewport === 'mobile'}
+            className={`p-1.5 rounded-full ${viewport === 'mobile' ? 'bg-[var(--hover-overlay-lg)] text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}
           >
             <Smartphone className="w-4 h-4" />
           </button>

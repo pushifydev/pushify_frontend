@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Circle, Loader2, X } from 'lucide-react';
+import { Check, Loader2, X } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import {
   getDeploymentTimelineSteps,
@@ -9,37 +9,39 @@ import {
 import type { Deployment } from '@/lib/api/types';
 import { cn } from '@/lib/utils';
 
-function StepIcon({ state }: { state: DeploymentTimelineStep['state'] }) {
+function StepMark({ state }: { state: DeploymentTimelineStep['state'] }) {
   if (state === 'done') {
-    return <Check className="w-3.5 h-3.5 text-[var(--status-success)]" />;
+    return <Check className="w-3 h-3 text-[var(--status-success)]" aria-hidden />;
   }
   if (state === 'error') {
-    return <X className="w-3.5 h-3.5 text-[var(--status-error)]" />;
+    return <X className="w-3 h-3 text-[var(--status-error)]" aria-hidden />;
   }
   if (state === 'active') {
-    return <Loader2 className="w-3.5 h-3.5 text-[var(--accent-cyan)] animate-spin" />;
+    return <Loader2 className="w-3 h-3 animate-spin" aria-hidden />;
   }
-  return <Circle className="w-3 h-3 text-[var(--text-muted)]" />;
+  return <span className="w-3 text-center opacity-60" aria-hidden>·</span>;
 }
 
+/** The pipeline as one quiet mono line: queued / build / deploy / live. */
 export function DeploymentTimeline({ deployment }: { deployment: Deployment }) {
   const { t } = useTranslation();
   const steps = getDeploymentTimelineSteps(deployment);
 
   return (
-    <ol className="flex flex-wrap items-center gap-x-1 gap-y-2 text-xs text-[var(--text-muted)] mt-3 pt-3 border-t border-[var(--border-subtle)]">
+    <ol className="dash-pipeline mt-3 pt-3 border-t border-[var(--border-subtle)]">
       {steps.map((step, i) => (
-        <li key={step.key} className="flex items-center gap-1.5">
-          {i > 0 && <span className="text-[var(--border-default)] px-0.5">→</span>}
-          <StepIcon state={step.state} />
+        <li key={step.key} className="contents">
+          {i > 0 && <span className="dash-pipeline-sep" aria-hidden>/</span>}
           <span
             className={cn(
-              step.state === 'active' && 'text-[var(--text-primary)] font-medium',
-              step.state === 'error' && 'text-[var(--status-error)]',
+              'dash-pipeline-step',
+              step.state === 'active' && 'is-active',
+              step.state === 'error' && 'is-error',
             )}
           >
+            <StepMark state={step.state} />
             {t('projectDetail', step.labelKey)}
-            {step.duration ? ` (${step.duration})` : ''}
+            {step.duration ? <span className="opacity-70">{step.duration}</span> : null}
           </span>
         </li>
       ))}

@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { Upload, Loader2, ImageIcon } from 'lucide-react';
 import { uploadSiteImage } from '@/lib/api';
+import { useTranslation } from '@/hooks';
 
 interface ImageUploadFieldProps {
   projectId: string;
@@ -21,6 +22,7 @@ export function ImageUploadField({
   uploadLabel,
   uploadingLabel,
 }: ImageUploadFieldProps) {
+  const { locale } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +47,7 @@ export function ImageUploadField({
     <div className="space-y-2">
       <span className="text-xs text-[var(--text-secondary)]">{label}</span>
       {value && (
-        <div className="relative rounded-lg overflow-hidden border border-[var(--border-subtle)] aspect-video max-h-32 bg-[var(--bg-tertiary)]">
+        <div className="relative rounded-[10px] overflow-hidden border border-[var(--border-subtle)] aspect-video max-h-32 bg-[var(--bg-tertiary)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={value} alt="" className="w-full h-full object-cover" />
         </div>
@@ -58,16 +60,16 @@ export function ImageUploadField({
           onClick={() => inputRef.current?.click()}
         >
           {uploading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
           ) : (
-            <Upload className="w-4 h-4" />
+            <Upload className="w-4 h-4" aria-hidden="true" />
           )}
           {uploading ? uploadingLabel : uploadLabel}
         </button>
         {!value && (
-          <span className="text-xs text-[var(--text-muted)] flex items-center gap-1">
-            <ImageIcon className="w-3.5 h-3.5" />
-            JPEG, PNG, WebP · max 5MB
+          <span className="dash-mono-caption flex items-center gap-1">
+            <ImageIcon className="w-3.5 h-3.5" aria-hidden="true" />
+            JPEG, PNG, WebP · {locale === 'tr' ? 'en fazla 5 MB' : 'max 5 MB'}
           </span>
         )}
       </div>
@@ -87,8 +89,9 @@ export function ImageUploadField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="https://..."
+        aria-label={label}
       />
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-[var(--status-error)]" role="alert">{error}</p>}
     </div>
   );
 }

@@ -31,10 +31,10 @@ export function ProviderIcon({ provider, size = 'md', status, className = '' }: 
 
   return (
     <div
-      className={`${s.box} rounded-xl flex items-center justify-center shrink-0 ${className}`}
+      className={`${s.box} rounded-[10px] flex items-center justify-center shrink-0 ${className}`}
       style={{
         background: muted ? 'var(--bg-secondary)' : 'var(--bg-tertiary)',
-        border: `1px solid ${muted ? 'var(--glass-divider)' : 'var(--glass-border)'}`,
+        border: `1px solid ${muted ? 'var(--border-subtle)' : 'var(--border-default)'}`,
         opacity: muted ? 0.92 : 1,
       }}
       aria-hidden

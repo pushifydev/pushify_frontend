@@ -1,6 +1,6 @@
 'use client';
 
-import { Callout, SectionHeading } from '../components';
+import { Callout, DocsHeading, SectionHeading } from '../components';
 import type { SectionProps } from './shared';
 
 /**
@@ -13,10 +13,10 @@ export function MonitoringSection({ c }: SectionProps) {
 
   return (
     <div className="space-y-8">
-      <SectionHeading title={s.title} description={s.description} />
+      <SectionHeading id="monitoring" title={s.title} description={s.description} />
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.alertsTitle}</h3>
+        <DocsHeading id="monitoring-alerts">{s.alertsTitle}</DocsHeading>
         <p className="docs-p">{s.alertsText}</p>
         <dl className="docs-dl">
           {s.alerts.map((alert) => (
@@ -32,27 +32,37 @@ export function MonitoringSection({ c }: SectionProps) {
       </div>
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.recipientsTitle}</h3>
+        <DocsHeading id="monitoring-recipients">{s.recipientsTitle}</DocsHeading>
         <p className="docs-p">{s.recipientsText}</p>
       </div>
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.logsTitle}</h3>
+        <DocsHeading id="monitoring-logs">{s.logsTitle}</DocsHeading>
         <p className="docs-p">{s.logsText}</p>
-        <dl className="docs-dl">
-          {s.logRetention.map((row) => (
-            <div key={row.plan}>
-              <dt>{row.plan}</dt>
-              <dd>{row.kept}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className="docs-table-wrap max-w-md">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">{c.labels.plan}</th>
+                <th scope="col">{s.retentionLabel}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {s.logRetention.map((row) => (
+                <tr key={row.plan}>
+                  <td style={{ color: 'var(--hp-ink)' }}>{row.plan}</td>
+                  <td className="docs-td-type">{row.kept}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.scalingTitle}</h3>
+        <DocsHeading id="monitoring-autoscaling">{s.scalingTitle}</DocsHeading>
         <p className="docs-p">{s.scalingText}</p>
-        <ul className="docs-ol" style={{ listStyle: 'disc' }}>
+        <ul className="docs-ul">
           {s.scalingNotes.map((note, i) => (
             <li key={i}>{note}</li>
           ))}
@@ -60,9 +70,9 @@ export function MonitoringSection({ c }: SectionProps) {
       </div>
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.backupsTitle}</h3>
+        <DocsHeading id="monitoring-backups">{s.backupsTitle}</DocsHeading>
         <p className="docs-p">{s.backupsText}</p>
-        <ul className="docs-ol" style={{ listStyle: 'disc' }}>
+        <ul className="docs-ul">
           {s.backupNotes.map((note, i) => (
             <li key={i}>{note}</li>
           ))}

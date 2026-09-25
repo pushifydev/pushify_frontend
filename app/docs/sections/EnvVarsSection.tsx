@@ -14,13 +14,13 @@ export function EnvVarsSection({ c, apiBase }: SectionProps) {
 
   return (
     <div className="space-y-6">
-      <SectionHeading title={c.envvars.title} description={c.envvars.description} />
+      <SectionHeading id="envvars" title={c.envvars.title} description={c.envvars.description} />
 
       <Callout type="info" title={c.envvars.sensitiveTitle}>
         {c.envvars.sensitiveText}
       </Callout>
 
-      <div className="space-y-3">
+      <div className="docs-endpoints">
         <EndpointCard
           method="GET"
           path="/projects/:projectId/env"

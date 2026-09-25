@@ -70,13 +70,14 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
     <Modal
       isOpen={isOpen}
       onClose={onClose}
+      eyebrow={t('marketplace', 'title')}
       title={t('marketplace', 'deployTitle')}
       description={`${t('marketplace', 'step')} ${step} ${t('marketplace', 'of')} ${totalSteps}`}
       maxWidth="lg"
     >
 
         {/* Step indicator */}
-        <div className="flex gap-1 px-6 pt-4">
+        <div className="flex gap-1" aria-hidden>
           {Array.from({ length: totalSteps }).map((_, i) => (
             <div
               key={i}
@@ -89,7 +90,7 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
         </div>
 
         {/* Content */}
-        <div className="px-6 py-5 min-h-[280px]">
+        <div className="pt-5 min-h-[280px]">
           {/* Step 1: Name + Server */}
           {step === 1 && (
             <div className="space-y-5">
@@ -280,18 +281,11 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
         </div>
 
         {/* Footer */}
-        <div
-          className="flex items-center justify-between px-6 py-4"
-          style={{ borderTop: '1px solid var(--glass-divider)' }}
-        >
+        <div className="dash-modal-footer" style={{ justifyContent: 'space-between' }}>
           <button
+            type="button"
             onClick={() => (step > 1 ? setStep(step - 1) : onClose())}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            style={{
-              color: 'var(--text-secondary)',
-              background: 'var(--hover-overlay)',
-              border: '1px solid var(--border-subtle)',
-            }}
+            className="btn btn-secondary"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             {step > 1 ? t('marketplace', 'previous') : t('common', 'cancel')}
@@ -299,18 +293,20 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
 
           {step < totalSteps ? (
             <button
+              type="button"
               onClick={() => setStep(step + 1)}
               disabled={!canProceed()}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-40 dash-accent-fill"
+              className="btn btn-primary"
             >
               {t('marketplace', 'next')}
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           ) : (
             <button
+              type="button"
               onClick={handleDeploy}
               disabled={deployMutation.isPending}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-60 dash-accent-fill"
+              className="btn btn-primary"
             >
               {deployMutation.isPending ? (
                 <>

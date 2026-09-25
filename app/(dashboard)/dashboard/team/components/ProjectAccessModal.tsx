@@ -64,34 +64,34 @@ export function ProjectAccessModal({ member, onClose }: ProjectAccessModalProps)
         </p>
 
         {/* All projects / selected projects switch */}
-        <div className="space-y-2">
+        <div className="space-y-2" role="radiogroup" aria-label={t('team', 'projectAccessTitle')}>
           <button
+            type="button"
+            role="radio"
+            aria-checked={!restricted}
             onClick={() => setRestricted(false)}
-            className="w-full flex items-center justify-between p-3 rounded-lg border transition-colors text-left"
-            style={{
-              borderColor: !restricted ? 'var(--accent-cyan)' : 'var(--border-subtle)',
-              background: !restricted ? 'color-mix(in srgb, var(--accent-cyan) 8%, transparent)' : 'transparent',
-            }}
+            className={`dash-option w-full justify-between text-left${!restricted ? ' is-active' : ''}`}
+            style={{ alignItems: 'center' }}
           >
             <span className="text-sm font-medium">{t('team', 'accessAllProjects')}</span>
-            {!restricted && <Check className="w-4 h-4" style={{ color: 'var(--accent-cyan)' }} />}
+            {!restricted && <Check className="w-4 h-4 text-[var(--text-primary)]" />}
           </button>
           <button
+            type="button"
+            role="radio"
+            aria-checked={restricted}
             onClick={() => setRestricted(true)}
-            className="w-full flex items-center justify-between p-3 rounded-lg border transition-colors text-left"
-            style={{
-              borderColor: restricted ? 'var(--accent-cyan)' : 'var(--border-subtle)',
-              background: restricted ? 'color-mix(in srgb, var(--accent-cyan) 8%, transparent)' : 'transparent',
-            }}
+            className={`dash-option w-full justify-between text-left${restricted ? ' is-active' : ''}`}
+            style={{ alignItems: 'center' }}
           >
             <span className="text-sm font-medium">{t('team', 'accessSelectedProjects')}</span>
-            {restricted && <Check className="w-4 h-4" style={{ color: 'var(--accent-cyan)' }} />}
+            {restricted && <Check className="w-4 h-4 text-[var(--text-primary)]" />}
           </button>
         </div>
 
         {/* Project checklist */}
         {restricted && (
-          <div className="max-h-56 overflow-y-auto rounded-lg border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
+          <div className="max-h-56 overflow-y-auto rounded-xl border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
             {projects.length === 0 ? (
               <p className="p-3 text-sm text-[var(--text-muted)]">{t('team', 'noProjectsYet')}</p>
             ) : (
@@ -104,7 +104,7 @@ export function ProjectAccessModal({ member, onClose }: ProjectAccessModalProps)
                     type="checkbox"
                     checked={selectedIds.has(project.id)}
                     onChange={() => toggleProject(project.id)}
-                    className="accent-[var(--accent-cyan)]"
+                    className="shrink-0"
                   />
                   <span className="text-sm truncate">{project.name}</span>
                 </label>
@@ -126,13 +126,13 @@ export function ProjectAccessModal({ member, onClose }: ProjectAccessModalProps)
         )}
 
         <ModalActions>
-          <button onClick={onClose} className="btn btn-secondary">
+          <button type="button" onClick={onClose} className="btn btn-secondary">
             {t('team', 'cancel')}
           </button>
           <button
             onClick={handleSave}
             disabled={updateAccess.isPending}
-            className="btn btn-primary disabled:opacity-50"
+            className="btn btn-primary"
           >
             <FolderLock className="w-4 h-4" />
             {t('team', 'saveAccess')}

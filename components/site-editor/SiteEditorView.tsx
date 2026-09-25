@@ -275,14 +275,14 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
     return (
       <div className="animate-pulse space-y-4">
         <div className="h-8 w-48 bg-[var(--bg-secondary)] rounded" />
-        <div className="h-[70vh] bg-[var(--bg-secondary)] rounded-xl" />
+        <div className="h-[70vh] bg-[var(--bg-secondary)] rounded-[14px]" />
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="rounded-lg border border-[var(--border-subtle)] p-6 text-center">
+      <div className="dash-panel p-6 text-center">
         <p className="text-[var(--text-secondary)]">{t('siteEditor', 'loadError')}</p>
         <Link href={`/dashboard/projects/${projectId}`} className="btn btn-secondary btn-sm mt-4">
           {t('siteEditor', 'backToProject')}
@@ -310,31 +310,33 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
         <div className="flex items-center gap-2 min-w-0">
           <Link
             href={`/dashboard/projects/${projectId}`}
-            className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-muted)]"
+            className="p-2 rounded-full hover:bg-[var(--hover-overlay-md)] text-[var(--text-muted)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
             title={t('siteEditor', 'backToProject')}
+            aria-label={t('siteEditor', 'backToProject')}
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           </Link>
           <div className="min-w-0 leading-tight">
-            <p className="text-[9px] uppercase tracking-widest text-[var(--accent-primary)] font-bold">
+            <p className="dash-section-label !text-[10px]">
               {t('siteEditor', 'badge')}
             </p>
-            <h1 className="text-sm font-bold truncate max-w-[36vw]">{projectName || data.siteName}</h1>
+            <h1 className="!text-sm !font-medium !tracking-normal truncate max-w-[36vw]">{projectName || data.siteName}</h1>
           </div>
           {dirty && (
-            <span className="hidden sm:inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
-              ● {t('siteEditor', 'unsaved')}
+            <span className="hidden sm:inline-flex items-center gap-1.5 badge badge-warning">
+              <span className="dash-status-dot is-warning" aria-hidden="true" />
+              {t('siteEditor', 'unsaved')}
             </span>
           )}
         </div>
 
         {/* device + mode */}
-        <div className="hidden md:flex items-center gap-0.5 rounded-lg border border-[var(--border-subtle)] p-0.5 bg-[var(--bg-primary)]">
+        <div className="hidden md:flex items-center gap-0.5 rounded-full border border-[var(--border-subtle)] p-0.5 bg-[var(--bg-primary)]">
           <ToolbarToggle active={previewMode === 'canvas'} onClick={() => setPreviewMode('canvas')} icon={MousePointer2} label={t('siteEditor', 'canvasMode')} />
           <ToolbarToggle active={previewMode === 'iframe'} onClick={() => setPreviewMode('iframe')} icon={Maximize2} label={t('siteEditor', 'fullPreview')} />
           <span className="w-px h-5 bg-[var(--border-subtle)] mx-1" />
-          <ToolbarToggle active={viewport === 'desktop'} onClick={() => setViewport('desktop')} icon={Monitor} />
-          <ToolbarToggle active={viewport === 'mobile'} onClick={() => setViewport('mobile')} icon={Smartphone} />
+          <ToolbarToggle active={viewport === 'desktop'} onClick={() => setViewport('desktop')} icon={Monitor} ariaLabel={t('siteEditor', 'viewportDesktop')} />
+          <ToolbarToggle active={viewport === 'mobile'} onClick={() => setViewport('mobile')} icon={Smartphone} ariaLabel={t('siteEditor', 'viewportMobile')} />
         </div>
 
         <div className="flex items-center gap-2">
@@ -368,7 +370,7 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
       {/* ── Body ── */}
       <div className="flex-1 flex min-h-0">
         {/* icon rail */}
-        <nav className="shrink-0 w-16 flex flex-col items-center gap-1 py-3 border-r border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
+        <nav aria-label={t('siteEditor', 'badge')} className="shrink-0 w-16 flex flex-col items-center gap-1 py-3 border-r border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
           {sections.map((s) => {
             const Icon = s.icon;
             const active = section === s.id;
@@ -378,13 +380,14 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
                 type="button"
                 onClick={() => setSection(s.id)}
                 title={s.label}
-                className={`w-12 h-12 flex flex-col items-center justify-center gap-0.5 rounded-xl text-[9px] font-medium transition-colors ${
+                aria-current={active ? 'page' : undefined}
+                className={`w-12 h-12 flex flex-col items-center justify-center gap-1 rounded-[10px] text-[9px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] ${
                   active
-                    ? 'bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]'
-                    : 'text-[var(--text-muted)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-secondary)]'
+                    ? 'bg-[var(--hover-overlay-lg)] text-[var(--text-primary)]'
+                    : 'text-[var(--text-muted)] hover:bg-[var(--hover-overlay)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Icon className="w-[18px] h-[18px]" />
+                <Icon className="w-[18px] h-[18px]" aria-hidden="true" />
                 <span>{s.label}</span>
               </button>
             );
@@ -540,12 +543,12 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
           {section === 'settings' && (
             <div className="space-y-4">
               <SectionHeading icon={Settings} title={t('siteEditor', 'navSettings')} />
-              <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-3 space-y-1.5">
-                <p className="text-[11px] uppercase tracking-wide text-[var(--text-muted)] font-semibold">{t('siteEditor', 'badge')}</p>
+              <div className="rounded-[10px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-3 space-y-1.5">
+                <p className="dash-section-label">{t('siteEditor', 'badge')}</p>
                 <p className="text-sm font-medium truncate">{projectName || data.siteName}</p>
                 {data.previewUrl && (
-                  <a href={data.previewUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[var(--accent-primary)] hover:underline break-all inline-flex items-center gap-1">
-                    <Globe className="w-3.5 h-3.5 shrink-0" />
+                  <a href={data.previewUrl} target="_blank" rel="noopener noreferrer" className="dash-mono-caption !text-[var(--text-secondary)] hover:!text-[var(--text-primary)] hover:underline underline-offset-4 break-all inline-flex items-center gap-1">
+                    <Globe className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                     {data.previewUrl}
                   </a>
                 )}
@@ -597,8 +600,8 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
 
         {/* right inspector */}
         <aside className="shrink-0 w-80 hidden lg:flex flex-col overflow-hidden border-l border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
-          <div className="shrink-0 px-4 py-3 border-b border-[var(--border-subtle)] flex items-center gap-2 text-sm font-semibold">
-            <SlidersHorizontal className="w-4 h-4 text-[var(--accent-primary)]" />
+          <div className="shrink-0 px-4 h-11 border-b border-[var(--border-subtle)] flex items-center gap-2 dash-section-label !mt-0">
+            <SlidersHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
             {t('siteEditor', 'inspectorTab')}
           </div>
           <div className="flex-1 overflow-y-auto p-4">

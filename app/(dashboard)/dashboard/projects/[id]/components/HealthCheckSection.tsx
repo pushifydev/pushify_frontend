@@ -10,6 +10,7 @@ import {
   useDeleteHealthCheckConfig,
 } from '@/hooks/useHealthCheck';
 import { formatTimeAgo } from '@/lib/formatters';
+import { SettingsField, SettingsSection, SettingsSwitch } from './SettingsParts';
 
 export function HealthCheckSection({
   projectId,
@@ -83,186 +84,145 @@ export function HealthCheckSection({
     }
   };
 
+  const active = isEnabled || !!config?.isActive;
+
   if (isLoading) {
     return (
-      <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-        <div className="animate-pulse space-y-4">
-          <div className="h-6 w-32 bg-[var(--bg-tertiary)] rounded" />
+      <SettingsSection id="settings-health" title={t('healthChecks', 'title')} padded>
+        <div className="animate-pulse space-y-3">
           <div className="h-4 w-64 bg-[var(--bg-tertiary)] rounded" />
+          <div className="h-4 w-40 bg-[var(--bg-tertiary)] rounded" />
         </div>
-      </div>
+      </SettingsSection>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] min-w-0 overflow-hidden">
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <h3 className="text-lg font-semibold min-w-0">{t('healthChecks', 'title')}</h3>
-        <div className="flex items-center gap-3 shrink-0">
+    <SettingsSection
+      id="settings-health"
+      title={t('healthChecks', 'title')}
+      description={t('healthChecks', 'description')}
+      action={
+        <SettingsSwitch
+          checked={active}
+          onChange={() => handleToggle()}
+          disabled={updateConfig.isPending || deleteConfig.isPending}
+          label={t('healthChecks', 'title')}
+        />
+      }
+      footer={
+        active && hasChanges ? (
           <button
-            onClick={handleToggle}
-            disabled={updateConfig.isPending || deleteConfig.isPending}
-            className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${
-              isEnabled || config?.isActive
-                ? 'bg-[var(--accent-cyan)]'
-                : 'bg-[var(--bg-tertiary)]'
-            }`}
+            type="button"
+            onClick={handleSave}
+            disabled={updateConfig.isPending}
+            className="btn btn-primary"
           >
-            <span
-              className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                isEnabled || config?.isActive ? 'left-7' : 'left-1'
-              }`}
-            />
+            {updateConfig.isPending ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              t('common', 'save')
+            )}
           </button>
-        </div>
-      </div>
-      <p className="text-sm text-[var(--text-secondary)] mb-4">
-        {t('healthChecks', 'description')}
-      </p>
-
-      {(isEnabled || config?.isActive) && (
-        <div className="space-y-4 mt-4 pt-4 border-t border-[var(--border-subtle)]">
-          {/* Configuration */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Endpoint */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                {t('healthChecks', 'endpoint')}
-              </label>
+        ) : undefined
+      }
+    >
+      {active && (
+        <>
+          <SettingsField label={t('healthChecks', 'endpoint')} htmlFor="health-endpoint">
+            <input
+              id="health-endpoint"
+              type="text"
+              value={endpoint}
+              onChange={(e) => { setEndpoint(e.target.value); setHasChanges(true); }}
+              placeholder={t('healthChecks', 'endpointPlaceholder')}
+              className="input terminal-text"
+            />
+          </SettingsField>
+          <SettingsField label={t('healthChecks', 'interval')} hint={t('healthChecks', 'intervalDesc')} htmlFor="health-interval">
+            <div className="flex items-center gap-2">
               <input
-                type="text"
-                value={endpoint}
-                onChange={(e) => { setEndpoint(e.target.value); setHasChanges(true); }}
-                placeholder={t('healthChecks', 'endpointPlaceholder')}
-                className="input terminal-text text-sm"
-              />
-            </div>
-
-            {/* Interval */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                {t('healthChecks', 'interval')}
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  value={intervalSeconds}
-                  onChange={(e) => { setIntervalSeconds(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
-                  min={10}
-                  max={300}
-                  className="input w-24 text-sm"
-                />
-                <span className="text-sm text-[var(--text-muted)]">{t('healthChecks', 'seconds')}</span>
-              </div>
-              <p className="text-xs text-[var(--text-muted)] mt-1">{t('healthChecks', 'intervalDesc')}</p>
-            </div>
-
-            {/* Timeout */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                {t('healthChecks', 'timeout')}
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  value={timeoutSeconds}
-                  onChange={(e) => { setTimeoutSeconds(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
-                  min={1}
-                  max={60}
-                  className="input w-24 text-sm"
-                />
-                <span className="text-sm text-[var(--text-muted)]">{t('healthChecks', 'seconds')}</span>
-              </div>
-              <p className="text-xs text-[var(--text-muted)] mt-1">{t('healthChecks', 'timeoutDesc')}</p>
-            </div>
-
-            {/* Unhealthy Threshold */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                {t('healthChecks', 'unhealthyThreshold')}
-              </label>
-              <input
+                id="health-interval"
                 type="number"
-                value={unhealthyThreshold}
-                onChange={(e) => { setUnhealthyThreshold(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
+                value={intervalSeconds}
+                onChange={(e) => { setIntervalSeconds(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
+                min={10}
+                max={300}
+                className="input w-28 terminal-text"
+              />
+              <span className="text-[13px] text-[var(--text-muted)]">{t('healthChecks', 'seconds')}</span>
+            </div>
+          </SettingsField>
+          <SettingsField label={t('healthChecks', 'timeout')} hint={t('healthChecks', 'timeoutDesc')} htmlFor="health-timeout">
+            <div className="flex items-center gap-2">
+              <input
+                id="health-timeout"
+                type="number"
+                value={timeoutSeconds}
+                onChange={(e) => { setTimeoutSeconds(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
                 min={1}
-                max={10}
-                className="input w-24 text-sm"
+                max={60}
+                className="input w-28 terminal-text"
               />
-              <p className="text-xs text-[var(--text-muted)] mt-1">{t('healthChecks', 'unhealthyThresholdDesc')}</p>
+              <span className="text-[13px] text-[var(--text-muted)]">{t('healthChecks', 'seconds')}</span>
             </div>
-          </div>
-
-          {/* Auto Restart Toggle */}
-          <div className="flex items-start justify-between gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)]">
-            <div className="min-w-0 flex-1">
-              <span className="text-sm font-medium">{t('healthChecks', 'autoRestart')}</span>
-              <p className="text-xs text-[var(--text-muted)]">{t('healthChecks', 'autoRestartDesc')}</p>
-            </div>
-            <button
-              onClick={() => { setAutoRestart(!autoRestart); setHasChanges(true); }}
-              className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${
-                autoRestart
-                  ? 'bg-[var(--accent-cyan)]'
-                  : 'bg-[var(--bg-secondary)]'
-              }`}
-            >
-              <span
-                className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                  autoRestart ? 'left-7' : 'left-1'
-                }`}
+          </SettingsField>
+          <SettingsField
+            label={t('healthChecks', 'unhealthyThreshold')}
+            hint={t('healthChecks', 'unhealthyThresholdDesc')}
+            htmlFor="health-threshold"
+          >
+            <input
+              id="health-threshold"
+              type="number"
+              value={unhealthyThreshold}
+              onChange={(e) => { setUnhealthyThreshold(Math.max(0, Number(e.target.value) || 0)); setHasChanges(true); }}
+              min={1}
+              max={10}
+              className="input w-28 terminal-text"
+            />
+          </SettingsField>
+          <SettingsField label={t('healthChecks', 'autoRestart')} hint={t('healthChecks', 'autoRestartDesc')}>
+            <div className="md:pt-2">
+              <SettingsSwitch
+                checked={autoRestart}
+                onChange={(next) => { setAutoRestart(next); setHasChanges(true); }}
+                label={t('healthChecks', 'autoRestart')}
               />
-            </button>
-          </div>
-
-          {/* Save Button */}
-          {hasChanges && (
-            <div className="flex justify-end">
-              <button
-                onClick={handleSave}
-                disabled={updateConfig.isPending}
-                className="btn btn-primary"
-              >
-                {updateConfig.isPending ? (
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                ) : (
-                  t('common', 'save')
-                )}
-              </button>
             </div>
-          )}
+          </SettingsField>
 
           {/* Recent Logs */}
           {logs.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
-              <h4 className="text-sm font-medium mb-3">{t('healthChecks', 'recentLogs')}</h4>
-              <div className="space-y-2 max-h-48 overflow-y-auto">
+            <div className="dash-field">
+              <span className="dash-field-label">{t('healthChecks', 'recentLogs')}</span>
+              <div className="dash-field-control !max-w-none rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] max-h-56 overflow-y-auto">
                 {logs.slice(0, 10).map((log) => (
                   <div
                     key={log.id}
-                    className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-2 rounded bg-[var(--bg-tertiary)] text-sm min-w-0"
+                    className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between px-3 py-2 text-[13px] min-w-0"
                   >
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
                       <span className={`badge ${getStatusBadge(log.status)}`}>
                         {t('healthChecks', log.status as 'healthy' | 'unhealthy' | 'unknown')}
                       </span>
                       {log.responseTimeMs && (
-                        <span className="text-[var(--text-muted)]">
+                        <span className="terminal-text text-xs text-[var(--text-muted)]">
                           {log.responseTimeMs}ms
                         </span>
                       )}
                       {log.statusCode && (
-                        <span className="text-[var(--text-muted)]">
+                        <span className="terminal-text text-xs text-[var(--text-muted)]">
                           HTTP {log.statusCode}
                         </span>
                       )}
                       {log.actionTaken && log.actionTaken !== 'none' && (
-                        <span className="text-xs px-2 py-0.5 rounded bg-[var(--status-warning)]/20 text-[var(--status-warning)]">
+                        <span className="badge badge-warning">
                           {t('healthChecks', log.actionTaken as 'restarted' | 'notified')}
                         </span>
                       )}
                     </div>
-                    <span className="text-xs text-[var(--text-muted)]">
+                    <span className="text-xs text-[var(--text-muted)] shrink-0">
                       {formatTimeAgo(log.checkedAt, t)}
                     </span>
                   </div>
@@ -270,8 +230,8 @@ export function HealthCheckSection({
               </div>
             </div>
           )}
-        </div>
+        </>
       )}
-    </div>
+    </SettingsSection>
   );
 }

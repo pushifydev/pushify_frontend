@@ -40,9 +40,13 @@ export function TableListPanel({
 
   return (
     <div className="flex flex-col overflow-hidden" style={{ ...panelStyle, maxHeight: '72vh' }}>
-      <div className="px-3 py-3 space-y-2" style={{ borderBottom: '1px solid var(--glass-border)' }}>
+      <div className="px-3 py-3 space-y-2" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+        <div className="flex items-center justify-between gap-2 px-1">
+          <h2 className="dash-section-label">{t('databases', 'studioTables')}</h2>
+          {!loading && <span className="dash-mono-caption tabular-nums">{tables.length}</span>}
+        </div>
         {onCreate && (
-          <button type="button" onClick={onCreate} className="btn btn-secondary text-sm w-full">
+          <button type="button" onClick={onCreate} className="btn btn-secondary btn-sm w-full">
             <Plus className="w-3.5 h-3.5" />
             {t('databases', 'studioNewTable')}
           </button>
@@ -57,7 +61,8 @@ export function TableListPanel({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('databases', 'studioSearchTables')}
-            className="input w-full text-sm"
+            aria-label={t('databases', 'studioSearchTables')}
+            className="input w-full text-sm py-2!"
             style={{ paddingLeft: 32 }}
           />
         </div>
@@ -69,7 +74,7 @@ export function TableListPanel({
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="h-9 rounded-lg animate-pulse"
+                className="h-9 rounded-md animate-pulse"
                 style={{ background: 'var(--hover-overlay)' }}
               />
             ))}
@@ -92,23 +97,22 @@ export function TableListPanel({
                   <button
                     type="button"
                     onClick={() => onSelect(table)}
-                    className="w-full text-left px-2.5 py-2 rounded-lg transition-colors flex items-start gap-2.5"
-                    style={{
-                      background: isActive ? 'var(--dash-accent-bg-md)' : 'transparent',
-                      border: `1px solid ${isActive ? 'var(--accent-cyan)' : 'transparent'}`,
-                    }}
+                    aria-current={isActive ? 'true' : undefined}
+                    className="w-full text-left px-2.5 py-2 rounded-md transition-colors flex items-start gap-2.5 hover:bg-(--hover-overlay-md) focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-(--text-primary)"
+                    style={isActive ? { background: 'var(--hover-overlay-lg)' } : undefined}
                   >
                     <Icon
                       className="w-3.5 h-3.5 mt-0.5 shrink-0"
-                      style={{ color: isActive ? 'var(--accent-cyan)' : 'var(--text-muted)' }}
+                      style={{ color: isActive ? 'var(--text-primary)' : 'var(--text-muted)' }}
+                      aria-hidden="true"
                     />
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1.5">
                         <span
-                          className="text-sm truncate"
+                          className="text-[13px] truncate"
                           style={{
                             color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                            fontFamily: 'var(--font-jetbrains-mono), monospace',
+                            fontFamily: 'var(--font-mono)',
                           }}
                         >
                           {showSchema ? `${table.schema}.${table.name}` : table.name}
@@ -121,8 +125,7 @@ export function TableListPanel({
                         )}
                       </span>
                       <span
-                        className="block text-[11px] mt-0.5"
-                        style={{ color: 'var(--text-muted)' }}
+                        className="block dash-mono-caption mt-0.5 tabular-nums"
                       >
                         {table.kind === 'view'
                           ? t('databases', 'studioView')

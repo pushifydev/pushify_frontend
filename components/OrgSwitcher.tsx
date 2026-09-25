@@ -57,6 +57,8 @@ export function OrgSwitcher() {
           e.stopPropagation();
           setOpen((o) => !o);
         }}
+        aria-haspopup="menu"
+        aria-expanded={open}
         className="flex items-center gap-1 max-w-full text-[10px] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
       >
         <span className="truncate">{currentName}</span>
@@ -68,7 +70,7 @@ export function OrgSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute bottom-full left-0 mb-2 w-56 max-h-72 overflow-auto rounded-lg border border-[var(--border-default)] bg-[var(--bg-secondary)] shadow-lg p-1 z-50">
+        <div className="dash-menu absolute bottom-full left-0 mb-2 w-60 max-h-72 overflow-auto z-50" role="menu">
           {orgs.map((o) => (
             <button
               key={o.id}
@@ -78,13 +80,15 @@ export function OrgSwitcher() {
                 handleSwitch(o.id);
               }}
               disabled={switchOrg.isPending}
-              className="w-full flex items-center justify-between gap-2 px-2 py-1.5 rounded-md text-left hover:bg-[var(--hover-overlay-md)] disabled:opacity-60"
+              role="menuitemradio"
+              aria-checked={o.id === currentId}
+              className={`dash-menu-item justify-between${o.id === currentId ? ' is-active' : ''}`}
             >
               <span className="min-w-0">
                 <span className="block truncate text-[12px] text-[var(--text-primary)]">{o.name}</span>
-                <span className="block truncate text-[10px] capitalize text-[var(--text-muted)]">{o.role}</span>
+                <span className="block truncate text-[10px] uppercase tracking-[0.08em] text-[var(--text-muted)]" style={{ fontFamily: 'var(--font-label)' }}>{o.role}</span>
               </span>
-              {o.id === currentId && <Check className="w-3.5 h-3.5 shrink-0 text-[var(--accent-cyan)]" />}
+              {o.id === currentId && <Check className="w-3.5 h-3.5 shrink-0 text-[var(--text-primary)]" />}
             </button>
           ))}
         </div>

@@ -10,8 +10,8 @@ import {
   Gauge,
   Loader2,
   Play,
-  Sparkles,
   TextSelect,
+  WrapText,
   Trash2,
 } from 'lucide-react';
 import { format as formatSql } from 'sql-formatter';
@@ -27,7 +27,7 @@ import {
 import { CellDetailModal } from './CellDetailModal';
 import { SchemaExplorer } from './SchemaExplorer';
 import type { SqlEditorHandle } from './SqlEditor';
-import { displayValue, panelStyle, type T } from './_shared';
+import { displayValue, monoStyle, panelStyle, type T } from './_shared';
 
 // CodeMirror touches the DOM on load, so it stays out of the server bundle.
 const SqlEditor = dynamic(() => import('./SqlEditor').then((m) => m.SqlEditor), {
@@ -52,7 +52,7 @@ interface SqlConsoleProps {
 
 type ResultTab = 'result' | 'message' | 'history';
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
+const mono = monoStyle;
 
 export function SqlConsole({
   databaseId,
@@ -182,15 +182,12 @@ export function SqlConsole({
       <div className="min-w-0 space-y-4">
         {/* Editor */}
         <div className="overflow-hidden" style={panelStyle}>
-          <div
-            className="flex flex-wrap items-center gap-2 px-3 py-2"
-            style={{ borderBottom: '1px solid var(--glass-border)' }}
-          >
+          <div className="dash-toolbar">
             <button
               type="button"
               onClick={runActive}
               disabled={pending || !sql.trim()}
-              className="btn btn-primary text-sm"
+              className="btn btn-primary btn-sm"
               title="⌘↵"
             >
               {pending ? (
@@ -205,7 +202,7 @@ export function SqlConsole({
               type="button"
               onClick={runExplain}
               disabled={pending || !sql.trim()}
-              className="btn btn-secondary text-sm"
+              className="btn btn-secondary btn-sm"
             >
               <Gauge className="w-3.5 h-3.5" />
               {t('databases', 'studioExplain')}
@@ -215,9 +212,9 @@ export function SqlConsole({
               type="button"
               onClick={formatQuery}
               disabled={!sql.trim()}
-              className="btn btn-secondary text-sm"
+              className="btn btn-secondary btn-sm"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <WrapText className="w-3.5 h-3.5" />
               {t('databases', 'studioFormat')}
             </button>
 
@@ -229,7 +226,7 @@ export function SqlConsole({
                 setError(null);
               }}
               disabled={!sql}
-              className="btn btn-ghost text-sm"
+              className="btn btn-ghost btn-sm"
             >
               <Eraser className="w-3.5 h-3.5" />
               {t('databases', 'studioClear')}
@@ -237,25 +234,31 @@ export function SqlConsole({
 
             <span className="flex-1" />
 
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
-              <input
-                type="checkbox"
-                checked={allowWrite}
-                onChange={(e) => {
-                  // Turning writes on is the dangerous direction, so it gets a confirmation.
-                  if (e.target.checked) setConfirmWrite(true);
-                  else setAllowWrite(false);
-                }}
-                className="cursor-pointer"
-              />
+            <div className="flex items-center gap-2">
               <span
+                id="studio-write-mode-label"
+                className="text-[13px]"
                 style={{ color: allowWrite ? 'var(--status-warning)' : 'var(--text-muted)' }}
               >
                 {allowWrite
                   ? t('databases', 'studioWriteMode')
                   : t('databases', 'studioReadOnlyMode')}
               </span>
-            </label>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={allowWrite}
+                aria-labelledby="studio-write-mode-label"
+                onClick={() => {
+                  // Turning writes on is the dangerous direction, so it gets a confirmation.
+                  if (!allowWrite) setConfirmWrite(true);
+                  else setAllowWrite(false);
+                }}
+                className="dash-switch"
+              >
+                <span className="dash-switch-thumb" />
+              </button>
+            </div>
           </div>
 
           <SqlEditor
@@ -268,27 +271,22 @@ export function SqlConsole({
           />
 
           <div
-            className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5 text-[11px]"
-            style={{ borderTop: '1px solid var(--glass-border)', color: 'var(--text-muted)' }}
+            className="dash-mono-caption flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5"
+            style={{ borderTop: '1px solid var(--border-subtle)' }}
           >
-            <span className="inline-flex items-center gap-1">
-              <TextSelect className="w-3 h-3" />
+            <span className="inline-flex items-center gap-1.5">
+              <TextSelect className="w-3 h-3" aria-hidden="true" />
               {t('databases', 'studioSelectionHint')}
             </span>
           </div>
         </div>
 
         {allowWrite && (
-          <div
-            className="flex items-start gap-2.5 rounded-xl px-4 py-3"
-            style={{
-              background: 'rgba(234,179,8,0.08)',
-              border: '1px solid rgba(234,179,8,0.2)',
-            }}
-          >
+          <div className="dash-callout dash-callout-attention" role="note">
             <AlertTriangle
               className="w-4 h-4 shrink-0 mt-0.5"
               style={{ color: 'var(--status-warning)' }}
+              aria-hidden="true"
             />
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               {t('databases', 'studioWriteModeHint')}
@@ -298,24 +296,15 @@ export function SqlConsole({
 
         {/* Results */}
         <div className="overflow-hidden" style={panelStyle}>
-          <div
-            className="flex flex-wrap items-center gap-2 px-3 py-2"
-            style={{ borderBottom: '1px solid var(--glass-border)' }}
-          >
-            <div
-              className="inline-flex p-0.5 rounded-lg"
-              style={{ background: 'var(--bg-tertiary)' }}
-            >
+          <div className="dash-toolbar">
+            <div className="dash-segmented" role="group">
               {(['result', 'message', 'history'] as ResultTab[]).map((value) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setTab(value)}
-                  className="px-2.5 py-1 rounded-md text-xs font-medium transition-colors"
-                  style={{
-                    background: tab === value ? 'var(--bg-secondary)' : 'transparent',
-                    color: tab === value ? 'var(--text-primary)' : 'var(--text-muted)',
-                  }}
+                  aria-pressed={tab === value}
+                  className="h-6! text-xs! focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text-primary)"
                 >
                   {value === 'result'
                     ? t('databases', 'studioTabResult')
@@ -327,15 +316,13 @@ export function SqlConsole({
             </div>
 
             {stats && (
-              <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+              <span className="dash-mono-caption tabular-nums" aria-live="polite">
                 {stats}
               </span>
             )}
 
             {result?.truncated && (
-              <span className="text-[11px]" style={{ color: 'var(--status-warning)' }}>
-                {t('databases', 'studioQueryTruncated')}
-              </span>
+              <span className="badge badge-warning">{t('databases', 'studioQueryTruncated')}</span>
             )}
 
             <span className="flex-1" />
@@ -346,7 +333,7 @@ export function SqlConsole({
                   type="button"
                   onClick={() => download('csv')}
                   disabled={exporting}
-                  className="btn btn-secondary text-xs py-1"
+                  className="btn btn-secondary btn-sm"
                 >
                   {exporting ? (
                     <Loader2 className="w-3 h-3 animate-spin" />
@@ -359,7 +346,7 @@ export function SqlConsole({
                   type="button"
                   onClick={() => download('json')}
                   disabled={exporting}
-                  className="btn btn-secondary text-xs py-1"
+                  className="btn btn-secondary btn-sm"
                 >
                   <Braces className="w-3 h-3" />
                   JSON
@@ -373,11 +360,11 @@ export function SqlConsole({
               <div className="overflow-x-auto" style={{ maxHeight: '50vh' }}>
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                    <tr style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}>
                       {result.columns.map((column) => (
                         <th
                           key={column}
-                          className="px-3 py-2 text-left text-xs font-semibold whitespace-nowrap"
+                          className="px-3 py-2 text-left text-xs font-medium whitespace-nowrap"
                           style={{ ...mono, color: 'var(--text-secondary)' }}
                         >
                           {column}
@@ -387,7 +374,11 @@ export function SqlConsole({
                   </thead>
                   <tbody>
                     {result.rows.map((row, index) => (
-                      <tr key={index} style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                      <tr
+                        key={index}
+                        className="transition-colors hover:bg-(--hover-overlay)"
+                        style={{ borderBottom: '1px solid var(--border-subtle)' }}
+                      >
                         {result.columns.map((column) => {
                           const { text, isNull } = displayValue(row[column]);
                           return (
@@ -395,7 +386,7 @@ export function SqlConsole({
                               <button
                                 type="button"
                                 onClick={() => setDetail({ column, value: row[column] })}
-                                className="block max-w-[320px] truncate text-xs text-left"
+                                className="block max-w-80 truncate text-xs text-left rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text-primary)"
                                 style={{
                                   ...mono,
                                   color: isNull ? 'var(--text-muted)' : 'var(--text-secondary)',
@@ -424,6 +415,7 @@ export function SqlConsole({
               {error ? (
                 <pre
                   className="text-xs whitespace-pre-wrap"
+                  role="alert"
                   style={{ ...mono, color: 'var(--status-error)' }}
                 >
                   {error}
@@ -450,7 +442,7 @@ export function SqlConsole({
                   <button
                     type="button"
                     onClick={() => setHistory(clearHistory(databaseId))}
-                    className="btn btn-ghost text-xs py-1"
+                    className="btn btn-ghost btn-sm"
                   >
                     <Trash2 className="w-3 h-3" />
                     {t('databases', 'studioClearHistory')}
@@ -458,11 +450,11 @@ export function SqlConsole({
                 </div>
                 <ul>
                   {history.map((entry) => (
-                    <li key={entry.id} style={{ borderTop: '1px solid var(--glass-border)' }}>
+                    <li key={entry.id} style={{ borderTop: '1px solid var(--border-subtle)' }}>
                       <button
                         type="button"
                         onClick={() => setSql(entry.sql)}
-                        className="w-full text-left px-3 py-2"
+                        className="w-full text-left px-3 py-2 transition-colors hover:bg-(--hover-overlay) focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-(--text-primary)"
                         title={t('databases', 'studioLoadQuery')}
                       >
                         <span
@@ -474,10 +466,7 @@ export function SqlConsole({
                         >
                           {entry.sql}
                         </span>
-                        <span
-                          className="block text-[10px] mt-0.5"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
+                        <span className="block dash-mono-caption mt-0.5 tabular-nums">
                           {new Date(entry.at).toLocaleTimeString()}
                           {entry.durationMs !== null ? ` · ${entry.durationMs}ms` : ''}
                           {entry.rowCount !== null

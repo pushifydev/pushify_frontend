@@ -111,9 +111,9 @@ export function RowEditorModal({
                 <div className="flex items-center justify-between gap-3 mb-1.5">
                   <label className="flex items-center gap-1.5 text-sm font-medium">
                     {column.isPrimaryKey && (
-                      <KeyRound className="w-3 h-3" style={{ color: 'var(--accent-cyan)' }} />
+                      <KeyRound className="w-3 h-3" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
                     )}
-                    <span style={{ fontFamily: 'var(--font-jetbrains-mono), monospace' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)' }}>
                       {column.name}
                     </span>
                     <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>
@@ -130,7 +130,7 @@ export function RowEditorModal({
                         type="checkbox"
                         checked={field.isNull}
                         onChange={(e) => update(column.name, { isNull: e.target.checked })}
-                        className="cursor-pointer"
+                        className="cursor-pointer accent-(--text-primary)"
                       />
                       {t('databases', 'studioSetNull')}
                     </label>
@@ -144,7 +144,7 @@ export function RowEditorModal({
                     onChange={(e) => update(column.name, { value: e.target.value, isNull: false })}
                     rows={3}
                     className="input w-full text-sm"
-                    style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', resize: 'vertical' }}
+                    style={{ fontFamily: 'var(--font-mono)', resize: 'vertical' }}
                   />
                 ) : (
                   <input
@@ -158,7 +158,7 @@ export function RowEditorModal({
                         : ''
                     }
                     className="input w-full text-sm"
-                    style={{ fontFamily: 'var(--font-jetbrains-mono), monospace' }}
+                    style={{ fontFamily: 'var(--font-mono)' }}
                   />
                 )}
               </div>
@@ -169,7 +169,7 @@ export function RowEditorModal({
             <div key={column.name}>
               <label
                 className="block text-sm font-medium mb-1.5"
-                style={{ fontFamily: 'var(--font-jetbrains-mono), monospace' }}
+                style={{ fontFamily: 'var(--font-mono)' }}
               >
                 {column.name}
               </label>

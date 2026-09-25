@@ -55,7 +55,7 @@ export function BlockInspector({ projectId, block, onChange, t, emptyLabel }: Bl
 
   return (
     <div className="space-y-3">
-      <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+      <p className="dash-section-label">
         {t('inspectorTitle')} · {block.type}
       </p>
 
@@ -157,7 +157,7 @@ export function BlockInspector({ projectId, block, onChange, t, emptyLabel }: Bl
           <Field label={t('sectionTitle')} value={block.title} onChange={(v) => onChange({ title: v })} />
           {block.plans.map((plan, idx) => (
             <div key={idx} className="border-t border-[var(--border-subtle)] pt-3 space-y-2">
-              <p className="text-xs font-medium text-[var(--text-muted)]">{t('plan')} {idx + 1}</p>
+              <p className="dash-section-label">{t('plan')} {idx + 1}</p>
               <Field
                 label={t('planName')}
                 value={plan.name}
@@ -197,9 +197,10 @@ export function BlockInspector({ projectId, block, onChange, t, emptyLabel }: Bl
                 }}
                 multiline
               />
-              <label className="flex items-center gap-2 text-xs">
+              <label className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
                 <input
                   type="checkbox"
+                  className="accent-[var(--text-primary)]"
                   checked={plan.highlighted}
                   onChange={(e) => {
                     const plans = block.plans.map((p, i) => ({

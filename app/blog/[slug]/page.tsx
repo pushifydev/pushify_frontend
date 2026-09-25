@@ -5,7 +5,6 @@ import { JsonLd } from '@/components/JsonLd';
 import { getBlogPost, listBlogPosts } from '@/lib/blog';
 import { BlogProse } from '../prose';
 import { BackToBlog, PostFooter, PostMeta } from '../copy';
-import { OG_IMAGE } from '@/lib/seo';
 
 interface Params {
   slug: string;
@@ -31,7 +30,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       types: { 'application/rss+xml': 'https://pushify.dev/blog/rss.xml' },
     },
     openGraph: {
-      images: OG_IMAGE,
       type: 'article',
       title: post.title,
       description: post.description,
@@ -40,7 +38,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       ...(post.author && { authors: [post.author] }),
     },
     twitter: {
-      images: OG_IMAGE,
       card: 'summary_large_image',
       title: post.title,
       description: post.description,

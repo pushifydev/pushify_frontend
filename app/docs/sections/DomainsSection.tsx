@@ -8,9 +8,9 @@ export function DomainsSection({ c, apiBase }: SectionProps) {
 
   return (
     <div className="space-y-6">
-      <SectionHeading title={c.domains.title} description={c.domains.description} />
+      <SectionHeading id="domains" title={c.domains.title} description={c.domains.description} />
 
-      <div className="space-y-3">
+      <div className="docs-endpoints">
         <EndpointCard
           method="GET"
           path="/projects/:projectId/domains"

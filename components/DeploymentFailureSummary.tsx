@@ -43,22 +43,22 @@ export function DeploymentFailureSummary({
           : null;
 
   return (
-    <div className="mb-4 px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg bg-[var(--status-error)]/10 border border-[var(--status-error)]/20">
+    <div className="mb-4 px-3 py-2.5 sm:px-4 sm:py-3 rounded-[10px] border border-[var(--status-error)]/25 bg-[var(--status-error)]/[0.04]">
+      {errorMessage && (
+        <p className="dash-section-label !text-[var(--status-error)] mb-1.5">
+          {t('projectDetail', 'deploymentErrorTitle')}
+        </p>
+      )}
       {category && (
-        <p className="text-xs text-[var(--text-muted)] mb-2">
-          {blameLabel ? `${blameLabel} · ` : ''}
+        <p className="text-[13px] text-[var(--text-muted)] mb-1.5">
+          {blameLabel ? <>{blameLabel} · </> : null}
           {hintByCategory[category]()}
         </p>
       )}
       {errorMessage && (
-        <>
-          <p className="text-xs sm:text-sm text-[var(--status-error)] font-medium mb-1">
-            {t('projectDetail', 'deploymentErrorTitle')}
-          </p>
-          <p className="text-xs sm:text-sm text-[var(--status-error)] break-all whitespace-pre-wrap">
-            {errorMessage}
-          </p>
-        </>
+        <p className="terminal-text text-xs text-[var(--status-error)] break-all whitespace-pre-wrap leading-relaxed">
+          {errorMessage}
+        </p>
       )}
     </div>
   );

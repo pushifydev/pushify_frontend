@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { AlertTriangle, CheckCircle2, Github, Globe, HelpCircle, Loader2, RefreshCw, XCircle } from 'lucide-react';
 import { useGitHubAppInstall, useGitHubConnect, useProjectGitAccess, useTranslation } from '@/hooks';
+import { SettingsSection } from './SettingsParts';
 
 /**
  * Settings → GitHub access: which credential pulls this repository, and — when none can — the
@@ -60,46 +61,46 @@ export function GitHubAccessSection({
   }
 
   return (
-    <div className="p-4 sm:p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] min-w-0">
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <div className="min-w-0">
-          <h3 className="text-lg font-semibold">{t('projectDetail', 'gitAccessTitle')}</h3>
-          <p className="text-sm text-[var(--text-secondary)]">{t('projectDetail', 'gitAccessDesc')}</p>
-        </div>
+    <SettingsSection
+      id="settings-git"
+      title={t('projectDetail', 'gitAccessTitle')}
+      description={t('projectDetail', 'gitAccessDesc')}
+      action={
         <button
           type="button"
           onClick={() => refetch()}
           disabled={isFetching}
-          className="btn btn-ghost text-xs py-1.5 px-2.5 shrink-0 text-[var(--text-secondary)]"
+          className="btn btn-ghost btn-sm !px-2"
           title={t('projectDetail', 'gitAccessRecheck')}
           aria-label={t('projectDetail', 'gitAccessRecheck')}
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
         </button>
-      </div>
-
+      }
+      padded
+    >
       {isLoading ? (
-        <div className="flex items-center gap-2 text-sm text-[var(--text-muted)] mt-4">
+        <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]" role="status">
           <Loader2 className="w-4 h-4 animate-spin" />
         </div>
       ) : (
-        <div className="mt-4 space-y-4">
+        <div className="space-y-3">
           {access?.repoFullName && (
-            <div className="flex items-center gap-2 text-sm font-mono text-[var(--text-secondary)] min-w-0">
-              <Github className="w-4 h-4 shrink-0" />
+            <div className="flex items-center gap-2 terminal-text text-[13px] text-[var(--text-primary)] min-w-0">
+              <Github className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
               <span className="truncate">{access.repoFullName}</span>
             </div>
           )}
 
           {message && (
-            <div className="flex items-start gap-2 text-sm text-[var(--text-secondary)]">
+            <div className="flex items-start gap-2 text-[13px] text-[var(--text-secondary)]">
               {icon}
               <span className="min-w-0">{message}</span>
             </div>
           )}
 
           {scopeLimited && (
-            <div className="flex items-start gap-2 text-sm text-[var(--text-secondary)]">
+            <div className="flex items-start gap-2 text-[13px] text-[var(--text-secondary)]">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[var(--status-warning)]" />
               <span className="min-w-0">
                 {t('projectDetail', 'gitAccessPublicOnlyScope').replace('{username}', access?.viewer.username ?? '')}
@@ -108,14 +109,14 @@ export function GitHubAccessSection({
           )}
 
           {showActions && (
-            <div className="pt-4 border-t border-[var(--border-subtle)] space-y-2">
+            <div className="pt-3 border-t border-[var(--border-subtle)] space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 {access?.appConfigured && access.repoOwner && status !== 'unknown' && (
                   <button
                     type="button"
                     onClick={() => installApp.mutate(returnTo)}
                     disabled={busy}
-                    className="btn btn-primary text-sm"
+                    className="btn btn-primary btn-sm"
                   >
                     {installApp.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Github className="w-4 h-4" />}
                     {t('projectDetail', 'gitAccessInstallApp').replace('{owner}', owner)}
@@ -126,14 +127,14 @@ export function GitHubAccessSection({
                     type="button"
                     onClick={() => connect.mutate(returnTo)}
                     disabled={busy}
-                    className={access.appConfigured ? 'btn btn-secondary text-sm' : 'btn btn-primary text-sm'}
+                    className={access.appConfigured ? 'btn btn-secondary btn-sm' : 'btn btn-primary btn-sm'}
                   >
                     {connect.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                     {access.viewer.connected ? t('projectDetail', 'gitAccessReconnect') : t('projectDetail', 'gitAccessConnect')}
                   </button>
                 )}
                 {status === 'unknown' && (
-                  <button type="button" onClick={() => refetch()} disabled={isFetching} className="btn btn-secondary text-sm">
+                  <button type="button" onClick={() => refetch()} disabled={isFetching} className="btn btn-secondary btn-sm">
                     <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
                     {t('projectDetail', 'gitAccessRecheck')}
                   </button>
@@ -151,6 +152,6 @@ export function GitHubAccessSection({
           )}
         </div>
       )}
-    </div>
+    </SettingsSection>
   );
 }
