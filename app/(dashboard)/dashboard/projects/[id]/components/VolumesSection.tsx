@@ -9,6 +9,7 @@ import {
   useTranslation,
 } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
+import { SettingsSection } from './SettingsParts';
 
 export function VolumesSection({
   projectId,
@@ -45,45 +46,42 @@ export function VolumesSection({
   };
 
   return (
-    <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-      <div className="flex items-start justify-between gap-3 mb-1">
-        <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <HardDrive className="w-4 h-4" />
-            {t('volumes', 'title')}
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">
-            {t('volumes', 'description')}
-          </p>
-        </div>
-        <button onClick={() => setShowForm(true)} className="btn btn-secondary shrink-0">
-          <Plus className="w-4 h-4" />
-          {t('volumes', 'addVolume')}
-        </button>
-      </div>
-
-      <p className="text-xs text-[var(--text-muted)] mb-4">{t('volumes', 'applyNote')}</p>
-
+    <SettingsSection
+      id="settings-volumes"
+      title={t('volumes', 'title')}
+      description={t('volumes', 'description')}
+      action={
+        !showForm && (
+          <button type="button" onClick={() => setShowForm(true)} className="btn btn-secondary btn-sm">
+            <Plus className="w-4 h-4" />
+            {t('volumes', 'addVolume')}
+          </button>
+        )
+      }
+      padded
+    >
       {showForm && (
-        <div className="p-4 mb-4 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] space-y-3">
+        <div className="p-4 mb-4 rounded-[10px] bg-[var(--bg-primary)] border border-[var(--border-subtle)] space-y-3">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+              <label htmlFor="volume-name" className="dash-section-label block mb-2">
                 {t('volumes', 'name')}
               </label>
               <input
+                id="volume-name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value.toLowerCase())}
                 placeholder={t('volumes', 'namePlaceholder')}
-                className="input w-full text-sm"
+                className="input w-full text-sm terminal-text"
               />
             </div>
             <div className="flex-[2]">
-              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+              <label htmlFor="volume-path" className="dash-section-label block mb-2">
                 {t('volumes', 'containerPath')}
               </label>
               <input
+                id="volume-path"
                 type="text"
                 value={containerPath}
                 onChange={(e) => setContainerPath(e.target.value)}
@@ -93,10 +91,11 @@ export function VolumesSection({
             </div>
           </div>
           <div className="flex gap-2 justify-end">
-            <button onClick={() => setShowForm(false)} className="btn btn-ghost">
+            <button type="button" onClick={() => setShowForm(false)} className="btn btn-ghost">
               {t('common', 'cancel')}
             </button>
             <button
+              type="button"
               onClick={handleCreate}
               disabled={!isValid || createVolume.isPending}
               className="btn btn-primary"
@@ -108,24 +107,24 @@ export function VolumesSection({
       )}
 
       {volumes.length === 0 && !showForm ? (
-        <p className="text-sm text-[var(--text-muted)]">{t('volumes', 'noVolumes')}</p>
-      ) : (
-        <div className="space-y-2">
+        <p className="text-[13px] text-[var(--text-muted)]">{t('volumes', 'noVolumes')}</p>
+      ) : volumes.length > 0 && (
+        <div className="rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
           {volumes.map((volume) => (
-            <div
-              key={volume.id}
-              className="flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]"
-            >
-              <HardDrive className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
+            <div key={volume.id} className="flex items-center gap-3 pl-3 pr-1.5 py-1.5">
+              <HardDrive className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)]" aria-hidden />
               <div className="min-w-0 flex-1 flex flex-col sm:flex-row sm:items-center sm:gap-3">
-                <span className="font-medium text-sm">{volume.name}</span>
-                <code className="text-xs text-[var(--text-secondary)] truncate">
+                <span className="text-[13px] font-medium">{volume.name}</span>
+                <code className="terminal-text text-xs text-[var(--text-secondary)] truncate">
                   {volume.containerPath}
                 </code>
               </div>
               <button
+                type="button"
                 onClick={() => handleDelete(volume.id, volume.name)}
-                className="btn btn-ghost h-8 text-xs text-[var(--status-error)] shrink-0"
+                aria-label={`${t('common', 'delete')} ${volume.name}`}
+                title={t('common', 'delete')}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors shrink-0"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -133,6 +132,8 @@ export function VolumesSection({
           ))}
         </div>
       )}
-    </div>
+
+      <p className="dash-field-hint">{t('volumes', 'applyNote')}</p>
+    </SettingsSection>
   );
 }

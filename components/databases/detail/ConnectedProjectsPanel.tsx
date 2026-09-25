@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Link2, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import type { Database, Project } from '@/lib/api';
-import { STATUS_COLORS } from '@/lib/constants';
-import { panelStyle, type T } from './_shared';
+import { iconButtonClass, type T } from './_shared';
 
 const ENV_NAME_RE = /^[A-Za-z_][A-Za-z0-9_]{0,63}$/;
 
@@ -36,91 +35,75 @@ export function ConnectedProjectsPanel({
   const available = projects.filter((p) => !connectedIds.has(p.id));
   const envValid = ENV_NAME_RE.test(envVarName);
 
-  const inputStyle = {
-    background: 'var(--bg-tertiary)',
-    border: '1px solid var(--glass-border)',
-    color: 'var(--text-primary)',
-  } as const;
-
   return (
-    <section className="rounded-xl p-5" style={panelStyle}>
-      <h2 className="text-sm font-semibold">{t('databases', 'connectedProjects')}</h2>
-      <p className="text-xs mt-1 mb-4" style={{ color: 'var(--text-muted)' }}>
-        {t('databases', 'connectedProjectsHint')}
-      </p>
+    <section className="dash-rows">
+      <div className="dash-row">
+        <h2 className="dash-panel-title">{t('databases', 'connectedProjects')}</h2>
+        <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+          {t('databases', 'connectedProjectsHint')}
+        </p>
+      </div>
 
       {connections.length === 0 ? (
-        <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
-          {t('databases', 'noConnectedProjects')}
-        </p>
+        <div className="dash-row">
+          <p className="text-[13px]" style={{ color: 'var(--text-muted)' }}>
+            {t('databases', 'noConnectedProjects')}
+          </p>
+        </div>
       ) : (
-        <ul className="space-y-2 mb-4">
-          {connections.map((connection) => {
-            const project = connection.project;
-            // Apps on another server can't reach the private network address.
-            const elsewhere =
-              project?.serverId !== undefined && project.serverId !== database.serverId && !database.externalAccess;
-            return (
-              <li
-                key={connection.id}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5"
-                style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)' }}
-              >
-                <Link2 className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    {project ? (
-                      <Link
-                        href={`/dashboard/projects/${project.id}`}
-                        className="text-sm font-medium truncate hover:underline"
-                      >
-                        {project.name}
-                      </Link>
-                    ) : (
-                      <span className="text-sm font-medium">—</span>
-                    )}
-                    <code
-                      className="text-xs px-1.5 py-0.5 rounded"
-                      style={{ background: 'var(--bg-secondary)', color: 'var(--text-secondary)' }}
+        connections.map((connection) => {
+          const project = connection.project;
+          // Apps on another server can't reach the private network address.
+          const elsewhere =
+            project?.serverId !== undefined && project.serverId !== database.serverId && !database.externalAccess;
+          return (
+            <div key={connection.id} className="dash-row flex items-center gap-3 py-2.5!">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                  {project ? (
+                    <Link
+                      href={`/dashboard/projects/${project.id}`}
+                      className="text-[13px] font-medium truncate underline-offset-4 hover:underline focus-visible:underline"
+                      style={{ color: 'var(--text-primary)' }}
                     >
-                      {connection.envVarName}
-                    </code>
-                    {connection.permissions === 'readonly' && (
-                      <span
-                        className="text-[11px] px-1.5 py-0.5 rounded-full"
-                        style={{ border: '1px solid var(--glass-border-md)', color: 'var(--text-muted)' }}
-                      >
-                        {t('databases', 'readonlyBadge')}
-                      </span>
-                    )}
-                  </div>
-                  {elsewhere && (
-                    <p className="text-xs mt-1" style={{ color: STATUS_COLORS.warning }}>
-                      {t('databases', 'otherServerNote')}
-                    </p>
+                      {project.name}
+                    </Link>
+                  ) : (
+                    <span className="text-[13px] font-medium">—</span>
+                  )}
+                  <code className="dash-mono-caption" style={{ color: 'var(--text-secondary)' }}>
+                    {connection.envVarName}
+                  </code>
+                  {connection.permissions === 'readonly' && (
+                    <span className="badge badge-neutral">{t('databases', 'readonlyBadge')}</span>
                   )}
                 </div>
-                {canEdit && (
-                  <button
-                    type="button"
-                    onClick={() => onDisconnect(connection.id)}
-                    className="p-1.5 rounded-md transition-colors hover:bg-[var(--hover-overlay)]"
-                    style={{ color: 'var(--text-muted)' }}
-                    title={t('databases', 'disconnectProject')}
-                    aria-label={t('databases', 'disconnectProject')}
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                {elsewhere && (
+                  <p className="text-xs mt-1" style={{ color: 'var(--status-warning)' }}>
+                    {t('databases', 'otherServerNote')}
+                  </p>
                 )}
-              </li>
-            );
-          })}
-        </ul>
+              </div>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() => onDisconnect(connection.id)}
+                  className={iconButtonClass}
+                  title={t('databases', 'disconnectProject')}
+                  aria-label={t('databases', 'disconnectProject')}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          );
+        })
       )}
 
       {canEdit && available.length > 0 && (
         <form
-          className="flex flex-col sm:flex-row gap-2"
+          className="dash-row flex flex-col sm:flex-row gap-2"
+          style={{ background: 'var(--bg-tertiary)' }}
           onSubmit={async (event) => {
             event.preventDefault();
             if (!projectId || !envValid) return;
@@ -131,8 +114,8 @@ export function ConnectedProjectsPanel({
           <select
             value={projectId}
             onChange={(event) => setProjectId(event.target.value)}
-            className="flex-1 min-w-0 rounded-lg px-3 py-2 text-sm"
-            style={inputStyle}
+            className="select flex-1 min-w-0 py-2! text-sm"
+            aria-label={t('databases', 'selectProject')}
           >
             <option value="">{t('databases', 'selectProject')}</option>
             {available.map((project) => (
@@ -145,15 +128,15 @@ export function ConnectedProjectsPanel({
             value={envVarName}
             onChange={(event) => setEnvVarName(event.target.value.trim())}
             spellCheck={false}
-            className="sm:w-44 rounded-lg px-3 py-2 text-sm font-mono"
-            style={{ ...inputStyle, borderColor: envValid ? 'var(--glass-border)' : STATUS_COLORS.error }}
-            aria-label="Environment variable"
+            className="input sm:w-44 py-2! text-sm font-mono"
+            style={envValid ? undefined : { borderColor: 'var(--status-error)' }}
+            aria-invalid={!envValid}
+            aria-label={t('databases', 'envVarLabel')}
           />
           <select
             value={readonlyAvailable ? permissions : 'readwrite'}
             onChange={(event) => setPermissions(event.target.value as 'readwrite' | 'readonly')}
-            className="sm:w-40 rounded-lg px-3 py-2 text-sm"
-            style={inputStyle}
+            className="select sm:w-40 py-2! text-sm"
             aria-label={t('databases', 'accessReadWrite')}
           >
             <option value="readwrite">{t('databases', 'accessReadWrite')}</option>
@@ -161,7 +144,7 @@ export function ConnectedProjectsPanel({
               {readonlyAvailable ? t('databases', 'accessReadOnly') : t('databases', 'readonlyNotForRedis')}
             </option>
           </select>
-          <button type="submit" disabled={pending || !projectId || !envValid} className="btn btn-primary text-sm py-2">
+          <button type="submit" disabled={pending || !projectId || !envValid} className="btn btn-primary shrink-0">
             {pending ? '…' : t('databases', 'connectProject')}
           </button>
         </form>

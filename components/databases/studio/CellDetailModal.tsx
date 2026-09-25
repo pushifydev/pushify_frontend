@@ -47,11 +47,11 @@ export function CellDetailModal({ column, value, onClose, t }: CellDetailModalPr
     <Modal isOpen onClose={onClose} title={column} description={isJson ? 'JSON' : undefined} maxWidth="2xl">
       <div className="space-y-3">
         <pre
-          className="text-xs whitespace-pre-wrap break-words rounded-lg px-3 py-3 max-h-[55vh] overflow-auto"
+          className="text-xs whitespace-pre-wrap break-words rounded-[10px] px-3 py-3 max-h-[55vh] overflow-auto"
           style={{
-            fontFamily: 'var(--font-jetbrains-mono), monospace',
+            fontFamily: 'var(--font-mono)',
             background: 'var(--bg-tertiary)',
-            border: '1px solid var(--glass-border)',
+            border: '1px solid var(--border-subtle)',
             color: 'var(--text-secondary)',
           }}
         >
@@ -59,11 +59,11 @@ export function CellDetailModal({ column, value, onClose, t }: CellDetailModalPr
         </pre>
 
         <div className="flex items-center justify-end gap-2">
-          <button type="button" onClick={copy} className="btn btn-secondary text-sm">
+          <button type="button" onClick={copy} className="btn btn-secondary btn-sm">
             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
             {copied ? t('databases', 'copied') : t('databases', 'studioCopyValue')}
           </button>
-          <button type="button" onClick={onClose} className="btn btn-primary text-sm">
+          <button type="button" onClick={onClose} className="btn btn-primary btn-sm">
             {t('common', 'close')}
           </button>
         </div>

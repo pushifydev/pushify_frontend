@@ -31,6 +31,8 @@ import {
 import type { DomainSearchResult } from '@/lib/api';
 import { Modal, ModalActions } from '@/components/Modal';
 import { toast } from 'sonner';
+import { EmptyState } from '@/components/EmptyState';
+import { ListSkeleton } from '@/components/Skeletons';
 
 const TERM_OPTIONS = [1, 2, 3, 5];
 
@@ -316,9 +318,9 @@ export default function DomainsPage() {
               </button>
             </div>
             {purchasedLoading ? (
-              <div className="text-sm text-[var(--text-secondary)]">…</div>
+              <ListSkeleton rows={2} height={52} />
             ) : purchased.length === 0 ? (
-              <p className="text-sm text-[var(--text-muted)]">{t('domainSales', 'purchasedEmpty')}</p>
+              <EmptyState variant="bare" label={t('domainSales', 'title')} title={t('domainSales', 'purchasedEmpty')} />
             ) : (
               <div className="space-y-2">
                 {purchased.map((d) => {

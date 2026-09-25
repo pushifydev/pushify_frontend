@@ -41,7 +41,7 @@ export function normalizeColumn(column: DraftColumn, types: StudioTypeInfo[]): D
   };
 }
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
+const mono = { fontFamily: 'var(--font-mono)' } as const;
 
 interface ColumnFieldsProps {
   column: DraftColumn;
@@ -129,7 +129,7 @@ export function ColumnFields({
               type="checkbox"
               checked={column.primaryKey === true}
               onChange={(e) => onChange({ primaryKey: e.target.checked })}
-              className="cursor-pointer"
+              className="cursor-pointer accent-(--text-primary)"
             />
             {t('databases', 'studioPrimaryKey')}
           </label>
@@ -140,7 +140,7 @@ export function ColumnFields({
             type="checkbox"
             checked={column.nullable !== false}
             onChange={(e) => onChange({ nullable: e.target.checked })}
-            className="cursor-pointer"
+            className="cursor-pointer accent-(--text-primary)"
           />
           {t('databases', 'studioNullable')}
         </label>
@@ -150,7 +150,7 @@ export function ColumnFields({
             type="checkbox"
             checked={column.unique === true}
             onChange={(e) => onChange({ unique: e.target.checked })}
-            className="cursor-pointer"
+            className="cursor-pointer accent-(--text-primary)"
           />
           {t('databases', 'studioUnique')}
         </label>
@@ -161,7 +161,7 @@ export function ColumnFields({
               type="checkbox"
               checked={column.autoIncrement === true}
               onChange={(e) => onChange({ autoIncrement: e.target.checked })}
-              className="cursor-pointer"
+              className="cursor-pointer accent-(--text-primary)"
             />
             {t('databases', 'studioAutoIncrement')}
           </label>

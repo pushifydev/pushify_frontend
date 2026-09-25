@@ -165,19 +165,19 @@ export function AiAssistantSheet() {
 
   if (typeof document === 'undefined') return null;
 
+  // dash-app wrapper: the portal renders outside the dashboard layout.
   return createPortal(
-    <>
+    <div className="dash-app">
       {/* Backdrop */}
       {open && (
-        <div
-          className="fixed inset-0 z-[70] transition-opacity duration-300"
-          style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(2px)' }}
-          onClick={() => setOpen(false)}
-        />
+        <div className="dash-modal-overlay z-[70]" onClick={() => setOpen(false)} aria-hidden />
       )}
 
       {/* Sheet */}
       <div
+        role="dialog"
+        aria-modal={open}
+        aria-labelledby="ai-assistant-title"
         className="fixed top-0 right-0 bottom-0 z-[71] flex flex-col transition-transform duration-300 ease-out"
         style={{
           width: '420px',
@@ -194,38 +194,33 @@ export function AiAssistantSheet() {
           style={{ borderBottom: '1px solid var(--glass-border-md)' }}
         >
           <div className="flex items-center gap-2.5">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'var(--dash-accent-bg-md)' }}
-            >
-              <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent-purple)' }} />
+            <div className="dash-icon-box w-7 h-7">
+              <Sparkles className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+              <h2 id="ai-assistant-title" className="text-[15px] font-medium text-[var(--text-primary)]">
                 {t('ai', 'title')}
               </h2>
-              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('ai', 'poweredBy')}</p>
+              <p className="dash-stat-label" style={{ marginTop: 0, fontSize: 10 }}>{t('ai', 'poweredBy')}</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
             {messages.length > 0 && (
               <button
+                type="button"
                 onClick={clearMessages}
-                className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-                style={{ color: 'var(--text-muted)' }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
+                className="dash-icon-action" style={{ width: 32, height: 32 }}
                 title={t('ai', 'clearConversation')}
+                aria-label={t('ai', 'clearConversation')}
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             )}
             <button
+              type="button"
               onClick={() => setOpen(false)}
-              className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-              style={{ color: 'var(--text-muted)' }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
+              className="dash-icon-action" style={{ width: 32, height: 32 }}
+              aria-label={t('common', 'close')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -359,7 +354,7 @@ export function AiAssistantSheet() {
           </p>
         </div>
       </div>
-    </>,
+    </div>,
     document.body
   );
 }

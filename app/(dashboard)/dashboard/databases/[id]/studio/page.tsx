@@ -54,7 +54,6 @@ import {
   SqlConsole,
   TableListPanel,
   TableSchemaModal,
-  panelStyle,
   pickPrimaryKey,
   rowKey,
 } from '@/components/databases/studio';
@@ -193,36 +192,29 @@ export default function DatabaseStudioPage() {
     <div className="max-w-[1400px] mx-auto pb-10 animate-slide-in">
       <Link
         href={`/dashboard/databases/${databaseId}`}
-        className="inline-flex items-center gap-2 text-sm mb-5 transition-colors hover:text-[var(--text-primary)]"
-        style={{ color: 'var(--text-muted)' }}
+        className="dash-section-label inline-flex items-center gap-1.5 mb-5 rounded-sm transition-colors hover:text-(--text-primary) focus-visible:text-(--text-primary)"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
         {database?.name ?? t('databases', 'title')}
       </Link>
 
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
-        <div>
-          <h1 className="text-xl font-semibold">{t('databases', 'studioTitle')}</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          <h1 className="text-xl tracking-tight">{t('databases', 'studioTitle')}</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
             {t('databases', 'studioSubtitle')}
           </p>
         </div>
 
         {isSql && (
-        <div
-          className="inline-flex p-1 rounded-lg"
-          style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)' }}
-        >
+        <div className="dash-segmented" role="group" aria-label={t('databases', 'studioTitle')}>
           {(['data', 'sql', 'performance'] as const).map((value) => (
             <button
               key={value}
               type="button"
               onClick={() => setTab(value)}
-              className="px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
-              style={{
-                background: tab === value ? 'var(--bg-secondary)' : 'transparent',
-                color: tab === value ? 'var(--text-primary)' : 'var(--text-muted)',
-              }}
+              aria-pressed={tab === value}
+              className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text-primary)"
             >
               {value === 'data'
                 ? t('databases', 'studioTabData')
@@ -236,11 +228,8 @@ export default function DatabaseStudioPage() {
       </div>
 
       {(notSupportedNotice || notRunningNotice) && (
-        <div
-          className="flex items-start gap-3 rounded-xl px-4 py-3 mb-5"
-          style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)' }}
-        >
-          <Info className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-muted)' }} />
+        <div className="dash-callout mb-5" role="note">
+          <Info className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
             {notSupportedNotice
               ? t('databases', 'studioUnsupportedEngine')
@@ -251,10 +240,11 @@ export default function DatabaseStudioPage() {
 
       {tablesError && (
         <div
-          className="rounded-xl px-4 py-3 mb-5 text-sm"
+          className="dash-callout mb-5 text-sm"
+          role="alert"
           style={{
-            background: 'rgba(239,68,68,0.08)',
-            border: '1px solid rgba(239,68,68,0.2)',
+            borderColor: 'color-mix(in srgb, var(--status-error) 30%, var(--border-subtle))',
+            background: 'color-mix(in srgb, var(--status-error) 6%, var(--bg-secondary))',
             color: 'var(--status-error)',
           }}
         >
@@ -314,7 +304,7 @@ export default function DatabaseStudioPage() {
             t={t}
           />
 
-          <div className="min-w-0 overflow-hidden" style={panelStyle}>
+          <div className="dash-panel p-0 min-w-0 overflow-hidden">
             {!selectedTable ? (
               <div className="py-20 text-center">
                 <p className="text-sm font-medium mb-1">{t('databases', 'studioSelectTable')}</p>
@@ -324,19 +314,14 @@ export default function DatabaseStudioPage() {
               </div>
             ) : (
               <>
-                <div
-                  className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
-                  style={{ borderBottom: '1px solid var(--glass-border)' }}
-                >
+                <div className="dash-toolbar justify-between gap-3! px-4! py-2.5!">
                   <div className="min-w-0">
-                    <p
-                      className="text-sm font-semibold truncate"
-                      style={{ fontFamily: 'var(--font-jetbrains-mono), monospace' }}
-                    >
-                      {selectedTable.schema}.{selectedTable.name}
+                    <p className="text-[13px] font-medium font-mono truncate" style={{ color: 'var(--text-primary)' }}>
+                      <span style={{ color: 'var(--text-muted)' }}>{selectedTable.schema}.</span>
+                      {selectedTable.name}
                     </p>
                     {rows && (
-                      <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                      <p className="dash-mono-caption mt-0.5 tabular-nums">
                         {rows.totalEstimated ? '~' : ''}
                         {rows.total.toLocaleString()}{' '}
                         {rows.totalCapped
@@ -348,11 +333,11 @@ export default function DatabaseStudioPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     <button
                       type="button"
                       onClick={() => setSchemaOpen(true)}
-                      className="btn btn-secondary text-sm"
+                      className="btn btn-secondary btn-sm"
                       disabled={!rows}
                     >
                       <Columns3 className="w-3.5 h-3.5" />
@@ -362,7 +347,8 @@ export default function DatabaseStudioPage() {
                     <button
                       type="button"
                       onClick={() => setShowFilters((v) => !v)}
-                      className="btn btn-secondary text-sm"
+                      className="btn btn-secondary btn-sm"
+                      aria-expanded={showFilters}
                     >
                       <Filter className="w-3.5 h-3.5" />
                       {t('databases', 'studioFilters')}
@@ -372,7 +358,7 @@ export default function DatabaseStudioPage() {
                     <button
                       type="button"
                       onClick={() => refetch()}
-                      className="btn btn-secondary text-sm"
+                      className="btn btn-secondary btn-sm"
                       disabled={rowsFetching}
                     >
                       <RefreshCw
@@ -385,7 +371,7 @@ export default function DatabaseStudioPage() {
                       <button
                         type="button"
                         onClick={() => setConfirmDelete(true)}
-                        className="btn btn-secondary text-sm"
+                        className="btn btn-secondary btn-sm"
                         style={{ color: 'var(--status-error)' }}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -397,7 +383,7 @@ export default function DatabaseStudioPage() {
                       <button
                         type="button"
                         onClick={() => setImportOpen(true)}
-                        className="btn btn-secondary text-sm"
+                        className="btn btn-secondary btn-sm"
                       >
                         <FileUp className="w-3.5 h-3.5" />
                         {t('databases', 'studioImportCsv')}
@@ -411,7 +397,7 @@ export default function DatabaseStudioPage() {
                           setEditingRow(null);
                           setEditorMode('insert');
                         }}
-                        className="btn btn-primary text-sm"
+                        className="btn btn-primary btn-sm"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         {t('databases', 'studioAddRow')}
@@ -421,7 +407,7 @@ export default function DatabaseStudioPage() {
                 </div>
 
                 {showFilters && rows && (
-                  <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                  <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <FilterBar
                       columns={rows.columns}
                       filters={filters}
@@ -436,10 +422,10 @@ export default function DatabaseStudioPage() {
 
                 {rows && !rows.editable && (
                   <p
-                    className="px-4 py-2 text-xs"
+                    className="dash-mono-caption px-4 py-2"
                     style={{
-                      color: 'var(--text-muted)',
-                      borderBottom: '1px solid var(--glass-border)',
+                      background: 'var(--bg-tertiary)',
+                      borderBottom: '1px solid var(--border-subtle)',
                     }}
                   >
                     {rows.kind === 'view'
@@ -449,11 +435,11 @@ export default function DatabaseStudioPage() {
                 )}
 
                 {rowsError ? (
-                  <p className="px-4 py-6 text-sm" style={{ color: 'var(--status-error)' }}>
+                  <p className="px-4 py-6 text-sm" role="alert" style={{ color: 'var(--status-error)' }}>
                     {rowsError instanceof Error ? rowsError.message : String(rowsError)}
                   </p>
                 ) : !rows ? (
-                  <div className="px-4 py-6 space-y-2">
+                  <div className="px-4 py-6 space-y-2" aria-busy="true">
                     {Array.from({ length: 8 }).map((_, i) => (
                       <div
                         key={i}
@@ -496,18 +482,20 @@ export default function DatabaseStudioPage() {
 
                 {rows && rows.rows.length > 0 && (
                   <div
-                    className="flex items-center justify-between gap-3 px-4 py-2.5"
-                    style={{ borderTop: '1px solid var(--glass-border)' }}
+                    className="flex items-center justify-between gap-3 px-4 py-2"
+                    style={{ borderTop: '1px solid var(--border-subtle)' }}
                   >
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    <span className="dash-mono-caption tabular-nums" aria-live="polite">
                       {t('databases', 'studioPageInfo')} {rows.page} / {totalPages}
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <button
                         type="button"
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                         disabled={rows.page <= 1}
-                        className="btn btn-secondary text-sm"
+                        className="btn btn-secondary btn-sm w-7.5 px-0!"
+                        aria-label={t('databases', 'studioPrevPage')}
+                        title={t('databases', 'studioPrevPage')}
                       >
                         <ChevronLeft className="w-3.5 h-3.5" />
                       </button>
@@ -515,7 +503,9 @@ export default function DatabaseStudioPage() {
                         type="button"
                         onClick={() => setPage((p) => p + 1)}
                         disabled={rows.page >= totalPages && rows.rows.length < rows.pageSize}
-                        className="btn btn-secondary text-sm"
+                        className="btn btn-secondary btn-sm w-7.5 px-0!"
+                        aria-label={t('databases', 'studioNextPage')}
+                        title={t('databases', 'studioNextPage')}
                       >
                         <ChevronRight className="w-3.5 h-3.5" />
                       </button>

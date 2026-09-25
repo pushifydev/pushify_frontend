@@ -1,8 +1,8 @@
 'use client';
 
-import { ToggleLeft, ToggleRight } from 'lucide-react';
+import { useId } from 'react';
 
-// Toggle option component for the modal
+// Toggle option row for the Nginx settings modal: label + description, ink switch on the right.
 export function ToggleOption({
   label,
   description,
@@ -14,20 +14,25 @@ export function ToggleOption({
   enabled: boolean;
   onChange: (value: boolean) => void;
 }) {
+  const id = useId();
   return (
-    <div
-      className="flex items-start justify-between gap-3 p-3 rounded-lg bg-[var(--bg-secondary)] cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors"
-      onClick={() => onChange(!enabled)}
-    >
+    <div className="flex items-start justify-between gap-4 px-4 py-3 rounded-[12px] border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-xs text-[var(--text-muted)]">{description}</p>
+        <label htmlFor={id} className="text-[13px] font-medium cursor-pointer">
+          {label}
+        </label>
+        <p className="text-xs text-[var(--text-muted)] mt-0.5">{description}</p>
       </div>
-      {enabled ? (
-        <ToggleRight className="w-6 h-6 text-[var(--accent-primary)] shrink-0" />
-      ) : (
-        <ToggleLeft className="w-6 h-6 text-[var(--text-muted)] shrink-0" />
-      )}
+      <button
+        id={id}
+        type="button"
+        role="switch"
+        aria-checked={enabled}
+        onClick={() => onChange(!enabled)}
+        className="dash-switch mt-0.5"
+      >
+        <span className="dash-switch-thumb" />
+      </button>
     </div>
   );
 }

@@ -457,43 +457,25 @@ export function CommandPalette() {
 
   if (!open) return null;
 
-  const kbdStyle: React.CSSProperties = {
-    background: 'var(--hover-overlay-md)',
-    border: '1px solid var(--glass-border)',
-    fontFamily: 'var(--font-mono)',
-    color: 'var(--text-muted)',
-  };
-
   return (
     <>
-      <div
-        className="fixed inset-0 z-[100]"
-        style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
-        onClick={close}
-      />
+      <div className="dash-modal-overlay z-[100]" onClick={close} aria-hidden />
 
       <div
-        className="fixed z-[101] left-1/2 top-[20%] -translate-x-1/2 w-full max-w-[540px] rounded-xl overflow-hidden animate-slide-in"
-        style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px var(--glass-border)',
-        }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+        className="dash-menu fixed z-[101] left-1/2 top-[18%] -translate-x-1/2 w-[calc(100vw-2rem)] max-w-[560px] overflow-hidden"
+        style={{ padding: 0, borderRadius: 16 }}
       >
         {/* Input row — becomes the confirmation bar while an action is pending */}
-        <div
-          className="flex items-center gap-3 px-4 h-12"
-          style={{ borderBottom: '1px solid var(--glass-border-md)' }}
-        >
+        <div className="flex items-center gap-3 px-4 h-13 border-b border-[var(--border-subtle)]">
           {pending ? (
             <>
-              <span
-                className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
-                style={{ background: 'var(--dash-accent-bg)', color: 'var(--accent-cyan)' }}
-              >
+              <span className="dash-icon-box w-7 h-7 shrink-0">
                 {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : pending.icon}
               </span>
-              <span className="flex-1 truncate" style={{ color: 'var(--text-primary)', fontSize: 14 }}>
+              <span className="flex-1 truncate text-sm text-[var(--text-primary)]">
                 {pending.confirm}
               </span>
               {/* Hidden input keeps keyboard focus so ↵ / esc keep working */}
@@ -509,8 +491,8 @@ export function CommandPalette() {
                 type="button"
                 disabled={busy}
                 onClick={() => void execute(pending)}
-                className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md text-xs font-medium shrink-0"
-                style={{ background: 'var(--accent-cyan)', color: 'var(--bg-primary)' }}
+                className="btn btn-primary shrink-0"
+                style={{ padding: '5px 12px', fontSize: 12 }}
               >
                 <CornerDownLeft className="w-3 h-3" />
                 Confirm
@@ -518,7 +500,7 @@ export function CommandPalette() {
             </>
           ) : (
             <>
-              <Search className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+              <Search className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
               <input
                 ref={inputRef}
                 type="text"
@@ -526,74 +508,58 @@ export function CommandPalette() {
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="flex-1 bg-transparent outline-none"
-                style={{ color: 'var(--text-primary)', fontSize: 14, fontFamily: 'var(--font-display)' }}
+                aria-label="Search"
+                className="flex-1 min-w-0 bg-transparent outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
               />
-              <kbd className="flex items-center justify-center h-5 px-1.5 rounded" style={{ ...kbdStyle, fontSize: 10 }}>
-                ESC
-              </kbd>
+              <kbd className="dash-kbd">esc</kbd>
             </>
           )}
         </div>
 
         {/* Results */}
         {!pending && (
-          <div ref={listRef} className="max-h-[320px] overflow-y-auto py-2 px-2">
+          <div ref={listRef} className="max-h-[340px] overflow-y-auto p-1.5">
             {flatList.length === 0 && (
-              <div className="px-3 py-8 text-center" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+              <div className="px-3 py-10 text-center text-[13px] text-[var(--text-muted)]">
                 No results for &quot;{query}&quot;
               </div>
             )}
 
             {sections.map((section) => (
               <div key={section.title}>
-                <div
-                  className="px-3 pt-2 pb-1.5"
-                  style={{ fontSize: 11, fontWeight: 500, color: 'var(--text-muted)', letterSpacing: '0.04em', textTransform: 'uppercase' }}
-                >
-                  {section.title}
-                </div>
+                <div className="dash-menu-label">{section.title}</div>
                 {section.items.map((item) => {
                   const idx = flatList.indexOf(item);
+                  const active = idx === activeIndex;
                   return (
                     <button
                       key={item.id}
-                      data-active={idx === activeIndex}
+                      data-active={active}
                       onClick={() => select(item)}
                       onMouseEnter={() => setActiveIndex(idx)}
-                      className="flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-colors"
-                      style={{
-                        background: idx === activeIndex ? 'var(--hover-overlay-lg)' : 'transparent',
-                        color: 'var(--text-primary)',
-                      }}
+                      className={`dash-menu-item${active ? ' is-active' : ''}`}
+                      style={{ gap: 12 }}
                     >
                       <span
-                        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                        style={
-                          section.accent
-                            ? { background: 'var(--dash-accent-bg)', color: 'var(--accent-cyan)' }
-                            : { background: 'var(--hover-overlay-lg)', color: 'var(--text-secondary)' }
-                        }
+                        className="w-7 h-7 rounded-md flex items-center justify-center shrink-0 border border-[var(--border-subtle)] bg-[var(--bg-tertiary)]"
+                        style={{ color: section.accent ? 'var(--text-primary)' : 'var(--text-secondary)' }}
                       >
                         {item.icon}
                       </span>
                       <div className="flex-1 text-left min-w-0">
-                        <div className="truncate" style={{ fontSize: 13.5, fontWeight: 500 }}>{item.label}</div>
+                        <div className="truncate text-[13.5px] font-medium text-[var(--text-primary)]">{item.label}</div>
                         {item.description && (
-                          <div className="truncate" style={{ fontSize: 12, color: 'var(--text-muted)' }}>{item.description}</div>
+                          <div className="truncate text-xs text-[var(--text-muted)]">{item.description}</div>
                         )}
                       </div>
                       {item.run ? (
-                        <kbd
-                          className="hidden sm:inline-flex items-center h-4 px-1 rounded shrink-0"
-                          style={{ ...kbdStyle, fontSize: 9, opacity: idx === activeIndex ? 1 : 0 }}
-                        >
+                        <kbd className="dash-kbd hidden sm:inline-flex" style={{ opacity: active ? 1 : 0 }}>
                           {item.confirm ? 'run' : '↵'}
                         </kbd>
                       ) : (
                         <ArrowRight
-                          className="w-3.5 h-3.5 shrink-0"
-                          style={{ color: 'var(--text-muted)', opacity: idx === activeIndex ? 1 : 0 }}
+                          className="w-3.5 h-3.5 shrink-0 text-[var(--text-muted)]"
+                          style={{ opacity: active ? 1 : 0 }}
                         />
                       )}
                     </button>
@@ -606,36 +572,36 @@ export function CommandPalette() {
 
         {/* Footer */}
         <div
-          className="flex items-center gap-4 px-4 h-9"
-          style={{ borderTop: '1px solid var(--glass-border)', color: 'var(--text-muted)', fontSize: 11 }}
+          className="flex items-center gap-4 px-4 h-10 border-t border-[var(--border-subtle)] text-[var(--text-muted)]"
+          style={{ fontFamily: 'var(--font-label)', fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.06em' }}
         >
           {pending ? (
             <>
-              <span className="flex items-center gap-1">
-                <kbd className="inline-flex items-center justify-center h-4 px-1 rounded" style={{ ...kbdStyle, fontSize: 9 }}>↵</kbd>
+              <span className="flex items-center gap-1.5">
+                <kbd className="dash-kbd">↵</kbd>
                 confirm
               </span>
-              <span className="flex items-center gap-1">
-                <kbd className="inline-flex items-center justify-center h-4 px-1 rounded" style={{ ...kbdStyle, fontSize: 9 }}>esc</kbd>
+              <span className="flex items-center gap-1.5">
+                <kbd className="dash-kbd">esc</kbd>
                 back
               </span>
             </>
           ) : (
             <>
-              <span className="flex items-center gap-1">
-                <kbd className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ ...kbdStyle, fontSize: 9 }}>↑</kbd>
-                <kbd className="inline-flex items-center justify-center w-4 h-4 rounded" style={{ ...kbdStyle, fontSize: 9 }}>↓</kbd>
+              <span className="flex items-center gap-1.5">
+                <kbd className="dash-kbd">↑</kbd>
+                <kbd className="dash-kbd">↓</kbd>
                 navigate
               </span>
-              <span className="flex items-center gap-1">
-                <kbd className="inline-flex items-center justify-center h-4 px-1 rounded" style={{ ...kbdStyle, fontSize: 9 }}>↵</kbd>
+              <span className="flex items-center gap-1.5">
+                <kbd className="dash-kbd">↵</kbd>
                 select
               </span>
-              <span className="flex items-center gap-1">
-                <kbd className="inline-flex items-center justify-center h-4 px-1 rounded" style={{ ...kbdStyle, fontSize: 9 }}>esc</kbd>
+              <span className="flex items-center gap-1.5">
+                <kbd className="dash-kbd">esc</kbd>
                 close
               </span>
-              <span className="ml-auto hidden sm:inline" style={{ opacity: 0.7 }}>
+              <span className="ml-auto hidden sm:inline normal-case tracking-normal" style={{ fontFamily: 'var(--font-display)', fontSize: 11 }}>
                 try “deploy”, “logs”, “shell”
               </span>
             </>

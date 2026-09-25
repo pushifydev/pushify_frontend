@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from '@/hooks';
 import {
   DndContext,
   DragOverlay,
@@ -55,6 +56,7 @@ function SortableLayer({
   duplicateLabel: string;
   deleteLabel: string;
 }) {
+  const { locale } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: block.id,
   });
@@ -69,43 +71,46 @@ function SortableLayer({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group flex items-center gap-1 rounded-lg border px-2 py-2 text-sm transition-colors ${
+      className={`group flex items-center gap-1 rounded-[10px] border px-2 py-2 text-sm transition-colors ${
         selected
-          ? 'border-[var(--accent-primary)] bg-[var(--accent-primary)]/10'
-          : 'border-[var(--border-subtle)] bg-[var(--bg-secondary)] hover:border-[var(--border-default)]'
+          ? 'border-[var(--border-strong)] bg-[var(--hover-overlay-md)]'
+          : 'border-[var(--border-subtle)] bg-[var(--bg-primary)] hover:border-[var(--border-default)]'
       }`}
     >
       <button
         type="button"
-        className="p-1 cursor-grab active:cursor-grabbing text-[var(--text-muted)] hover:text-[var(--text-secondary)] touch-none"
-        aria-label="Drag"
+        className="p-1 rounded-md cursor-grab active:cursor-grabbing text-[var(--text-muted)] hover:text-[var(--text-primary)] touch-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
+        aria-label={locale === 'tr' ? 'Sürükleyerek sırala' : 'Drag to reorder'}
         {...attributes}
         {...listeners}
       >
-        <GripVertical className="w-4 h-4" />
+        <GripVertical className="w-4 h-4" aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={onSelect}
-        className="flex-1 text-left truncate font-medium text-[var(--text-primary)]"
+        aria-pressed={selected}
+        className="flex-1 text-left truncate font-medium text-[var(--text-primary)] rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
       >
         {label}
       </button>
       <button
         type="button"
         onClick={onDuplicate}
-        className="p-1 opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+        className="p-1 rounded-full opacity-0 group-hover:opacity-100 focus-visible:opacity-100 text-[var(--text-muted)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
         title={duplicateLabel}
+        aria-label={duplicateLabel}
       >
-        <Copy className="w-3.5 h-3.5" />
+        <Copy className="w-3.5 h-3.5" aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={onDelete}
-        className="p-1 opacity-0 group-hover:opacity-100 text-[var(--text-muted)] hover:text-red-500"
+        className="p-1 rounded-full opacity-0 group-hover:opacity-100 focus-visible:opacity-100 text-[var(--text-muted)] hover:text-[var(--status-error)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
         title={deleteLabel}
+        aria-label={deleteLabel}
       >
-        <Trash2 className="w-3.5 h-3.5" />
+        <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
       </button>
     </div>
   );
@@ -149,7 +154,7 @@ export function BlockLayers({
 
   return (
     <div className="space-y-2">
-      <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+      <p className="dash-section-label">
         {layersTitle}
       </p>
       <DndContext
@@ -178,8 +183,8 @@ export function BlockLayers({
         </SortableContext>
         <DragOverlay>
           {activeBlock ? (
-            <div className="flex items-center gap-2 rounded-lg border border-[var(--accent-primary)] bg-[var(--bg-secondary)] px-2 py-2 text-sm font-medium text-[var(--text-primary)] shadow-lg">
-              <GripVertical className="w-4 h-4 text-[var(--accent-primary)]" />
+            <div className="flex items-center gap-2 rounded-[10px] border border-[var(--border-strong)] bg-[var(--bg-elevated)] px-2 py-2 text-sm font-medium text-[var(--text-primary)] shadow-lg">
+              <GripVertical className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
               {labelFor(activeBlock)}
             </div>
           ) : null}

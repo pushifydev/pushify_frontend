@@ -16,25 +16,25 @@ function Toggle({
   enabled,
   onChange,
   disabled,
+  label,
 }: {
   enabled: boolean;
   onChange: (value: boolean) => void;
   disabled?: boolean;
+  label?: string;
 }) {
+  // Styled by .dash-switch in globals.css: hairline track, ink when on, thumb in --on-accent.
   return (
     <button
       type="button"
+      role="switch"
+      aria-checked={enabled}
+      aria-label={label}
       disabled={disabled}
       onClick={() => onChange(!enabled)}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--accent-cyan)] focus:ring-offset-2 focus:ring-offset-[var(--bg-primary)] disabled:opacity-50 ${
-        enabled ? 'bg-[var(--accent-cyan)]' : 'bg-[var(--bg-tertiary)]'
-      }`}
+      className="dash-switch"
     >
-      <span
-        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-          enabled ? 'translate-x-5' : 'translate-x-0'
-        }`}
-      />
+      <span className="dash-switch-thumb" aria-hidden />
     </button>
   );
 }
@@ -102,6 +102,7 @@ export function NotificationsTab() {
             description={t('notificationPrefs', 'deploymentAlertsDesc')}
             control={
               <Toggle
+                label={t('notificationPrefs', 'deploymentAlerts')}
                 enabled={prefs.deploymentAlerts}
                 onChange={(value) => handleChange('deploymentAlerts', value)}
               />
@@ -112,6 +113,7 @@ export function NotificationsTab() {
             description={t('notificationPrefs', 'securityAlertsDesc')}
             control={
               <Toggle
+                label={t('notificationPrefs', 'securityAlerts')}
                 enabled={prefs.securityAlerts}
                 onChange={(value) => handleChange('securityAlerts', value)}
               />
@@ -122,6 +124,7 @@ export function NotificationsTab() {
             description={t('notificationPrefs', 'weeklyDigestDesc')}
             control={
               <Toggle
+                label={t('notificationPrefs', 'weeklyDigest')}
                 enabled={prefs.weeklyDigest}
                 onChange={(value) => handleChange('weeklyDigest', value)}
               />
@@ -132,6 +135,7 @@ export function NotificationsTab() {
             description={t('notificationPrefs', 'onboardingEmailsDesc')}
             control={
               <Toggle
+                label={t('notificationPrefs', 'onboardingEmails')}
                 enabled={prefs.onboardingEmails}
                 onChange={(value) => handleChange('onboardingEmails', value)}
               />

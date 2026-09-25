@@ -92,12 +92,13 @@ export default function LaunchWizard({ isOpen, template, onClose }: LaunchWizard
     <Modal
       isOpen={isOpen}
       onClose={onClose}
+      eyebrow={t('siteStudio', 'navTitle')}
       title={t('siteStudio', 'launchTitle')}
       description={`${t('siteStudio', 'step')} ${step} ${t('siteStudio', 'of')} ${totalSteps} — ${template.name}`}
       maxWidth="lg"
     >
       <div className="site-studio">
-        <div className="flex gap-1.5 px-6 pt-5">
+        <div className="flex gap-1.5" aria-hidden>
           {Array.from({ length: totalSteps }).map((_, i) => (
             <div
               key={i}
@@ -107,7 +108,7 @@ export default function LaunchWizard({ isOpen, template, onClose }: LaunchWizard
           ))}
         </div>
 
-        <div className="px-6 py-6 min-h-[280px]">
+        <div className="pt-6 min-h-[280px]">
           {step === 1 && (
             <div className="space-y-5">
               <div>
@@ -330,10 +331,7 @@ export default function LaunchWizard({ isOpen, template, onClose }: LaunchWizard
           )}
         </div>
 
-        <div
-          className="flex items-center justify-between px-6 py-4"
-          style={{ borderTop: '1px solid var(--ss-line)' }}
-        >
+        <div className="dash-modal-footer" style={{ justifyContent: 'space-between' }}>
           <button
             type="button"
             onClick={() => (step > 1 ? setStep(step - 1) : onClose())}

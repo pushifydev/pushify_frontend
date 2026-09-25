@@ -11,7 +11,7 @@ import {
   normalizeColumn,
   type DraftColumn,
 } from './ColumnFields';
-import type { T } from './_shared';
+import { iconButtonClass, type T } from './_shared';
 
 interface CreateTableModalProps {
   isOpen: boolean;
@@ -80,7 +80,7 @@ export function CreateTableModal({
             onChange={(e) => setName(e.target.value)}
             placeholder="posts"
             className="input w-full text-sm"
-            style={{ fontFamily: 'var(--font-jetbrains-mono), monospace' }}
+            style={{ fontFamily: 'var(--font-mono)' }}
             autoFocus
           />
         </div>
@@ -94,10 +94,10 @@ export function CreateTableModal({
             {columns.map((column, index) => (
               <div
                 key={index}
-                className="rounded-lg px-3 py-3"
+                className="rounded-[10px] px-3 py-3"
                 style={{
                   background: 'var(--bg-tertiary)',
-                  border: '1px solid var(--glass-border)',
+                  border: '1px solid var(--border-subtle)',
                 }}
               >
                 <div className="flex items-start gap-2">
@@ -113,9 +113,9 @@ export function CreateTableModal({
                     <button
                       type="button"
                       onClick={() => setColumns((prev) => prev.filter((_, i) => i !== index))}
-                      className="p-1.5 rounded-md shrink-0"
-                      style={{ color: 'var(--text-muted)' }}
+                      className={`${iconButtonClass} hover:text-(--status-error)!`}
                       title={t('common', 'delete')}
+                      aria-label={t('common', 'delete')}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -128,7 +128,7 @@ export function CreateTableModal({
           <button
             type="button"
             onClick={() => setColumns((prev) => [...prev, emptyColumn(types)])}
-            className="btn btn-secondary text-sm mt-3"
+            className="btn btn-secondary btn-sm mt-3"
           >
             <Plus className="w-3.5 h-3.5" />
             {t('databases', 'studioAddColumn')}

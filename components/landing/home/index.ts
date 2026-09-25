@@ -5,3 +5,4 @@ export { HomeCost } from './HomeCost';
 export { HomeDifference } from './HomeDifference';
 export { HomeFaq } from './HomeFaq';
 export { HomeCta } from './HomeCta';
+export { HomeProduct } from './HomeProduct';

@@ -84,17 +84,17 @@ export function WorkersTab({
   const isValid = (editingWorker || NAME_RE.test(name)) && command.trim().length > 0;
 
   const workerState = (worker: ProjectWorker) => {
-    if (!worker.enabled) return { dot: 'bg-gray-400', label: t('workers', 'stateDisabled') };
+    if (!worker.enabled) return { dot: '', label: t('workers', 'stateDisabled') };
     const live = statuses[worker.name];
-    if (!live) return { dot: 'bg-amber-500', label: t('workers', 'statePendingDeploy') };
-    if (live.state === 'running') return { dot: 'bg-emerald-500', label: t('workers', 'stateRunning') };
-    return { dot: 'bg-red-500', label: `${t('workers', 'stateStopped')} (${live.state})` };
+    if (!live) return { dot: 'is-warning', label: t('workers', 'statePendingDeploy') };
+    if (live.state === 'running') return { dot: 'is-success', label: t('workers', 'stateRunning') };
+    return { dot: 'is-error', label: `${t('workers', 'stateStopped')} (${live.state})` };
   };
 
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-4">
-        <div className="h-32 bg-[var(--bg-secondary)] rounded-lg" />
+        <div className="h-32 bg-[var(--bg-secondary)] rounded-[14px]" />
       </div>
     );
   }
@@ -110,8 +110,9 @@ export function WorkersTab({
           {workers.length > 0 && (
             <button
               onClick={() => refetchStatuses()}
-              className="btn btn-secondary justify-center"
+              className="btn btn-secondary justify-center !px-3"
               title={t('workers', 'refreshStatus')}
+              aria-label={t('workers', 'refreshStatus')}
             >
               <RefreshCw className={`w-4 h-4 ${statusesFetching ? 'animate-spin' : ''}`} />
             </button>
@@ -128,14 +129,14 @@ export function WorkersTab({
 
       {/* Add/Edit form */}
       {showForm && (
-        <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] space-y-4">
-          <h3 className="text-lg font-semibold">
+        <div className="dash-card p-4 sm:p-5 space-y-5">
+          <h3 className="dash-section-label">
             {editingWorker ? t('workers', 'editWorker') : t('workers', 'addWorker')}
           </h3>
 
           {!editingWorker && (
             <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+              <label className="dash-section-label block mb-2">
                 {t('workers', 'name')}
               </label>
               <input
@@ -143,16 +144,16 @@ export function WorkersTab({
                 value={name}
                 onChange={(e) => setName(e.target.value.toLowerCase())}
                 placeholder={t('workers', 'namePlaceholder')}
-                className="input max-w-md font-mono"
+                className="input max-w-md terminal-text"
               />
-              <p className="text-xs text-[var(--text-tertiary)] mt-1">
+              <p className="dash-field-hint">
                 {t('workers', 'nameHint')}
               </p>
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+            <label className="dash-section-label block mb-2">
               {t('workers', 'command')}
             </label>
             <input
@@ -160,23 +161,23 @@ export function WorkersTab({
               value={command}
               onChange={(e) => setCommand(e.target.value)}
               placeholder={t('workers', 'commandPlaceholder')}
-              className="input w-full font-mono text-sm"
+              className="input w-full terminal-text text-sm"
             />
-            <p className="text-xs text-[var(--text-tertiary)] mt-1">
+            <p className="dash-field-hint">
               {t('workers', 'commandHint')}
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-2 justify-end">
+            <button onClick={resetForm} className="btn btn-ghost">
+              {t('workers', 'cancel')}
+            </button>
             <button
               onClick={handleSubmit}
               disabled={!isValid || createWorker.isPending || updateWorker.isPending}
-              className="btn btn-primary disabled:opacity-50"
+              className="btn btn-primary"
             >
               {editingWorker ? t('workers', 'save') : t('workers', 'create')}
-            </button>
-            <button onClick={resetForm} className="btn btn-secondary">
-              {t('workers', 'cancel')}
             </button>
           </div>
         </div>
@@ -184,57 +185,59 @@ export function WorkersTab({
 
       {/* Worker list */}
       {workers.length === 0 && !showForm ? (
-        <div className="p-10 rounded-lg border border-dashed border-[var(--border-subtle)] text-center">
-          <p className="text-sm text-[var(--text-secondary)]">{t('workers', 'empty')}</p>
-          <p className="text-xs text-[var(--text-tertiary)] mt-2">{t('workers', 'emptyHint')}</p>
+        <div className="dash-card px-6 py-14 text-center">
+          <p className="text-[15px] font-medium">{t('workers', 'empty')}</p>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">{t('workers', 'emptyHint')}</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="dash-rows">
           {workers.map((worker) => {
             const state = workerState(worker);
             const showingLogs = logsWorkerId === worker.id;
             return (
-              <div
-                key={worker.id}
-                className="rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
-              >
-                <div className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div key={worker.id} className="dash-row !p-0">
+                <div className="px-4 py-3 sm:px-5 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full shrink-0 ${state.dot}`} />
-                      <span className="font-medium font-mono text-sm truncate">{worker.name}</span>
-                      <span className="text-xs text-[var(--text-tertiary)]">{state.label}</span>
+                      <span className={`dash-status-dot ${state.dot}`} aria-hidden />
+                      <span className="terminal-text text-[13px] text-[var(--text-primary)] truncate">{worker.name}</span>
+                      <span className="dash-section-label">{state.label}</span>
                     </div>
-                    <p className="text-xs font-mono text-[var(--text-secondary)] mt-1 truncate">
+                    <p className="terminal-text text-xs text-[var(--text-muted)] mt-1 truncate">
                       {worker.command}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex items-center gap-0.5 shrink-0">
                     <button
                       onClick={() => setLogsWorkerId(showingLogs ? null : worker.id)}
-                      className="btn btn-ghost h-8 text-xs"
+                      className="btn btn-ghost btn-sm !px-2"
                       title={t('workers', 'viewLogs')}
+                      aria-label={t('workers', 'viewLogs')}
+                      aria-expanded={showingLogs}
                     >
                       <FileText className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleToggle(worker)}
-                      className="btn btn-ghost h-8 text-xs"
+                      className="btn btn-ghost btn-sm !px-2"
                       title={worker.enabled ? t('workers', 'disable') : t('workers', 'enable')}
+                      aria-label={worker.enabled ? t('workers', 'disable') : t('workers', 'enable')}
                     >
                       {worker.enabled ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                     </button>
                     <button
                       onClick={() => startEdit(worker)}
-                      className="btn btn-ghost h-8 text-xs"
+                      className="btn btn-ghost btn-sm !px-2"
                       title={t('workers', 'editWorker')}
+                      aria-label={t('workers', 'editWorker')}
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(worker)}
-                      className="btn btn-ghost h-8 text-xs text-[var(--status-error)]"
+                      className="btn btn-ghost btn-sm !px-2 hover:!text-[var(--status-error)]"
                       title={t('workers', 'deleteWorker')}
+                      aria-label={t('workers', 'deleteWorker')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -242,20 +245,21 @@ export function WorkersTab({
                 </div>
 
                 {showingLogs && (
-                  <div className="border-t border-[var(--border-subtle)] p-4">
+                  <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-3 sm:px-5">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-medium text-[var(--text-secondary)]">
+                      <span className="dash-section-label">
                         {t('workers', 'recentLogs')}
                       </span>
                       <button
                         onClick={() => refetchLogs()}
-                        className="btn btn-ghost h-8 text-xs"
+                        className="btn btn-ghost btn-sm !px-2"
                         title={t('workers', 'refreshLogs')}
+                        aria-label={t('workers', 'refreshLogs')}
                       >
                         <RefreshCw className={`w-3.5 h-3.5 ${logsFetching ? 'animate-spin' : ''}`} />
                       </button>
                     </div>
-                    <pre className="text-xs font-mono bg-[var(--bg-primary)] rounded-md p-3 overflow-x-auto max-h-72 overflow-y-auto whitespace-pre-wrap">
+                    <pre className="terminal-text text-xs text-[var(--text-secondary)] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-[10px] p-3 overflow-x-auto max-h-72 overflow-y-auto whitespace-pre-wrap">
                       {logsFetching && !logsData
                         ? t('workers', 'loadingLogs')
                         : logsData?.logs?.trim() || t('workers', 'noLogs')}
@@ -270,7 +274,7 @@ export function WorkersTab({
 
       {/* Deploy note */}
       {workers.length > 0 && (
-        <p className="text-xs text-[var(--text-tertiary)]">{t('workers', 'deployNote')}</p>
+        <p className="dash-mono-caption">{t('workers', 'deployNote')}</p>
       )}
     </div>
   );

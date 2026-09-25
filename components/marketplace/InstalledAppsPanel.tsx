@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { PackageOpen, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useMarketplaceDeployments } from '@/hooks/useMarketplace';
 import type { MarketplaceDeployment } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
 import { STATUS_COLORS } from '@/lib/constants';
 import { Skeleton } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
 
 export function InstalledAppsPanel() {
   const { t } = useTranslation();
@@ -25,16 +26,11 @@ export function InstalledAppsPanel() {
 
   if (installs.length === 0) {
     return (
-      <div
-        className="rounded-xl p-12 text-center"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-      >
-        <PackageOpen className="w-10 h-10 mx-auto mb-3 opacity-40" style={{ color: 'var(--text-muted)' }} />
-        <p className="font-semibold mb-1">{t('marketplace', 'noInstallsTitle')}</p>
-        <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-          {t('marketplace', 'noInstallsDesc')}
-        </p>
-      </div>
+      <EmptyState
+        label={t('marketplace', 'tabInstalled')}
+        title={t('marketplace', 'noInstallsTitle')}
+        description={t('marketplace', 'noInstallsDesc')}
+      />
     );
   }
 

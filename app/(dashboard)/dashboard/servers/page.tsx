@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  Server,
   Plus,
   MoreVertical,
   Play,
@@ -27,6 +26,7 @@ import { DeleteServerModal } from './components';
 import { SkeletonServerCard } from '@/components/Skeleton';
 import { SERVER_STATUS_COLORS } from '@/lib/constants';
 import type { Server as ServerType, ServerStatus, ServerSetupStatus } from '@/lib/api';
+import { EmptyState } from '@/components/EmptyState';
 
 export default function ServersPage() {
   const { t } = useTranslation();
@@ -109,22 +109,12 @@ export default function ServersPage() {
           ))}
         </div>
       ) : servers.length === 0 ? (
-        <div className="dash-panel p-12 text-center">
-          <div
-            className="w-14 h-14 rounded-xl mx-auto mb-4 flex items-center justify-center"
-            style={{ background: 'var(--dash-accent-bg)' }}
-          >
-            <Server className="w-7 h-7" style={{ color: 'var(--accent-cyan)' }} />
-          </div>
-          <h3 className="font-semibold mb-1">{t('servers', 'noServers')}</h3>
-          <p className="text-sm mb-5 max-w-xs mx-auto" style={{ color: 'var(--text-muted)' }}>
-            {t('servers', 'noServersDesc')}
-          </p>
-          <Link href="/dashboard/servers/new" className="btn btn-primary">
-            <Plus className="w-4 h-4" />
-            {t('servers', 'createServer')}
-          </Link>
-        </div>
+        <EmptyState
+          label={t('navigation', 'servers')}
+          title={t('servers', 'noServers')}
+          description={t('servers', 'noServersDesc')}
+          action={{ label: t('servers', 'createServer'), href: '/dashboard/servers/new', icon: <Plus className="w-4 h-4" /> }}
+        />
       ) : viewMode === 'map' ? (
         <ServerMapView servers={servers} t={t} />
       ) : (
@@ -156,10 +146,9 @@ export default function ServersPage() {
                         e.preventDefault();
                         setActionMenu(actionMenu === server.id ? null : server.id);
                       }}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-                      style={{ color: 'var(--text-muted)' }}
-                      onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
-                      onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
+                      aria-haspopup="menu"
+                      aria-expanded={actionMenu === server.id}
+                      className="dash-icon-action"
                     >
                       <MoreVertical className="w-4 h-4" />
                     </button>
@@ -168,14 +157,13 @@ export default function ServersPage() {
                       <>
                         <div className="fixed inset-0 z-10" onClick={() => setActionMenu(null)} />
                         <div
-                          className="absolute right-0 top-full mt-1 w-44 rounded-xl shadow-xl z-20 py-1 border border-[var(--border-default)]"
-                          style={{ background: 'var(--bg-elevated)' }}
+                          className="dash-menu absolute right-0 top-full mt-1 w-48 z-20"
+                          role="menu"
                         >
                           {server.status === 'stopped' && (
                             <button
                               onClick={() => handleStart(server.id)}
-                              className="w-full px-3 py-2 text-left text-sm flex items-center gap-2"
-                              style={{ color: 'var(--status-success)' }}
+                              className="dash-menu-item"
                             >
                               <Play className="w-3.5 h-3.5" />
                               {t('servers', 'start')}
@@ -185,16 +173,14 @@ export default function ServersPage() {
                             <>
                               <button
                                 onClick={() => handleStop(server.id)}
-                                className="w-full px-3 py-2 text-left text-sm flex items-center gap-2"
-                                style={{ color: 'var(--status-warning)' }}
+                                className="dash-menu-item"
                               >
                                 <Square className="w-3.5 h-3.5" />
                                 {t('servers', 'stop')}
                               </button>
                               <button
                                 onClick={() => handleReboot(server.id)}
-                                className="w-full px-3 py-2 text-left text-sm flex items-center gap-2"
-                                style={{ color: 'var(--accent-cyan)' }}
+                                className="dash-menu-item"
                               >
                                 <RotateCcw className="w-3.5 h-3.5" />
                                 {t('servers', 'reboot')}
@@ -203,17 +189,15 @@ export default function ServersPage() {
                           )}
                           <button
                             onClick={() => handleSync(server.id)}
-                            className="w-full px-3 py-2 text-left text-sm flex items-center gap-2"
-                            style={{ color: 'var(--text-secondary)' }}
+                            className="dash-menu-item"
                           >
                             <RefreshCw className="w-3.5 h-3.5" />
                             {t('servers', 'sync')}
                           </button>
-                          <div className="my-1 mx-3" style={{ height: 1, background: 'var(--glass-divider-md)' }} />
+                          <div className="dash-menu-separator" />
                           <button
                             onClick={() => { setActionMenu(null); setDeleteServer(server); }}
-                            className="w-full px-3 py-2 text-left text-sm flex items-center gap-2"
-                            style={{ color: 'var(--status-error)' }}
+                            className="dash-menu-item is-danger"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             {t('servers', 'deleteServer')}

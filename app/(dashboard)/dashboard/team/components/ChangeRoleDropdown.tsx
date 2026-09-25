@@ -61,9 +61,12 @@ export function ChangeRoleDropdown({ memberId, currentRole, disabled }: ChangeRo
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled || updateRole.isPending}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-tertiary)] hover:bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        className="flex items-center gap-2 h-8 px-3 rounded-full bg-[var(--bg-secondary)] hover:border-[var(--border-default)] border border-[var(--border-subtle)] text-[13px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <CurrentIcon className="w-3.5 h-3.5 text-[var(--text-muted)]" />
         <span className="capitalize">{t('team', currentRole)}</span>
@@ -71,20 +74,22 @@ export function ChangeRoleDropdown({ memberId, currentRole, disabled }: ChangeRo
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div className="dash-menu absolute right-0 mt-2 w-64 z-50" role="menu">
           {roles.map((role) => {
             const Icon = roleIcons[role.value];
             return (
               <button
                 key={role.value}
+                type="button"
+                role="menuitemradio"
+                aria-checked={currentRole === role.value}
                 onClick={() => handleRoleChange(role.value)}
-                className={`w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-[var(--bg-tertiary)] transition-colors ${
-                  currentRole === role.value ? 'bg-[var(--bg-tertiary)]' : ''
-                }`}
+                className={`dash-menu-item${currentRole === role.value ? ' is-active' : ''}`}
+                style={{ alignItems: 'flex-start', padding: '0.625rem 0.75rem' }}
               >
                 <Icon className="w-4 h-4 mt-0.5 text-[var(--text-muted)]" />
                 <div>
-                  <span className="block text-sm font-medium">{role.label}</span>
+                  <span className="block text-sm font-medium text-[var(--text-primary)]">{role.label}</span>
                   <span className="block text-xs text-[var(--text-muted)] mt-0.5">{role.desc}</span>
                 </div>
               </button>

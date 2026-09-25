@@ -24,6 +24,7 @@ import { activityService, type ActivityLogsResponse } from '@/lib/api/services/a
 import type { ActivityLog, ActivityAction } from '@/lib/api/types';
 import { STATUS_COLORS } from '@/lib/constants';
 import { SkeletonActivityRow } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
 
 const ACTION_CATEGORIES = {
   project:      ['project.created', 'project.updated', 'project.deleted', 'project.paused', 'project.resumed'],
@@ -191,15 +192,12 @@ export default function ActivityPage() {
             ))}
           </div>
         ) : logs.length === 0 ? (
-          <div className="py-14 text-center">
-            <Activity className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)', opacity: 0.4 }} />
-            <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>
-              {t('activityLog', 'emptyTitle')}
-            </p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              {t('activityLog', 'emptyDescription')}
-            </p>
-          </div>
+          <EmptyState
+            variant="bare"
+            label={t('navigation', 'activity')}
+            title={t('activityLog', 'emptyTitle')}
+            description={t('activityLog', 'emptyDescription')}
+          />
         ) : (
           <div>
             {logs.map((log, idx) => {

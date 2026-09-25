@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef, type ComponentType } from 'react';
 import Link from 'next/link';
 import {
   Key,
@@ -41,6 +41,7 @@ import {
   ErrorsSection,
   VALID_SECTIONS,
 } from './sections';
+import type { SectionProps } from './sections/shared';
 
 const API_BASE = DOCS_API_BASE_URL;
 
@@ -60,25 +61,104 @@ const sectionIcons: Record<DocsSectionId, typeof BookOpen> = {
   errors: Shield,
 };
 
+const sectionComponents: Record<Exclude<DocsSectionId, 'intro'>, ComponentType<SectionProps>> = {
+  auth: AuthSection,
+  projects: ProjectsSection,
+  deployments: DeploymentsSection,
+  envvars: EnvVarsSection,
+  domains: DomainsSection,
+  servers: ServersSection,
+  databases: DatabasesSection,
+  webhooks: WebhooksSection,
+  monitoring: MonitoringSection,
+  buildSources: BuildSourcesSection,
+  sso: SsoSection,
+  errors: ErrorsSection,
+};
+
+const isSection = (value: string | null | undefined): value is DocsSectionId =>
+  !!value && VALID_SECTIONS.includes(value as DocsSectionId);
+
 function DocsPageContent() {
   const { content: c, locale } = useDocsContent();
   const [activeSection, setActiveSection] = useState<DocsSectionId>('intro');
   const [mobileNav, setMobileNav] = useState(false);
   const [search, setSearch] = useState('');
+  // A heading id to bring into view once its section is shown (it can't be scrolled to while hidden).
+  const [pendingAnchor, setPendingAnchor] = useState<string | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Read the ?section= deep-link after mount (client only). Using
-  // window.location instead of useSearchParams keeps this route server-rendered
-  // (all sections in the HTML for crawlers) instead of bailing to client-only.
-  useEffect(() => {
-    const section = new URLSearchParams(window.location.search).get('section');
-    if (section && VALID_SECTIONS.includes(section as DocsSectionId)) {
-      setActiveSection(section as DocsSectionId);
+  // Resolve the URL to a section: `#projects`, `#auth-scopes` (any heading id), or the
+  // older `?section=projects`. Read after mount via window.location instead of
+  // useSearchParams, which keeps this route server-rendered (every section in the HTML).
+  const syncFromUrl = useCallback(() => {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash) {
+      if (isSection(hash)) {
+        setActiveSection(hash);
+        setPendingAnchor(hash === 'intro' ? null : hash);
+        return;
+      }
+      const owner = document
+        .getElementById(hash)
+        ?.closest<HTMLElement>('[data-docs-section]')?.dataset.docsSection;
+      if (isSection(owner)) {
+        setActiveSection(owner);
+        setPendingAnchor(hash);
+        return;
+      }
     }
+    const section = new URLSearchParams(window.location.search).get('section');
+    setActiveSection(isSection(section) ? section : 'intro');
   }, []);
+
+  useEffect(() => {
+    // Next frame: the sections must be in the DOM before a heading id can be looked up.
+    const frame = requestAnimationFrame(syncFromUrl);
+    window.addEventListener('hashchange', syncFromUrl);
+    window.addEventListener('popstate', syncFromUrl);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('hashchange', syncFromUrl);
+      window.removeEventListener('popstate', syncFromUrl);
+    };
+  }, [syncFromUrl]);
+
+  useEffect(() => {
+    if (!pendingAnchor) return;
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(pendingAnchor)?.scrollIntoView({ block: 'start' });
+      setPendingAnchor(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [pendingAnchor, activeSection]);
+
+  // Mobile drawer: Esc closes it, the page behind doesn't scroll, focus moves in and back.
+  useEffect(() => {
+    if (!mobileNav) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileNav(false);
+    };
+    const { overflow } = document.body.style;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+    closeButtonRef.current?.focus();
+    const trigger = menuButtonRef.current;
+    return () => {
+      document.body.style.overflow = overflow;
+      document.removeEventListener('keydown', onKey);
+      trigger?.focus({ preventScroll: true });
+    };
+  }, [mobileNav]);
 
   const navigate = (section: DocsSectionId) => {
     setActiveSection(section);
     setMobileNav(false);
+    const url = section === 'intro' ? window.location.pathname : `${window.location.pathname}#${section}`;
+    if (url !== `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+      window.history.pushState(null, '', url);
+    }
     requestAnimationFrame(() => {
       document.getElementById('docs-main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
@@ -108,6 +188,7 @@ function DocsPageContent() {
       >
         <div className="lp-container flex items-center gap-3 h-12">
           <button
+            ref={menuButtonRef}
             type="button"
             onClick={() => setMobileNav(true)}
             className="p-1.5 -ml-1.5 rounded-md hover:opacity-70"
@@ -126,14 +207,16 @@ function DocsPageContent() {
         {mobileNav && (
           <div
             className="fixed inset-0 bg-black/60 z-50 lg:hidden"
+            aria-hidden="true"
             onClick={() => setMobileNav(false)}
           />
         )}
 
         <aside
           id="docs-sidebar"
-          className={`fixed lg:sticky top-14 md:top-28 lg:top-16 left-0 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] w-72 lg:w-64 border-r z-50 lg:z-0 transition-transform lg:translate-x-0 shrink-0 ${
-            mobileNav ? 'translate-x-0' : '-translate-x-full'
+          aria-label={c.shell.navigation}
+          className={`fixed lg:sticky top-14 md:top-16 left-0 h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-4rem)] w-72 max-w-[85vw] lg:w-64 lg:max-w-none border-r z-50 lg:z-0 transition-[transform,visibility] duration-200 motion-reduce:transition-none lg:translate-x-0 lg:visible shrink-0 ${
+            mobileNav ? 'translate-x-0 visible' : '-translate-x-full invisible'
           }`}
           style={{ background: 'var(--hp-bg)', borderColor: 'var(--hp-line)' }}
         >
@@ -141,6 +224,7 @@ function DocsPageContent() {
             <div className="flex items-center justify-between mb-4 lg:hidden">
               <span className="docs-sidebar-title">{c.shell.navigation}</span>
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={() => setMobileNav(false)}
                 className="p-1 rounded-md hover:bg-[var(--hp-line)]"
@@ -170,6 +254,7 @@ function DocsPageContent() {
             </div>
 
             <nav className="space-y-5 flex-1">
+              {filteredGroups.length === 0 && <p className="docs-empty">{c.shell.noResults}</p>}
               {filteredGroups.map((group) => (
                 <div key={group.label}>
                   <h3 className="docs-nav-group-label">{group.label}</h3>
@@ -183,7 +268,7 @@ function DocsPageContent() {
                           type="button"
                           onClick={() => navigate(item.id)}
                           className={isActive ? 'docs-nav-item docs-nav-item-active' : 'docs-nav-item'}
-                          aria-current={isActive ? 'page' : undefined}
+                          aria-current={isActive ? 'location' : undefined}
                         >
                           <Icon className="w-4 h-4 shrink-0" strokeWidth={1.5} aria-hidden="true" />
                           <span className="truncate">{item.label}</span>
@@ -216,45 +301,17 @@ function DocsPageContent() {
         >
           {/* All sections are rendered into the HTML (crawlable); only the
               active one is shown. Inactive sections are hidden, not unmounted. */}
-          <div className={activeSection === 'intro' ? undefined : 'hidden'}>
+          <section data-docs-section="intro" hidden={activeSection !== 'intro'}>
             <IntroSection c={c} apiBase={API_BASE} onNavigate={navigate} />
-          </div>
-          <div className={activeSection === 'auth' ? undefined : 'hidden'}>
-            <AuthSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'projects' ? undefined : 'hidden'}>
-            <ProjectsSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'deployments' ? undefined : 'hidden'}>
-            <DeploymentsSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'envvars' ? undefined : 'hidden'}>
-            <EnvVarsSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'domains' ? undefined : 'hidden'}>
-            <DomainsSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'servers' ? undefined : 'hidden'}>
-            <ServersSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'databases' ? undefined : 'hidden'}>
-            <DatabasesSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'webhooks' ? undefined : 'hidden'}>
-            <WebhooksSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'monitoring' ? undefined : 'hidden'}>
-            <MonitoringSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'buildSources' ? undefined : 'hidden'}>
-            <BuildSourcesSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'sso' ? undefined : 'hidden'}>
-            <SsoSection c={c} apiBase={API_BASE} />
-          </div>
-          <div className={activeSection === 'errors' ? undefined : 'hidden'}>
-            <ErrorsSection c={c} apiBase={API_BASE} />
-          </div>
+          </section>
+          {(Object.keys(sectionComponents) as (keyof typeof sectionComponents)[]).map((id) => {
+            const Section = sectionComponents[id];
+            return (
+              <section key={id} data-docs-section={id} hidden={activeSection !== id}>
+                <Section c={c} apiBase={API_BASE} />
+              </section>
+            );
+          })}
         </main>
       </div>
       </div>

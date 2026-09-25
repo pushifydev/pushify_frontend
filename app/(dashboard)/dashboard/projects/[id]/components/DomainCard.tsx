@@ -7,7 +7,6 @@ import {
   Clock,
   Copy,
   ExternalLink,
-  Globe,
   RefreshCw,
   Server,
   Sliders,
@@ -55,14 +54,16 @@ export function DomainCard({
   const twin = wwwTwin(domain.domain);
 
   return (
-    <div className="rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] overflow-hidden min-w-0">
-      <div className="p-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div className="dash-row !p-0 min-w-0">
+      <div className="px-4 py-3.5 sm:px-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-start gap-3 min-w-0 flex-1">
-          <Globe className="w-5 h-5 text-[var(--text-muted)] shrink-0 mt-0.5" />
+          <span
+            className={`dash-status-dot mt-[7px] ${isVerified ? (domain.sslStatus === 'failed' ? 'is-error' : domain.sslStatus === 'active' ? 'is-success' : 'is-warning') : 'is-warning'}`}
+            aria-hidden
+          />
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider shrink-0">Custom Domain</span>
-              <span className="terminal-text font-medium break-all">{domain.domain}</span>
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+              <span className="terminal-text text-[13px] text-[var(--text-primary)] break-all">{domain.domain}</span>
               {domain.isPrimary && <span className="badge badge-info">{t('projectDetail', 'primary')}</span>}
               <span className={`badge ${isVerified ? 'badge-success' : 'badge-warning'}`}>
                 {isVerified ? t('projectDetail', 'verified') : t('projectDetail', 'pending')}
@@ -74,39 +75,41 @@ export function DomainCard({
               )}
             </div>
             <button
+              type="button"
               onClick={onToggleExpand}
-              className="text-xs text-[var(--accent-cyan)] hover:underline mt-1 flex items-center gap-1"
+              aria-expanded={isExpanded}
+              className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] mt-1.5 flex items-center gap-1 transition-colors"
             >
               <ChevronRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
               {isExpanded ? t('projectDetail', 'dnsHide') : t('projectDetail', 'dnsShow')}
             </button>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2 shrink-0 w-full lg:w-auto">
+        <div className="flex flex-wrap items-center gap-1.5 shrink-0 w-full lg:w-auto">
           {isVerified ? (
             <>
               <a
                 href={`https://${domain.domain}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-secondary h-8 text-xs inline-flex items-center gap-1"
+                className="btn btn-ghost btn-sm"
               >
                 <ExternalLink className="w-3 h-3 shrink-0" />
-                Visit
+                {t('projectDetail', 'visit')}
               </a>
               <button
                 onClick={onOpenSettings}
-                className="btn btn-secondary h-8 text-xs"
-                title="Nginx Settings"
+                className="btn btn-ghost btn-sm"
+                title="Nginx"
               >
                 <Sliders className="w-3 h-3" />
-                Settings
+                {t('projectDetail', 'settings')}
               </button>
               {/* Re-runs Nginx + SSL: picks up a www record added later, retries a failed certificate */}
               <button
                 onClick={() => onVerify(domain.id)}
                 disabled={isVerifying}
-                className={`btn h-8 text-xs ${domain.sslStatus === 'active' ? 'btn-ghost' : 'btn-primary'}`}
+                className={`btn btn-sm ${domain.sslStatus === 'active' ? 'btn-ghost' : 'btn-secondary'}`}
                 title={t('projectDetail', 'domainRecheckHint')}
               >
                 <RefreshCw className={`w-3 h-3 ${isVerifying ? 'animate-spin' : ''}`} />
@@ -117,12 +120,12 @@ export function DomainCard({
             <button
               onClick={() => onVerify(domain.id)}
               disabled={isVerifying}
-              className="btn btn-primary h-8 text-xs"
+              className="btn btn-primary btn-sm"
             >
               {isVerifying ? (
                 <>
                   <RefreshCw className="w-3 h-3 animate-spin" />
-                  Verifying...
+                  {t('projectDetail', 'verify')}…
                 </>
               ) : (
                 t('projectDetail', 'verify')
@@ -130,7 +133,7 @@ export function DomainCard({
             </button>
           )}
           {isVerified && !domain.isPrimary && (
-            <button onClick={() => onSetPrimary(domain.id)} className="btn btn-secondary h-8 text-xs">
+            <button onClick={() => onSetPrimary(domain.id)} className="btn btn-secondary btn-sm">
               {t('projectDetail', 'setPrimary')}
             </button>
           )}
@@ -145,7 +148,9 @@ export function DomainCard({
               });
               if (ok) onDelete(domain.id);
             }}
-            className="w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
+            aria-label={`${t('common', 'delete')} ${domain.domain}`}
+            title={t('common', 'delete')}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/10 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -154,7 +159,7 @@ export function DomainCard({
 
       {/* DNS Setup Instructions Panel */}
       {isExpanded && (
-        <div className="border-t border-[var(--border-subtle)] p-4 bg-[var(--bg-tertiary)]">
+        <div className="border-t border-[var(--border-subtle)] px-4 py-4 sm:px-5 bg-[var(--bg-primary)]">
           {isDnsLoading ? (
             <div className="flex items-center justify-center py-4">
               <RefreshCw className="w-5 h-5 animate-spin text-[var(--text-muted)]" />
@@ -162,14 +167,14 @@ export function DomainCard({
             </div>
           ) : dnsSetup ? (
             <div className="space-y-4">
-              <h4 className="font-medium text-sm">{t('projectDetail', 'dnsConfiguration')}</h4>
+              <h4 className="dash-section-label">{t('projectDetail', 'dnsConfiguration')}</h4>
 
               {dnsSetup.serverIp ? (
                 <>
                   <div className="text-sm text-[var(--text-secondary)]">
                     <p className="mb-3">{t('projectDetail', 'dnsAddRecord')}</p>
 
-                    <div className="bg-[var(--bg-primary)] rounded-lg border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
+                    <div className="bg-[var(--bg-secondary)] rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
                       {[
                         { host: domain.domain, twin: false },
                         ...(twin ? [{ host: twin, twin: true }] : []),
@@ -177,20 +182,22 @@ export function DomainCard({
                         <div key={record.host} className="p-4">
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                             <div>
-                              <span className="text-[var(--text-muted)] block mb-1">{t('projectDetail', 'dnsType')}</span>
+                              <span className="dash-section-label block mb-1">{t('projectDetail', 'dnsType')}</span>
                               <span className="terminal-text font-medium">A</span>
                             </div>
                             <div>
-                              <span className="text-[var(--text-muted)] block mb-1">{t('projectDetail', 'dnsName')}</span>
+                              <span className="dash-section-label block mb-1">{t('projectDetail', 'dnsName')}</span>
                               <span className="terminal-text font-medium">{dnsRecordName(record.host)}</span>
                             </div>
                             <div>
-                              <span className="text-[var(--text-muted)] block mb-1">{t('projectDetail', 'dnsValue')}</span>
+                              <span className="dash-section-label block mb-1">{t('projectDetail', 'dnsValue')}</span>
                               <div className="flex items-center gap-2">
                                 <span className="terminal-text font-medium">{dnsSetup.serverIp}</span>
                                 <button
+                                  type="button"
                                   onClick={() => onCopyIp(dnsSetup.serverIp!)}
-                                  className="text-[var(--accent-cyan)] hover:text-[var(--text-primary)]"
+                                  aria-label={t('projectDetail', 'copyUrl')}
+                                  className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                                 >
                                   {copiedIp ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                                 </button>
@@ -209,7 +216,7 @@ export function DomainCard({
                     </div>
                   </div>
 
-                  <div className={`flex items-center gap-2 p-3 rounded-lg text-sm ${
+                  <div className={`flex items-center gap-2 px-3 py-2.5 rounded-[10px] text-[13px] ${
                     dnsSetup.isConfigured
                       ? 'bg-[var(--status-success)]/10 text-[var(--status-success)]'
                       : dnsSetup.currentIp
@@ -239,7 +246,7 @@ export function DomainCard({
                   </div>
                 </>
               ) : (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-[var(--status-warning)]/10 text-[var(--status-warning)] text-sm">
+                <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] bg-[var(--status-warning)]/10 text-[var(--status-warning)] text-[13px]">
                   <Server className="w-4 h-4 shrink-0" />
                   <span>{t('projectDetail', 'dnsNoServer')}</span>
                 </div>

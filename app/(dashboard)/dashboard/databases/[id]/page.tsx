@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Loader2 } from 'lucide-react';
 import {
   useDatabase,
   useDatabaseCredentials,
@@ -85,11 +85,13 @@ export default function DatabaseDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-5xl mx-auto flex items-center justify-center min-h-[320px]">
-        <div
-          className="w-7 h-7 border-2 border-t-transparent rounded-full animate-spin"
-          style={{ borderColor: 'var(--accent-cyan) transparent var(--accent-cyan) var(--accent-cyan)' }}
-        />
+      <div
+        className="max-w-5xl mx-auto flex items-center justify-center min-h-80"
+        role="status"
+        aria-live="polite"
+        aria-label={t('common', 'loading')}
+      >
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
       </div>
     );
   }
@@ -97,8 +99,8 @@ export default function DatabaseDetailPage() {
   if (!database) {
     return (
       <div className="max-w-5xl mx-auto text-center py-16">
-        <p style={{ color: 'var(--text-muted)' }}>{t('databases', 'notFound')}</p>
-        <Link href="/dashboard/databases" className="btn btn-secondary mt-4 inline-flex">
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{t('databases', 'notFound')}</p>
+        <Link href="/dashboard/databases" className="btn btn-secondary btn-sm mt-4 inline-flex">
           {t('common', 'back')}
         </Link>
       </div>
@@ -111,10 +113,9 @@ export default function DatabaseDetailPage() {
     <div className="max-w-5xl mx-auto pb-10 animate-slide-in">
       <Link
         href="/dashboard/databases"
-        className="inline-flex items-center gap-2 text-sm mb-5 transition-colors hover:text-[var(--text-primary)]"
-        style={{ color: 'var(--text-muted)' }}
+        className="dash-section-label inline-flex items-center gap-1.5 mb-5 rounded-sm transition-colors hover:text-(--text-primary) focus-visible:text-(--text-primary)"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
         {t('databases', 'title')}
       </Link>
 
@@ -159,13 +160,14 @@ export default function DatabaseDetailPage() {
 
       {database.statusMessage && (
         <div
-          className="flex items-start gap-3 rounded-xl px-4 py-3 mb-5"
+          className="dash-callout mb-6"
+          role="alert"
           style={{
-            background: 'rgba(239,68,68,0.08)',
-            border: '1px solid rgba(239,68,68,0.2)',
+            borderColor: 'color-mix(in srgb, var(--status-error) 30%, var(--border-subtle))',
+            background: 'color-mix(in srgb, var(--status-error) 6%, var(--bg-secondary))',
           }}
         >
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--status-error)' }} />
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--status-error)' }} aria-hidden="true" />
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
             {database.statusMessage}
           </p>
@@ -175,7 +177,7 @@ export default function DatabaseDetailPage() {
       <DatabaseStatsRow database={database} t={t} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2 space-y-5">
+        <div className="lg:col-span-2 space-y-5 min-w-0">
           <ConnectionPanel
             database={database}
             credentials={credentials}

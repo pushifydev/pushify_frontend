@@ -14,9 +14,9 @@ export function DeploymentsSection({ c, apiBase }: SectionProps) {
 
   return (
     <div className="space-y-6">
-      <SectionHeading title={c.deployments.title} description={c.deployments.description} />
+      <SectionHeading id="deployments" title={c.deployments.title} description={c.deployments.description} />
 
-      <div className="space-y-3">
+      <div className="docs-endpoints">
         <EndpointCard
           method="GET"
           path="/projects/:projectId/deployments"

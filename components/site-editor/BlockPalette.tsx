@@ -34,7 +34,7 @@ interface BlockPaletteProps {
 export function BlockPalette({ onAdd, title, labelFor }: BlockPaletteProps) {
   return (
     <div className="space-y-2">
-      <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+      <p className="dash-section-label">
         {title}
       </p>
       <div className="grid grid-cols-2 gap-2">
@@ -43,9 +43,9 @@ export function BlockPalette({ onAdd, title, labelFor }: BlockPaletteProps) {
             key={type}
             type="button"
             onClick={() => onAdd(type)}
-            className="flex flex-col items-center gap-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-3 text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:bg-[var(--accent-primary)]/5 hover:text-[var(--text-primary)] transition-colors"
+            className="flex flex-col items-center gap-1.5 rounded-[10px] border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-3 text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--border-default)] hover:bg-[var(--hover-overlay)] hover:text-[var(--text-primary)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
           >
-            <Icon className="w-4 h-4 text-[var(--accent-primary)]" />
+            <Icon className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
             <span className="text-center leading-tight">{labelFor(type)}</span>
           </button>
         ))}

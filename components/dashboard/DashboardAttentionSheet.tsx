@@ -38,12 +38,9 @@ export function DashboardAttentionSheet({
   return createPortal(
     <>
       {open && (
-        <div
-          className="fixed inset-0 z-[70] transition-opacity duration-300"
-          style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(2px)' }}
-          onClick={onClose}
-          aria-hidden
-        />
+        <div className="dash-app">
+          <div className="dash-modal-overlay z-[70]" onClick={onClose} aria-hidden />
+        </div>
       )}
       {/* dash-app: portal is outside layout; dashboard tokens & .dash-* rules require this */}
       <div
@@ -66,14 +63,14 @@ export function DashboardAttentionSheet({
         >
           <h2
             id="dash-attention-sheet-title"
-            className="text-sm font-semibold text-[var(--text-primary)]"
+            className="text-[15px] font-medium text-[var(--text-primary)]"
           >
             {t('dashboard', 'attentionZoneTitle')}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--hover-overlay)] transition-colors"
+            className="dash-icon-action" style={{ width: 32, height: 32 }}
             aria-label={t('common', 'close')}
           >
             <X className="w-4 h-4" />

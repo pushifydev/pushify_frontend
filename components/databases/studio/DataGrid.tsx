@@ -2,7 +2,8 @@
 
 import { ArrowDown, ArrowUp, KeyRound, Pencil } from 'lucide-react';
 import type { StudioRows } from '@/lib/api';
-import { displayValue, rowKey, type T } from './_shared';
+import { displayValue, iconButtonClass, monoStyle, rowKey, type T } from './_shared';
+import { useTranslation } from '@/hooks';
 
 interface DataGridProps {
   data: StudioRows;
@@ -20,7 +21,7 @@ interface DataGridProps {
   t: T;
 }
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
+const mono = monoStyle;
 
 export function DataGrid({
   data,
@@ -35,6 +36,7 @@ export function DataGrid({
   canWrite = true,
   t,
 }: DataGridProps) {
+  const { locale } = useTranslation();
   const editable = data.editable && canWrite;
   const allSelected = data.rows.length > 0 && selected.size === data.rows.length;
 
@@ -53,7 +55,7 @@ export function DataGrid({
     <div className="overflow-x-auto">
       <table className="w-full text-sm border-collapse">
         <thead>
-          <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+          <tr style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}>
             {editable && (
               <th className="w-9 px-3 py-2.5 text-left">
                 <input
@@ -61,25 +63,29 @@ export function DataGrid({
                   checked={allSelected}
                   onChange={onToggleAll}
                   aria-label="select all"
-                  className="cursor-pointer"
+                  className="cursor-pointer accent-(--text-primary)"
                 />
               </th>
             )}
             {data.columns.map((column) => {
               const isSorted = orderBy === column.name;
               return (
-                <th key={column.name} className="px-3 py-2.5 text-left whitespace-nowrap">
+                <th
+                  key={column.name}
+                  className="px-3 py-2.5 text-left whitespace-nowrap"
+                  aria-sort={isSorted ? (orderDir === 'asc' ? 'ascending' : 'descending') : undefined}
+                >
                   <button
                     type="button"
                     onClick={() => onSort(column.name)}
-                    className="inline-flex items-center gap-1.5 transition-colors hover:text-[var(--text-primary)]"
+                    className="inline-flex items-center gap-1.5 rounded-sm transition-colors hover:text-(--text-primary) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text-primary)"
                     style={{ color: isSorted ? 'var(--text-primary)' : 'var(--text-secondary)' }}
                     title={column.dataType}
                   >
                     {column.isPrimaryKey && (
-                      <KeyRound className="w-3 h-3" style={{ color: 'var(--accent-cyan)' }} />
+                      <KeyRound className="w-3 h-3" style={{ color: 'var(--text-muted)' }} aria-label={locale === 'tr' ? 'Birincil anahtar' : 'Primary key'} />
                     )}
-                    <span className="text-xs font-semibold" style={mono}>
+                    <span className="text-xs font-medium" style={mono}>
                       {column.name}
                     </span>
                     {isSorted &&
@@ -90,8 +96,8 @@ export function DataGrid({
                       ))}
                   </button>
                   <span
-                    className="block text-[10px] font-normal mt-0.5 truncate max-w-[180px]"
-                    style={{ color: 'var(--text-muted)' }}
+                    className="block text-[10px] font-normal mt-0.5 truncate max-w-45 uppercase tracking-[0.06em]"
+                    style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-label)' }}
                   >
                     {column.dataType}
                   </span>
@@ -110,9 +116,10 @@ export function DataGrid({
               <tr
                 key={key}
                 style={{
-                  borderBottom: '1px solid var(--glass-border)',
-                  background: isSelected ? 'var(--dash-accent-bg-md)' : 'transparent',
+                  borderBottom: '1px solid var(--border-subtle)',
+                  background: isSelected ? 'var(--hover-overlay-lg)' : undefined,
                 }}
+                className="transition-colors hover:bg-(--hover-overlay)"
               >
                 {editable && (
                   <td className="px-3 py-2">
@@ -121,7 +128,7 @@ export function DataGrid({
                       checked={isSelected}
                       onChange={() => onToggleRow(key)}
                       aria-label="select row"
-                      className="cursor-pointer"
+                      className="cursor-pointer accent-(--text-primary)"
                     />
                   </td>
                 )}
@@ -132,7 +139,7 @@ export function DataGrid({
                       <button
                         type="button"
                         onClick={() => onCellClick(column.name, row[column.name])}
-                        className="block max-w-[320px] truncate text-xs text-left"
+                        className="block max-w-80 truncate text-xs text-left rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text-primary)"
                         style={{
                           ...mono,
                           color: isNull ? 'var(--text-muted)' : 'var(--text-secondary)',
@@ -150,9 +157,9 @@ export function DataGrid({
                     <button
                       type="button"
                       onClick={() => onEditRow(row)}
-                      className="p-1.5 rounded-md transition-colors"
-                      style={{ color: 'var(--text-muted)' }}
+                      className={iconButtonClass}
                       title={t('databases', 'studioEditRow')}
+                      aria-label={t('databases', 'studioEditRow')}
                     >
                       <Pencil className="w-3.5 h-3.5" />
                     </button>

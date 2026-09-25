@@ -43,7 +43,6 @@ import {
 } from '@/components/servers/ServerHubSections';
 import { ServerHealthPanel } from '@/components/servers/ServerHealthPanel';
 import { ServerContainersPanel } from '@/components/servers/ServerContainersPanel';
-import { SERVER_STATUS_COLORS } from '@/lib/constants';
 import { ProviderIcon } from '@/components/servers/ProviderIcon';
 import { DeleteServerModal } from '../components/DeleteServerModal';
 import {
@@ -97,7 +96,7 @@ export default function ServerDetailPage({ params }: PageProps) {
   if (isLoading) {
     return (
       <div className="max-w-5xl mx-auto flex items-center justify-center min-h-[320px]">
-        <Loader2 className="w-8 h-8 animate-spin" style={{ color: 'var(--accent-cyan)' }} />
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--text-muted)' }} aria-label={t('common', 'loading')} />
       </div>
     );
   }
@@ -113,7 +112,6 @@ export default function ServerDetailPage({ params }: PageProps) {
     );
   }
 
-  const statusAccent = SERVER_STATUS_COLORS[server.status] ?? 'var(--text-muted)';
   const statusLabel = t('servers', server.status);
   const providerI18nKey =
     server.provider === 'self_hosted' ? 'selfHosted' : server.provider;
@@ -157,25 +155,19 @@ export default function ServerDetailPage({ params }: PageProps) {
             <ProviderIcon provider={server.provider} size="md" status={server.status} />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2 mb-1">
-                <h1 className="text-xl font-semibold tracking-tight truncate">{server.name}</h1>
+                <h1 className="text-xl font-medium tracking-tight truncate">{server.name}</h1>
                 <StatusBadge status={server.status} label={statusLabel} />
                 {server.isManaged && (
-                  <span
-                    className="text-xs px-2 py-0.5 rounded-md font-medium"
-                    style={{
-                      background: 'var(--dash-accent-bg)',
-                      color: 'var(--accent-cyan)',
-                      border: '1px solid var(--dash-accent-border)',
-                    }}
-                  >
+                  <span className="badge badge-neutral">
                     {t('servers', 'managedBadge')}
                   </span>
                 )}
               </div>
-              <p className="text-sm capitalize" style={{ color: 'var(--text-secondary)' }}>
-                {providerLabel}
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                <span className="capitalize">
+                {providerLabel}</span>
                 <span style={{ color: 'var(--text-muted)' }}> · </span>
-                {server.region}
+                <span className="font-mono text-xs">{server.region}</span>
                 {server.ipv4 && (
                   <>
                     <span style={{ color: 'var(--text-muted)' }}> · </span>
@@ -184,15 +176,15 @@ export default function ServerDetailPage({ params }: PageProps) {
                 )}
               </p>
               {(server.projectCount > 0 || server.databaseCount > 0) && (
-                <p className="text-xs mt-2 flex flex-wrap items-center gap-3" style={{ color: 'var(--text-muted)' }}>
+                <p className="dash-mono-caption mt-2 flex flex-wrap items-center gap-3">
                   {server.projectCount > 0 && (
-                    <a href="#server-hub-projects" className="dash-icon-row gap-1.5 hover:opacity-80 transition-opacity">
+                    <a href="#server-hub-projects" className="dash-icon-row gap-1.5 transition-colors hover:text-[var(--text-primary)]">
                       <Folder className="w-3.5 h-3.5" strokeWidth={2} />
                       {t('servers', 'projectCount').replace('{count}', String(server.projectCount))}
                     </a>
                   )}
                   {server.databaseCount > 0 && (
-                    <a href="#server-hub-databases" className="dash-icon-row gap-1.5 hover:opacity-80 transition-opacity">
+                    <a href="#server-hub-databases" className="dash-icon-row gap-1.5 transition-colors hover:text-[var(--text-primary)]">
                       <Database className="w-3.5 h-3.5" strokeWidth={2} />
                       {t('servers', 'databaseCount').replace('{count}', String(server.databaseCount))}
                     </a>
@@ -223,15 +215,16 @@ export default function ServerDetailPage({ params }: PageProps) {
             )}
 
             <div
-              className="inline-flex items-center gap-0.5 rounded-lg p-0.5"
-              style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}
+              className="inline-flex items-center gap-0.5 rounded-full p-0.5"
+              style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-secondary)' }}
             >
               <button
                 type="button"
                 onClick={() => syncServer.mutate(id)}
                 disabled={actionPending}
-                className="dash-icon-btn p-2 rounded-md inline-flex items-center justify-center transition-colors hover:opacity-80"
+                className="dash-icon-btn p-2 rounded-full inline-flex items-center justify-center transition-colors hover:bg-[var(--hover-overlay-md)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] disabled:opacity-50"
                 title={t('servers', 'sync')}
+                aria-label={t('servers', 'sync')}
                 style={{ color: 'var(--text-secondary)' }}
               >
                 <RefreshCw className={`${ICON_SM} ${syncServer.isPending ? 'animate-spin' : ''}`} strokeWidth={2} />
@@ -239,24 +232,26 @@ export default function ServerDetailPage({ params }: PageProps) {
 
               {server.status === 'running' && (
                 <>
-                  <span className="w-px h-4 self-center" style={{ background: 'var(--glass-divider)' }} />
+                  <span className="w-px h-4 self-center" style={{ background: 'var(--border-subtle)' }} />
                   <button
                     type="button"
                     onClick={() => rebootServer.mutate(id)}
                     disabled={actionPending}
-                    className="dash-icon-btn p-2 rounded-md inline-flex items-center justify-center transition-colors hover:opacity-80"
+                    className="dash-icon-btn p-2 rounded-full inline-flex items-center justify-center transition-colors hover:bg-[var(--hover-overlay-md)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] disabled:opacity-50"
                     title={t('servers', 'reboot')}
+                    aria-label={t('servers', 'reboot')}
                     style={{ color: 'var(--text-secondary)' }}
                   >
                     <RotateCcw className={ICON_SM} strokeWidth={2} />
                   </button>
-                  <span className="w-px h-4 self-center" style={{ background: 'var(--glass-divider)' }} />
+                  <span className="w-px h-4 self-center" style={{ background: 'var(--border-subtle)' }} />
                   <button
                     type="button"
                     onClick={() => stopServer.mutate(id)}
                     disabled={actionPending}
-                    className="dash-icon-btn p-2 rounded-md inline-flex items-center justify-center transition-colors hover:opacity-80"
+                    className="dash-icon-btn p-2 rounded-full inline-flex items-center justify-center transition-colors hover:bg-[var(--hover-overlay-md)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] disabled:opacity-50"
                     title={t('servers', 'stop')}
+                    aria-label={t('servers', 'stop')}
                     style={{ color: 'var(--text-secondary)' }}
                   >
                     <Square className={ICON_SM} strokeWidth={2} />
@@ -264,12 +259,13 @@ export default function ServerDetailPage({ params }: PageProps) {
                 </>
               )}
 
-              <span className="w-px h-4 self-center" style={{ background: 'var(--glass-divider)' }} />
+              <span className="w-px h-4 self-center" style={{ background: 'var(--border-subtle)' }} />
               <button
                 type="button"
                 onClick={() => setShowDeleteModal(true)}
-                className="dash-icon-btn p-2 rounded-md inline-flex items-center justify-center transition-colors"
+                className="dash-icon-btn p-2 rounded-full inline-flex items-center justify-center transition-colors hover:bg-[var(--hover-overlay-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
                 title={t('servers', 'deleteServer')}
+                aria-label={t('servers', 'deleteServer')}
                 style={{ color: 'var(--status-error)' }}
               >
                 <Trash2 className={ICON_SM} strokeWidth={2} />
@@ -292,7 +288,7 @@ export default function ServerDetailPage({ params }: PageProps) {
           variant="info"
           title={t('servers', 'timelineResizing')}
           description={t('servers', 'resizeWarning')}
-          icon={<Loader2 className="w-5 h-5 shrink-0 animate-spin" style={{ color: 'var(--accent-cyan)' }} strokeWidth={2} />}
+          icon={<Loader2 className="w-5 h-5 shrink-0 animate-spin" style={{ color: 'var(--text-secondary)' }} strokeWidth={2} />}
         />
       )}
 
@@ -319,7 +315,7 @@ export default function ServerDetailPage({ params }: PageProps) {
           }
           icon={
             infraCreditsStopped ? (
-              <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--accent-cyan)' }} strokeWidth={2} />
+              <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-warning)' }} strokeWidth={2} />
             ) : (
               <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-error)' }} strokeWidth={2} />
             )
@@ -332,7 +328,7 @@ export default function ServerDetailPage({ params }: PageProps) {
           variant="info"
           title={t('servers', 'setupBannerTitle')}
           description={t('servers', 'setupBannerDesc')}
-          icon={<Loader2 className="w-5 h-5 shrink-0 animate-spin" style={{ color: 'var(--accent-cyan)' }} strokeWidth={2} />}
+          icon={<Loader2 className="w-5 h-5 shrink-0 animate-spin" style={{ color: 'var(--text-secondary)' }} strokeWidth={2} />}
         />
       )}
 

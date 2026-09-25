@@ -7,7 +7,7 @@ import {
   ExternalLink,
   GitBranch,
   Rocket,
-  RotateCcw, Moon, Sun, Activity, ArrowUpCircle, FlaskConical} from 'lucide-react';
+  RotateCcw, Moon, Sun, ArrowUpCircle } from 'lucide-react';
 import { DeploymentFailureSummary } from '@/components/DeploymentFailureSummary';
 import { DeploymentTimeline } from '@/components/DeploymentTimeline';
 import { findLastGoodDeployment } from '@/lib/deployment-utils';
@@ -46,18 +46,18 @@ export function OverviewTab({
   return (
     <>
     {project.sleepState !== 'awake' && (
-      <div className="mb-4 p-4 rounded-lg border flex items-center gap-3" style={{ background: 'var(--dash-warning-bg, rgba(251,191,36,0.08))', borderColor: 'var(--border-subtle)' }}>
-        <Moon className="w-5 h-5 shrink-0" style={{ color: 'var(--status-warning, #fbbf24)' }} />
+      <div className="dash-callout dash-callout-attention items-center mb-4">
+        <Moon className="w-4 h-4 shrink-0 text-[var(--status-warning)]" aria-hidden />
         <div className="min-w-0 flex-1">
           <p className="font-medium text-sm">
             {project.sleepState === 'waking' ? t('sleep', 'wakingTitle') : t('sleep', 'sleepingTitle')}
           </p>
-          <p className="text-xs text-[var(--text-secondary)]">
+          <p className="text-[13px] text-[var(--text-secondary)]">
             {project.sleepState === 'waking' ? t('sleep', 'wakingDesc') : t('sleep', 'sleepingDesc')}
           </p>
         </div>
         {project.sleepState === 'sleeping' && (
-          <button onClick={handleWake} disabled={wakePending} className="btn btn-secondary shrink-0">
+          <button onClick={handleWake} disabled={wakePending} className="btn btn-secondary btn-sm shrink-0">
             <Sun className="w-4 h-4" />
             {wakePending ? t('sleep', 'waking') : t('sleep', 'wake')}
           </button>
@@ -68,15 +68,22 @@ export function OverviewTab({
       <div className="lg:col-span-2 space-y-4 min-w-0">
         <MonitoringLine projectId={projectId} t={t} />
         <StagingCard project={project} projectId={projectId} t={t} />
-        <h3 className="text-lg font-semibold">{t('projectDetail', 'latestDeployment')}</h3>
+        <h3 className="dash-section-label">{t('projectDetail', 'latestDeployment')}</h3>
         {latestDeployment ? (
-          <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
+          <div className="dash-card p-4 sm:p-5">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 min-w-0">
                 <span className={`badge shrink-0 ${getStatusBadge(latestDeployment.status)}`}>
                   {latestDeployment.status}
                 </span>
-                <span className="text-sm text-[var(--text-muted)]">
+                <GitBranch className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" aria-hidden />
+                <span className="terminal-text text-[13px] truncate">{latestDeployment.branch}</span>
+                {latestDeployment.commitHash && (
+                  <span className="terminal-text text-xs text-[var(--text-muted)]">
+                    {latestDeployment.commitHash.slice(0, 7)}
+                  </span>
+                )}
+                <span className="text-xs text-[var(--text-muted)]">
                   {formatTimeAgo(latestDeployment.createdAt, t)}
                 </span>
               </div>
@@ -85,29 +92,20 @@ export function OverviewTab({
                   href={latestDeployment.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-[var(--accent-cyan)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 shrink-0"
+                  className="dash-link inline-flex items-center gap-1 shrink-0"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-3.5 h-3.5" />
                   {t('projectDetail', 'preview')}
                 </a>
               )}
             </div>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm min-w-0">
-              <GitBranch className="w-4 h-4 text-[var(--text-muted)]" />
-              <span className="terminal-text">{latestDeployment.branch}</span>
-              {latestDeployment.commitHash && (
-                <span className="text-[var(--text-muted)]">
-                  @ {latestDeployment.commitHash.slice(0, 7)}
-                </span>
-              )}
-            </div>
             {latestDeployment.commitMessage && (
-              <p className="text-sm text-[var(--text-secondary)] mt-2 pl-7">
+              <p className="text-[13px] text-[var(--text-secondary)] mt-2">
                 {latestDeployment.commitMessage}
               </p>
             )}
             {latestDeployment.status === 'failed' && (
-              <div className="mt-3 pl-7">
+              <div className="mt-3 [&>div]:mb-0">
                 <DeploymentFailureSummary
                   logs={latestDeployment.buildLogs}
                   errorMessage={latestDeployment.errorMessage}
@@ -115,14 +113,14 @@ export function OverviewTab({
               </div>
             )}
             {latestDeployment.status === 'failed' && lastGood && (
-              <div className="mt-4 p-3 rounded-lg border border-[var(--status-error)]/25 bg-[var(--status-error)]/5">
-                <p className="text-sm text-[var(--text-secondary)] mb-2">
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-[13px] text-[var(--text-secondary)]">
                   {t('projectDetail', 'deploymentFailedBanner')}
                 </p>
                 <button
                   type="button"
                   onClick={() => onRollback(lastGood.id)}
-                  className="btn btn-secondary h-9 text-sm inline-flex items-center gap-2"
+                  className="btn btn-secondary btn-sm shrink-0"
                 >
                   <RotateCcw className="w-4 h-4" />
                   {t('projectDetail', 'rollbackToLastGood')}
@@ -137,35 +135,33 @@ export function OverviewTab({
             <DeploymentTimeline deployment={latestDeployment} />
           </div>
         ) : (
-          <div className="p-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center">
-            <Rocket className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-2" />
-            <p className="text-[var(--text-secondary)]">{t('projectDetail', 'noDeploymentsYet')}</p>
+          <div className="dash-card px-6 py-10 text-center">
+            <Rocket className="dash-empty-icon mb-2" />
+            <p className="text-sm text-[var(--text-secondary)]">{t('projectDetail', 'noDeploymentsYet')}</p>
           </div>
         )}
       </div>
 
-      <div className="space-y-4">
-        <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-          <h4 className="text-sm font-medium text-[var(--text-muted)] mb-3">{t('projectDetail', 'projectInfo')}</h4>
-          <div className="space-y-3 text-sm">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-[var(--text-muted)] shrink-0">{t('projectDetail', 'framework')}</span>
-              <span className="terminal-text break-all sm:text-right">{project.framework || t('projectDetail', 'unknown')}</span>
-            </div>
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-[var(--text-muted)] shrink-0">{t('projectDetail', 'rootDirectory')}</span>
-              <span className="terminal-text break-all sm:text-right">{project.rootDirectory || '/'}</span>
-            </div>
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-[var(--text-muted)] shrink-0">{t('projectDetail', 'buildCommand')}</span>
-              <span className="terminal-text break-all sm:text-right">{project.buildCommand || 'npm run build'}</span>
-            </div>
+      <div className="space-y-4 min-w-0">
+        <h3 className="dash-section-label">{t('projectDetail', 'projectInfo')}</h3>
+        <div className="dash-card px-4 py-1.5">
+          <div className="dash-kv">
+            <span>{t('projectDetail', 'framework')}</span>
+            <span>{project.framework || t('projectDetail', 'unknown')}</span>
+          </div>
+          <div className="dash-kv">
+            <span>{t('projectDetail', 'rootDirectory')}</span>
+            <span>{project.rootDirectory || '/'}</span>
+          </div>
+          <div className="dash-kv">
+            <span>{t('projectDetail', 'buildCommand')}</span>
+            <span>{project.buildCommand || 'npm run build'}</span>
           </div>
         </div>
       </div>
 
       {/* Container Metrics */}
-      <div className="lg:col-span-3 mt-6">
+      <div className="lg:col-span-3 mt-2">
         <MetricsSection projectId={projectId} t={t} />
       </div>
     </div>
@@ -193,14 +189,13 @@ function MonitoringLine({ projectId, t }: { projectId: string; t: ReturnType<typ
       : '';
 
   return (
-    <div
-      className="flex flex-wrap items-center gap-2 rounded-lg px-3 py-2 text-sm"
-      style={{ background: `${down ? 'var(--status-error)' : 'var(--status-success)'}10`, border: `1px solid ${color}25` }}
-    >
-      <Activity className="w-4 h-4 shrink-0" style={{ color }} />
-      <span style={{ color }}>{down ? t('monitoring', 'down') : t('monitoring', 'up')}</span>
-      {detail && <span className="text-[var(--text-muted)]">· {detail}</span>}
-      {since && <span className="text-[var(--text-muted)]">· {since}</span>}
+    <div className="dash-card flex flex-wrap items-center gap-x-2.5 gap-y-1 px-4 py-2.5 text-[13px]" role="status">
+      <span className={`dash-status-dot ${down ? 'is-error' : 'is-success'}`} aria-hidden />
+      <span className="font-medium" style={{ color }}>
+        {down ? t('monitoring', 'down') : t('monitoring', 'up')}
+      </span>
+      {detail && <span className="terminal-text text-xs text-[var(--text-muted)]">{detail}</span>}
+      {since && <span className="text-xs text-[var(--text-muted)]">· {since}</span>}
     </div>
   );
 }
@@ -239,15 +234,14 @@ function StagingCard({
   };
 
   return (
-    <div className="rounded-lg p-4 bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-      <div className="flex flex-wrap items-center gap-2 mb-2">
-        <FlaskConical className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
-        <span className="text-sm font-medium">{t('projectDetail', 'staging')}</span>
-        <code className="text-xs px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+    <div className="dash-card p-4 sm:p-5">
+      <div className="flex flex-wrap items-center gap-2 mb-1.5">
+        <span className="dash-section-label">{t('projectDetail', 'staging')}</span>
+        <code className="terminal-text text-xs px-1.5 py-0.5 rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
           {project.stagingBranch}
         </code>
         {stagingUrl ? (
-          <a href={stagingUrl} target="_blank" rel="noreferrer" className="text-sm truncate hover:underline">
+          <a href={stagingUrl} target="_blank" rel="noreferrer" className="terminal-text text-[13px] truncate hover:underline underline-offset-2">
             {stagingUrl.replace(/^https?:\/\//, '')}
           </a>
         ) : (
@@ -256,11 +250,11 @@ function StagingCard({
       </div>
       <p className="text-xs text-[var(--text-muted)] mb-3">{t('projectDetail', 'promoteHint')}</p>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => run('deploy')} disabled={!!pending} className="btn btn-secondary text-sm py-1.5">
+        <button type="button" onClick={() => run('deploy')} disabled={!!pending} className="btn btn-secondary btn-sm">
           <Rocket className="w-3.5 h-3.5" />
           {pending === 'deploy' ? '…' : t('projectDetail', 'deployStaging')}
         </button>
-        <button type="button" onClick={() => run('promote')} disabled={!!pending || !stagingUrl} className="btn btn-secondary text-sm py-1.5">
+        <button type="button" onClick={() => run('promote')} disabled={!!pending || !stagingUrl} className="btn btn-secondary btn-sm">
           <ArrowUpCircle className="w-3.5 h-3.5" />
           {pending === 'promote' ? '…' : t('projectDetail', 'promoteToProduction')}
         </button>

@@ -20,9 +20,19 @@ export function CardGridSkeleton({ count = 3, columns = 3, height = 160 }: CardG
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="rounded-xl animate-pulse"
-          style={{ background: 'var(--bg-secondary)', height }}
-        />
+          className="p-5 flex flex-col gap-3"
+          style={{ height, background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)', borderRadius: 14 }}
+          aria-hidden
+        >
+          <div className="flex items-center gap-3">
+            <div className="dash-skeleton w-8 h-8 rounded-md shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="dash-skeleton h-3.5 w-1/2 rounded" />
+              <div className="dash-skeleton h-3 w-1/3 rounded" />
+            </div>
+          </div>
+          <div className="dash-skeleton h-3 w-2/3 rounded mt-auto" />
+        </div>
       ))}
     </div>
   );
@@ -40,9 +50,14 @@ export function ListSkeleton({ rows = 5, height = 56 }: ListSkeletonProps) {
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="rounded-lg animate-pulse"
-          style={{ background: 'var(--bg-secondary)', height }}
-        />
+          className="flex items-center gap-3 px-4"
+          style={{ height, background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)', borderRadius: 12 }}
+          aria-hidden
+        >
+          <div className="dash-skeleton w-1.5 h-1.5 rounded-full shrink-0" />
+          <div className="dash-skeleton h-3.5 w-1/3 rounded" />
+          <div className="dash-skeleton h-3 w-16 rounded ml-auto" />
+        </div>
       ))}
     </div>
   );
@@ -51,12 +66,12 @@ export function ListSkeleton({ rows = 5, height = 56 }: ListSkeletonProps) {
 /** Skeleton for a detail page header area */
 export function DetailHeaderSkeleton() {
   return (
-    <div className="animate-pulse space-y-6">
-      <div className="h-8 w-48 rounded" style={{ background: 'var(--bg-secondary)' }} />
-      <div className="h-4 w-80 rounded" style={{ background: 'var(--bg-secondary)' }} />
+    <div className="space-y-6" aria-hidden>
+      <div className="dash-skeleton h-8 w-48 max-w-[60%] rounded-md" />
+      <div className="dash-skeleton h-4 w-80 max-w-[90%] rounded-md" />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-24 rounded-xl" style={{ background: 'var(--bg-secondary)' }} />
+          <div key={i} className="dash-skeleton h-24 rounded-[14px]" />
         ))}
       </div>
     </div>

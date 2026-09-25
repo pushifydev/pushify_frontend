@@ -1,21 +1,21 @@
 'use client';
 
-import { CodeBlock, SectionHeading, Callout } from '../components';
+import { CodeBlock, SectionHeading, Callout, DocsHeading } from '../components';
 import type { SectionProps } from './shared';
 
 export function AuthSection({ c, apiBase }: SectionProps) {
   return (
     <div className="space-y-8">
-      <SectionHeading title={c.auth.title} description={c.auth.description} />
+      <SectionHeading id="auth" title={c.auth.title} description={c.auth.description} />
 
-      <div>
-        <h3 className="docs-label">{c.labels.headerFormat}</h3>
-        <CodeBlock code="Authorization: Bearer pk_live_YOUR_API_KEY" />
-      </div>
-
-      <div>
-        <h3 className="docs-label">{c.labels.exampleRequest}</h3>
+      <div className="space-y-3">
         <CodeBlock
+          code="Authorization: Bearer pk_live_YOUR_API_KEY"
+          language="http"
+          title={c.labels.headerFormat}
+        />
+        <CodeBlock
+          title={c.labels.exampleRequest}
           code={`curl -X GET "${apiBase}/projects" \\
   -H "Authorization: Bearer pk_live_YOUR_API_KEY" \\
   -H "Content-Type: application/json"`}
@@ -24,7 +24,7 @@ export function AuthSection({ c, apiBase }: SectionProps) {
       </div>
 
       <div>
-        <h2 className="docs-h2">{c.labels.availableScopes}</h2>
+        <DocsHeading id="auth-scopes">{c.labels.availableScopes}</DocsHeading>
         <p className="docs-muted mb-5">
           {c.labels.scopesIntro}
         </p>
@@ -40,13 +40,14 @@ export function AuthSection({ c, apiBase }: SectionProps) {
         </dl>
       </div>
 
-      <Callout type="warning" title={c.auth.securityTitle}>
-        {c.auth.securityText}
-      </Callout>
-
-      <Callout type="info" title={c.auth.sessionOnlyTitle}>
-        {c.auth.sessionOnlyText}
-      </Callout>
+      <div className="space-y-3">
+        <Callout type="warning" title={c.auth.securityTitle}>
+          {c.auth.securityText}
+        </Callout>
+        <Callout type="info" title={c.auth.sessionOnlyTitle}>
+          {c.auth.sessionOnlyText}
+        </Callout>
+      </div>
     </div>
   );
 }

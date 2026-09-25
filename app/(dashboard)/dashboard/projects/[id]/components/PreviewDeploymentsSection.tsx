@@ -10,6 +10,7 @@ import {
 } from '@/hooks';
 import { useActivePreviewDeployments } from '@/hooks/usePreviews';
 import { formatTimeAgo } from '@/lib/formatters';
+import { SettingsSection, SettingsSwitch } from './SettingsParts';
 
 export function PreviewDeploymentsSection({
   projectId,
@@ -49,36 +50,27 @@ export function PreviewDeploymentsSection({
   };
 
   return (
-    <div className="p-4 sm:p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] min-w-0 overflow-hidden">
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <h3 className="text-lg font-semibold min-w-0">{t('previews', 'title')}</h3>
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={handleToggle}
-            disabled={updateSettings.isPending || !previewAllowed}
-            className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${
-              previewDeploymentsEnabled
-                ? 'bg-[var(--accent-cyan)]'
-                : 'bg-[var(--bg-tertiary)]'
-            }`}
-          >
-            <span
-              className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                previewDeploymentsEnabled ? 'left-7' : 'left-1'
-              }`}
-            />
-          </button>
+    <SettingsSection
+      id="settings-previews"
+      title={t('previews', 'title')}
+      description={t('previews', 'description')}
+      action={
+        <>
           {updateSettings.isPending && (
             <RefreshCw className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
           )}
-        </div>
-      </div>
-      <p className="text-sm text-[var(--text-secondary)] mb-4">
-        {t('previews', 'description')}
-      </p>
-
+          <SettingsSwitch
+            checked={previewDeploymentsEnabled}
+            onChange={() => handleToggle()}
+            disabled={updateSettings.isPending || !previewAllowed}
+            label={t('previews', 'title')}
+          />
+        </>
+      }
+      padded={!previewAllowed || previewDeploymentsEnabled}
+    >
       {!previewAllowed && (
-        <p className="text-xs text-[var(--text-muted)] mb-4 p-3 rounded-lg bg-[var(--bg-tertiary)]">
+        <p className="text-[13px] text-[var(--text-secondary)]">
           {t('previews', 'planRequired')}{' '}
           <Link href="/dashboard/billing/plans" className="dash-link">
             {t('billing', 'comparePlans')}
@@ -87,23 +79,21 @@ export function PreviewDeploymentsSection({
       )}
 
       {previewDeploymentsEnabled && (
-        <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
-          <h4 className="text-sm font-medium mb-3">{t('previews', 'activePreviews')}</h4>
+        <div>
+          <h4 className="dash-section-label mb-3">{t('previews', 'activePreviews')}</h4>
 
           {isLoading ? (
-            <div className="animate-pulse space-y-2">
-              <div className="h-16 bg-[var(--bg-tertiary)] rounded" />
+            <div className="animate-pulse">
+              <div className="h-14 bg-[var(--bg-tertiary)] rounded-[10px]" />
             </div>
           ) : previews.length === 0 ? (
-            <div className="p-4 rounded-lg bg-[var(--bg-tertiary)] text-center">
-              <p className="text-sm text-[var(--text-muted)]">{t('previews', 'noPreviewsDesc')}</p>
-            </div>
+            <p className="text-[13px] text-[var(--text-muted)]">{t('previews', 'noPreviewsDesc')}</p>
           ) : (
-            <div className="space-y-2">
+            <div className="rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
               {previews.map((preview) => (
                 <div
                   key={preview.id}
-                  className="p-3 rounded-lg bg-[var(--bg-tertiary)] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between min-w-0"
+                  className="px-3 py-2.5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between min-w-0"
                 >
                   <div className="flex items-start gap-3 min-w-0 flex-1">
                     <span className={`badge shrink-0 ${getStatusBadge(preview.status)}`}>
@@ -111,16 +101,16 @@ export function PreviewDeploymentsSection({
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-medium text-sm shrink-0">
+                        <span className="terminal-text text-[13px] shrink-0">
                           {t('previews', 'prNumber')} #{preview.prNumber}
                         </span>
                         {preview.prTitle && (
-                          <span className="text-sm text-[var(--text-secondary)] truncate min-w-0">
+                          <span className="text-[13px] text-[var(--text-secondary)] truncate min-w-0">
                             {preview.prTitle}
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[var(--text-muted)] mt-1">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 terminal-text text-[11px] text-[var(--text-muted)] mt-1">
                         <span className="truncate max-w-full">{preview.prBranch}</span>
                         <span className="shrink-0">→</span>
                         <span className="truncate max-w-full">{preview.baseBranch}</span>
@@ -129,13 +119,13 @@ export function PreviewDeploymentsSection({
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2 shrink-0">
+                  <div className="flex flex-wrap gap-1.5 shrink-0">
                     {preview.previewUrl && preview.status === 'running' && (
                       <a
                         href={preview.previewUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-secondary h-8 text-xs"
+                        className="btn btn-secondary btn-sm"
                       >
                         <ExternalLink className="w-3 h-3" />
                         {t('previews', 'previewUrl')}
@@ -146,7 +136,7 @@ export function PreviewDeploymentsSection({
                         href={`${project.gitRepoUrl}/pull/${preview.prNumber}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-ghost h-8 text-xs"
+                        className="btn btn-ghost btn-sm"
                       >
                         <GitBranch className="w-3 h-3" />
                         {t('previews', 'viewOnGithub')}
@@ -159,6 +149,6 @@ export function PreviewDeploymentsSection({
           )}
         </div>
       )}
-    </div>
+    </SettingsSection>
   );
 }

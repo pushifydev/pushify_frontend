@@ -1,20 +1,19 @@
 'use client';
 
-import { Download, ArchiveRestore, Trash2, ShieldCheck, ShieldAlert, ShieldQuestion, Loader2, CloudCheck, CloudOff } from 'lucide-react';
+import { Download, ArchiveRestore, Trash2, ShieldCheck, ShieldAlert, ShieldQuestion, Loader2 } from 'lucide-react';
 import type { DatabaseBackup, BackupVerification } from '@/lib/api';
-import { STATUS_COLORS } from '@/lib/constants';
 import { formatMessage } from '@/lib/i18n/format-message';
-import { panelStyle, type T } from './_shared';
+import { backupTone, iconButtonClass, type Tone, type T } from './_shared';
 
-function verificationColor(status: BackupVerification['status']): string {
-  if (status === 'verified') return STATUS_COLORS.success;
-  if (status === 'failed') return STATUS_COLORS.error;
-  if (status === 'verifying') return STATUS_COLORS.warning;
-  return STATUS_COLORS.neutral;
+function verificationTone(status: BackupVerification['status']): Tone {
+  if (status === 'verified') return 'success';
+  if (status === 'failed') return 'error';
+  if (status === 'verifying') return 'warning';
+  return 'neutral';
 }
 
 function VerificationBadge({ v, t }: { v: BackupVerification; t: T }) {
-  const color = verificationColor(v.status);
+  const tone = verificationTone(v.status);
   const label =
     v.status === 'verified'
       ? t('databases', 'backupVerified')
@@ -23,19 +22,14 @@ function VerificationBadge({ v, t }: { v: BackupVerification; t: T }) {
         : v.status === 'verifying'
           ? t('databases', 'backupVerifying')
           : t('databases', 'backupVerifySkipped');
-  const Icon = v.status === 'verified' ? ShieldCheck : v.status === 'failed' ? ShieldAlert : ShieldQuestion;
   const detail =
     v.status === 'verified' && v.tables !== undefined
       ? `${v.tables} · ${v.rows ?? 0} ${v.unit ?? 'rows'}`
       : v.error;
 
   return (
-    <span
-      className="inline-flex items-center gap-1 text-[11px] px-1.5 py-0.5 rounded-md shrink-0"
-      style={{ background: `${color}14`, color }}
-      title={detail ? `${label} — ${detail}` : label}
-    >
-      {v.status === 'verifying' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Icon className="w-3 h-3" />}
+    <span className={`badge badge-${tone} shrink-0`} title={detail ? `${label} — ${detail}` : label}>
+      {v.status === 'verifying' && <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />}
       {label}
     </span>
   );
@@ -64,26 +58,19 @@ export function BackupListPanel({
   onVerify?: (id: string) => void;
   t: T;
 }) {
-  const statusColor = (status: string) => {
-    if (status === 'completed') return STATUS_COLORS.success;
-    if (status === 'failed') return STATUS_COLORS.error;
-    if (status === 'creating' || status === 'restoring') return STATUS_COLORS.warning;
-    return STATUS_COLORS.neutral;
-  };
-
   // The trust line: has the newest completed backup actually been restored somewhere?
   const latest = backups.find((b) => b.status === 'completed');
   const latestVerification = latest?.metadata?.verification;
 
   return (
-    <section className="rounded-xl p-5" style={panelStyle}>
-      <div className="flex items-center justify-between gap-3 mb-4">
-        <h2 className="text-sm font-semibold">{t('databases', 'backupHistory')}</h2>
+    <section className="dash-rows">
+      <div className="dash-row flex items-center justify-between gap-3">
+        <h2 className="dash-panel-title">{t('databases', 'backupHistory')}</h2>
         <button
           type="button"
           onClick={onCreate}
           disabled={createPending || !canCreate}
-          className="btn btn-primary text-sm py-1.5"
+          className="btn btn-primary btn-sm"
         >
           {createPending ? '…' : t('databases', 'createBackup')}
         </button>
@@ -91,22 +78,18 @@ export function BackupListPanel({
 
       {!loading && backups.length > 0 && (
         <div
-          className="flex items-start gap-2.5 rounded-lg px-3 py-2.5 mb-3 text-xs"
-          style={{
-            background: 'var(--bg-tertiary)',
-            border: '1px solid var(--glass-border)',
-            color: 'var(--text-secondary)',
-          }}
+          className="dash-row flex items-start gap-2.5 py-2.5! text-xs"
+          style={{ background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
           title={t('databases', 'backupVerifyHint')}
         >
           {latestVerification?.status === 'verified' ? (
-            <ShieldCheck className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: STATUS_COLORS.success }} />
+            <ShieldCheck className="w-3.5 h-3.5 mt-px shrink-0" style={{ color: 'var(--status-success)' }} aria-hidden="true" />
           ) : latestVerification?.status === 'failed' ? (
-            <ShieldAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: STATUS_COLORS.error }} />
+            <ShieldAlert className="w-3.5 h-3.5 mt-px shrink-0" style={{ color: 'var(--status-error)' }} aria-hidden="true" />
           ) : (
-            <ShieldQuestion className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
+            <ShieldQuestion className="w-3.5 h-3.5 mt-px shrink-0" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
           )}
-          <span className="min-w-0">
+          <span className="min-w-0 leading-relaxed">
             {latestVerification?.status === 'verified'
               ? formatMessage(t('databases', 'backupVerifiedSummary'), {
                   date: new Date(latestVerification.checkedAt).toLocaleDateString(),
@@ -122,113 +105,99 @@ export function BackupListPanel({
       )}
 
       {loading ? (
-        <div className="py-10 flex justify-center">
-          <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--accent-cyan) transparent var(--accent-cyan) var(--accent-cyan)' }} />
+        <div className="dash-row py-10! flex justify-center" role="status" aria-live="polite">
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
         </div>
       ) : backups.length === 0 ? (
-        <div className="py-10 text-center">
+        <div className="dash-row py-10! text-center">
           <p className="text-sm font-medium">{t('databases', 'noBackups')}</p>
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
             {t('databases', 'noBackupsDesc')}
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {backups.map((backup) => {
-            const verification = backup.metadata?.verification;
-            return (
-              <div
-                key={backup.id}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
-                style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)' }}
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">
-                    {new Date(backup.startedAt).toLocaleString()}
-                  </p>
-                  <p className="text-xs mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1" style={{ color: 'var(--text-muted)' }}>
-                    <span>
-                      {t('databases', backup.type as 'automatic')} ·{' '}
-                      {backup.sizeMb ? `${backup.sizeMb} MB` : '—'}
-                    </span>
-                    {backup.status === 'completed' && verification && <VerificationBadge v={verification} t={t} />}
-                    {/* 'skipped' means the platform keeps no off-site copies at all — a warning
-                        nobody reading this can act on, so it is not shown. */}
-                    {backup.status === 'completed' &&
-                      (backup.offsiteStatus === 'uploaded' || backup.offsiteStatus === 'failed') && (
+        backups.map((backup) => {
+          const verification = backup.metadata?.verification;
+          const tone = backupTone(backup.status);
+          return (
+            <div key={backup.id} className="dash-row flex items-center gap-3 py-2.5!">
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-medium tabular-nums" style={{ color: 'var(--text-primary)' }}>
+                  {new Date(backup.startedAt).toLocaleString()}
+                </p>
+                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="dash-mono-caption">
+                    {t('databases', backup.type as 'automatic')} · {backup.sizeMb ? `${backup.sizeMb} MB` : '—'}
+                  </span>
+                  {backup.status === 'completed' && verification && <VerificationBadge v={verification} t={t} />}
+                  {/* 'skipped' means the platform keeps no off-site copies at all — a warning
+                      nobody reading this can act on, so it is not shown. */}
+                  {backup.status === 'completed' &&
+                    (backup.offsiteStatus === 'uploaded' || backup.offsiteStatus === 'failed') && (
                       <span
-                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full"
-                        style={{
-                          background: `${backup.offsiteCopy ? STATUS_COLORS.success : STATUS_COLORS.warning}18`,
-                          color: backup.offsiteCopy ? STATUS_COLORS.success : STATUS_COLORS.warning,
-                        }}
+                        className={`badge ${backup.offsiteCopy ? 'badge-neutral' : 'badge-warning'}`}
                         title={
                           backup.offsiteCopy ? t('databases', 'offsiteCopyHint') : t('databases', 'offsiteFailedHint')
                         }
                       >
-                        {backup.offsiteCopy ? <CloudCheck className="w-3 h-3" /> : <CloudOff className="w-3 h-3" />}
                         {backup.offsiteCopy ? t('databases', 'offsiteCopy') : t('databases', 'offsiteFailed')}
                       </span>
                     )}
-                  </p>
-                </div>
-                <span
-                  className="text-xs px-2 py-0.5 rounded-full shrink-0 capitalize"
-                  style={{
-                    background: `${statusColor(backup.status)}18`,
-                    color: statusColor(backup.status),
-                  }}
-                >
-                  {t('databases', `backup_${backup.status}` as 'backup_completed')}
-                </span>
-                <div className="flex items-center gap-0.5 shrink-0">
-                  {backup.status === 'completed' && (
-                    <>
-                      {onVerify && (
-                        <button
-                          type="button"
-                          onClick={() => onVerify(backup.id)}
-                          disabled={verification?.status === 'verifying'}
-                          className="w-8 h-8 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay)] disabled:opacity-50"
-                          title={t('databases', 'backupVerify')}
-                        >
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => onRestore(backup.id)}
-                        className="w-8 h-8 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay)]"
-                        title={t('databases', 'restore')}
-                      >
-                        <ArchiveRestore className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onDownload(backup.id)}
-                        className="w-8 h-8 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay)]"
-                        title={t('databases', 'download')}
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                      </button>
-                    </>
-                  )}
-                  {(backup.status === 'completed' || backup.status === 'failed') && (
-                    <button
-                      type="button"
-                      onClick={() => onDelete(backup.id)}
-                      className="w-8 h-8 rounded-md flex items-center justify-center hover:bg-[var(--status-error)]/10"
-                      style={{ color: 'var(--text-muted)' }}
-                      title={t('common', 'delete')}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
                 </div>
               </div>
-            );
-          })}
-        </div>
+              <span className={`badge badge-${tone} shrink-0`}>
+                {t('databases', `backup_${backup.status}` as 'backup_completed')}
+              </span>
+              <div className="flex items-center gap-0.5 shrink-0">
+                {backup.status === 'completed' && (
+                  <>
+                    {onVerify && (
+                      <button
+                        type="button"
+                        onClick={() => onVerify(backup.id)}
+                        disabled={verification?.status === 'verifying'}
+                        className={iconButtonClass}
+                        title={t('databases', 'backupVerify')}
+                        aria-label={t('databases', 'backupVerify')}
+                      >
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => onRestore(backup.id)}
+                      className={iconButtonClass}
+                      title={t('databases', 'restore')}
+                      aria-label={t('databases', 'restore')}
+                    >
+                      <ArchiveRestore className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onDownload(backup.id)}
+                      className={iconButtonClass}
+                      title={t('databases', 'download')}
+                      aria-label={t('databases', 'download')}
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                    </button>
+                  </>
+                )}
+                {(backup.status === 'completed' || backup.status === 'failed') && (
+                  <button
+                    type="button"
+                    onClick={() => onDelete(backup.id)}
+                    className={`${iconButtonClass} hover:text-(--status-error)!`}
+                    title={t('common', 'delete')}
+                    aria-label={t('common', 'delete')}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })
       )}
     </section>
   );

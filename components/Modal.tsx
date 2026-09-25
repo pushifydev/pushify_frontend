@@ -1,14 +1,17 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { useTranslation } from '@/hooks';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   description?: string;
+  /** Optional mono `[ LABEL ]` above the title. */
+  eyebrow?: string;
   children: React.ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
@@ -26,10 +29,14 @@ export function Modal({
   onClose,
   title,
   description,
+  eyebrow,
   children,
   maxWidth = 'md',
 }: ModalProps) {
+  const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -49,42 +56,39 @@ export function Modal({
 
   if (!isOpen || typeof document === 'undefined') return null;
 
+  // `dash-app` on the portal root: the dashboard tokens and .dash-modal* rules reach it
+  // even though it renders outside the dashboard layout.
   return createPortal(
-    <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 backdrop-blur-sm"
-        style={{ background: 'rgba(0,0,0,0.5)' }}
-        onClick={onClose}
-      />
+    <div className="dash-app dash-modal-root">
+      <div className="dash-modal-overlay" onClick={onClose} aria-hidden />
 
-      {/* Modal */}
       <div
         ref={modalRef}
-        className={`relative rounded-2xl w-full ${maxWidthClasses[maxWidth]} p-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200`}
-        style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.35), 0 0 0 1px var(--glass-border)',
-        }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={description ? descriptionId : undefined}
+        className={`dash-modal ${maxWidthClasses[maxWidth]}`}
       >
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <h2 className="text-xl font-semibold">{title}</h2>
+        <div className="dash-modal-header">
+          <div className="min-w-0">
+            {eyebrow && <span className="dash-eyebrow">{eyebrow}</span>}
+            <h2 id={titleId} className="dash-modal-title">
+              {title}
+            </h2>
             {description && (
-              <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+              <p id={descriptionId} className="dash-modal-description">
                 {description}
               </p>
             )}
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--text-primary)')}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
+            className="dash-modal-close"
+            aria-label={t('common', 'close')}
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
         {children}
@@ -99,14 +103,7 @@ interface ModalActionsProps {
 }
 
 export function ModalActions({ children }: ModalActionsProps) {
-  return (
-    <div
-      className="flex justify-end gap-3 pt-4 mt-6"
-      style={{ borderTop: '1px solid var(--glass-border-md)' }}
-    >
-      {children}
-    </div>
-  );
+  return <div className="dash-modal-footer">{children}</div>;
 }
 
 interface AlertBoxProps {
@@ -116,20 +113,20 @@ interface AlertBoxProps {
 }
 
 const variantStyles: Record<string, { bg: string; border: string; color: string }> = {
-  warning: { bg: 'rgba(234,179,8,0.1)', border: 'rgba(234,179,8,0.2)', color: '#eab308' },
-  error:   { bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', color: '#ef4444' },
-  success: { bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.2)', color: '#22c55e' },
-  info:    { bg: 'var(--dash-accent-bg)', border: 'var(--dash-accent-border)', color: 'var(--accent-cyan)' },
+  warning: { bg: 'rgba(234,179,8,0.08)', border: 'rgba(234,179,8,0.22)', color: 'var(--status-warning)' },
+  error:   { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.25)', color: 'var(--status-error)' },
+  success: { bg: 'rgba(34,197,94,0.08)', border: 'rgba(34,197,94,0.22)', color: 'var(--status-success)' },
+  info:    { bg: 'var(--bg-tertiary)', border: 'var(--border-subtle)', color: 'var(--text-secondary)' },
 };
 
 export function AlertBox({ variant, children, icon }: AlertBoxProps) {
   const s = variantStyles[variant];
   return (
     <div
-      className="p-4 rounded-xl"
+      className="px-4 py-3 rounded-[10px]"
       style={{ background: s.bg, border: `1px solid ${s.border}`, color: s.color }}
     >
-      <div className="flex items-start gap-2 text-sm">
+      <div className="flex items-start gap-2 text-sm leading-relaxed">
         {icon && <span className="shrink-0 mt-0.5">{icon}</span>}
         <span>{children}</span>
       </div>

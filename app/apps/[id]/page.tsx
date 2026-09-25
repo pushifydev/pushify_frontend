@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
 import { APPS, getApp, relatedApps } from '@/lib/apps-catalog';
 import { AppDetailView } from './AppDetailView';
-import { OG_IMAGE, clampDescription } from '@/lib/seo';
+import { clampDescription } from '@/lib/seo';
 
 interface Params {
   id: string;
@@ -29,8 +29,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     title,
     description,
     alternates: { canonical: `/apps/${app.id}` },
-    openGraph: { images: OG_IMAGE, title: `${title} | Pushify`, description, url: `https://pushify.dev/apps/${app.id}`, type: 'website' },
-    twitter: { images: OG_IMAGE, card: 'summary_large_image', title, description },
+    openGraph: { title: `${title} | Pushify`, description, url: `https://pushify.dev/apps/${app.id}`, type: 'website' },
+    twitter: { card: 'summary_large_image', title, description },
   };
 }
 

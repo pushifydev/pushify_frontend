@@ -6,8 +6,9 @@ export const docsEn: DocsContent = {
     searchPlaceholder: 'Search...',
     navigation: 'Navigation',
     dashboard: 'Dashboard',
-    getApiKey: 'Get API Key',
+    getApiKey: 'Get an API key',
     apiVersion: 'API v1.0',
+    noResults: 'No sections match.',
   },
   labels: {
     parameters: 'Parameters',
@@ -17,32 +18,36 @@ export const docsEn: DocsContent = {
     request: 'Request',
     response: 'Response',
     copyCode: 'Copy code',
+    copy: 'Copy',
+    copied: 'Copied',
+    required: 'required',
+    linkToSection: 'Link to this heading',
     baseUrl: 'Base URL',
-    headerFormat: 'Header Format',
-    exampleRequest: 'Example Request',
-    availableScopes: 'Available Scopes',
-    scopesIntro: 'Limit API key access by selecting specific scopes when creating a key.',
+    headerFormat: 'Header',
+    exampleRequest: 'Example request',
+    availableScopes: 'Scopes',
+    scopesIntro: 'Give each key only the scopes it needs when you create it.',
     explore: 'Explore',
-    quickStart: 'Quick Start',
+    quickStart: 'Quick start',
     code: 'Code',
     description: 'Description',
     plan: 'Plan',
-    rateLimit: 'Rate Limit',
+    rateLimit: 'Rate limit',
   },
   navGroups: [
     {
-      label: 'Getting Started',
+      label: 'Getting started',
       items: [
         { id: 'intro', label: 'Introduction' },
         { id: 'auth', label: 'Authentication' },
       ],
     },
     {
-      label: 'API Reference',
+      label: 'API reference',
       items: [
         { id: 'projects', label: 'Projects' },
         { id: 'deployments', label: 'Deployments' },
-        { id: 'envvars', label: 'Environment Variables' },
+        { id: 'envvars', label: 'Environment variables' },
         { id: 'domains', label: 'Domains' },
       ],
     },
@@ -65,39 +70,40 @@ export const docsEn: DocsContent = {
     {
       label: 'Reference',
       items: [
-        { id: 'errors', label: 'Error Handling' },
+        { id: 'errors', label: 'Error handling' },
       ],
     },
   ],
   intro: {
     badge: 'REST API',
     title: 'Pushify API Documentation',
-    lead: 'Deploy, manage, and monitor your applications programmatically. Perfect for CI/CD pipelines, automation scripts, and custom integrations.',
+    lead: 'Deploy, manage and monitor applications from CI/CD pipelines, scripts and your own tools.',
+    idNoteTitle: 'Resource IDs',
     idNote:
       'Resource IDs in paths and responses are UUIDs (e.g. 550e8400-e29b-41d4-a716-446655440000). Use the id returned by list or create endpoints — placeholder values like proj_abc123 are not valid.',
     infraNoteTitle: 'Managed server billing',
     infraNote:
-      'Pushify has two charges: (1) platform subscription — deploy/API/team limits; (2) infrastructure credits — prepaid USD wallet debited hourly while managed Hetzner servers run. BYOS (SSH) servers do not use the wallet. Top up and view balance in Dashboard → Billing. If credits run out, managed servers stop until you add more. Failed platform payments block new resources until your card is updated.',
+      'Two separate charges: (1) the platform subscription, which sets deploy, API and team limits; (2) infrastructure credits, a prepaid USD wallet debited hourly while managed Hetzner servers run. BYOS (SSH) servers don\'t use the wallet. Top up and check the balance in Dashboard → Billing. When credits run out, managed servers stop until you add more. A failed platform payment blocks new resources until the card is updated.',
     features: [
-      { title: 'RESTful API', desc: 'Simple REST endpoints with JSON responses' },
-      { title: 'Secure', desc: 'Scope-based API key permissions' },
-      { title: 'CI/CD Ready', desc: 'Webhook triggers and deploy API' },
+      { title: 'REST and JSON', desc: 'Plain REST endpoints, JSON responses' },
+      { title: 'Scoped keys', desc: 'Each API key gets only the scopes you grant' },
+      { title: 'Built for CI/CD', desc: 'Webhook triggers and a deploy API' },
     ],
     steps: [
       {
-        title: 'Create an API Key',
+        title: 'Create an API key',
         desc: '',
         descBefore: 'Go to ',
         linkText: 'Settings → API Keys',
         descAfter: ' and create a key with the required scopes.',
       },
       {
-        title: 'Make a Request',
-        desc: 'Use your API key in the Authorization header to authenticate.',
+        title: 'Make a request',
+        desc: 'Send the key in the Authorization header.',
       },
       {
         title: 'Automate',
-        desc: 'Integrate with GitHub Actions, GitLab CI, or any CI/CD tool.',
+        desc: 'Call it from GitHub Actions, GitLab CI or any other CI/CD tool.',
       },
     ],
     exploreLinks: [
@@ -109,9 +115,9 @@ export const docsEn: DocsContent = {
   },
   auth: {
     title: 'Authentication',
-    description: 'All API requests require an API key. Include it in the Authorization header as a Bearer token.',
+    description: 'Every request needs an API key, sent as a Bearer token in the Authorization header.',
     securityTitle: 'Security',
-    securityText: 'Never expose API keys in client-side code or public repositories. Store them in environment variables.',
+    securityText: 'Never put API keys in client-side code or public repositories. Keep them in environment variables.',
     sessionOnlyTitle: 'Dashboard session only',
     sessionOnlyText:
       'Some routes require a logged-in dashboard session (JWT), not an API key — for example GET /servers/:id/ssh-key and POST /servers/:id/terminal. API keys return 403 on these endpoints.',
@@ -134,13 +140,13 @@ export const docsEn: DocsContent = {
   },
   projects: {
     title: 'Projects',
-    description: 'Manage your projects programmatically. Create, update, configure, and delete projects.',
+    description: 'Create, configure, update and delete projects.',
     endpoints: {
       list: {
         description: 'List all projects in your organization.',
       },
       get: {
-        description: 'Get detailed information about a specific project including build config and domains.',
+        description: 'Get one project, including its build config and domains.',
       },
       create: {
         description: 'Create a new project. Git repository fields are optional if you deploy without Git.',
@@ -170,7 +176,7 @@ export const docsEn: DocsContent = {
   },
   deployments: {
     title: 'Deployments',
-    description: 'Trigger and manage deployments. Monitor build progress, view logs, and rollback when needed.',
+    description: 'Trigger deployments, follow their logs, and roll back when needed.',
     endpoints: {
       list: {
         description: 'List all deployments for a project, ordered by newest first.',
@@ -197,7 +203,7 @@ export const docsEn: DocsContent = {
         responseMsg: 'Redeploy started',
       },
       rollback: {
-        description: 'Rollback to a previous successful deployment.',
+        description: 'Roll back to a previous successful deployment.',
         responseMsg: 'Rollback started',
       },
       logs: {
@@ -210,12 +216,12 @@ export const docsEn: DocsContent = {
   },
   envvars: {
     title: 'Environment Variables',
-    description: 'Manage environment variables for your projects. Changes take effect on next deployment.',
-    sensitiveTitle: 'Sensitive Values',
+    description: 'Manage a project\'s environment variables. Changes take effect on the next deployment.',
+    sensitiveTitle: 'Sensitive values',
     sensitiveText: 'Environment variable values are encrypted at rest and masked in API responses. Only the first and last characters are visible.',
     endpoints: {
       list: {
-        description: 'List all environment variables for a project. Values are masked for security.',
+        description: 'List a project\'s environment variables. Values are masked.',
         params: {
           environment: 'Filter by environment: production or preview (optional)',
         },
@@ -249,7 +255,7 @@ export const docsEn: DocsContent = {
   },
   domains: {
     title: 'Domains',
-    description: 'Add custom domains to your projects. Manage DNS settings, SSL certificates, and Nginx configuration.',
+    description: 'Add custom domains to a project. DNS verification, SSL certificates and the Nginx config are handled for you.',
     endpoints: {
       list: {
         description: 'List all domains configured for a project.',
@@ -277,7 +283,7 @@ export const docsEn: DocsContent = {
   },
   servers: {
     title: 'Servers',
-    description: 'Provision and manage servers. Create cloud servers, control their state, and monitor status.',
+    description: 'Provision cloud servers, start, stop and reboot them, and check their status.',
     sessionOnlyTitle: 'Not available via API key',
     sessionOnlyText:
       'SSH private keys (GET /servers/:id/ssh-key) and the browser web terminal (POST /servers/:id/terminal) are only available through the dashboard with an active session.',
@@ -318,7 +324,7 @@ export const docsEn: DocsContent = {
   },
   databases: {
     title: 'Databases',
-    description: 'Create and manage databases on your servers. Supports PostgreSQL, MySQL, Redis, and MongoDB.',
+    description: 'Run PostgreSQL, MySQL, Redis and MongoDB on your servers, with backups.',
     endpoints: {
       list: {
         description: 'List all databases in your organization.',
@@ -368,25 +374,25 @@ export const docsEn: DocsContent = {
   },
   webhooks: {
     title: 'Webhooks & CI/CD',
-    description: 'Automatically deploy when you push to GitHub. Pushify listens for webhook events and triggers deployments.',
-    howItWorks: 'How It Works',
+    description: 'Deploy on every push to GitHub: Pushify receives the webhook and starts a deployment.',
+    howItWorks: 'How it works',
     steps: [
       { title: 'Connect GitHub', desc: 'Link your GitHub account in project settings.' },
-      { title: 'Push to Branch', desc: 'Push code to the configured branch (e.g. main).' },
-      { title: 'Auto Deploy', desc: 'Pushify receives the webhook and starts a deployment automatically.' },
+      { title: 'Push to the branch', desc: 'Push code to the configured branch (e.g. main).' },
+      { title: 'It deploys', desc: 'Pushify receives the webhook and starts a deployment.' },
     ],
-    manualTitle: 'Manual Webhook URL',
-    manualDesc: 'Each project has a unique webhook URL for manual integration with other Git providers.',
-    githubTitle: 'GitHub Actions Example',
-    githubDesc: 'Trigger deployments directly from GitHub Actions using the Deployments API.',
-    secretTitle: 'Webhook Secret',
+    manualTitle: 'Manual webhook URL',
+    manualDesc: 'Every project has its own webhook URL, for wiring up other Git providers by hand.',
+    githubTitle: 'GitHub Actions',
+    githubDesc: 'Trigger a deployment from a workflow with the Deployments API.',
+    secretTitle: 'Webhook secret',
     secretText:
       'Webhook payloads are signed with HMAC-SHA256. Retrieve your webhook secret via the project settings or the GET /projects/:id/webhook endpoint.',
   },
   monitoring: {
     title: 'Monitoring, logs and backups',
     description:
-      'What Pushify watches on your behalf, the thresholds that decide whether an email arrives, and how long it keeps what it collects.',
+      'What Pushify watches, the thresholds that decide when it emails you, and how long it keeps what it collects.',
     alertsTitle: 'When you get an email',
     alertsText:
       'Every active project with a live deployment and a URL is called about once a minute — no configuration needed. These are the conditions that send mail:',
@@ -425,6 +431,7 @@ export const docsEn: DocsContent = {
     logsTitle: 'How long logs are kept',
     logsText:
       "Container output is collected from every container a project runs — the app, its replicas, its workers and its staging copy — and is searchable by term, time range and container. How long it stays depends on the plan:",
+    retentionLabel: 'Kept for',
     logRetention: [
       { plan: 'Free', kept: '3 days' },
       { plan: 'Hobby', kept: '7 days' },
@@ -458,7 +465,7 @@ export const docsEn: DocsContent = {
   buildSources: {
     title: 'Private images and compose stacks',
     description:
-      'A project can build a repository, run a ready image, or bring up a whole compose stack. The credentials each one needs — and the scopes registries actually require — are here.',
+      'A project can build a repository, run a ready image or bring up a compose stack. Here is what each needs, including the registry scopes that are actually required.',
     registriesTitle: 'Private registries',
     registriesText:
       "Settings → Private registries stores one login per registry for the whole organization. It is used for two things: a Dockerfile whose FROM is a private base image, and projects that deploy a ready image. The token is write-only — it is sent once and never shown again, only replaced.",
@@ -498,6 +505,7 @@ export const docsEn: DocsContent = {
     imageText:
       'Project settings → Docker image: fill in a reference and the project deploys that image instead of building the repository. Every deploy pulls the reference again, so moving a tag and redeploying ships the new image.',
     imageExample: 'ghcr.io/acme/api:1.4',
+    imageRefLabel: 'Image reference',
     imageNotes: [
       'The image keeps everything it already declares — its CMD, ENV and exposed port are used as they are.',
       'It gets the same treatment as a built app: blue-green switch, replicas, staging, volumes, domains and HTTPS.',
@@ -531,17 +539,19 @@ export const docsEn: DocsContent = {
   sso: {
     title: 'Single sign-on (OIDC)',
     description:
-      "Let your team sign in through your own identity provider. The parts that are easy to get wrong are all on the provider's side, so this walks through what to enter there.",
+      "Let your team sign in through your own identity provider. What goes wrong is almost always on the provider's side, so this covers what to enter there.",
     beforeTitle: 'Before you start',
     beforeText:
       "You need to be the organization's owner. Open Settings → Single sign-on: it shows the redirect URI your provider must send people back to. Copy it now — every provider asks for it first.",
     redirectExample: 'https://api.pushify.dev/api/v1/sso/callback',
+    redirectLabel: 'Redirect URI',
     redirectWarningTitle: 'The redirect URI has to match exactly',
     redirectWarning:
       "Character for character, including https and any trailing path. A mismatch is the single most common failure, and it surfaces at the very end of sign-in as an error from the provider rather than from Pushify — so it looks like their problem, not a setting.",
     issuerLabel: 'Issuer to enter in Pushify',
     providers: [
       {
+        slug: 'okta',
         name: 'Okta',
         steps: [
           'In the Okta admin console, go to Applications → Create App Integration.',
@@ -553,6 +563,7 @@ export const docsEn: DocsContent = {
         issuer: 'https://YOUR-TENANT.okta.com',
       },
       {
+        slug: 'entra',
         name: 'Microsoft Entra ID (Azure AD)',
         steps: [
           'In the Azure portal, open Microsoft Entra ID → App registrations → New registration.',
@@ -564,6 +575,7 @@ export const docsEn: DocsContent = {
         issuer: 'https://login.microsoftonline.com/YOUR-TENANT-ID/v2.0',
       },
       {
+        slug: 'google',
         name: 'Google Workspace',
         steps: [
           'In Google Cloud Console, pick the project for your organization and open APIs & Services → Credentials.',
@@ -614,21 +626,21 @@ export const docsEn: DocsContent = {
     ],
   },
   errors: {
-    title: 'Error Handling',
-    description: 'The API uses standard HTTP status codes and returns detailed error messages in JSON format.',
-    httpStatusTitle: 'HTTP Status Codes',
+    title: 'Error handling',
+    description: 'Standard HTTP status codes, with a JSON body that says what went wrong.',
+    httpStatusTitle: 'HTTP status codes',
     statusRows: [
       { code: '200', desc: 'Success' },
-      { code: '201', desc: 'Created - Resource created successfully' },
-      { code: '400', desc: 'Bad Request - Invalid parameters' },
-      { code: '401', desc: 'Unauthorized - Invalid or missing API key' },
-      { code: '403', desc: 'Forbidden - Insufficient permissions / scope' },
-      { code: '404', desc: 'Not Found - Resource does not exist' },
-      { code: '429', desc: 'Too Many Requests - Rate limit exceeded' },
-      { code: '500', desc: 'Internal Server Error' },
+      { code: '201', desc: 'Created — the resource was created' },
+      { code: '400', desc: 'Bad request — invalid parameters' },
+      { code: '401', desc: 'Unauthorized — invalid or missing API key' },
+      { code: '403', desc: 'Forbidden — insufficient permissions or scope' },
+      { code: '404', desc: 'Not found — the resource does not exist' },
+      { code: '429', desc: 'Too many requests — rate limit exceeded' },
+      { code: '500', desc: 'Internal server error' },
     ],
-    responseFormatTitle: 'Error Response Format',
-    commonCodesTitle: 'Common Error Codes',
+    responseFormatTitle: 'Error response',
+    commonCodesTitle: 'Common error codes',
     errorCodes: [
       { code: 'UNAUTHORIZED', desc: 'API key is missing, invalid, or expired' },
       { code: 'INSUFFICIENT_SCOPE', desc: 'API key lacks required permissions' },
@@ -637,8 +649,8 @@ export const docsEn: DocsContent = {
       { code: 'RATE_LIMITED', desc: 'Too many requests, slow down' },
       { code: 'CONFLICT', desc: 'Resource already exists or state conflict' },
     ],
-    rateLimitsTitle: 'Rate Limits',
-    rateLimitsIntro: 'API requests are rate-limited per API key. Limits vary by plan.',
+    rateLimitsTitle: 'Rate limits',
+    rateLimitsIntro: 'Limits apply per API key and depend on the plan.',
     rateLimitRows: [
       { plan: 'Free', limit: '60 requests/min' },
       { plan: 'Hobby', limit: '120 requests/min' },
@@ -647,7 +659,7 @@ export const docsEn: DocsContent = {
       { plan: 'Enterprise', limit: 'Unlimited' },
     ],
     rateLimitFooter:
-      'Rate limit headers are included in every response: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset',
-    exampleTitle: 'Error Handling Example',
+      'Every response carries X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset.',
+    exampleTitle: 'Handling errors in code',
   },
 };

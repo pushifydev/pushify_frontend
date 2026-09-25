@@ -12,7 +12,7 @@ import type {
 } from '@/lib/api';
 import { IndexSection } from './IndexSection';
 import { ColumnFields, emptyColumn, normalizeColumn, type DraftColumn } from './ColumnFields';
-import type { T } from './_shared';
+import { iconButtonClass, type T } from './_shared';
 
 interface TableSchemaModalProps {
   isOpen: boolean;
@@ -39,7 +39,7 @@ interface TableSchemaModalProps {
   t: T;
 }
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
+const mono = { fontFamily: 'var(--font-mono)' } as const;
 
 export function TableSchemaModal({
   isOpen,
@@ -88,29 +88,29 @@ export function TableSchemaModal({
 
         {/* Columns */}
         <div>
-          <p className="text-sm font-medium mb-2">{t('databases', 'studioColumns')}</p>
+          <h3 className="dash-section-label mb-2">{t('databases', 'studioColumns')}</h3>
           <div
-            className="rounded-lg overflow-hidden"
-            style={{ border: '1px solid var(--glass-border)' }}
+            className="rounded-[10px] overflow-hidden"
+            style={{ border: '1px solid var(--border-subtle)' }}
           >
             {table.columns.map((column, index) => (
               <div
                 key={column.name}
                 className="flex items-center gap-3 px-3 py-2"
                 style={{
-                  borderTop: index === 0 ? 'none' : '1px solid var(--glass-border)',
+                  borderTop: index === 0 ? 'none' : '1px solid var(--border-subtle)',
                 }}
               >
                 <div className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5">
                     {column.isPrimaryKey && (
-                      <KeyRound className="w-3 h-3 shrink-0" style={{ color: 'var(--accent-cyan)' }} />
+                      <KeyRound className="w-3 h-3 shrink-0" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
                     )}
                     <span className="text-sm truncate" style={mono}>
                       {column.name}
                     </span>
                   </span>
-                  <span className="block text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                  <span className="block dash-mono-caption mt-0.5">
                     {column.dataType}
                     {column.isNullable ? '' : ' · NOT NULL'}
                     {column.defaultValue ? ` · ${t('databases', 'studioColumnDefault')}: ${column.defaultValue}` : ''}
@@ -129,7 +129,7 @@ export function TableSchemaModal({
                           })
                         }
                         disabled={pending.drop}
-                        className="btn btn-secondary text-xs py-1"
+                        className="btn btn-secondary btn-sm"
                         style={{ color: 'var(--status-error)' }}
                       >
                         {pending.drop && <Loader2 className="w-3 h-3 animate-spin" />}
@@ -138,7 +138,7 @@ export function TableSchemaModal({
                       <button
                         type="button"
                         onClick={() => setConfirmColumn(null)}
-                        className="btn btn-ghost text-xs py-1"
+                        className="btn btn-ghost btn-sm"
                       >
                         {t('common', 'cancel')}
                       </button>
@@ -147,9 +147,9 @@ export function TableSchemaModal({
                     <button
                       type="button"
                       onClick={() => setConfirmColumn(column.name)}
-                      className="p-1.5 rounded-md shrink-0"
-                      style={{ color: 'var(--text-muted)' }}
+                      className={`${iconButtonClass} hover:text-(--status-error)!`}
                       title={t('databases', 'studioDropColumn')}
+                      aria-label={t('databases', 'studioDropColumn')}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -163,8 +163,8 @@ export function TableSchemaModal({
         {!isView &&
           (draft ? (
             <div
-              className="rounded-lg px-3 py-3 space-y-3"
-              style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)' }}
+              className="rounded-[10px] px-3 py-3 space-y-3"
+              style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-subtle)' }}
             >
               <ColumnFields
                 column={draft}
@@ -188,7 +188,7 @@ export function TableSchemaModal({
                     })
                   }
                   disabled={pending.add}
-                  className="btn btn-primary text-sm"
+                  className="btn btn-primary btn-sm"
                 >
                   {pending.add && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   {t('databases', 'studioAddColumn')}
@@ -196,7 +196,7 @@ export function TableSchemaModal({
                 <button
                   type="button"
                   onClick={() => setDraft(null)}
-                  className="btn btn-secondary text-sm"
+                  className="btn btn-secondary btn-sm"
                 >
                   {t('common', 'cancel')}
                 </button>
@@ -206,7 +206,7 @@ export function TableSchemaModal({
             <button
               type="button"
               onClick={() => setDraft(emptyColumn(types))}
-              className="btn btn-secondary text-sm"
+              className="btn btn-secondary btn-sm"
             >
               <Plus className="w-3.5 h-3.5" />
               {t('databases', 'studioAddColumn')}
@@ -244,7 +244,7 @@ export function TableSchemaModal({
                 type="button"
                 onClick={() => run(() => onRename(newName.trim()))}
                 disabled={pending.rename || !newName.trim() || newName.trim() === table.name}
-                className="btn btn-secondary text-sm"
+                className="btn btn-secondary btn-sm"
               >
                 {pending.rename && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                 {t('common', 'save')}
@@ -258,20 +258,20 @@ export function TableSchemaModal({
         {/* Destructive actions — confirmed outside this modal */}
         {!isView && (
           <div
-            className="rounded-lg px-3 py-3 flex flex-wrap items-center justify-between gap-3"
+            className="rounded-[10px] px-3 py-3 flex flex-wrap items-center justify-between gap-3"
             style={{
-              background: 'rgba(239,68,68,0.06)',
-              border: '1px solid rgba(239,68,68,0.18)',
+              background: 'color-mix(in srgb, var(--status-error) 6%, var(--bg-secondary))',
+              border: '1px solid color-mix(in srgb, var(--status-error) 30%, var(--border-subtle))',
             }}
           >
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p className="dash-section-label" style={{ color: 'var(--status-error)' }}>
               {t('databases', 'studioDangerZone')}
             </p>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={onRequestTruncate}
-                className="btn btn-secondary text-sm"
+                className="btn btn-secondary btn-sm"
               >
                 <Eraser className="w-3.5 h-3.5" />
                 {t('databases', 'studioTruncateTable')}
@@ -279,7 +279,7 @@ export function TableSchemaModal({
               <button
                 type="button"
                 onClick={onRequestDrop}
-                className="btn btn-secondary text-sm"
+                className="btn btn-secondary btn-sm"
                 style={{ color: 'var(--status-error)' }}
               >
                 <Trash2 className="w-3.5 h-3.5" />

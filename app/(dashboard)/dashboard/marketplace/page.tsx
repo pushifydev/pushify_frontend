@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, PackageOpen } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useMarketplaceTemplates } from '@/hooks/useMarketplace';
 import { InstalledAppsPanel } from '@/components/marketplace/InstalledAppsPanel';
@@ -9,6 +9,7 @@ import type { MarketplaceCategory } from '@/lib/api';
 import TemplateCard from './components/TemplateCard';
 import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
 import { CrossPromoBanner } from '@/components/dashboard/CrossPromoBanner';
+import { EmptyState } from '@/components/EmptyState';
 
 const CATEGORIES: { key: MarketplaceCategory | 'all'; color: string }[] = [
   { key: 'all', color: 'var(--text-primary)' },
@@ -155,15 +156,7 @@ export default function MarketplacePage() {
 
       {/* Empty State */}
       {!isLoading && filtered.length === 0 && (
-        <div className="text-center py-20">
-          <PackageOpen
-            className="w-12 h-12 mx-auto mb-4 opacity-30"
-            style={{ color: 'var(--text-muted)' }}
-          />
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-            {t('marketplace', 'noTemplates')}
-          </p>
-        </div>
+        <EmptyState label={t('marketplace', 'title')} title={t('marketplace', 'noTemplates')} />
       )}
 
       {/* Featured Section */}

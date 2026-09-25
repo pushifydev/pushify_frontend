@@ -129,142 +129,158 @@ export function LogsTab({
   };
 
   return (
-    <div className="space-y-4 min-w-0">
-      {/* Header: mode switch + controls */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
-          {(['live', 'history'] as Mode[]).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                mode === m
-                  ? 'dash-accent-fill border'
-                  : 'bg-[var(--bg-tertiary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)]'
-              }`}
-            >
-              {m === 'live' ? t('logs', 'live') : t('logs', 'history')}
-            </button>
-          ))}
-          {mode === 'live' && (
-            <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] ml-2">
-              <span
-                className="w-2 h-2 rounded-full"
-                style={{
-                  background: stream.isLive
-                    ? 'var(--status-success)'
-                    : stream.isConnected
-                      ? 'var(--status-warning)'
-                      : 'var(--text-muted)',
-                }}
-              />
-              {stream.isLive
-                ? t('logs', 'connected')
-                : stream.isConnected
-                  ? t('logs', 'connecting')
-                  : t('logs', 'disconnected')}
-              {stream.containerName && (
-                <code className="ml-1 text-[var(--text-secondary)]">{stream.containerName}</code>
-              )}
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1 shrink-0">
-          {mode === 'live' && (
-            <>
-              <button
-                onClick={() => setAutoScroll(!autoScroll)}
-                className="btn btn-ghost h-8 text-xs"
-                title={autoScroll ? t('logs', 'pauseScroll') : t('logs', 'resumeScroll')}
-              >
-                {autoScroll ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                {autoScroll ? t('logs', 'pauseScroll') : t('logs', 'resumeScroll')}
-              </button>
-              <button onClick={stream.reconnect} className="btn btn-ghost h-8 text-xs">
-                <RefreshCw className="w-3.5 h-3.5" />
-              </button>
-              <button onClick={stream.clearLogs} className="btn btn-ghost h-8 text-xs">
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </>
-          )}
-          <button onClick={downloadLogs} disabled={exporting} className="btn btn-ghost h-8 text-xs">
-            <Download className="w-3.5 h-3.5" />
-            {exporting ? t('logs', 'exporting') : t('logs', 'download')}
-          </button>
-          <Link
-            href={`/dashboard/projects/${projectId}/shell`}
-            className="btn btn-ghost h-8 text-xs"
-          >
-            <Terminal className="w-3.5 h-3.5" />
-            {t('logs', 'shell')}
-          </Link>
-        </div>
-      </div>
-
-      {/* Filter / search bar */}
-      {mode === 'live' ? (
-        <input
-          type="text"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          placeholder={t('logs', 'filterPlaceholder')}
-          className="input w-full text-sm terminal-text"
-        />
-      ) : (
-        <div className="flex flex-col sm:flex-row flex-wrap gap-2">
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && runSearch()}
-            placeholder={t('logs', 'searchPlaceholder')}
-            className="input flex-1 min-w-[12rem] text-sm terminal-text"
-          />
-          <select
-            value={rangeHours}
-            onChange={(e) => setRangeHours(Number(e.target.value))}
-            className="input w-36 text-sm"
-          >
-            {RANGES.map((range) => (
-              <option key={range.key} value={range.hours}>
-                {t('logs', range.key)}
-              </option>
-            ))}
-          </select>
-          {containers.length > 1 && (
-            <select
-              value={container}
-              onChange={(e) => setContainer(e.target.value)}
-              className="input w-44 text-sm terminal-text"
-            >
-              <option value="">{t('logs', 'allContainers')}</option>
-              {containers.map((name) => (
-                <option key={name} value={name}>
-                  {name}
-                </option>
+    <div className="space-y-3 min-w-0">
+      <div className="dash-card overflow-hidden min-w-0">
+        {/* Toolbar: mode switch, stream state, actions */}
+        <div className="dash-toolbar justify-between">
+          <div className="flex flex-wrap items-center gap-3 min-w-0">
+            <div className="dash-segmented" role="group" aria-label={t('logs', 'title')}>
+              {(['live', 'history'] as Mode[]).map((m) => (
+                <button key={m} type="button" onClick={() => setMode(m)} aria-pressed={mode === m}>
+                  {m === 'live' ? t('logs', 'live') : t('logs', 'history')}
+                </button>
               ))}
-            </select>
-          )}
-          <select
-            value={logType}
-            onChange={(e) => setLogType(e.target.value as typeof logType)}
-            className="input w-32 text-sm"
-          >
-            <option value="all">{t('logs', 'allTypes')}</option>
-            <option value="stdout">stdout</option>
-            <option value="stderr">stderr</option>
-          </select>
-          <button onClick={runSearch} disabled={searching} className="btn btn-primary">
-            <Search className="w-4 h-4" />
-            {searching ? t('logs', 'searching') : t('logs', 'search')}
-          </button>
-        </div>
-      )}
+            </div>
+            {mode === 'live' && (
+              <span className="flex items-center gap-2 min-w-0 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)]" role="status">
+                <span
+                  className={`dash-status-dot ${stream.isLive ? 'is-success' : stream.isConnected ? 'is-warning' : ''}`}
+                  aria-hidden
+                />
+                {stream.isLive
+                  ? t('logs', 'connected')
+                  : stream.isConnected
+                    ? t('logs', 'connecting')
+                    : t('logs', 'disconnected')}
+                {stream.containerName && (
+                  <code className="normal-case tracking-normal text-[var(--text-secondary)] truncate">{stream.containerName}</code>
+                )}
+              </span>
+            )}
+          </div>
 
-      {/* Log viewport */}
-      <div className="rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] p-4 h-[60vh] overflow-y-auto terminal-text text-xs leading-relaxed">
+          <div className="flex items-center gap-0.5 shrink-0">
+            {mode === 'live' && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setAutoScroll(!autoScroll)}
+                  className="btn btn-ghost btn-sm"
+                  title={autoScroll ? t('logs', 'pauseScroll') : t('logs', 'resumeScroll')}
+                >
+                  {autoScroll ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                  <span className="hidden sm:inline">{autoScroll ? t('logs', 'pauseScroll') : t('logs', 'resumeScroll')}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={stream.reconnect}
+                  className="btn btn-ghost btn-sm"
+                  aria-label={t('logs', 'reconnect')}
+                  title={t('logs', 'reconnect')}
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={stream.clearLogs}
+                  className="btn btn-ghost btn-sm"
+                  aria-label={t('common', 'delete')}
+                  title={t('common', 'delete')}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </>
+            )}
+            <button type="button" onClick={downloadLogs} disabled={exporting} className="btn btn-ghost btn-sm">
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{exporting ? t('logs', 'exporting') : t('logs', 'download')}</span>
+            </button>
+            <Link
+              href={`/dashboard/projects/${projectId}/shell`}
+              className="btn btn-secondary btn-sm ml-1"
+            >
+              <Terminal className="w-3.5 h-3.5" />
+              {t('logs', 'shell')}
+            </Link>
+          </div>
+        </div>
+
+        {/* Filter / search bar */}
+        <div className="dash-toolbar">
+          {mode === 'live' ? (
+            <div className="relative flex-1 min-w-0">
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" aria-hidden />
+              <input
+                type="text"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                placeholder={t('logs', 'filterPlaceholder')}
+                aria-label={t('logs', 'filterPlaceholder')}
+                className="input w-full !py-1.5 !pl-8 text-[13px] terminal-text"
+              />
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full">
+              <div className="relative flex-1 min-w-[12rem]">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" aria-hidden />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && runSearch()}
+                  placeholder={t('logs', 'searchPlaceholder')}
+                  aria-label={t('logs', 'searchPlaceholder')}
+                  className="input w-full !py-1.5 !pl-8 text-[13px] terminal-text"
+                />
+              </div>
+              <select
+                value={rangeHours}
+                onChange={(e) => setRangeHours(Number(e.target.value))}
+                className="input sm:w-36 !py-1.5 text-[13px]"
+              >
+                {RANGES.map((range) => (
+                  <option key={range.key} value={range.hours}>
+                    {t('logs', range.key)}
+                  </option>
+                ))}
+              </select>
+              {containers.length > 1 && (
+                <select
+                  value={container}
+                  onChange={(e) => setContainer(e.target.value)}
+                  className="input sm:w-44 !py-1.5 text-[13px] terminal-text"
+                >
+                  <option value="">{t('logs', 'allContainers')}</option>
+                  {containers.map((name) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <select
+                value={logType}
+                onChange={(e) => setLogType(e.target.value as typeof logType)}
+                className="input sm:w-32 !py-1.5 text-[13px]"
+              >
+                <option value="all">{t('logs', 'allTypes')}</option>
+                <option value="stdout">stdout</option>
+                <option value="stderr">stderr</option>
+              </select>
+              <button type="button" onClick={runSearch} disabled={searching} className="btn btn-primary btn-sm !h-auto">
+                <Search className="w-4 h-4" />
+                {searching ? t('logs', 'searching') : t('logs', 'search')}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Log viewport */}
+        <div
+          className="bg-[var(--bg-primary)] px-4 py-3 h-[60vh] overflow-y-auto terminal-text text-xs leading-relaxed text-[var(--text-secondary)]"
+          role="log"
+          aria-live="off"
+        >
         {mode === 'live' ? (
           !latestDeployment ? (
             <p className="text-[var(--text-muted)]">{t('logs', 'noDeployment')}</p>
@@ -304,9 +320,10 @@ export function LogsTab({
             </div>
           ))
         )}
+        </div>
       </div>
 
-      <p className="text-xs text-[var(--text-muted)]">
+      <p className="dash-mono-caption">
         {t('logs', 'retentionNote').replace('{days}', String(retentionDays))}
       </p>
     </div>

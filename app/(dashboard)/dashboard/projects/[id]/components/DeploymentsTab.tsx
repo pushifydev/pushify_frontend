@@ -79,7 +79,7 @@ function DeploymentDiffLine({
   if (parts.length === 0) return null;
 
   return (
-    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tabular-nums mb-3 text-[var(--text-muted)]">
+    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tabular-nums mt-2 text-[var(--text-muted)]">
       {parts}
     </p>
   );
@@ -127,56 +127,65 @@ export function DeploymentsTab({
 
   if (!deployments || deployments.length === 0) {
     return (
-      <div className="p-12 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center">
-        <Rocket className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-3" />
-        <h3 className="text-lg font-medium mb-2">{t('projectDetail', 'noDeploymentsYet')}</h3>
-        <p className="text-[var(--text-secondary)]">{t('projectDetail', 'pushToTrigger')}</p>
+      <div className="dash-card px-6 py-14 text-center">
+        <Rocket className="dash-empty-icon mb-3" />
+        <h3 className="text-[15px] mb-1">{t('projectDetail', 'noDeploymentsYet')}</h3>
+        <p className="text-sm text-[var(--text-secondary)]">{t('projectDetail', 'pushToTrigger')}</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4 min-w-0">
-      <div
-        className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-tertiary)] px-3 py-2.5 sm:px-4 text-xs text-[var(--text-secondary)]"
-        role="note"
-      >
-        <p className="font-medium text-[var(--text-primary)] mb-1.5">{t('projectDetail', 'logsHelpTitle')}</p>
-        <ul className="space-y-1 text-[var(--text-muted)] list-disc list-inside sm:list-outside sm:pl-4">
-          <li>{t('projectDetail', 'logsHelpBuild')}</li>
-          <li>{t('projectDetail', 'logsHelpContainer')}</li>
-          <li>{t('projectDetail', 'logsHelpHistorical')}</li>
+      <div className="dash-callout flex-col gap-1.5 text-[13px]" role="note">
+        <p className="dash-section-label">{t('projectDetail', 'logsHelpTitle')}</p>
+        <ul className="space-y-1 text-[var(--text-secondary)]">
+          <li className="flex gap-2"><FileText className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[var(--text-muted)]" aria-hidden />{t('projectDetail', 'logsHelpBuild')}</li>
+          <li className="flex gap-2"><Terminal className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[var(--text-muted)]" aria-hidden />{t('projectDetail', 'logsHelpContainer')}</li>
+          <li className="flex gap-2"><History className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[var(--text-muted)]" aria-hidden />{t('projectDetail', 'logsHelpHistorical')}</li>
         </ul>
       </div>
+      <div className="dash-rows">
       {deployments.map((deployment, index) => (
-        <div
-          key={deployment.id}
-          className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] min-w-0 overflow-hidden"
-        >
-          <div className="flex flex-col gap-3 mb-3">
-            <div className="flex flex-wrap items-center gap-2 min-w-0">
-              <span className={`badge shrink-0 ${getStatusBadge(deployment.status)}`}>
-                {deployment.status}
-              </span>
-              {deployment.status === 'pending' && deployment.inQueue && (
-                <span className="badge badge-warning shrink-0 text-xs">
-                  {deployment.queuePosition
-                    ? formatMessage(t('projectDetail', 'deployQueuePosition'), {
-                        position: deployment.queuePosition,
-                      })
-                    : t('projectDetail', 'deployQueueWaiting')}
+        <div key={deployment.id} className="dash-row">
+          <div className="flex flex-col gap-2.5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 min-w-0">
+                <span className={`badge shrink-0 ${getStatusBadge(deployment.status)}`}>
+                  {deployment.status}
                 </span>
-              )}
-              <span className="text-sm terminal-text truncate max-w-[140px] sm:max-w-none">{deployment.branch}</span>
-              {deployment.commitHash && (
-                <span className="text-sm text-[var(--text-muted)] shrink-0">
-                  {deployment.commitHash.slice(0, 7)}
+                {deployment.status === 'pending' && deployment.inQueue && (
+                  <span className="badge badge-neutral shrink-0">
+                    {deployment.queuePosition
+                      ? formatMessage(t('projectDetail', 'deployQueuePosition'), {
+                          position: deployment.queuePosition,
+                        })
+                      : t('projectDetail', 'deployQueueWaiting')}
+                  </span>
+                )}
+                <span className="terminal-text text-[13px] text-[var(--text-primary)] truncate max-w-[160px] sm:max-w-[260px]">
+                  {deployment.branch}
                 </span>
+                {deployment.commitHash && (
+                  <span className="terminal-text text-xs text-[var(--text-muted)] shrink-0">
+                    {deployment.commitHash.slice(0, 7)}
+                  </span>
+                )}
+                <span className="text-xs text-[var(--text-muted)] shrink-0 inline-flex items-center gap-1">
+                  <Clock className="w-3 h-3" aria-hidden />
+                  {formatTimeAgo(deployment.createdAt, t)}
+                </span>
+                {deployment.trigger && (
+                  <span className="dash-section-label shrink-0">{deployment.trigger}</span>
+                )}
+              </div>
+              {deployment.commitMessage && (
+                <p className="text-[13px] text-[var(--text-secondary)] mt-1.5 truncate">{deployment.commitMessage}</p>
               )}
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 shrink-0">
               {['pending', 'building', 'deploying'].includes(deployment.status) && (
-                <button onClick={() => onCancel(deployment.id)} className="btn btn-ghost text-[var(--status-error)] h-8 text-xs">
+                <button onClick={() => onCancel(deployment.id)} className="btn btn-ghost btn-sm text-[var(--status-error)]">
                   {t('projectDetail', 'cancel')}
                 </button>
               )}
@@ -184,14 +193,14 @@ export function DeploymentsTab({
                 <button
                   type="button"
                   onClick={() => handleRollback(deployment)}
-                  className="btn btn-secondary h-8 text-xs flex items-center gap-1"
+                  className="btn btn-secondary btn-sm"
                   title={
                     deployment.dockerImageId
                       ? t('projectDetail', 'rollbackQuickHint')
                       : undefined
                   }
                 >
-                  <RotateCcw className="w-3 h-3 shrink-0" />
+                  <RotateCcw className="w-3.5 h-3.5 shrink-0" />
                   {t('projectDetail', 'rollbackToVersion')}
                 </button>
               )}
@@ -199,9 +208,9 @@ export function DeploymentsTab({
                 <button
                   type="button"
                   onClick={() => handleRollback(lastGood)}
-                  className="btn btn-secondary h-8 text-xs flex items-center gap-1 border-[var(--accent-cyan)]/40"
+                  className="btn btn-secondary btn-sm"
                 >
-                  <RotateCcw className="w-3 h-3" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                   {t('projectDetail', 'rollbackToLastGood')}
                 </button>
               )}
@@ -210,67 +219,58 @@ export function DeploymentsTab({
                   href={deployment.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-secondary h-8 text-xs inline-flex items-center gap-1"
+                  className="btn btn-ghost btn-sm"
                 >
-                  <ExternalLink className="w-3 h-3 shrink-0" />
+                  <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                   {t('projectDetail', 'preview')}
                 </a>
               )}
               <button
                 onClick={() => onViewLogs(deployment)}
-                className="btn btn-ghost h-8 text-xs inline-flex items-center gap-1"
+                className="btn btn-ghost btn-sm"
                 title={t('projectDetail', 'logsHelpBuild')}
               >
-                <FileText className="w-3 h-3 shrink-0" />
+                <FileText className="w-3.5 h-3.5 shrink-0" />
                 {t('projectDetail', 'viewLogs')}
               </button>
               {deployment.status === 'running' && (
                 <button
                   onClick={() => onViewContainerLogs(deployment.id)}
-                  className="btn btn-secondary h-8 text-xs inline-flex items-center gap-1"
+                  className="btn btn-ghost btn-sm"
                   title={t('projectDetail', 'logsHelpContainer')}
                 >
-                  <Terminal className="w-3 h-3 shrink-0" />
+                  <Terminal className="w-3.5 h-3.5 shrink-0" />
                   {t('projectDetail', 'containerLogs')}
                 </button>
               )}
               {(deployment.status === 'running' || deployment.status === 'stopped' || deployment.status === 'failed') && (
                 <button
                   onClick={() => onViewHistoricalLogs(deployment.id)}
-                  className="btn btn-ghost h-8 text-xs inline-flex items-center gap-1"
+                  className="btn btn-ghost btn-sm"
                   title={t('projectDetail', 'logsHelpHistorical')}
                 >
-                  <History className="w-3 h-3 shrink-0" />
+                  <History className="w-3.5 h-3.5 shrink-0" />
                   {t('projectDetail', 'historicalLogs')}
                 </button>
               )}
             </div>
           </div>
           {deployment.status === 'failed' && (
-            <div className="mb-3">
+            <div className="mt-3 [&>div]:mb-0">
               <DeploymentFailureSummary
                 logs={deployment.buildLogs}
                 errorMessage={deployment.errorMessage}
               />
             </div>
           )}
-          {deployment.commitMessage && (
-            <p className="text-sm text-[var(--text-secondary)] mb-3">{deployment.commitMessage}</p>
-          )}
           {(() => {
             const diff = deploymentDiff(deployment, deployments[index + 1], gitRepoUrl);
             return diff ? <DeploymentDiffLine diff={diff} t={t} /> : null;
           })()}
           <DeploymentTimeline deployment={deployment} />
-          <div className="flex items-center gap-4 text-xs text-[var(--text-muted)] mt-3">
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {formatTimeAgo(deployment.createdAt, t)}
-            </span>
-            <span className="capitalize">{deployment.trigger}</span>
-          </div>
         </div>
       ))}
+      </div>
     </div>
   );
 }

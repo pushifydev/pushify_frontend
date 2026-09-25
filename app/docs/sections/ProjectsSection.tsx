@@ -8,9 +8,9 @@ export function ProjectsSection({ c, apiBase }: SectionProps) {
 
   return (
     <div className="space-y-6">
-      <SectionHeading title={c.projects.title} description={c.projects.description} />
+      <SectionHeading id="projects" title={c.projects.title} description={c.projects.description} />
 
-      <div className="space-y-3">
+      <div className="docs-endpoints">
         <EndpointCard
           method="GET"
           path="/projects"

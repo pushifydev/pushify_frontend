@@ -11,7 +11,6 @@ import {
   useSetRedisExpiry,
   useSetRedisStringValue,
 } from '@/hooks';
-import type { RedisKeyType } from '@/lib/api';
 import { panelStyle, type T } from './_shared';
 
 interface RedisBrowserProps {
@@ -20,17 +19,7 @@ interface RedisBrowserProps {
   t: T;
 }
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
-
-const TYPE_COLORS: Record<RedisKeyType, string> = {
-  string: 'var(--accent-cyan)',
-  list: 'var(--status-info)',
-  set: 'var(--status-success)',
-  zset: 'var(--status-warning)',
-  hash: 'var(--accent-cyan)',
-  stream: 'var(--text-muted)',
-  none: 'var(--text-muted)',
-};
+const mono = { fontFamily: 'var(--font-mono)' } as const;
 
 function formatTtl(ttl: number, t: T): string {
   if (ttl === -1) return t('databases', 'studioNoExpiry');
@@ -74,7 +63,7 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
     <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
       {/* Keys */}
       <div className="flex flex-col overflow-hidden" style={{ ...panelStyle, maxHeight: '72vh' }}>
-        <div className="px-3 py-3 space-y-2" style={{ borderBottom: '1px solid var(--glass-border)' }}>
+        <div className="px-3 py-3 space-y-2" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div className="relative">
             <Search
               className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
@@ -87,13 +76,14 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                 if (e.key === 'Enter') applyPattern();
               }}
               placeholder="user:*"
-              className="input w-full text-sm"
+              aria-label={t('common', 'search')}
+              className="input w-full text-sm py-2!"
               style={{ ...mono, paddingLeft: 32 }}
             />
           </div>
 
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+            <span className="dash-mono-caption tabular-nums">
               {page ? `${page.keyCount.toLocaleString()} ${t('databases', 'studioKeysTotal')}` : ''}
             </span>
             <div className="flex items-center gap-1">
@@ -101,7 +91,9 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                 type="button"
                 onClick={() => refetch()}
                 disabled={isFetching}
-                className="btn btn-ghost text-xs py-1"
+                className="btn btn-ghost btn-sm"
+                aria-label={t('common', 'refresh')}
+                title={t('common', 'refresh')}
               >
                 <RefreshCw className={`w-3 h-3 ${isFetching ? 'animate-spin' : ''}`} />
               </button>
@@ -109,8 +101,9 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                 <button
                   type="button"
                   onClick={() => setConfirmDelete(true)}
-                  className="btn btn-ghost text-xs py-1"
+                  className="btn btn-ghost btn-sm"
                   style={{ color: 'var(--status-error)' }}
+                  aria-label={`${t('common', 'delete')} (${selected.size})`}
                 >
                   <Trash2 className="w-3 h-3" />
                   {selected.size}
@@ -166,16 +159,18 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                         setTtlDraft('');
                         setValueDraft(null);
                       }}
-                      className="flex-1 min-w-0 text-left px-2 py-1.5 rounded-lg"
-                      style={{
-                        background: isActive ? 'var(--dash-accent-bg-md)' : 'transparent',
-                        border: `1px solid ${isActive ? 'var(--accent-cyan)' : 'transparent'}`,
-                      }}
+                      aria-current={isActive ? 'true' : undefined}
+                      className="flex-1 min-w-0 text-left px-2 py-1.5 rounded-md transition-colors hover:bg-(--hover-overlay-md) focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-(--text-primary)"
+                      style={isActive ? { background: 'var(--hover-overlay-lg)' } : undefined}
                     >
                       <span className="flex items-center gap-1.5">
                         <span
-                          className="text-[10px] px-1 py-0.5 rounded shrink-0"
-                          style={{ background: 'var(--bg-tertiary)', color: TYPE_COLORS[key.type] }}
+                          className="text-[10px] px-1 py-0.5 rounded-sm shrink-0 uppercase tracking-[0.06em]"
+                          style={{
+                            background: 'var(--bg-tertiary)',
+                            color: 'var(--text-muted)',
+                            fontFamily: 'var(--font-label)',
+                          }}
                         >
                           {key.type}
                         </span>
@@ -194,7 +189,7 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
         {/* SCAN is cursor-based, so paging goes forward and back through the cursors we have seen. */}
         <div
           className="flex items-center justify-between gap-2 px-3 py-2"
-          style={{ borderTop: '1px solid var(--glass-border)' }}
+          style={{ borderTop: '1px solid var(--border-subtle)' }}
         >
           <button
             type="button"
@@ -205,11 +200,12 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
               setCursor(last);
             }}
             disabled={cursorStack.length === 0}
-            className="btn btn-secondary text-xs py-1"
+            className="btn btn-secondary btn-sm"
+            aria-label={t('databases', 'studioPrevPage')}
           >
             <ChevronLeft className="w-3 h-3" />
           </button>
-          <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+          <span className="dash-mono-caption tabular-nums">
             {page?.cursor === '0' ? t('databases', 'studioScanEnd') : ''}
           </span>
           <button
@@ -220,7 +216,8 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
               setCursor(page.cursor);
             }}
             disabled={!page || page.cursor === '0'}
-            className="btn btn-secondary text-xs py-1"
+            className="btn btn-secondary btn-sm"
+            aria-label={t('databases', 'studioNextPage')}
           >
             <ChevronRight className="w-3 h-3" />
           </button>
@@ -231,7 +228,7 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
       <div className="min-w-0 overflow-hidden" style={panelStyle}>
         {!activeKey ? (
           <div className="py-20 text-center">
-            <Key className="w-5 h-5 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+            <Key className="w-5 h-5 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
             <p className="text-sm font-medium">{t('databases', 'studioSelectKey')}</p>
           </div>
         ) : valueLoading || !value ? (
@@ -246,15 +243,12 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
           </div>
         ) : (
           <>
-            <div
-              className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
-              style={{ borderBottom: '1px solid var(--glass-border)' }}
-            >
+            <div className="dash-toolbar justify-between gap-3! px-4! py-2.5!">
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate" style={mono}>
+                <p className="text-[13px] font-medium truncate" style={mono}>
                   {value.name}
                 </p>
-                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                <p className="dash-mono-caption mt-0.5 tabular-nums">
                   {value.type} · {value.size.toLocaleString()} · {formatTtl(value.ttl, t)}
                   {value.truncated ? ` · ${t('databases', 'studioValueTruncated')}` : ''}
                 </p>
@@ -265,7 +259,8 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                   value={ttlDraft}
                   onChange={(e) => setTtlDraft(e.target.value)}
                   placeholder={t('databases', 'studioTtlSeconds')}
-                  className="input text-sm"
+                  aria-label={t('databases', 'studioTtlSeconds')}
+                  className="input text-sm py-1.5!"
                   style={{ width: 130 }}
                 />
                 <button
@@ -281,7 +276,7 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                     }
                   }}
                   disabled={setExpiry.isPending}
-                  className="btn btn-secondary text-sm"
+                  className="btn btn-secondary btn-sm"
                 >
                   {setExpiry.isPending ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -319,7 +314,7 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                       }
                     }}
                     disabled={setStringValue.isPending || valueDraft === null}
-                    className="btn btn-primary text-sm"
+                    className="btn btn-primary btn-sm"
                   >
                     {setStringValue.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                     {t('common', 'save')}
@@ -329,7 +324,7 @@ export function RedisBrowser({ databaseId, enabled, t }: RedisBrowserProps) {
                 <div className="overflow-x-auto"><table className="w-full text-sm border-collapse">
                   <tbody>
                     {value.entries.map((entry, index) => (
-                      <tr key={`${entry.field}-${index}`} style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                      <tr key={`${entry.field}-${index}`} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                         <td className="px-2 py-1.5 text-xs align-top" style={{ ...mono, color: 'var(--text-primary)', width: '35%' }}>
                           {entry.field}
                         </td>

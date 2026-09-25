@@ -1,6 +1,6 @@
 'use client';
 
-import { Callout, CodeBlock, SectionHeading } from '../components';
+import { Callout, CodeBlock, DocsHeading, SectionHeading } from '../components';
 import type { SectionProps } from './shared';
 
 /**
@@ -14,12 +14,12 @@ export function SsoSection({ c }: SectionProps) {
 
   return (
     <div className="space-y-8">
-      <SectionHeading title={s.title} description={s.description} />
+      <SectionHeading id="sso" title={s.title} description={s.description} />
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.beforeTitle}</h3>
+        <DocsHeading id="sso-before">{s.beforeTitle}</DocsHeading>
         <p className="docs-p">{s.beforeText}</p>
-        <CodeBlock code={s.redirectExample} />
+        <CodeBlock code={s.redirectExample} title={s.redirectLabel} />
         <Callout type="warning" title={s.redirectWarningTitle}>
           {s.redirectWarning}
         </Callout>
@@ -27,20 +27,18 @@ export function SsoSection({ c }: SectionProps) {
 
       {s.providers.map((provider) => (
         <div key={provider.name} className="space-y-3">
-          <h3 className="docs-h3">{provider.name}</h3>
+          <DocsHeading id={`sso-${provider.slug}`}>{provider.name}</DocsHeading>
           <ol className="docs-ol">
             {provider.steps.map((step, i) => (
               <li key={i}>{step}</li>
             ))}
           </ol>
-          <p className="docs-p">
-            <strong>{s.issuerLabel}:</strong> <code>{provider.issuer}</code>
-          </p>
+          <CodeBlock code={provider.issuer} title={s.issuerLabel} />
         </div>
       ))}
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.finishTitle}</h3>
+        <DocsHeading id="sso-finish">{s.finishTitle}</DocsHeading>
         <ol className="docs-ol">
           {s.finishSteps.map((step, i) => (
             <li key={i}>{step}</li>
@@ -49,7 +47,7 @@ export function SsoSection({ c }: SectionProps) {
       </div>
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.enforceTitle}</h3>
+        <DocsHeading id="sso-require">{s.enforceTitle}</DocsHeading>
         <p className="docs-p">{s.enforceText}</p>
         <Callout type="warning" title={s.lockoutTitle}>
           {s.lockoutText}
@@ -57,7 +55,7 @@ export function SsoSection({ c }: SectionProps) {
       </div>
 
       <div className="space-y-3">
-        <h3 className="docs-h3">{s.troubleTitle}</h3>
+        <DocsHeading id="sso-troubleshooting">{s.troubleTitle}</DocsHeading>
         <dl className="docs-dl">
           {s.troubles.map((trouble) => (
             <div key={trouble.problem}>

@@ -24,32 +24,26 @@ export function ComparePlansModal({ isOpen, onClose, plans, currentPlan }: Compa
   };
 
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
+    <div className="dash-app dash-modal-root">
       {/* Backdrop */}
-      <div className="absolute inset-0 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose} />
+      <div className="dash-modal-overlay" onClick={onClose} aria-hidden />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-[95vw] max-h-[90vh] overflow-hidden rounded-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col"
-        style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.35), 0 0 0 1px var(--glass-border)',
-        }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="compare-plans-title"
+        className="dash-modal is-flush max-w-[95vw]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[var(--border-subtle)] shrink-0">
-          <div>
-            <h2 className="text-xl font-bold">{t('billing', 'comparePlans')}</h2>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">
-              {t('billing', 'description')}
-            </p>
+        <div className="dash-modal-bar shrink-0" style={{ padding: '1.25rem 1.5rem', alignItems: 'flex-start' }}>
+          <div className="min-w-0">
+            <span className="dash-eyebrow block mb-2">{t('billing', 'title')}</span>
+            <h2 id="compare-plans-title" className="dash-modal-title">{t('billing', 'comparePlans')}</h2>
+            <p className="dash-modal-description">{t('billing', 'description')}</p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
-          >
-            <X className="w-5 h-5" />
+          <button type="button" onClick={onClose} className="dash-modal-close" aria-label={t('common', 'close')}>
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -63,9 +57,9 @@ export function ComparePlansModal({ isOpen, onClose, plans, currentPlan }: Compa
               return (
                 <div
                   key={planKey}
-                  className={`w-full sm:w-[280px] shrink-0 rounded-xl border p-6 transition-all ${
+                  className={`w-full sm:w-[280px] shrink-0 rounded-[14px] border p-6 transition-colors ${
                     isCurrent
-                      ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5 ring-2 ring-[var(--accent-cyan)]'
+                      ? 'border-[var(--accent-cyan)] bg-[var(--bg-secondary)]'
                       : 'border-[var(--border-subtle)] bg-[var(--bg-secondary)] hover:border-[var(--border-default)]'
                   }`}
                 >
@@ -133,11 +127,11 @@ export function ComparePlansModal({ isOpen, onClose, plans, currentPlan }: Compa
                   {/* Action Button */}
                   <div>
                     {isCurrent ? (
-                      <button disabled className="btn btn-secondary w-full h-11 opacity-50 cursor-not-allowed">
+                      <button disabled className="btn btn-secondary w-full">
                         {t('billing', 'currentPlanBadge')}
                       </button>
                     ) : (
-                      <button className="btn btn-primary w-full h-11">
+                      <button className="btn btn-primary w-full">
                         {t('billing', 'upgradePlan')}
                       </button>
                     )}
@@ -156,7 +150,7 @@ function LimitRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between items-center">
       <span className="text-sm text-[var(--text-secondary)]">{label}</span>
-      <span className="text-sm font-semibold">{value}</span>
+      <span className="text-sm font-medium tabular-nums">{value}</span>
     </div>
   );
 }
@@ -165,8 +159,8 @@ function FeatureRow({ label, enabled }: { label: string; enabled: boolean }) {
   return (
     <div className="flex items-center gap-3">
       {enabled ? (
-        <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
-          <Check className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="w-5 h-5 rounded-full bg-[var(--hover-overlay-lg)] flex items-center justify-center">
+          <Check className="w-3.5 h-3.5 text-[var(--text-primary)]" />
         </div>
       ) : (
         <div className="w-5 h-5 rounded-full bg-[var(--bg-tertiary)] flex items-center justify-center">

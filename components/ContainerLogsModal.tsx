@@ -116,29 +116,28 @@ export function ContainerLogsModal({
 
   const modalContent = (
     <div
-      className="fixed inset-0 z-100 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+      className="dash-app fixed inset-0 z-100 flex items-end sm:items-center justify-center p-0 sm:p-4"
     >
-      <div className="absolute inset-0 bg-black/70" onClick={onClose} aria-hidden />
+      <div className="dash-modal-overlay" onClick={onClose} aria-hidden />
 
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="container-logs-title"
         className="relative w-full max-w-5xl h-[100dvh] sm:h-[85vh] max-h-[100dvh] sm:max-h-[90vh] flex flex-col
-                   rounded-t-2xl sm:rounded-xl overflow-hidden
-                   bg-[var(--bg-primary)] border border-[var(--border-subtle)] sm:border
+                   rounded-t-2xl sm:rounded-2xl overflow-hidden
+                   bg-[var(--bg-primary)] border border-[var(--border-default)] sm:border
                    shadow-2xl animate-scale-in pb-[env(safe-area-inset-bottom)]"
       >
         {/* Header */}
         <div className="flex-shrink-0 border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
           <div className="flex items-center justify-between gap-2 px-3 pt-3 sm:px-5 sm:py-4 sm:gap-3">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-              <Terminal className="w-5 h-5 text-[var(--accent-cyan)] shrink-0" />
+              <Terminal className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
               <div className="min-w-0">
                 <h2
                   id="container-logs-title"
-                  className="text-base sm:text-lg font-semibold truncate"
+                  className="dash-modal-title truncate"
                 >
                   Container Logs
                 </h2>
@@ -149,7 +148,7 @@ export function ContainerLogsModal({
                   {containerName && (
                     <>
                       <span>/</span>
-                      <span className="font-mono text-[var(--accent-purple)] truncate max-w-[180px] sm:max-w-none">
+                      <span className="font-mono text-[var(--text-secondary)] truncate max-w-[180px] sm:max-w-none">
                         {containerName}
                       </span>
                     </>
@@ -161,10 +160,10 @@ export function ContainerLogsModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[var(--border-default)] bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] active:scale-95 transition-colors"
+              className="dash-modal-close"
               aria-label={t('common', 'close')}
             >
-              <X className="w-5 h-5" strokeWidth={2.25} />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -176,8 +175,8 @@ export function ContainerLogsModal({
                 Live
               </span>
             ) : isConnected ? (
-              <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--accent-cyan)] shrink-0 mr-1">
-                <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] animate-pulse" />
+              <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--status-warning)] shrink-0 mr-1">
+                <span className="w-2 h-2 rounded-full bg-[var(--status-warning)] animate-pulse" />
                 <span className="hidden min-[380px]:inline">Connecting</span>
               </span>
             ) : (
@@ -228,10 +227,10 @@ export function ContainerLogsModal({
         <div
           ref={logsContainerRef}
           onScroll={handleScroll}
-          className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 bg-[#0d1117] font-mono text-xs sm:text-sm touch-pan-y"
+          className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 bg-black font-mono text-xs sm:text-sm touch-pan-y"
         >
           {logs.length > 0 ? (
-            <div className="text-[#c9d1d9] leading-relaxed">
+            <div className="text-[#e7e7e4] leading-relaxed">
               {logs.map((line, i) => {
                 let lineClass = '';
                 const lowerLine = line.toLowerCase();
@@ -245,15 +244,15 @@ export function ContainerLogsModal({
                 } else if (lowerLine.includes('warn')) {
                   lineClass = 'text-[#d29922]';
                 } else if (lowerLine.includes('info')) {
-                  lineClass = 'text-[#58a6ff]';
+                  lineClass = 'text-[#e7e7e4]';
                 } else if (lowerLine.includes('debug')) {
-                  lineClass = 'text-[#8b949e]';
+                  lineClass = 'text-[#8a8a86]';
                 } else if (
                   lowerLine.includes('success') ||
                   lowerLine.includes('ready') ||
                   lowerLine.includes('listening')
                 ) {
-                  lineClass = 'text-[#3fb950]';
+                  lineClass = 'text-[#4ade80]';
                 }
 
                 return (
@@ -290,7 +289,7 @@ export function ContainerLogsModal({
                 <button
                   type="button"
                   onClick={handleJumpToBottom}
-                  className="text-[var(--accent-cyan)] hover:underline truncate"
+                  className="text-[var(--text-primary)] underline underline-offset-2 truncate"
                 >
                   Jump to bottom
                 </button>

@@ -30,6 +30,7 @@ export const tr: TranslationKeys = {
     closeMenu: 'Menüyü kapat',
     menuTitle: 'Menü',
     githubAria: 'Pushify GitHub',
+    exit: "Çık",
   },
   auth: {
     welcomeBack: 'Tekrar hoş geldiniz',
@@ -241,6 +242,7 @@ export const tr: TranslationKeys = {
     pause: 'Duraklat',
     resume: 'Devam Et',
     deleteConfirm: 'Bu projeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+    shellTitle: "Uygulama kabuğu",
   },
   header: {
     searchPlaceholder: 'Proje, dağıtım ara...',
@@ -976,6 +978,9 @@ export const tr: TranslationKeys = {
     dangerZoneDesc: 'Bu projeyi silmek tüm dağıtımları, ortam değişkenlerini ve domainleri kalıcı olarak kaldıracaktır. Bu işlem geri alınamaz.',
     deleteProject: 'Projeyi Sil',
     deleteProjectConfirm: 'Bu projeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+    pushifyUrl: "Pushify URL",
+    sslActive: "SSL etkin",
+    deleteEnvVarTitle: "Ortam değişkenini sil",
   },
   newProject: {
     githubAppLinking: 'GitHub App kurulumunuz bağlanıyor…',
@@ -1144,6 +1149,7 @@ export const tr: TranslationKeys = {
     noResults: 'Eşleşen log satırı yok.',
     retentionNote: 'Planınız çalışma zamanı loglarını {days} gün saklıyor. Geçmiş modundaki zaman damgaları blok bazlıdır; İndir, ekrandaki satırları değil sonucun tamamını kaydeder.',
     shell: 'Shell',
+    reconnect: "Yeniden bağlan",
   },
   volumes: {
     title: 'Kalıcı Diskler',
@@ -1251,6 +1257,7 @@ export const tr: TranslationKeys = {
     // Status
     active: 'Aktif',
     inactive: 'Pasif',
+    deleteChannelTitle: "Bildirim kanalını sil",
   },
   healthChecks: {
     title: 'Sağlık Kontrolleri',
@@ -2080,6 +2087,7 @@ export const tr: TranslationKeys = {
     byosStep4: 'Sunucunuz proje deploy etmeye hazır',
     readyToCreate: 'Oluşturmaya hazır',
     fillRequiredFields: 'Tüm gerekli alanları doldurun',
+    terminalTitle: "Web terminali",
   },
   databases: {
     title: 'Veritabanları',
@@ -2420,6 +2428,14 @@ export const tr: TranslationKeys = {
     studioOpIsNull: 'boş (null)',
     studioOpIsNotNull: 'boş değil',
     newCredentials: 'Yeni Kimlik Bilgileri',
+    copyField: "Kopyala",
+    studioPrevPage: "Önceki sayfa",
+    studioNextPage: "Sonraki sayfa",
+    envVarLabel: "Ortam değişkeni",
+    newCredentialsTitle: "Yeni kimlik bilgileri",
+    detailsTitle: "Ayrıntılar",
+    studioCollections: "Koleksiyonlar",
+    studioSortLabel: "Sıralama",
   },
   marketplace: {
     title: 'Uygulama Mağazası',
@@ -2689,6 +2705,9 @@ export const tr: TranslationKeys = {
     fullPreview: 'Önizleme',
     uploadImage: 'Görsel yükle',
     uploading: 'Yükleniyor…',
+    viewportDesktop: "Masaüstü",
+    viewportMobile: "Mobil",
+    renamePage: "Sayfayı yeniden adlandır",
   },
   vsCoolify: {
     eyebrow: 'Karşılaştırma',

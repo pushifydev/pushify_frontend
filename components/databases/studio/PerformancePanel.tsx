@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, Ban, Info, Loader2, RefreshCw, Timer } from 'lucide-react';
+import { Ban, Info, Loader2, RefreshCw } from 'lucide-react';
 import type { StudioPerformance } from '@/lib/api';
 import { panelStyle, type T } from './_shared';
 
@@ -16,7 +16,7 @@ interface PerformancePanelProps {
   t: T;
 }
 
-const mono = { fontFamily: 'var(--font-jetbrains-mono), monospace' } as const;
+const mono = { fontFamily: 'var(--font-mono)' } as const;
 
 function formatMs(value: number | null): string {
   if (value === null || !Number.isFinite(value)) return '—';
@@ -28,9 +28,9 @@ function Notice({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="flex items-start gap-2.5 px-4 py-3"
-      style={{ borderTop: '1px solid var(--glass-border)' }}
+      style={{ borderTop: '1px solid var(--border-subtle)' }}
     >
-      <Info className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-muted)' }} />
+      <Info className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
       <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
         {children}
       </p>
@@ -52,10 +52,11 @@ export function PerformancePanel({
   if (error) {
     return (
       <div
-        className="rounded-xl px-4 py-3 text-sm"
+        className="dash-callout text-sm"
+        role="alert"
         style={{
-          background: 'rgba(239,68,68,0.08)',
-          border: '1px solid rgba(239,68,68,0.2)',
+          background: 'color-mix(in srgb, var(--status-error) 6%, var(--bg-secondary))',
+          border: '1px solid color-mix(in srgb, var(--status-error) 30%, var(--border-subtle))',
           color: 'var(--status-error)',
         }}
       >
@@ -74,7 +75,7 @@ export function PerformancePanel({
           type="button"
           onClick={onRefresh}
           disabled={fetching}
-          className="btn btn-secondary text-sm"
+          className="btn btn-secondary btn-sm"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${fetching ? 'animate-spin' : ''}`} />
           {t('databases', 'studioRefresh')}
@@ -85,10 +86,9 @@ export function PerformancePanel({
       <div className="overflow-hidden" style={panelStyle}>
         <div
           className="flex items-center gap-2 px-4 py-2.5"
-          style={{ borderBottom: '1px solid var(--glass-border)' }}
+          style={{ borderBottom: '1px solid var(--border-subtle)' }}
         >
-          <Timer className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-          <p className="text-sm font-medium">{t('databases', 'studioSlowQueries')}</p>
+          <h2 className="dash-section-label">{t('databases', 'studioSlowQueries')}</h2>
         </div>
 
         {loading ? (
@@ -109,7 +109,7 @@ export function PerformancePanel({
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                <tr style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}>
                   {[
                     t('databases', 'studioQueryColumn'),
                     t('databases', 'studioCalls'),
@@ -119,7 +119,7 @@ export function PerformancePanel({
                   ].map((label) => (
                     <th
                       key={label}
-                      className="px-3 py-2 text-left text-xs font-semibold whitespace-nowrap"
+                      className="px-3 py-2 text-left text-xs font-medium whitespace-nowrap"
                       style={{ color: 'var(--text-secondary)' }}
                     >
                       {label}
@@ -129,12 +129,12 @@ export function PerformancePanel({
               </thead>
               <tbody>
                 {data.slowQueries.items.map((item) => (
-                  <tr key={item.id} style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                  <tr key={item.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <td className="px-3 py-2 align-top">
                       <button
                         type="button"
                         onClick={() => onOpenInConsole(item.query)}
-                        className="block max-w-[520px] truncate text-xs text-left"
+                        className="block max-w-130 truncate text-xs text-left"
                         style={{ ...mono, color: 'var(--text-secondary)' }}
                         title={t('databases', 'studioOpenInConsole')}
                       >
@@ -165,10 +165,9 @@ export function PerformancePanel({
       <div className="overflow-hidden" style={panelStyle}>
         <div
           className="flex items-center gap-2 px-4 py-2.5"
-          style={{ borderBottom: '1px solid var(--glass-border)' }}
+          style={{ borderBottom: '1px solid var(--border-subtle)' }}
         >
-          <Activity className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-          <p className="text-sm font-medium">{t('databases', 'studioRunningQueries')}</p>
+          <h2 className="dash-section-label">{t('databases', 'studioRunningQueries')}</h2>
         </div>
 
         {loading ? (
@@ -184,13 +183,13 @@ export function PerformancePanel({
             <table className="w-full text-sm border-collapse">
               <tbody>
                 {data.running.items.map((item) => (
-                  <tr key={item.id} style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                  <tr key={item.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <td className="px-3 py-2 text-xs whitespace-nowrap" style={{ color: 'var(--text-muted)' }}>
                       {item.user ?? '—'} · {item.state ?? '—'} · {formatMs(item.runningMs)}
                     </td>
                     <td className="px-3 py-2 align-top">
                       <span
-                        className="block max-w-[460px] truncate text-xs"
+                        className="block max-w-115 truncate text-xs"
                         style={{ ...mono, color: 'var(--text-secondary)' }}
                         title={item.query ?? ''}
                       >
@@ -202,7 +201,7 @@ export function PerformancePanel({
                         type="button"
                         onClick={() => onCancel(Number(item.id))}
                         disabled={cancelling || !Number.isFinite(Number(item.id))}
-                        className="btn btn-ghost text-xs py-1"
+                        className="btn btn-ghost btn-sm"
                         style={{ color: 'var(--status-error)' }}
                         title={t('databases', 'studioCancelQuery')}
                       >

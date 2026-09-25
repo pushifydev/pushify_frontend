@@ -28,25 +28,15 @@ function DynamicToaster() {
     setResolved(resolveThemeMode(theme));
   }, [theme]);
 
+  // Monochrome cards; only the status icon carries colour (see .pushify-toast in globals.css).
   return (
     <Toaster
       position="bottom-right"
       theme={resolved}
-      richColors
       closeButton
       toastOptions={{
-        style: {
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-subtle)',
-          color: 'var(--text-primary)',
-        },
         classNames: {
-          toast: 'font-sans',
-          title: 'font-medium',
-          description: 'text-[var(--text-secondary)]',
-          success: 'border-[var(--status-success)]/30',
-          error: 'border-[var(--status-error)]/30',
-          info: 'border-[var(--accent-cyan)]/30',
+          toast: 'pushify-toast',
         },
       }}
     />

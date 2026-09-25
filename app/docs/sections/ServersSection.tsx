@@ -8,13 +8,13 @@ export function ServersSection({ c, apiBase }: SectionProps) {
 
   return (
     <div className="space-y-6">
-      <SectionHeading title={c.servers.title} description={c.servers.description} />
+      <SectionHeading id="servers" title={c.servers.title} description={c.servers.description} />
 
       <Callout type="info" title={c.servers.sessionOnlyTitle}>
         {c.servers.sessionOnlyText}
       </Callout>
 
-      <div className="space-y-3">
+      <div className="docs-endpoints">
         <EndpointCard
           method="GET"
           path="/servers"

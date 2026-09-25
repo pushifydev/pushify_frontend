@@ -17,7 +17,8 @@ export function HomeHero() {
       <div className="hp-pool" aria-hidden="true" />
       <div className="hp-wrap hp-center">
         <Eyebrow className="hp-rise" >{t('landing', 'openSourcePlatform')}</Eyebrow>
-        <h1 className="hp-h1 hp-rise mt-7" style={{ animationDelay: '80ms' }}>
+        {/* The headline is the page's LCP element: it slides in but is never transparent, so it counts as painted at once. */}
+        <h1 className="hp-h1 hp-rise-solid mt-7">
           {t('landing', 'heroTitleLead')}
           <br />
           {t('landing', 'heroTitleEm')}.
