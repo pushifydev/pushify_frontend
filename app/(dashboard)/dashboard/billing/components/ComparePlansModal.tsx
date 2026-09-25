@@ -13,14 +13,6 @@ interface ComparePlansModalProps {
 
 const planOrder: PlanType[] = ['free', 'hobby', 'pro', 'business', 'enterprise'];
 
-const planColors: Record<PlanType, string> = {
-  free: 'from-gray-500 to-gray-600',
-  hobby: 'from-blue-500 to-indigo-500',
-  pro: 'from-purple-500 to-pink-500',
-  business: 'from-orange-500 to-amber-500',
-  enterprise: 'from-emerald-500 to-teal-500',
-};
-
 export function ComparePlansModal({ isOpen, onClose, plans, currentPlan }: ComparePlansModalProps) {
   const { t } = useTranslation();
 
@@ -80,8 +72,8 @@ export function ComparePlansModal({ isOpen, onClose, plans, currentPlan }: Compa
                   {/* Plan Header */}
                   <div className="mb-6">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className={`p-2.5 rounded-xl bg-gradient-to-br ${planColors[planKey]}`}>
-                        <Sparkles className="w-5 h-5 text-white" />
+                      <div className="dash-icon-box w-10! h-10! rounded-xl!">
+                        <Sparkles className="w-5 h-5" />
                       </div>
                       {isCurrent && (
                         <span className="text-xs px-2.5 py-1 rounded-full dash-accent-fill font-semibold">

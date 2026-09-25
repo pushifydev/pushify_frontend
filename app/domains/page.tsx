@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Check, Loader2, Search, X } from 'lucide-react';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
-import { Reveal } from '@/components/landing/Reveal';
+import { MSection, RuleGrid, RuleCell, Steps } from '@/components/landing/MarketingKit';
 import { usePublicDomainSearch, useTranslation } from '@/hooks';
 import { getAccessToken } from '@/lib/api/client';
 import { buildAuthPath } from '@/lib/auth-redirect';
@@ -16,105 +16,155 @@ function formatUsd(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
+const copy = {
+  en: {
+    label: 'Domains',
+    lead: 'Search, register and point a domain at your app. DNS and HTTPS are handled.',
+    searchLabel: 'Search for a domain',
+    searching: 'Searching',
+    howEyebrow: 'How it works',
+    howTitle: 'Register it, point it, keep it.',
+    steps: [
+      { title: 'Register for up to five years', body: 'One payment for the term. WHOIS privacy on; auto-renew is your call.' },
+      { title: 'Point it at a project', body: 'Records are written and the certificate requested in the same step.' },
+      { title: 'Keep editing the DNS', body: 'A, AAAA, CNAME, MX, TXT, SRV and NS records, in the dashboard.' },
+    ],
+    detailsEyebrow: 'Good to know',
+    detailsTitle: 'Your domain, on your terms.',
+    details: [
+      { title: 'Already own one?', body: 'Add it to a project and point one record. HTTPS is issued and renewed.' },
+      { title: 'Bringing one in', body: 'A transfer includes a year of renewal, so nothing lapses mid-move.' },
+      { title: 'You can leave', body: 'Unlock the domain and the auth code is shown to you. No ticket.' },
+    ],
+  },
+  tr: {
+    label: 'Alan adları',
+    lead: 'Alan adını arayın, kaydedin ve uygulamanıza bağlayın. DNS ve HTTPS bizden.',
+    searchLabel: 'Alan adı ara',
+    searching: 'Aranıyor',
+    howEyebrow: 'Nasıl işler',
+    howTitle: 'Kaydedin, yönlendirin, yönetin.',
+    steps: [
+      { title: 'Beş yıla kadar kaydedin', body: 'Tüm dönem için tek ödeme. WHOIS gizliliği açık; otomatik yenileme sizin seçiminiz.' },
+      { title: 'Bir projeye yönlendirin', body: 'Kayıtlar yazılır, sertifika da aynı adımda istenir.' },
+      { title: 'DNS’i düzenlemeye devam edin', body: 'A, AAAA, CNAME, MX, TXT, SRV ve NS kayıtları, panelden.' },
+    ],
+    detailsEyebrow: 'Bilmeniz gerekenler',
+    detailsTitle: 'Alan adınız, sizin koşullarınızla.',
+    details: [
+      { title: 'Alan adınız zaten var mı?', body: 'Bir projeye ekleyin, tek kaydı yönlendirin. HTTPS verilir ve yenilenir.' },
+      { title: 'Transferle getirmek', body: 'Transfer bir yıllık yenilemeyi içerir; taşınırken süresi dolmaz.' },
+      { title: 'Ayrılabilirsiniz', body: 'Kilidi açın, transfer kodu size gösterilir. Destek talebi gerekmez.' },
+    ],
+  },
+};
+
 /** Where the buy CTA ultimately lands: dashboard search pre-filled with the domain. */
 function purchasePath(domainName: string): string {
   return `/dashboard/domains?domain=${encodeURIComponent(domainName)}`;
 }
 
 export default function PublicDomainsPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const c = copy[locale === 'tr' ? 'tr' : 'en'];
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
   // Session check after mount (localStorage isn't available during SSR)
   const [hasSession, setHasSession] = useState(false);
   const search = usePublicDomainSearch(query);
+  const results = search.data ?? [];
 
   useEffect(() => {
     setHasSession(!!getAccessToken());
   }, []);
 
   return (
-    <MarketingShell>
+    <MarketingShell noPad>
       <MarketingPageHero
-        label="Domains"
+        label={c.label}
         title={t('domainSales', 'publicHeroTitle')}
-        description={t('domainSales', 'publicHeroDesc')}
+        description={c.lead}
       />
 
-      <div className="lp-container max-w-2xl pb-10 md:pb-14">
-        <Reveal>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setQuery(input.trim());
-            }}
-            className="flex gap-2"
+      <div className="lp-container max-w-2xl pb-20 md:pb-28">
+        <form
+          role="search"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setQuery(input.trim());
+          }}
+          className="flex flex-col sm:flex-row gap-2"
+        >
+          <div className="relative flex-1 min-w-0">
+            <Search
+              className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ color: 'var(--hp-muted)' }}
+              aria-hidden="true"
+            />
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={t('domainSales', 'searchPlaceholder')}
+              aria-label={c.searchLabel}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              className="w-full h-12 pl-11 pr-4 rounded-full text-sm border transition-colors hover:border-[var(--hp-muted)] focus:border-[var(--hp-ink)]"
+              style={{
+                background: 'var(--hp-card)',
+                borderColor: 'var(--hp-line-strong)',
+                color: 'var(--hp-ink)',
+                fontFamily: 'var(--font-label)',
+              }}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={input.trim().length < 2 || search.isFetching}
+            className="lp-cta h-12 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <div className="relative flex-1">
-              <Search
-                className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2"
-                style={{ color: 'var(--lp-muted)' }}
-              />
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={t('domainSales', 'searchPlaceholder')}
-                className="w-full h-12 pl-11 pr-4 rounded-full text-sm outline-none"
-                style={{
-                  background: 'var(--lp-surface)',
-                  border: '1px solid var(--lp-border)',
-                  color: 'var(--lp-ink)',
-                  fontFamily: 'var(--font-mono)',
-                }}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={input.trim().length < 2 || search.isFetching}
-              className="lp-cta h-12 disabled:opacity-50"
+            {search.isFetching ? (
+              <Loader2 className="w-4 h-4 animate-spin motion-reduce:animate-none" aria-label={c.searching} />
+            ) : (
+              t('domainSales', 'searchButton')
+            )}
+          </button>
+        </form>
+
+        <div aria-live="polite">
+          {query && !search.isFetching && search.error && (
+            <p className="mt-6 text-sm" style={{ color: 'var(--hp-body)' }}>
+              {search.error.message}
+            </p>
+          )}
+
+          {query && results.length > 0 && (
+            <ul
+              className="mt-6 rounded-[14px] border overflow-hidden"
+              style={{ borderColor: 'var(--hp-line)', background: 'var(--hp-card)' }}
             >
-              {search.isFetching ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                t('domainSales', 'searchButton')
-              )}
-            </button>
-          </form>
-        </Reveal>
-
-        {query && !search.isFetching && search.error && (
-          <p className="mt-6 text-sm" style={{ color: 'var(--lp-muted)' }}>
-            {search.error.message}
-          </p>
-        )}
-
-        {query && (
-          <div className="mt-6 space-y-2">
-            {(search.data ?? []).map((r, i) => (
-              <Reveal key={r.domainName} delay={i * 40}>
-                <div
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                  style={{ background: 'var(--lp-surface)', border: '1px solid var(--lp-border)' }}
+              {results.map((r, i) => (
+                <li
+                  key={r.domainName}
+                  className={`flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 ${i > 0 ? 'border-t' : ''}`}
+                  style={{ borderColor: 'var(--hp-line)' }}
                 >
                   {r.available ? (
-                    <Check className="w-4 h-4 shrink-0 text-[#22c55e]" />
+                    <Check className="w-4 h-4 shrink-0" style={{ color: 'var(--hp-live)' }} aria-hidden="true" />
                   ) : (
-                    <X className="w-4 h-4 shrink-0" style={{ color: 'var(--lp-muted)' }} />
+                    <X className="w-4 h-4 shrink-0" style={{ color: 'var(--hp-muted)' }} aria-hidden="true" />
                   )}
                   <span
-                    className="text-sm font-semibold truncate"
-                    style={{ fontFamily: 'var(--font-mono)', color: 'var(--lp-ink)' }}
+                    className="text-sm truncate min-w-0 flex-1"
+                    style={{ fontFamily: 'var(--font-label)', color: 'var(--hp-ink)' }}
                   >
                     {r.domainName}
                   </span>
                   {r.available && r.priceCents !== null ? (
-                    <>
-                      <span
-                        className="ml-auto text-sm font-semibold shrink-0"
-                        style={{ color: 'var(--lp-ink)' }}
-                      >
+                    <span className="flex items-center gap-3 ml-auto shrink-0">
+                      <span className="text-sm font-medium" style={{ color: 'var(--hp-ink)' }}>
                         {formatUsd(r.priceCents)}
-                        <span className="text-xs font-normal" style={{ color: 'var(--lp-muted)' }}>
+                        <span className="text-xs font-normal" style={{ color: 'var(--hp-muted)' }}>
                           {t('domainSales', 'perYear')}
                         </span>
                       </span>
@@ -124,96 +174,60 @@ export default function PublicDomainsPage() {
                             ? purchasePath(r.domainName)
                             : buildAuthPath('register', purchasePath(r.domainName))
                         }
-                        className="lp-cta h-8 px-3 text-xs shrink-0"
+                        className="lp-cta min-h-8 h-8 px-3.5 text-xs"
                       >
                         {hasSession ? t('domainSales', 'buy') : t('domainSales', 'publicBuyCta')}
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                       </Link>
-                    </>
+                    </span>
                   ) : (
-                    <span className="ml-auto text-xs shrink-0" style={{ color: 'var(--lp-muted)' }}>
+                    <span
+                      className="ml-auto text-[0.7rem] uppercase tracking-widest shrink-0"
+                      style={{ color: 'var(--hp-muted)', fontFamily: 'var(--font-label)' }}
+                    >
                       {r.premium ? t('domainSales', 'premium') : t('domainSales', 'unavailable')}
                     </span>
                   )}
-                </div>
-              </Reveal>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="mt-10">
+          <p className="hp-eyebrow">{t('domainSales', 'publicTldsLabel')}</p>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {SEARCH_TLDS.map((tld) => (
+              <li
+                key={tld}
+                className="px-3 py-1.5 rounded-full text-xs border"
+                style={{ fontFamily: 'var(--font-label)', color: 'var(--hp-ink)', borderColor: 'var(--hp-line-strong)' }}
+              >
+                .{tld}
+              </li>
             ))}
-          </div>
-        )}
+          </ul>
+          <p className="mt-3 text-sm" style={{ color: 'var(--hp-muted)' }}>
+            {t('domainSales', 'publicTldsNote')}
+          </p>
+        </div>
       </div>
 
       {/* Below the search the page used to stop, leaving a nav-level page at a hero and a text
           field. Everything here is what the registrar integration actually does. */}
-      <div className="lp-container pb-24 md:pb-32">
-        <Reveal>
-          <div className="max-w-2xl">
-            <p className="lp-label mb-3">{t('domainSales', 'publicTldsLabel')}</p>
-            <div className="flex flex-wrap gap-2">
-              {SEARCH_TLDS.map((tld) => (
-                <span
-                  key={tld}
-                  className="px-3 py-1.5 rounded-full text-xs"
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    color: 'var(--lp-ink)',
-                    background: 'var(--lp-surface)',
-                    border: '1px solid var(--lp-border)',
-                  }}
-                >
-                  .{tld}
-                </span>
-              ))}
-            </div>
-            <p className="mt-3 text-xs" style={{ color: 'var(--lp-muted)' }}>
-              {t('domainSales', 'publicTldsNote')}
-            </p>
-          </div>
-        </Reveal>
+      <MSection id="how-it-works" eyebrow={c.howEyebrow} title={c.howTitle}>
+        <Steps items={c.steps} />
+      </MSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-14">
-          {[
-            { title: t('domainSales', 'publicStep1Title'), text: t('domainSales', 'publicStep1Text') },
-            { title: t('domainSales', 'publicStep2Title'), text: t('domainSales', 'publicStep2Text') },
-            { title: t('domainSales', 'publicStep3Title'), text: t('domainSales', 'publicStep3Text') },
-          ].map((card, i) => (
-            <Reveal key={card.title} delay={i * 90} className="h-full">
-              <div className="lp-card h-full p-5">
-                <span
-                  className="text-xs font-semibold"
-                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--lp-muted)' }}
-                >
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <h2 className="text-sm font-semibold mt-3 mb-2" style={{ color: 'var(--lp-ink)' }}>
-                  {card.title}
-                </h2>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
-                  {card.text}
-                </p>
-              </div>
-            </Reveal>
+      <MSection id="details" eyebrow={c.detailsEyebrow} title={c.detailsTitle}>
+        <RuleGrid cols={3}>
+          {c.details.map((d) => (
+            <RuleCell key={d.title} title={d.title}>
+              {d.body}
+            </RuleCell>
           ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {[
-            { title: t('domainSales', 'publicDnsTitle'), text: t('domainSales', 'publicDnsText') },
-            { title: t('domainSales', 'publicTransferTitle'), text: t('domainSales', 'publicTransferText') },
-            { title: t('domainSales', 'publicLeaveTitle'), text: t('domainSales', 'publicLeaveText') },
-          ].map((card, i) => (
-            <Reveal key={card.title} delay={i * 90} className="h-full">
-              <div className="lp-card h-full p-5">
-                <h2 className="text-sm font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
-                  {card.title}
-                </h2>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
-                  {card.text}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
+        </RuleGrid>
+      </MSection>
     </MarketingShell>
   );
 }

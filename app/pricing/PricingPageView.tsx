@@ -1,33 +1,35 @@
 'use client';
 
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
-import { PricingSection } from '@/components/landing/PricingSection';
-import { PricingCalculator } from '@/components/landing/PricingCalculator';
+import { HomeCost, HomeFaq } from '@/components/landing/home';
 import { useTranslation } from '@/hooks';
 import type { AvailablePlans } from '@/lib/api';
+import { PricingPlans } from './PricingPlans';
+
+const copy = {
+  en: {
+    label: 'Pricing',
+    title: 'A flat plan for the platform.',
+    lead: 'Start free on a server you own. Upgrade for more projects and teammates. Managed servers are billed by the hour, on their own.',
+  },
+  tr: {
+    label: 'Fiyatlandırma',
+    title: 'Platform için sabit bir plan.',
+    lead: 'Kendi sunucunuzda ücretsiz başlayın. Daha fazla proje ve ekip üyesi için yükseltin. Yönetilen sunucular ayrıca, saatlik faturalanır.',
+  },
+};
 
 export function PricingPageView({ initialPlans }: { initialPlans?: AvailablePlans }) {
-  const { t } = useTranslation();
+  const { locale } = useTranslation();
+  const c = copy[locale === 'tr' ? 'tr' : 'en'];
 
   return (
     <MarketingShell noPad>
-      <MarketingPageHero
-        label={t('landing', 'pricingBadge')}
-        title={
-          <>
-            {t('landing', 'simpleTransparent')}{' '}
-            <span style={{ color: 'var(--lp-muted)' }}>
-              {t('landing', 'transparentGradient')}
-            </span>{' '}
-            {t('landing', 'pricing').toLowerCase()}
-          </>
-        }
-        description={t('landing', 'pricingSubtitle')}
-      />
-      <div id="plans">
-        <PricingSection pageLayout initialPlans={initialPlans} />
-      </div>
-      <PricingCalculator />
+      <MarketingPageHero label={c.label} title={c.title} description={c.lead} />
+      <PricingPlans initialPlans={initialPlans} />
+      {/* The same estimate as the homepage, and the billing questions people ask before paying. */}
+      <HomeCost />
+      <HomeFaq />
     </MarketingShell>
   );
 }

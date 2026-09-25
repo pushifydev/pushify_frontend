@@ -132,7 +132,7 @@ export default function DashboardPage() {
 
       <DashboardAttentionZone active={projects.length > 0 || servers.length > 0} />
 
-      <div className="grid grid-cols-2 max-[400px]:grid-cols-1 lg:grid-cols-4 gap-2 sm:gap-3 mb-5 min-w-0">
+      <div className="grid grid-cols-2 max-[359px]:grid-cols-1 lg:grid-cols-4 gap-2 sm:gap-3 mb-5 min-w-0">
         {statCards.map((card, idx) => (
           <StatCard
             key={card.label}

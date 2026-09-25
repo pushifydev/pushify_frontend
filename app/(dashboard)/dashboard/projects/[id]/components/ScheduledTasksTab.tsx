@@ -331,7 +331,7 @@ export function ScheduledTasksTab({
                     </div>
                     <p className="text-xs text-[var(--text-muted)] mt-0.5 truncate">
                       {t('cron', 'lastRun')}:{' '}
-                      {task.lastRunAt ? formatTimeAgo(task.lastRunAt) : t('cron', 'never')}
+                      {task.lastRunAt ? formatTimeAgo(task.lastRunAt, t) : t('cron', 'never')}
                       {' · '}
                       {t('cron', 'nextRun')}:{' '}
                       {task.enabled && task.nextRunAt
@@ -410,7 +410,7 @@ export function ScheduledTasksTab({
                             </span>
                           )}
                           <span className="text-[var(--text-muted)]">
-                            {formatTimeAgo(run.startedAt)}
+                            {formatTimeAgo(run.startedAt, t)}
                             {run.durationMs !== null && ` · ${(run.durationMs / 1000).toFixed(1)}s`}
                             {run.exitCode !== null && ` · ${t('cron', 'exitCode')}: ${run.exitCode}`}
                             {run.httpStatus !== null &&

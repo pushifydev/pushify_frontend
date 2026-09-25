@@ -13,16 +13,7 @@ import {
 import { useTranslation } from '@/hooks';
 import { useMarketplaceTemplate } from '@/hooks/useMarketplace';
 import DeployModal from '../components/DeployModal';
-
-const CATEGORY_ACCENTS: Record<string, string> = {
-  cms: '#6366f1',
-  automation: '#a78bfa',
-  monitoring: '#22c55e',
-  storage: '#f59e0b',
-  devtools: '#3b82f6',
-  analytics: '#ec4899',
-  database: '#f97316',
-};
+import { LongDescription } from '@/components/LongDescription';
 
 const ICON_MAP: Record<string, LucideIcon> = {
   FileText, Zap, Activity, Pen, Layers,
@@ -53,7 +44,6 @@ export default function TemplateDetailPage() {
     );
   }
 
-  const accent = CATEGORY_ACCENTS[template.category] || '#6366f1';
   const IconComponent = ICON_MAP[template.icon] || Package;
 
   return (
@@ -73,31 +63,21 @@ export default function TemplateDetailPage() {
         className="rounded-xl p-5 sm:p-8"
         style={{
           background: 'var(--bg-secondary)',
-          borderWidth: '2px 1px 1px 1px',
-          borderStyle: 'solid',
-          borderColor: `${accent} var(--border-subtle) var(--border-subtle) var(--border-subtle)`,
-          borderRadius: 12,
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 14,
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        {/* Ambient glow */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: `radial-gradient(ellipse at top left, ${accent}0a 0%, transparent 60%)`,
-          }}
-        />
-
         <div className="relative flex flex-col sm:flex-row items-start gap-5 min-w-0">
           <div
             className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shrink-0"
             style={{
-              background: `${accent}14`,
-              border: `1px solid ${accent}25`,
+              background: 'var(--bg-tertiary)',
+              border: '1px solid var(--border-subtle)',
             }}
           >
-            <IconComponent className="w-7 h-7" style={{ color: accent }} />
+            <IconComponent className="w-7 h-7" style={{ color: 'var(--text-primary)' }} />
           </div>
 
           <div className="flex-1 min-w-0 w-full">
@@ -109,22 +89,21 @@ export default function TemplateDetailPage() {
                 {template.name}
               </h1>
               <span
-                className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded"
-                style={{ background: `${accent}18`, color: accent }}
+                className="text-[11px] uppercase tracking-[0.1em] px-2 py-0.5 rounded-full border border-[var(--border-default)]"
+                style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-label)' }}
               >
                 {template.category}
               </span>
             </div>
 
-            <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-              {template.longDescription || template.description}
-            </p>
+            <div className="mb-5">
+              <LongDescription text={template.longDescription || template.description} />
+            </div>
 
             <div className="flex items-center gap-4 flex-wrap">
               <button
                 onClick={() => setShowDeploy(true)}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 dash-colored-fill"
-                style={{ background: accent }}
+                className="btn btn-primary px-5 py-2.5"
               >
                 <Rocket className="w-4 h-4" />
                 {t('marketplace', 'deploy')}

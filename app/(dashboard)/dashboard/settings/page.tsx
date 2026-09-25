@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Key, Shield, Settings, User, Palette, Monitor, Bell, Boxes, KeyRound } from 'lucide-react';
+import { Key, Shield, User, Palette, Monitor, Bell, Boxes, KeyRound } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { ProfileTab, AppearanceTab, SessionsTab, NotificationsTab, SecurityTab, ApiKeysTab, RegistriesTab, SsoTab } from './components';
 
@@ -63,9 +63,6 @@ export default function SettingsPage() {
       <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-primary)]">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-[var(--accent-cyan)]/20 to-[var(--accent-purple)]/20 border border-[var(--border-subtle)]">
-              <Settings className="w-6 h-6 text-[var(--accent-cyan)]" />
-            </div>
             <div>
               <h1 className="text-2xl font-bold">{t('navigation', 'settings')}</h1>
               <p className="text-sm text-[var(--text-secondary)]">

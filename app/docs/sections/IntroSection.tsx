@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Zap, Terminal, Shield, Rocket, Folder, Server, Database, ArrowRight } from 'lucide-react';
+import { Terminal, Shield, Rocket, Folder, Server, Database, ArrowRight } from 'lucide-react';
 import { CodeBlock, Callout } from '../components';
 import type { DocsSectionId } from '@/lib/i18n/docs';
 import type { SectionProps } from './shared';
@@ -9,11 +9,7 @@ import type { SectionProps } from './shared';
 const exploreSections: DocsSectionId[] = ['projects', 'deployments', 'servers', 'databases'];
 const exploreIcons = [Folder, Rocket, Server, Database];
 
-const introFeatureIcons = [
-  { icon: Terminal, iconClass: 'text-[var(--lp-ink)]', bgClass: 'bg-[var(--hover-overlay-lg)]' },
-  { icon: Shield, iconClass: 'text-purple-600 dark:text-purple-400', bgClass: 'bg-purple-500/10' },
-  { icon: Rocket, iconClass: 'text-amber-600 dark:text-amber-400', bgClass: 'bg-amber-500/10' },
-];
+const introFeatureIcons = [Terminal, Shield, Rocket];
 
 export function IntroSection({
   c,
@@ -25,14 +21,10 @@ export function IntroSection({
   return (
     <div className="space-y-10">
       <div>
-        <div className="docs-badge mb-4">
-          <Zap className="w-3 h-3" /> {c.intro.badge}
-        </div>
+        <p className="lp-label">{c.intro.badge}</p>
         <h1 className="docs-h1">{c.intro.title}</h1>
-        <p className="text-lg docs-lead leading-relaxed max-w-2xl">
-          {c.intro.lead}
-        </p>
-        <div className="mt-4 max-w-2xl space-y-3">
+        <p className="docs-lead">{c.intro.lead}</p>
+        <div className="mt-8 max-w-2xl space-y-3">
           <Callout type="info" title={c.labels.description}>
             {c.intro.idNote}
           </Callout>
@@ -42,38 +34,33 @@ export function IntroSection({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="hp-rule-grid grid-cols-1 sm:grid-cols-3">
         {c.intro.features.map((f, i) => {
-          const meta = introFeatureIcons[i];
-          const Icon = meta.icon;
+          const Icon = introFeatureIcons[i] ?? Terminal;
           return (
-            <div key={f.title} className="p-5 docs-card">
-              <div className={`w-9 h-9 rounded-lg ${meta.bgClass} flex items-center justify-center mb-3`}>
-                <Icon className={`w-4 h-4 ${meta.iconClass}`} />
-              </div>
-              <h3 className="text-sm font-semibold" style={{ color: 'var(--lp-ink)' }}>{f.title}</h3>
-              <p className="text-xs docs-muted-sm">{f.desc}</p>
+            <div key={f.title} className="docs-cell">
+              <Icon className="docs-cell-icon" strokeWidth={1.5} aria-hidden="true" />
+              <h3 className="docs-cell-title">{f.title}</h3>
+              <p className="docs-muted-sm mt-1">{f.desc}</p>
             </div>
           );
         })}
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold docs-h3 mb-2">{c.labels.baseUrl}</h3>
+        <h3 className="docs-label">{c.labels.baseUrl}</h3>
         <CodeBlock code={apiBase} />
       </div>
 
       <div>
-        <h2 className="docs-h2 mb-5">{c.labels.quickStart}</h2>
-        <div className="space-y-4">
+        <h2 className="docs-h2">{c.labels.quickStart}</h2>
+        <ol className="docs-steps">
           {c.intro.steps.map((s, i) => (
-            <div key={i} className="flex items-start gap-4">
-              <div className="docs-step-num shrink-0 mt-0.5">
-                {i + 1}
-              </div>
+            <li key={i}>
+              <span className="docs-step-num">{String(i + 1).padStart(2, '0')}</span>
               <div>
-                <h4 className="text-sm font-medium" style={{ color: 'var(--lp-ink)' }}>{s.title}</h4>
-                <p className="text-sm docs-muted-sm">
+                <h4 className="docs-cell-title">{s.title}</h4>
+                <p className="docs-muted-sm mt-0.5">
                   {i === 0 && step0.linkText ? (
                     <>
                       {step0.descBefore}
@@ -87,14 +74,14 @@ export function IntroSection({
                   )}
                 </p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
 
       <div>
         <h2 className="docs-h2">{c.labels.explore}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="hp-rule-grid grid-cols-1 sm:grid-cols-2">
           {c.intro.exploreLinks.map((link, i) => {
             const Icon = exploreIcons[i];
             return (
@@ -102,14 +89,18 @@ export function IntroSection({
                 key={exploreSections[i]}
                 type="button"
                 onClick={() => onNavigate(exploreSections[i])}
-                className="docs-card-interactive w-full group"
+                className="docs-cell group"
               >
-                <Icon className="w-5 h-5 shrink-0 transition-opacity group-hover:opacity-80" style={{ color: 'var(--lp-muted)' }} />
+                <Icon className="w-[18px] h-[18px] shrink-0" strokeWidth={1.5} style={{ color: 'var(--hp-ink)' }} aria-hidden="true" />
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium" style={{ color: 'var(--lp-ink)' }}>{link.label}</h4>
-                  <p className="text-xs docs-muted-sm">{link.desc}</p>
+                  <h3 className="docs-cell-title">{link.label}</h3>
+                  <p className="docs-muted-sm">{link.desc}</p>
                 </div>
-                <ArrowRight className="w-4 h-4 shrink-0 transition-opacity group-hover:opacity-80" style={{ color: 'var(--lp-muted)' }} />
+                <ArrowRight
+                  className="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
+                  style={{ color: 'var(--hp-muted)' }}
+                  aria-hidden="true"
+                />
               </button>
             );
           })}

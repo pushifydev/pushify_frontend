@@ -1,208 +1,148 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
+import { MSection, RuleGrid, RuleCell } from '@/components/landing/MarketingKit';
 import { useTranslation } from '@/hooks';
-import { Mail, MapPin, Globe, Github, Rocket, Server, Database, Package, Code2, ShieldCheck, Eye } from 'lucide-react';
-import { Reveal } from '@/components/landing/Reveal';
+import { Rocket, Server, Database, Package } from 'lucide-react';
 
 const content = {
   en: {
-    title: 'About Us',
-    intro:
-      'Pushify is an open-source cloud deployment platform designed to help developers ship their applications to their own servers easily, quickly, and securely.',
-    missionTitle: 'Our Mission',
-    mission:
-      'To let developers focus on building their products instead of managing infrastructure. We eliminate DevOps complexity with one-click deploys, automatic SSL, team collaboration, and advanced monitoring.',
-    whatWeDoTitle: 'What We Do',
-    items: [
-      { title: 'One-Click Deploy', desc: 'Connect your GitHub repo, framework auto-detected, live in minutes.' },
-      { title: 'Server Management', desc: 'Provision VPS via Hetzner Cloud or bring your own server.' },
-      { title: 'Database Management', desc: 'PostgreSQL, MySQL, Redis, MongoDB with one-click setup.' },
-      { title: 'Marketplace', desc: '24 ready-to-deploy apps (WordPress, Supabase, Appwrite, Cal.com etc.).' },
-    ],
-    companyTitle: 'Company Information',
+    label: 'About',
+    title: 'Ship apps to servers you own',
+    intro: 'Pushify turns a git push into an app served over HTTPS, on a server you own. The code is MIT-licensed.',
+    record: 'Company record',
+    openSource: 'Open source',
     web: 'Web',
     email: 'Email',
+    source: 'Source',
+    license: 'Licence',
     location: 'Address',
-    locationValue: 'Pushify LLC · 30 N Gould St Ste N, Sheridan, WY 82801, USA',
-    valuesTitle: 'Our Values',
+    locationValue: '30 N Gould St Ste N, Sheridan, WY 82801, USA',
+    missionLabel: 'Mission',
+    mission: 'Infrastructure should be a solved problem for small teams.',
+    missionLead: 'You write the product. Pushify handles builds, certificates, databases, backups and rollbacks.',
+    whatWeDoLabel: 'What Pushify does',
+    whatWeDoTitle: 'Four things, done properly.',
+    items: [
+      { title: 'Deploys', desc: 'Connect a repository; it is built and switched over with zero downtime.' },
+      { title: 'Servers', desc: 'Connect any VPS over SSH, or open a Hetzner server from the dashboard.' },
+      { title: 'Databases', desc: 'PostgreSQL, MySQL, Redis and MongoDB, with scheduled backups.' },
+      { title: 'Apps', desc: '24 open-source apps, from WordPress to n8n, installed in one click.' },
+    ],
+    valuesLabel: 'Principles',
+    valuesTitle: 'How we decide.',
     values: [
-      {
-        title: 'Open Source',
-        desc: 'Our code is MIT-licensed and public on GitHub. Run it on your own server for free, contribute, and shape the future.',
-      },
-      {
-        title: 'Data Ownership',
-        desc: 'Your data is yours. No vendor lock-in. Self-host on your servers and move whenever you want.',
-      },
-      {
-        title: 'Transparency',
-        desc: 'All pricing and features are publicly published. No hidden fees, no surprise changes.',
-      },
+      { title: 'Open source', desc: 'The API, dashboard and CLI are MIT-licensed. Self-host it for free.' },
+      { title: 'Your data stays yours', desc: 'Apps and databases run on your servers. Leaving means taking them with you.' },
+      { title: 'Published prices', desc: 'Plans, limits and hourly server rates are all on the pricing page.' },
     ],
   },
   tr: {
-    title: 'Hakkımızda',
-    intro:
-      'Pushify, geliştiricilerin uygulamalarını kendi sunucularına kolayca, hızlı ve güvenli bir şekilde yayınlayabilmesi için tasarlanmış açık kaynaklı bir bulut yayınlama platformudur.',
-    missionTitle: 'Misyonumuz',
-    mission:
-      'Geliştiricilerin altyapı yönetiminden ziyade ürünlerini geliştirmeye odaklanmasını sağlamak. Tek tıkla deploy, otomatik SSL, ekip iş birliği ve gelişmiş izleme araçları ile DevOps karmaşıklığını ortadan kaldırıyoruz.',
-    whatWeDoTitle: 'Ne Yapıyoruz?',
-    items: [
-      { title: 'Tek Tıkla Yayınlama', desc: 'GitHub reponuzu bağlayın, framework otomatik algılansın, dakikalar içinde canlı olun.' },
-      { title: 'Sunucu Yönetimi', desc: 'Hetzner Cloud üzerinden tek tıkla VPS sağlayın veya kendi sunucularınızı bağlayın.' },
-      { title: 'Veritabanı Yönetimi', desc: 'PostgreSQL, MySQL, Redis, MongoDB tek tıkla kurulum ve yönetim.' },
-      { title: 'Marketplace', desc: '24 hazır uygulama (WordPress, Supabase, Appwrite, Cal.com vb.) tek tıkla yayında.' },
-    ],
-    companyTitle: 'Şirket Bilgileri',
+    label: 'Hakkımızda',
+    title: 'Uygulamalarınızı kendi sunucularınıza taşıyın',
+    intro: 'Pushify bir git push’u, kendi sunucunuzda HTTPS ile yayındaki bir uygulamaya dönüştürür. Kodu MIT lisanslı.',
+    record: 'Şirket bilgileri',
+    openSource: 'Açık kaynak',
     web: 'Web',
     email: 'E-posta',
+    source: 'Kaynak',
+    license: 'Lisans',
     location: 'Adres',
-    locationValue: 'Pushify LLC · 30 N Gould St Ste N, Sheridan, WY 82801, ABD',
-    valuesTitle: 'Değerlerimiz',
+    locationValue: '30 N Gould St Ste N, Sheridan, WY 82801, ABD',
+    missionLabel: 'Misyon',
+    mission: 'Küçük ekipler için altyapı çözülmüş bir problem olmalı.',
+    missionLead: 'Siz ürünü yazın. Derlemeyi, sertifikaları, veritabanlarını, yedekleri ve geri almaları Pushify üstlensin.',
+    whatWeDoLabel: 'Ne yapıyoruz',
+    whatWeDoTitle: 'Dört iş, düzgünce.',
+    items: [
+      { title: 'Deploy', desc: 'Bir depo bağlayın; derlenir ve kesintisiz olarak yeni sürüme geçilir.' },
+      { title: 'Sunucular', desc: 'Herhangi bir VPS’i SSH ile bağlayın ya da panelden Hetzner sunucusu açın.' },
+      { title: 'Veritabanları', desc: 'PostgreSQL, MySQL, Redis ve MongoDB; zamanlanmış yedeklerle.' },
+      { title: 'Uygulamalar', desc: 'WordPress’ten n8n’e 24 açık kaynak uygulama, tek tıkla kurulur.' },
+    ],
+    valuesLabel: 'İlkeler',
+    valuesTitle: 'Nasıl karar veriyoruz.',
     values: [
-      {
-        title: 'Açık Kaynak',
-        desc: 'Kodumuz MIT lisansı ile GitHub\'da herkese açık. Kendi sunucunuzda ücretsiz olarak çalıştırabilir, katkıda bulunabilirsiniz.',
-      },
-      {
-        title: 'Veri Sahipliği',
-        desc: 'Veriniz sizin. Vendor lock-in yok. Kendi sunucunuzda barındırın, istediğiniz zaman taşıyın.',
-      },
-      {
-        title: 'Şeffaflık',
-        desc: 'Tüm fiyatlandırmamız ve özelliklerimiz açık şekilde yayınlanır. Gizli ücret veya sürpriz değişiklik yok.',
-      },
+      { title: 'Açık kaynak', desc: 'API, panel ve CLI MIT lisanslı. Kendiniz ücretsiz çalıştırabilirsiniz.' },
+      { title: 'Veriniz sizde kalır', desc: 'Uygulamalar ve veritabanları sizin sunucularınızda. Ayrılırken yanınızda götürürsünüz.' },
+      { title: 'Açık fiyatlar', desc: 'Planlar, limitler ve saatlik sunucu ücretleri fiyatlandırma sayfasında.' },
     ],
   },
 };
 
-function InfoRow({
-  icon,
-  label,
-  children,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start gap-3">
-      <span className="mt-0.5 shrink-0" style={{ color: 'var(--lp-ink)' }}>
-        {icon}
-      </span>
-      <div>
-        <p className="text-sm font-semibold mb-1" style={{ color: 'var(--lp-ink)' }}>
-          {label}
-        </p>
-        <div className="text-sm" style={{ color: 'var(--lp-muted)' }}>
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-}
+const ICONS = [Rocket, Server, Database, Package];
+const linkCls = 'hover:underline underline-offset-4';
 
 export default function AboutPage() {
   const { locale } = useTranslation();
   const c = content[locale === 'tr' ? 'tr' : 'en'];
 
+  const record: { label: string; value: ReactNode }[] = [
+    { label: c.web, value: <a href="https://pushify.dev" className={linkCls}>pushify.dev</a> },
+    { label: c.email, value: <a href="mailto:support@pushify.dev" className={linkCls}>support@pushify.dev</a> },
+    {
+      label: c.source,
+      value: (
+        <a href="https://github.com/pushifydev" className={linkCls} target="_blank" rel="noopener noreferrer">
+          github.com/pushifydev
+        </a>
+      ),
+    },
+    { label: c.license, value: 'MIT' },
+    { label: c.location, value: c.locationValue },
+  ];
+
   return (
-    <MarketingShell>
-      <MarketingPageHero label={locale === 'tr' ? 'Hakkımızda' : 'About'} title={c.title} description={c.intro} />
+    <MarketingShell noPad>
+      <MarketingPageHero label={c.label} title={c.title} description={c.intro} />
 
-      <div className="lp-container max-w-4xl pb-20 md:pb-24 space-y-8">
-        <section className="lp-card p-8">
-          <h2 className="text-xl font-semibold tracking-tight mb-4" style={{ color: 'var(--lp-ink)' }}>{c.missionTitle}</h2>
-          <p className="lp-body">{c.mission}</p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold tracking-tight mb-6" style={{ color: 'var(--lp-ink)' }}>{c.whatWeDoTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {c.items.map((item, i) => {
-              const Icon = [Rocket, Server, Database, Package][i] ?? Rocket;
-              return (
-                <Reveal key={item.title} delay={i * 80} className="h-full">
-                  <div className="lp-card p-5 h-full">
-                    <span
-                      className="inline-flex w-9 h-9 items-center justify-center rounded-lg mb-3.5"
-                      style={{ background: 'var(--lp-btn)', color: 'var(--lp-btn-fg)' }}
-                    >
-                      <Icon className="w-4 h-4" />
-                    </span>
-                    <h3 className="font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
-                      {item.title}
-                    </h3>
-                    <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
-                      {item.desc}
-                    </p>
-                  </div>
-                </Reveal>
-              );
-            })}
+      {/* The one object on this page: the company, as a record card. */}
+      <div className="lp-container pb-20 md:pb-28">
+        <div role="group" aria-label={c.record} className="hp-card mx-auto" style={{ width: '100%', maxWidth: '34rem' }}>
+          <div className="hp-card-head">
+            <span style={{ color: 'var(--hp-ink)' }}>Pushify LLC</span>
+            <span>
+              <span className="hp-dot" data-tone="event" aria-hidden="true" />
+              {c.openSource}
+            </span>
           </div>
-        </section>
-
-        <section className="lp-card p-8">
-          <h2 className="text-xl font-semibold tracking-tight mb-6" style={{ color: 'var(--lp-ink)' }}>{c.companyTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <InfoRow icon={<Globe className="w-5 h-5" />} label={c.web}>
-              <a href="https://pushify.dev" className="hover:underline" style={{ color: 'var(--lp-ink)' }}>
-                pushify.dev
-              </a>
-            </InfoRow>
-            <InfoRow icon={<Mail className="w-5 h-5" />} label={c.email}>
-              <a href="mailto:support@pushify.dev" className="hover:underline" style={{ color: 'var(--lp-ink)' }}>
-                support@pushify.dev
-              </a>
-            </InfoRow>
-            <InfoRow icon={<Github className="w-5 h-5" />} label="GitHub">
-              <a
-                href="https://github.com/pushifydev"
-                className="hover:underline"
-                style={{ color: 'var(--lp-ink)' }}
-              >
-                github.com/pushifydev
-              </a>
-            </InfoRow>
-            <InfoRow icon={<MapPin className="w-5 h-5" />} label={c.location}>
-              {c.locationValue}
-            </InfoRow>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold tracking-tight mb-6" style={{ color: 'var(--lp-ink)' }}>{c.valuesTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {c.values.map((v, i) => {
-              const Icon = [Code2, ShieldCheck, Eye][i] ?? Code2;
-              return (
-                <Reveal key={v.title} delay={i * 90} className="h-full">
-                  <div className="lp-card p-5 h-full">
-                    <div className="flex items-center gap-3 mb-2.5">
-                      <span
-                        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                        style={{ background: 'var(--lp-btn)', color: 'var(--lp-btn-fg)' }}
-                      >
-                        <Icon className="w-4 h-4" />
-                      </span>
-                      <h3 className="font-semibold" style={{ color: 'var(--lp-ink)' }}>
-                        {v.title}
-                      </h3>
-                    </div>
-                    <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
-                      {v.desc}
-                    </p>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-        </section>
-
+          <dl className="px-4 py-3" style={{ fontSize: '0.8rem' }}>
+            {record.map((row) => (
+              <div key={row.label} className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 py-1.5">
+                <dt className="uppercase tracking-widest text-[0.65rem] pt-0.5" style={{ color: 'var(--hp-muted)' }}>
+                  {row.label}
+                </dt>
+                <dd className="min-w-0 wrap-break-word" style={{ color: 'var(--hp-ink)' }}>
+                  {row.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
+
+      <MSection eyebrow={c.missionLabel} title={c.mission} lead={c.missionLead} />
+
+      <MSection eyebrow={c.whatWeDoLabel} title={c.whatWeDoTitle}>
+        <RuleGrid cols={4}>
+          {c.items.map((item, i) => (
+            <RuleCell key={item.title} icon={ICONS[i]} title={item.title}>
+              {item.desc}
+            </RuleCell>
+          ))}
+        </RuleGrid>
+      </MSection>
+
+      <MSection eyebrow={c.valuesLabel} title={c.valuesTitle}>
+        <RuleGrid cols={3}>
+          {c.values.map((v) => (
+            <RuleCell key={v.title} title={v.title}>
+              {v.desc}
+            </RuleCell>
+          ))}
+        </RuleGrid>
+      </MSection>
     </MarketingShell>
   );
 }

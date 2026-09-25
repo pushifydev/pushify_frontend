@@ -2,9 +2,14 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { MarketingShell } from '@/components/landing';
+
+const copy = {
+  en: { label: 'Error', home: 'Go home', retry: 'Try again', errorId: 'Error ID', none: 'none recorded', report: 'Send this ID to support@pushify.dev if it keeps happening.' },
+  tr: { label: 'Hata', home: 'Ana sayfaya dön', retry: 'Tekrar dene', errorId: 'Hata kimliği', none: 'kaydedilmedi', report: 'Tekrarlarsa bu kimliği support@pushify.dev adresine gönderin.' },
+};
 
 export default function GlobalError({
   error,
@@ -13,39 +18,50 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const c = copy[locale === 'tr' ? 'tr' : 'en'];
 
   useEffect(() => {
     console.error('Global error:', error);
   }, [error]);
 
   return (
-    <MarketingShell>
-      <div className="lp-container flex flex-col items-center justify-center min-h-[60vh] text-center py-20">
-        <div
-          className="w-14 h-14 rounded-xl border flex items-center justify-center mb-6"
-          style={{ borderColor: 'var(--lp-border)', color: 'var(--lp-ink)' }}
-        >
-          <AlertTriangle className="w-7 h-7" />
+    <MarketingShell noPad>
+      <section className="lp-container hp-page-hero flex flex-col items-center justify-center min-h-[70vh] text-center">
+        <p className="lp-label">{c.label}</p>
+        <h1 className="lp-hero-title mt-6 max-w-3xl">{t('errors', 'somethingWentWrong')}</h1>
+        <p className="lp-lead mt-6 max-w-md">{t('errors', 'somethingWentWrongDesc')}</p>
+
+        {/* What support needs to find this error in the server logs. */}
+        <div className="hp-card mt-10 text-left" style={{ width: '100%', maxWidth: '26rem' }}>
+          <div className="hp-card-head">
+            <span>
+              <span className="hp-dot" data-tone="event" aria-hidden="true" />
+              {c.errorId}
+            </span>
+          </div>
+          <div className="px-4 py-3.5" style={{ color: 'var(--hp-body)' }}>
+            <p className="break-all" style={{ color: error.digest ? 'var(--hp-ink)' : 'var(--hp-muted)' }}>
+              {error.digest ?? c.none}
+            </p>
+            {error.digest && (
+              <p className="mt-2 font-sans text-[13px] leading-relaxed" style={{ color: 'var(--hp-muted)' }}>
+                {c.report}
+              </p>
+            )}
+          </div>
         </div>
-        <h1 className="lp-section-title mb-3">{t('errors', 'somethingWentWrong')}</h1>
-        <p className="lp-lead max-w-sm">{t('errors', 'somethingWentWrongDesc')}</p>
-        {error.digest && (
-          <p className="mt-4 text-xs font-mono" style={{ color: 'var(--lp-muted)' }}>
-            Error ID: {error.digest}
-          </p>
-        )}
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
-          <Link href="/" className="lp-cta-ghost inline-flex items-center gap-2">
-            <Home className="w-4 h-4" />
-            {t('errors', 'goHome')}
+
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-10">
+          <Link href="/" className="lp-cta-ghost">
+            {c.home}
           </Link>
-          <button type="button" onClick={reset} className="lp-cta inline-flex items-center gap-2">
-            <RefreshCw className="w-4 h-4" />
-            {t('errors', 'tryAgain')}
+          <button type="button" onClick={reset} className="lp-cta">
+            <RefreshCw className="w-4 h-4" aria-hidden="true" />
+            {c.retry}
           </button>
         </div>
-      </div>
+      </section>
     </MarketingShell>
   );
 }

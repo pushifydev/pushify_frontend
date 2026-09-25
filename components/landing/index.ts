@@ -13,8 +13,6 @@ export { ComparisonPageView, type ComparisonRow } from './ComparisonPageView';
 export { ComparisonSection } from './ComparisonSection';
 export { FeaturesSection } from './FeaturesSection';
 export { OpenSourceSection } from './OpenSourceSection';
-export { PricingSection } from './PricingSection';
-export { BillingHowItWorksSection } from './BillingHowItWorksSection';
 export { FAQSection } from './FAQSection';
 export { CTASection } from './CTASection';
 export { LandingFooter } from './LandingFooter';

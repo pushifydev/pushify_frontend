@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import Link from 'next/link';
+import { ChangelogPagerNav, ChangelogUnavailableNote } from './copy';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -87,19 +87,23 @@ function renderInline(text: string): ReactNode[] {
       return (
         <code
           key={i}
-          className="px-1 py-0.5 rounded text-[0.85em] bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] [overflow-wrap:anywhere]"
+          className="font-mono px-1 py-0.5 rounded-md text-[0.85em] bg-[var(--hp-card)] border border-[var(--hp-line)] text-[var(--hp-ink)] [overflow-wrap:anywhere]"
         >
           {token.slice(1, -1)}
         </code>
       );
     }
     if (token.startsWith('**') && token.endsWith('**')) {
-      return <strong key={i}>{token.slice(2, -2)}</strong>;
+      return <strong key={i} className="font-medium text-[var(--hp-ink)]">
+          {token.slice(2, -2)}
+        </strong>;
     }
     const link = token.match(/^\[([^\]]+)\]\(([^)\s]+)\)$/);
     if (link) {
       return (
-        <a key={i} href={link[2]} className="underline underline-offset-2" target="_blank" rel="noreferrer">
+        <a key={i} href={link[2]} className="underline underline-offset-4 decoration-[var(--hp-line-strong)] hover:decoration-[var(--hp-ink)] text-[var(--hp-ink)]"
+          target="_blank"
+          rel="noreferrer">
           {link[1]}
         </a>
       );
@@ -146,46 +150,64 @@ export async function getChangelogEntries(): Promise<ChangelogEntry[]> {
     );
 }
 
-const badgeStyles: Record<SourceKey, string> = {
-  platform: 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10',
-  dashboard: 'text-violet-400 border-violet-400/30 bg-violet-400/10',
-};
-
 const labelFor = (key: SourceKey) => SOURCES.find((s) => s.key === key)!.label;
+
+/** Anchor for one release, e.g. #platform-v0.2.0-beta.62. */
+export const entryId = (entry: Pick<ChangelogEntry, 'source' | 'version'>) => `${entry.source}-v${entry.version}`;
+
+/** The newest release of each source, for the board at the top of /changelog. */
+export function latestPerSource(entries: ChangelogEntry[], onPage: ChangelogEntry[]) {
+  return SOURCES.flatMap((src) => {
+    const entry = entries.find((e) => e.source === src.key);
+    if (!entry) return [];
+    return [
+      {
+        key: src.key,
+        label: src.label,
+        version: entry.version,
+        date: entry.date,
+        changes: entry.sections.reduce((n, s) => n + s.items.length, 0),
+        href: onPage.includes(entry) ? `#${entryId(entry)}` : `${src.repo}/blob/master/CHANGELOG.md`,
+      },
+    ];
+  });
+}
 
 export function ChangelogEntryList({ entries }: { entries: ChangelogEntry[] }) {
   return (
-    <>
+    <div lang="en">
       {entries.map((entry) => (
         <article
           key={`${entry.source}-${entry.version}`}
-          className="p-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)]/40"
+          id={entryId(entry)}
+          className="scroll-mt-28 grid grid-cols-1 md:grid-cols-[13rem_1fr] gap-4 md:gap-10 py-10 border-t border-[var(--hp-line)]"
         >
-          <header className="flex flex-wrap items-center gap-3 mb-4">
-            <h2 className="font-mono text-base font-semibold">v{entry.version}</h2>
-            <span
-              className={`px-2 py-0.5 rounded-full border text-[11px] font-medium ${badgeStyles[entry.source]}`}
-            >
+          <header className="flex md:flex-col flex-wrap items-center md:items-start gap-x-3 gap-y-2 md:sticky md:top-24 self-start">
+            <h2 className="font-mono text-[15px] font-medium text-[var(--hp-ink)]">v{entry.version}</h2>
+            <span className="hp-mono text-[11px] uppercase tracking-[0.1em] px-2 py-0.5 rounded-full border border-[var(--hp-line-strong)] text-[var(--hp-body)]">
               {labelFor(entry.source)}
             </span>
-            <time dateTime={entry.date} className="ml-auto text-xs text-[var(--text-muted)]">
+            <time
+              dateTime={entry.date}
+              className="hp-mono text-[12px] tracking-[0.05em] tabular-nums text-[var(--hp-muted)] ml-auto md:ml-0"
+            >
               {entry.date}
             </time>
           </header>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {entry.sections.map((section, i) => (
               <div key={i}>
                 {section.title && (
-                  <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
+                  <h3 className="hp-mono text-[11px] uppercase tracking-[0.1em] text-[var(--hp-muted)] mb-3">
                     {section.title}
                   </h3>
                 )}
-                <ul className="space-y-2">
+                <ul className="space-y-2.5">
                   {section.items.map((item, j) => (
                     <li
                       key={j}
-                      className="text-sm leading-relaxed text-[var(--text-secondary)] pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.55em] before:w-1.5 before:h-1.5 before:rounded-full before:bg-[var(--border-default)]"
+                      className="text-[15px] leading-relaxed text-[var(--hp-body)] pl-5 relative before:content-[''] before:absolute before:left-0 before:top-[0.8em] before:w-2.5 before:h-px before:bg-[var(--hp-line-strong)]"
                     >
                       {renderInline(item)}
                     </li>
@@ -196,23 +218,15 @@ export function ChangelogEntryList({ entries }: { entries: ChangelogEntry[] }) {
           </div>
         </article>
       ))}
-    </>
+    </div>
   );
 }
 
 export function ChangelogUnavailable() {
   return (
-    <div className="p-6 rounded-xl border border-[var(--border-subtle)] text-sm text-[var(--text-secondary)]">
-      The changelog could not be loaded right now. You can read it directly on GitHub:{' '}
-      {SOURCES.map((src, i) => (
-        <span key={src.key}>
-          {i > 0 && ' · '}
-          <a href={`${src.repo}/blob/master/CHANGELOG.md`} className="underline underline-offset-2">
-            {src.label}
-          </a>
-        </span>
-      ))}
-    </div>
+    <ChangelogUnavailableNote
+      links={SOURCES.map((src) => ({ key: src.key, label: src.label, href: `${src.repo}/blob/master/CHANGELOG.md` }))}
+    />
   );
 }
 
@@ -255,30 +269,14 @@ export function ChangelogPager({
 }) {
   if (pageCount <= 1) return null;
 
-  const link = 'text-sm underline underline-offset-4 hover:no-underline';
-
   return (
-    <nav
-      className={`flex items-center justify-between gap-4 ${className}`}
-      aria-label="Changelog archive pages"
-      style={{ color: 'var(--text-muted)' }}
-    >
-      {/* Page 1's "newer" target is the changelog itself, not another archive page */}
-      <Link href={page <= 1 ? '/changelog' : archiveHref(page - 1)} className={link} rel="prev">
-        ← {page <= 1 ? 'Latest releases' : 'Newer releases'}
-      </Link>
-
-      <span className="text-xs">
-        Page {page} of {pageCount}
-      </span>
-
-      {page < pageCount ? (
-        <Link href={archiveHref(page + 1)} className={link} rel="next">
-          Older releases →
-        </Link>
-      ) : (
-        <span aria-hidden="true" />
-      )}
-    </nav>
+    <ChangelogPagerNav
+      page={page}
+      pageCount={pageCount}
+      // Page 1's "newer" target is the changelog itself, not another archive page
+      newerHref={page <= 1 ? '/changelog' : archiveHref(page - 1)}
+      olderHref={page < pageCount ? archiveHref(page + 1) : null}
+      className={className}
+    />
   );
 }

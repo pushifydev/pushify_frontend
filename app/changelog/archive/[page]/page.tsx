@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { MarketingShell, MarketingPageHero } from '@/components/landing';
+import { MarketingShell } from '@/components/landing';
+import { ChangelogHero } from '../../copy';
 import {
   ChangelogEntryList,
   ChangelogPager,
@@ -50,14 +51,10 @@ export default async function ChangelogArchivePagedPage({ params }: Params) {
   if (!Number.isInteger(page) || page < 2 || page > pageCount) notFound();
 
   return (
-    <MarketingShell>
-      <MarketingPageHero
-        label="Changelog"
-        title="Release archive"
-        description="Older Pushify releases. The latest updates live on the main changelog."
-      />
+    <MarketingShell noPad>
+      <ChangelogHero archive />
 
-      <div className="lp-container max-w-3xl mx-auto pb-24 space-y-6">
+      <div className="lp-container max-w-5xl mx-auto pb-24 md:pb-32">
         <ChangelogPager page={page} pageCount={pageCount} className="pb-2" />
         <ChangelogEntryList entries={archiveSlice(entries, page)} />
         <ChangelogPager page={page} pageCount={pageCount} />

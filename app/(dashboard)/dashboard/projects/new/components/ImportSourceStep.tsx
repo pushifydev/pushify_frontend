@@ -357,7 +357,7 @@ export function ImportSourceStep({
                         className={`w-full p-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--bg-tertiary)] transition-colors ${active ? 'bg-[var(--accent-purple)]/10' : ''}`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${active ? 'bg-[var(--accent-purple)] text-white' : 'bg-[var(--bg-tertiary)]'}`}>
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${active ? 'bg-[var(--text-primary)] text-[var(--on-accent)]' : 'bg-[var(--bg-tertiary)]'}`}>
                             {repo.private ? <EyeOff className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -533,7 +533,7 @@ export function ImportSourceStep({
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             selectedRepo?.id === repo.id
-                              ? 'bg-[var(--accent-purple)] text-white'
+                              ? 'bg-[var(--text-primary)] text-[var(--on-accent)]'
                               : 'bg-[var(--bg-tertiary)]'
                           }`}>
                             {repo.private ? (

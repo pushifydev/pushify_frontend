@@ -16,12 +16,12 @@ import {
   useUpdateBillingEmail,
   useSubscriptionStatus,
   useResumeSubscription,
+  useOrganization,
   billingKeys,
 } from '@/hooks';
 import { confirmInfraTopUp } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/auth';
-import type { PlanType } from '@/lib/api';
 import { STATUS_COLORS } from '@/lib/constants';
 import Link from 'next/link';
 import { SkeletonPageHeader, SkeletonBillingSummaryCard } from '@/components/Skeleton';
@@ -44,18 +44,10 @@ const USAGE_BOOST_LABEL_KEYS: Record<UsageLimitKey, keyof import('@/lib/i18n/loc
   customDomains: 'customDomains',
 };
 
-const planAccents: Record<PlanType, string> = {
-  free:       STATUS_COLORS.neutral,
-  hobby:      STATUS_COLORS.cyan,
-  pro:        STATUS_COLORS.purple,
-  business:   STATUS_COLORS.orange,
-  enterprise: STATUS_COLORS.green,
-};
-
 /** Uppercase micro-label used across the ledger strip */
 function LedgerLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[10px] font-semibold uppercase tracking-[0.08em] mb-1.5 text-[var(--text-muted)]">
+    <p className="dash-stat-label mt-0! mb-1.5">
       {children}
     </p>
   );
@@ -66,7 +58,11 @@ export default function BillingPage() {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const { organization } = useAuthStore();
+  // The store only learns the organisation at login; after a reload it is empty, so ask the API
+  // (as the sidebar's workspace switcher does) and fall back to the store.
+  const storeOrganization = useAuthStore((s) => s.organization);
+  const { data: currentOrganization } = useOrganization();
+  const organization = currentOrganization ?? storeOrganization;
   const { data: billingInfo, isLoading } = useBillingInfo();
   // A cancelled-at-period-end subscription can be resumed until the period ends.
   const { data: subscription } = useSubscriptionStatus();
@@ -135,7 +131,6 @@ export default function BillingPage() {
     );
   }
 
-  const planAccent = billingInfo ? planAccents[billingInfo.plan] : STATUS_COLORS.neutral;
   const isPaid = !!billingInfo && billingInfo.price > 0;
   const cancelScheduled = isPaid && !!subscription?.cancelAtPeriodEnd;
   const periodEndLabel = subscription?.currentPeriodEnd
@@ -203,14 +198,7 @@ export default function BillingPage() {
       {billingInfo && <UsageLimitsAlert usage={billingInfo.usage} />}
 
       {/* ── Plan summary — the page's anchor ─────────────────────────────── */}
-      <section
-        className="dash-card p-5 sm:p-6"
-        style={{
-          borderWidth: '2px 1px 1px 1px',
-          borderTopColor: planAccent,
-          borderRadius: 12,
-        }}
-      >
+      <section className="dash-card p-5 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div className="min-w-0">
             <LedgerLabel>{t('billing', 'currentPlan')}</LedgerLabel>

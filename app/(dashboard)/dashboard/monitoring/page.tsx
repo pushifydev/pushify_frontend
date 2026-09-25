@@ -144,21 +144,19 @@ export default function MonitoringPage() {
           value={agg?.avgCpuPercent || 0}
           subValue={`${t('monitoring', 'totalCpu')}: ${agg?.totalCpuPercent.toFixed(1) || 0}%`}
           icon={Cpu}
-          color="var(--accent-cyan)"
         />
         <GaugeCard
           label={t('monitoring', 'totalMemory')}
           value={agg?.avgMemoryPercent || 0}
           subValue={`${formatStorage(agg?.totalMemoryUsageMB || 0)} ${t('monitoring', 'memoryOf')} ${formatStorage(agg?.totalMemoryLimitMB || 0)}`}
           icon={HardDrive}
-          color="#a78bfa"
         />
         <GaugeCard
           label={t('monitoring', 'networkIO')}
           value={agg?.totalNetworkRxMB || 0}
           subValue={`↓ ${formatStorage(agg?.totalNetworkRxMB || 0)} / ↑ ${formatStorage(agg?.totalNetworkTxMB || 0)}`}
           icon={Network}
-          color="#34d399"
+          thresholds={false}
           maxValue={Math.max((agg?.totalNetworkRxMB || 0) * 1.5, 100)}
           suffix=" MB"
         />
@@ -167,7 +165,7 @@ export default function MonitoringPage() {
           value={overview?.runningContainers || 0}
           subValue={`${overview?.totalProjects || 0} ${t('monitoring', 'allProjects').toLowerCase()}`}
           icon={Container}
-          color="#fbbf24"
+          thresholds={false}
           maxValue={Math.max(overview?.totalProjects || 1, 1)}
           suffix=""
         />

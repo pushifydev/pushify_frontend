@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
+import { MSection, RuleGrid, RuleCell, Steps } from '@/components/landing/MarketingKit';
 import { useTranslation } from '@/hooks';
 import { Check, Copy } from 'lucide-react';
-import { Reveal } from '@/components/landing/Reveal';
 
 const BADGE_URL = 'https://pushify.dev/badges/deploy.svg';
 const EXAMPLE_REPO = 'https://github.com/your-org/your-app';
@@ -13,28 +13,37 @@ const content = {
   en: {
     label: 'Deploy button',
     title: 'One-click deploys from your README',
-    intro:
-      'Add a "Deploy to Pushify" button to any repository. Whoever clicks it lands in the new-project wizard with your repo and branch already filled in — and deploys to their own server, not ours.',
-    previewTitle: 'What it looks like',
-    snippetTitle: 'Add it to your README',
+    intro: 'Add a Deploy to Pushify button to any repository. Visitors deploy it to their own server, not ours.',
+    builderTitle: 'Build your button',
+    previewLabel: 'Preview',
+    repoLabel: 'Repository URL',
+    branchLabel: 'Branch (optional)',
     markdownLabel: 'Markdown',
     htmlLabel: 'HTML',
+    paramsEyebrow: 'Reference',
     paramsTitle: 'Parameters',
     params: [
-      { name: 'repo', req: 'required', desc: 'HTTPS URL of a public repository on GitHub, GitLab or Bitbucket — or any https URL ending in .git.' },
-      { name: 'branch', req: 'optional', desc: 'Branch to deploy. Defaults to the repository default branch.' },
+      { name: 'repo', req: 'required', desc: 'HTTPS URL of a public GitHub, GitLab or Bitbucket repository, or any https URL ending in .git.' },
+      { name: 'branch', req: 'optional', desc: 'Branch to deploy. Defaults to the repository’s default branch.' },
     ],
-    howTitle: 'What happens on click',
+    howEyebrow: 'On click',
+    howTitle: 'What happens when someone clicks it',
     how: [
-      'The visitor signs in or creates a free account — the link survives the redirect.',
-      'The wizard opens with your repository and branch prefilled; framework, build and start commands are auto-detected.',
-      'They pick one of their servers (or connect a VPS over SSH) and deploy. HTTPS and zero-downtime cutover are handled.',
+      { title: 'Sign in', body: 'The visitor signs in or creates a free account. The link survives the redirect.' },
+      { title: 'Wizard, prefilled', body: 'Repository and branch are filled in; framework and commands are auto-detected.' },
+      { title: 'Deploy', body: 'They pick one of their servers and deploy, with HTTPS and a zero-downtime switch.' },
     ],
-    tipTitle: 'Good to know',
+    tipsEyebrow: 'Good to know',
+    tipsTitle: 'Details worth knowing',
     tips: [
-      'Private repositories work too — the visitor connects their own GitHub account in the wizard.',
-      'Ship a pushify.yaml in the repo to pin build settings, cron jobs, volumes and workers for everyone who deploys it — see the reference at pushify.dev/pushify-yaml.',
-      'The badge is a static SVG; hotlink it or copy it into your repo.',
+      { title: 'Private repositories', body: 'The link clones a public URL. Import private repos from a connected GitHub account.' },
+      {
+        title: 'Pin the setup',
+        body: 'A pushify.yaml in the repo pins build settings, cron jobs, volumes and workers.',
+        href: '/pushify-yaml',
+        link: 'pushify.yaml reference',
+      },
+      { title: 'A static badge', body: 'The badge is a static SVG. Hotlink it or copy it into your repo.' },
     ],
     copy: 'Copy',
     copied: 'Copied',
@@ -42,28 +51,37 @@ const content = {
   tr: {
     label: 'Deploy butonu',
     title: "README'den tek tıkla deploy",
-    intro:
-      'Herhangi bir repoya "Deploy to Pushify" butonu ekleyin. Tıklayan kişi, repo ve branch önceden doldurulmuş şekilde yeni proje sihirbazına düşer — ve bizim değil, kendi sunucusuna deploy eder.',
-    previewTitle: 'Nasıl görünüyor',
-    snippetTitle: "README'nize ekleyin",
+    intro: 'Herhangi bir repoya Deploy to Pushify butonu ekleyin. Tıklayan kişi bizim değil, kendi sunucusuna deploy eder.',
+    builderTitle: 'Butonunuzu oluşturun',
+    previewLabel: 'Önizleme',
+    repoLabel: 'Repo adresi',
+    branchLabel: 'Branch (isteğe bağlı)',
     markdownLabel: 'Markdown',
     htmlLabel: 'HTML',
+    paramsEyebrow: 'Referans',
     paramsTitle: 'Parametreler',
     params: [
-      { name: 'repo', req: 'zorunlu', desc: "GitHub, GitLab veya Bitbucket'taki herkese açık bir reponun HTTPS adresi — ya da .git ile biten herhangi bir https URL." },
+      { name: 'repo', req: 'zorunlu', desc: 'Herkese açık bir GitHub, GitLab ya da Bitbucket reposunun HTTPS adresi ya da .git ile biten bir https adresi.' },
       { name: 'branch', req: 'isteğe bağlı', desc: 'Deploy edilecek branch. Varsayılan: reponun varsayılan branch’i.' },
     ],
-    howTitle: 'Tıklayınca ne olur',
+    howEyebrow: 'Tıklayınca',
+    howTitle: 'Biri butona tıkladığında ne olur',
     how: [
-      'Ziyaretçi giriş yapar ya da ücretsiz hesap açar — link yönlendirmeden sağ çıkar.',
-      'Sihirbaz repo ve branch dolu açılır; framework, build ve start komutları otomatik algılanır.',
-      'Kendi sunucularından birini seçer (ya da SSH ile bir VPS bağlar) ve deploy eder. HTTPS ve kesintisiz geçiş otomatiktir.',
+      { title: 'Giriş', body: 'Ziyaretçi giriş yapar ya da ücretsiz hesap açar. Link yönlendirmeden sonra da korunur.' },
+      { title: 'Dolu gelen sihirbaz', body: 'Repo ve branch doldurulmuş gelir; framework ve komutlar otomatik algılanır.' },
+      { title: 'Deploy', body: 'Kendi sunucularından birini seçip deploy eder; HTTPS ve kesintisiz geçiş dahil.' },
     ],
-    tipTitle: 'Bilmekte fayda var',
+    tipsEyebrow: 'Bilmekte fayda var',
+    tipsTitle: 'Akılda tutulacak ayrıntılar',
     tips: [
-      'Özel repolar da çalışır — ziyaretçi sihirbazda kendi GitHub hesabını bağlar.',
-      'Repoya bir pushify.yaml koyarsanız build ayarları, cron, volume ve worker’lar herkes için sabitlenir — referans: pushify.dev/pushify-yaml.',
-      'Rozet statik bir SVG; doğrudan linkleyebilir ya da reponuza kopyalayabilirsiniz.',
+      { title: 'Özel repolar', body: 'Link herkese açık bir adresi klonlar. Özel repoları bağlı bir GitHub hesabından içe aktarın.' },
+      {
+        title: 'Kurulumu sabitleyin',
+        body: 'Repodaki bir pushify.yaml build ayarlarını, cron, volume ve worker’ları sabitler.',
+        href: '/pushify-yaml',
+        link: 'pushify.yaml referansı',
+      },
+      { title: 'Statik bir rozet', body: 'Rozet statik bir SVG. Doğrudan linkleyin ya da reponuza kopyalayın.' },
     ],
     copy: 'Kopyala',
     copied: 'Kopyalandı',
@@ -76,7 +94,8 @@ function buildDeployUrl(repo: string, branch?: string): string {
   return `https://pushify.dev/new?${qs.toString()}`;
 }
 
-function CodeBlock({ code, copyLabel, copiedLabel }: { code: string; copyLabel: string; copiedLabel: string }) {
+/** A CodePanel-style block (same .hp-code styles) with a copy button in its title bar. */
+function CopyPanel({ title, code, copyLabel, copiedLabel }: { title: string; code: string; copyLabel: string; copiedLabel: string }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
     try {
@@ -88,22 +107,34 @@ function CodeBlock({ code, copyLabel, copiedLabel }: { code: string; copyLabel: 
     }
   };
   return (
-    <div className="relative rounded-xl border overflow-hidden" style={{ borderColor: 'var(--lp-border)', background: 'var(--bg-secondary)' }}>
-      <button
-        type="button"
-        onClick={copy}
-        className="absolute top-2 right-2 inline-flex items-center gap-1 h-7 px-2 rounded-md text-xs font-medium border transition-colors"
-        style={{ borderColor: 'var(--lp-border)', color: copied ? '#16a34a' : 'var(--lp-muted)', background: 'var(--bg-secondary)' }}
-      >
-        {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-        {copied ? copiedLabel : copyLabel}
-      </button>
-      <pre className="p-4 pr-24 overflow-x-auto text-[12.5px] leading-relaxed" style={{ fontFamily: 'var(--font-mono)', color: 'var(--lp-ink)' }}>
-        <code>{code}</code>
+    <div className="hp-code">
+      <div className="hp-code-title flex items-center justify-between gap-3">
+        <span>{title}</span>
+        <button
+          type="button"
+          onClick={copy}
+          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 border transition-colors"
+          style={{ borderColor: 'var(--hp-line-strong)', color: copied ? 'var(--hp-live)' : 'var(--hp-ink)' }}
+          aria-label={`${copyLabel} ${title}`}
+        >
+          {copied ? <Check className="w-3 h-3" aria-hidden="true" /> : <Copy className="w-3 h-3" aria-hidden="true" />}
+          <span aria-live="polite">{copied ? copiedLabel : copyLabel}</span>
+        </button>
+      </div>
+      <pre>
+        <code className="whitespace-pre-wrap break-all">{code}</code>
       </pre>
     </div>
   );
 }
+
+const inputClass = 'h-11 w-full min-w-0 px-4 rounded-full border text-sm';
+const inputStyle = {
+  borderColor: 'var(--hp-line-strong)',
+  background: 'var(--hp-card)',
+  color: 'var(--hp-ink)',
+  fontFamily: 'var(--font-mono)',
+} as const;
 
 export default function DeployButtonPage() {
   const { locale } = useTranslation();
@@ -116,95 +147,97 @@ export default function DeployButtonPage() {
   const html = `<a href="${deployUrl}"><img src="${BADGE_URL}" alt="Deploy to Pushify" height="32"></a>`;
 
   return (
-    <MarketingShell>
+    <MarketingShell noPad>
       <MarketingPageHero label={c.label} title={c.title} description={c.intro} />
 
-      <div className="lp-container max-w-3xl pb-24 space-y-14">
-        <Reveal>
-          <section>
-            <h2 className="text-lg font-semibold tracking-tight mb-4" style={{ color: 'var(--lp-ink)' }}>
-              {c.previewTitle}
-            </h2>
-            <div
-              className="rounded-xl border p-8 flex items-center justify-center"
-              style={{ borderColor: 'var(--lp-border)', background: 'var(--bg-secondary)' }}
-            >
-              <a href={deployUrl} target="_blank" rel="noopener noreferrer">
+      {/* The builder is the page's object: a live preview, two fields, and the snippets they produce. */}
+      <section className="pb-20 md:pb-24">
+        <div className="lp-container max-w-3xl">
+          <div className="hp-code">
+            <div className="hp-code-title">{c.builderTitle}</div>
+            <div className="p-8 md:p-10 flex flex-col items-center gap-5">
+              <p className="hp-eyebrow">{c.previewLabel}</p>
+              <a href={deployUrl} target="_blank" rel="noopener noreferrer" className="inline-flex">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/badges/deploy.svg" alt="Deploy to Pushify" height={32} width={168} />
               </a>
             </div>
-          </section>
-        </Reveal>
+            <div
+              className="p-6 md:p-8 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_10rem] gap-4 border-t"
+              style={{ borderColor: 'var(--hp-line)' }}
+            >
+              <label className="block min-w-0">
+                <span className="hp-eyebrow block mb-2">{c.repoLabel}</span>
+                <input
+                  type="url"
+                  value={repo}
+                  onChange={(e) => setRepo(e.target.value)}
+                  placeholder={EXAMPLE_REPO}
+                  className={inputClass}
+                  style={inputStyle}
+                />
+              </label>
+              <label className="block min-w-0">
+                <span className="hp-eyebrow block mb-2">{c.branchLabel}</span>
+                <input
+                  type="text"
+                  value={branch}
+                  onChange={(e) => setBranch(e.target.value)}
+                  placeholder="main"
+                  className={inputClass}
+                  style={inputStyle}
+                />
+              </label>
+            </div>
+          </div>
 
-        <Reveal>
-          <section className="space-y-4">
-            <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--lp-ink)' }}>
-              {c.snippetTitle}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3">
-              <input
-                type="url"
-                value={repo}
-                onChange={(e) => setRepo(e.target.value)}
-                placeholder={EXAMPLE_REPO}
-                className="h-10 px-3 rounded-lg border text-sm outline-none focus:ring-2"
-                style={{ borderColor: 'var(--lp-border)', background: 'var(--bg-secondary)', color: 'var(--lp-ink)', fontFamily: 'var(--font-mono)' }}
-                aria-label="Repository URL"
-              />
-              <input
-                type="text"
-                value={branch}
-                onChange={(e) => setBranch(e.target.value)}
-                placeholder="main"
-                className="h-10 px-3 rounded-lg border text-sm outline-none focus:ring-2 sm:w-36"
-                style={{ borderColor: 'var(--lp-border)', background: 'var(--bg-secondary)', color: 'var(--lp-ink)', fontFamily: 'var(--font-mono)' }}
-                aria-label="Branch (optional)"
-              />
-            </div>
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.08em]" style={{ color: 'var(--lp-muted)' }}>{c.markdownLabel}</p>
-              <CodeBlock code={markdown} copyLabel={c.copy} copiedLabel={c.copied} />
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] pt-2" style={{ color: 'var(--lp-muted)' }}>{c.htmlLabel}</p>
-              <CodeBlock code={html} copyLabel={c.copy} copiedLabel={c.copied} />
-            </div>
-          </section>
-        </Reveal>
+          <div className="mt-4 space-y-4">
+            <CopyPanel title={c.markdownLabel} code={markdown} copyLabel={c.copy} copiedLabel={c.copied} />
+            <CopyPanel title={c.htmlLabel} code={html} copyLabel={c.copy} copiedLabel={c.copied} />
+          </div>
+        </div>
+      </section>
 
-        <Reveal>
-          <section>
-            <h2 className="text-lg font-semibold tracking-tight mb-4" style={{ color: 'var(--lp-ink)' }}>
-              {c.paramsTitle}
-            </h2>
-            <div className="divide-y rounded-xl border" style={{ borderColor: 'var(--lp-border)' }}>
-              {c.params.map((p) => (
-                <div key={p.name} className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 p-4" style={{ borderColor: 'var(--lp-border)' }}>
-                  <code className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--lp-ink)' }}>{p.name}</code>
-                  <span className="text-xs uppercase tracking-wide self-center" style={{ color: 'var(--lp-muted)' }}>{p.req}</span>
-                  <p className="col-span-2 text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>{p.desc}</p>
-                </div>
-              ))}
+      <MSection eyebrow={c.paramsEyebrow} title={c.paramsTitle} width="narrow">
+        <dl className="border-t" style={{ borderColor: 'var(--hp-line)' }}>
+          {c.params.map((p) => (
+            <div
+              key={p.name}
+              className="grid grid-cols-1 sm:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-2 py-6 border-b"
+              style={{ borderColor: 'var(--hp-line)' }}
+            >
+              <dt>
+                <code className="text-[15px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--hp-ink)' }}>
+                  {p.name}
+                </code>
+                <span className="hp-eyebrow block mt-1">{p.req}</span>
+              </dt>
+              <dd className="text-[15px] leading-relaxed" style={{ color: 'var(--hp-body)' }}>
+                {p.desc}
+              </dd>
             </div>
-          </section>
-        </Reveal>
+          ))}
+        </dl>
+      </MSection>
 
-        <Reveal>
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div>
-              <h2 className="text-lg font-semibold tracking-tight mb-4" style={{ color: 'var(--lp-ink)' }}>{c.howTitle}</h2>
-              <ol className="space-y-3 list-decimal pl-5 text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
-                {c.how.map((step, i) => <li key={i}>{step}</li>)}
-              </ol>
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold tracking-tight mb-4" style={{ color: 'var(--lp-ink)' }}>{c.tipTitle}</h2>
-              <ul className="space-y-3 list-disc pl-5 text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
-                {c.tips.map((tip, i) => <li key={i}>{tip}</li>)}
-              </ul>
-            </div>
-          </section>
-        </Reveal>
-      </div>
+      <MSection eyebrow={c.howEyebrow} title={c.howTitle}>
+        <Steps items={c.how.map((s) => ({ title: s.title, body: s.body }))} />
+      </MSection>
+
+      <MSection eyebrow={c.tipsEyebrow} title={c.tipsTitle}>
+        <RuleGrid cols={3}>
+          {c.tips.map((tip) => (
+            <RuleCell
+              key={tip.title}
+              title={tip.title}
+              href={'href' in tip ? tip.href : undefined}
+              linkLabel={'link' in tip ? tip.link : undefined}
+            >
+              {tip.body}
+            </RuleCell>
+          ))}
+        </RuleGrid>
+      </MSection>
     </MarketingShell>
   );
 }

@@ -7,37 +7,43 @@ export function GaugeCard({
   value,
   subValue,
   icon: Icon,
-  color,
   maxValue = 100,
   suffix = '%',
+  thresholds = true,
 }: {
   label: string;
   value: number;
   subValue?: string;
   icon: React.ElementType;
-  color: string;
+  /** @deprecated cards are monochrome; kept so callers need not change */
+  color?: string;
   maxValue?: number;
   suffix?: string;
+  /** Warn/alert colours only mean something for a utilisation figure, not for a count or a total. */
+  thresholds?: boolean;
 }) {
   const percentage = Math.min((value / maxValue) * 100, 100);
-  const barColor =
-    percentage > 85 ? 'var(--status-error)' : percentage > 60 ? 'var(--status-warning)' : color;
+  const barColor = !thresholds
+    ? 'var(--text-primary)'
+    : percentage > 85
+      ? 'var(--status-error)'
+      : percentage > 60
+        ? 'var(--status-warning)'
+        : 'var(--text-primary)';
 
   return (
-    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-[var(--border-default)] transition-colors">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm text-[var(--text-secondary)] font-medium">{label}</span>
-        <div className="p-2 rounded-lg" style={{ backgroundColor: `${color}15` }}>
-          <Icon className="w-4 h-4" style={{ color }} />
-        </div>
+    <div className="dash-stat-card p-5">
+      <div className="flex items-center justify-between mb-4">
+        <span className="dash-stat-label mt-0!">{label}</span>
+        <Icon className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
       </div>
-      <div className="text-3xl font-bold font-mono" style={{ color }}>
+      <div className="dash-stat-value">
         {value.toFixed(1)}{suffix}
       </div>
       {subValue && (
         <p className="text-xs text-[var(--text-muted)] mt-1 font-mono">{subValue}</p>
       )}
-      <div className="mt-3 h-2 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
+      <div className="mt-4 h-1 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{ width: `${percentage}%`, backgroundColor: barColor }}

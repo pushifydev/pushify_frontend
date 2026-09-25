@@ -67,7 +67,7 @@ export function ProjectResourcesTable({
                 >
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--accent-cyan)]/20 to-[var(--accent-purple)]/20 flex items-center justify-center text-xs font-bold text-[var(--accent-cyan)]">
+                      <div className="w-8 h-8 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] flex items-center justify-center text-xs font-bold text-[var(--accent-cyan)]">
                         {project.projectName.charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -108,11 +108,11 @@ export function ProjectResourcesTable({
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2 text-sm font-mono">
-                      <ArrowDownRight className="w-3 h-3 text-[#34d399]" />
-                      <span className="text-[#34d399]">{formatStorage(project.networkRxMB)}</span>
+                      <ArrowDownRight className="w-3 h-3 text-[var(--chart-1)]" />
+                      <span className="text-[var(--chart-1)]">{formatStorage(project.networkRxMB)}</span>
                       <span className="text-[var(--text-muted)]">/</span>
-                      <ArrowUpRight className="w-3 h-3 text-[#3b82f6]" />
-                      <span className="text-[#3b82f6]">{formatStorage(project.networkTxMB)}</span>
+                      <ArrowUpRight className="w-3 h-3 text-[var(--chart-2)]" />
+                      <span className="text-[var(--chart-2)]">{formatStorage(project.networkTxMB)}</span>
                     </div>
                   </td>
                   <td className="px-5 py-3">

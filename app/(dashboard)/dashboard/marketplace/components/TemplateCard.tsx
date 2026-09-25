@@ -9,16 +9,6 @@ import {
 } from 'lucide-react';
 import type { MarketplaceTemplate } from '@/lib/api';
 
-const CATEGORY_ACCENTS: Record<string, string> = {
-  cms: '#6366f1',
-  automation: '#a78bfa',
-  monitoring: '#22c55e',
-  storage: '#f59e0b',
-  devtools: '#3b82f6',
-  analytics: '#ec4899',
-  database: '#f97316',
-};
-
 const ICON_MAP: Record<string, LucideIcon> = {
   FileText, Zap, Activity, Pen, Layers,
   HardDrive, GitBranch, Container, BarChart3,
@@ -42,7 +32,6 @@ interface TemplateCardProps {
 }
 
 export default function TemplateCard({ template, index, deployLabel }: TemplateCardProps) {
-  const accent = CATEGORY_ACCENTS[template.category] || '#6366f1';
   const IconComponent = ICON_MAP[template.icon] || Package;
 
   return (
@@ -55,20 +44,18 @@ export default function TemplateCard({ template, index, deployLabel }: TemplateC
         className="relative rounded-xl overflow-hidden transition-all duration-300 h-full"
         style={{
           background: 'var(--bg-secondary)',
-          borderWidth: '2px 1px 1px 1px',
-          borderStyle: 'solid',
-          borderColor: `${accent} var(--border-subtle) var(--border-subtle) var(--border-subtle)`,
-          borderRadius: 12,
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 14,
         }}
       >
         {/* Featured badge */}
         {template.featured && (
           <div
-            className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider z-10"
+            className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] uppercase tracking-[0.1em] z-10"
             style={{
-              background: `${accent}18`,
-              color: accent,
-              border: `1px solid ${accent}30`,
+              fontFamily: 'var(--font-label)',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border-default)',
             }}
           >
             <Star className="w-2.5 h-2.5 fill-current" />
@@ -76,13 +63,8 @@ export default function TemplateCard({ template, index, deployLabel }: TemplateC
           </div>
         )}
 
-        {/* Ambient glow on hover */}
-        <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{
-            background: `radial-gradient(ellipse at top, ${accent}08 0%, transparent 70%)`,
-          }}
-        />
+        {/* Hover: the hairline brightens */}
+        <div className="absolute inset-0 rounded-[14px] pointer-events-none border border-transparent group-hover:border-[var(--border-strong)] transition-colors duration-200" />
 
         <div className="p-5 flex flex-col h-full">
           {/* Header: icon + meta */}
@@ -90,25 +72,25 @@ export default function TemplateCard({ template, index, deployLabel }: TemplateC
             <div
               className="w-11 h-11 rounded-lg flex items-center justify-center text-xl shrink-0 transition-transform duration-300 group-hover:scale-110"
               style={{
-                background: `${accent}12`,
-                border: `1px solid ${accent}20`,
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-subtle)',
               }}
             >
-              <IconComponent className="w-5 h-5" style={{ color: accent }} />
+              <IconComponent className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />
             </div>
             <div className="flex-1 min-w-0">
               <h3
-                className="text-[15px] font-semibold leading-tight truncate"
+                className="text-[15px] font-medium leading-tight truncate"
                 style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}
               >
                 {template.name}
               </h3>
               <div className="flex items-center gap-2 mt-1">
                 <span
-                  className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded"
+                  className="text-[10px] uppercase tracking-[0.1em]"
                   style={{
-                    background: `${accent}14`,
-                    color: accent,
+                    fontFamily: 'var(--font-label)',
+                    color: 'var(--text-muted)',
                   }}
                 >
                   {CATEGORY_LABELS[template.category] || template.category}
@@ -170,7 +152,7 @@ export default function TemplateCard({ template, index, deployLabel }: TemplateC
             </div>
             <span
               className="flex items-center gap-1 text-[12px] font-medium transition-colors duration-200"
-              style={{ color: accent }}
+              style={{ color: 'var(--text-primary)' }}
             >
               {deployLabel}
               <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

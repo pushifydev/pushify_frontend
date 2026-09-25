@@ -1,248 +1,244 @@
 'use client';
 
 import { MarketingShell, MarketingPageHero } from '@/components/landing';
+import { MSection, RuleGrid, RuleCell, Steps } from '@/components/landing/MarketingKit';
 import { useTranslation } from '@/hooks';
-import {
-  Building2,
-  Paintbrush,
-  Users,
-  Server,
-  ShieldCheck,
-  Database,
-  Package,
-  Languages,
-  GitBranch,
-  ArrowRight,
-} from 'lucide-react';
-import { Reveal } from '@/components/landing/Reveal';
+import { Building2, Paintbrush, Users, ArrowUpRight } from 'lucide-react';
 
 const CONTACT = 'support@pushify.dev';
+const SELF_HOST_DOCS = 'https://github.com/pushifydev/pushify_backend/blob/master/docs/SELF_HOSTING.md';
+
+const mailto = (subject: string) => `mailto:${CONTACT}?subject=${encodeURIComponent(`[Partners] ${subject}`)}`;
+
+/* An example of the one dashboard an agency works from: every client app, the server it runs
+   on, its state. Names are placeholders; nothing here is a customer. */
+const BOARD = [
+  { app: 'bakery-shop', kind: 'Next.js', server: 'vps-eu-1' },
+  { app: 'clinic-portal', kind: 'Laravel', server: 'vps-eu-1' },
+  { app: 'studio-blog', kind: 'WordPress', server: 'vps-eu-2' },
+  { app: 'law-firm-site', kind: 'Static', server: 'vps-us-1' },
+  { app: 'events-api', kind: 'Node.js', server: 'vps-us-1' },
+];
 
 const content = {
   en: {
     label: 'Partners',
     title: 'Run Pushify for your clients',
-    intro:
-      'Agencies and hosting providers use Pushify to give every client a modern deployment platform — on infrastructure you control. Open source at the core, with commercial setup, support, and white-label options on top.',
-    offersTitle: 'Ways to work with us',
+    intro: 'Pushify is open source. Agencies and hosting providers can run it for every client, on their own servers.',
+    boardTitle: 'All clients',
+    boardLive: 'Live',
+    boardCols: ['App', 'Stack', 'Server', 'State'],
+    boardCaption: 'Every client app, on servers you choose, in one dashboard. Example data.',
+    offersEyebrow: 'Ways to work with us',
+    offersTitle: 'Three ways to put Pushify in front of clients',
+    offersLead: 'Pick by how much of the platform you want to operate yourselves.',
     offers: [
       {
         icon: Building2,
         title: 'Agency setup',
-        desc: 'We install a self-hosted Pushify on your servers, migrate your client sites and apps onto it, and train your team. You manage every client from one dashboard instead of a pile of cPanels and SSH sessions.',
+        desc: 'We install Pushify on your servers, migrate client apps and train your team.',
         cta: 'Request a setup quote',
         subject: 'Agency setup',
       },
       {
         icon: Paintbrush,
         title: 'White-label',
-        desc: 'Your brand, your domain, your customer accounts — powered by Pushify underneath. A licensed deployment with your branding, priority support, and a direct line to us for updates and fixes.',
+        desc: 'Your brand, domain and customer accounts on a licensed deployment, with priority support.',
         cta: 'Ask about white-label',
         subject: 'White-label licensing',
       },
       {
         icon: Users,
         title: 'Teams on managed cloud',
-        desc: 'Skip the ops entirely: use pushify.dev with your team, with role-based access per project and volume pricing for larger fleets. Start on a standard plan today and talk to us when you outgrow it.',
+        desc: 'Use pushify.dev with per-project roles and volume pricing for larger fleets.',
         cta: 'Talk about team pricing',
         subject: 'Team / volume pricing',
       },
     ],
-    whyTitle: 'Why agencies pick Pushify',
+    whyEyebrow: 'For client work',
+    whyTitle: 'What each client app gets',
     why: [
-      { icon: Server, text: 'Client apps run on your servers — any VPS provider, any region, flat costs you control.' },
-      { icon: GitBranch, text: 'Git push → build → live with HTTPS and zero-downtime cutover. No Dockerfiles or nginx configs per project.' },
-      { icon: Database, text: 'PostgreSQL, MySQL, Redis and MongoDB with scheduled backups and a web studio.' },
-      { icon: Package, text: 'One-click marketplace: WordPress, Ghost, n8n, Uptime Kuma and 20 more for client work.' },
-      { icon: ShieldCheck, text: 'MIT-licensed and open source — no vendor risk. If we vanish, your platform keeps running.' },
-      { icon: Languages, text: 'English and Turkish interface out of the box.' },
+      { title: 'Your servers', text: 'Any VPS provider, any region, at costs you control.' },
+      { title: 'Push to deploy', text: 'Git push, build, live on HTTPS with a zero-downtime switch.' },
+      { title: 'Databases', text: 'PostgreSQL, MySQL, Redis and MongoDB with scheduled backups.' },
+      { title: 'One-click apps', text: 'WordPress, Ghost, n8n, Uptime Kuma and more from the marketplace.' },
+      { title: 'MIT licensed', text: 'Public code. If we disappeared, your platform keeps running.' },
+      { title: 'English and Turkish', text: 'The dashboard ships in both languages.' },
     ],
+    howEyebrow: 'Process',
     howTitle: 'How it starts',
     how: [
-      { step: '1', title: 'A short call', desc: 'Tell us about your clients, stack, and servers. We tell you honestly whether Pushify fits.' },
-      { step: '2', title: 'Pilot install', desc: 'We set up a working platform with one or two real client apps on your infrastructure.' },
-      { step: '3', title: 'Rollout & support', desc: 'Migration of the rest, team training, and an agreed support line for whatever comes up.' },
+      { title: 'A short call', desc: 'Tell us about your clients and servers. We will say if it is not a fit.' },
+      { title: 'Pilot install', desc: 'A working platform with one or two real client apps on your servers.' },
+      { title: 'Rollout and support', desc: 'The rest of the migration, team training and an agreed support line.' },
     ],
+    ctaEyebrow: 'Contact',
     ctaTitle: 'Tell us what you run',
-    ctaDesc: 'A few sentences about your agency or hosting business is enough — we reply within one business day.',
+    ctaDesc: 'A few sentences about your agency or hosting business is enough to start.',
     ctaButton: 'Email us',
-    ctaAlt: 'or explore the self-host docs first',
+    ctaAlt: 'Read the self-host docs',
   },
   tr: {
-    label: 'İş Ortaklığı',
+    label: 'İş ortaklığı',
     title: "Pushify'ı müşterileriniz için çalıştırın",
-    intro:
-      'Ajanslar ve hosting sağlayıcıları, her müşterisine modern bir deploy platformu sunmak için Pushify kullanıyor — kontrolü sizde olan altyapıda. Çekirdek açık kaynak; üzerine ticari kurulum, destek ve white-label seçenekleri.',
-    offersTitle: 'Birlikte çalışma modelleri',
+    intro: 'Pushify açık kaynak. Ajanslar ve hosting sağlayıcıları onu her müşterisi için kendi sunucularında çalıştırabilir.',
+    boardTitle: 'Tüm müşteriler',
+    boardLive: 'Yayında',
+    boardCols: ['Uygulama', 'Teknoloji', 'Sunucu', 'Durum'],
+    boardCaption: 'Seçtiğiniz sunuculardaki tüm müşteri uygulamaları, tek panelde. Örnek veri.',
+    offersEyebrow: 'Birlikte çalışma',
+    offersTitle: "Pushify'ı müşterilerinize sunmanın üç yolu",
+    offersLead: 'Platformun ne kadarını kendiniz işletmek istediğinize göre seçin.',
     offers: [
       {
         icon: Building2,
         title: 'Ajans kurulumu',
-        desc: 'Self-host Pushify’ı sunucularınıza kuruyor, müşteri site ve uygulamalarınızı taşıyor, ekibinizi eğitiyoruz. Bir yığın cPanel ve SSH oturumu yerine tüm müşterileri tek panelden yönetirsiniz.',
+        desc: 'Pushify’ı sunucularınıza kuruyor, müşteri uygulamalarını taşıyor ve ekibinizi eğitiyoruz.',
         cta: 'Kurulum teklifi isteyin',
         subject: 'Ajans kurulumu',
       },
       {
         icon: Paintbrush,
         title: 'White-label',
-        desc: 'Sizin markanız, sizin domaininiz, sizin müşteri hesaplarınız — altında Pushify. Markanızla lisanslı kurulum, öncelikli destek ve güncellemeler için bizimle doğrudan hat.',
+        desc: 'Sizin markanız, alan adınız ve müşteri hesaplarınızla lisanslı kurulum ve öncelikli destek.',
         cta: 'White-label için yazın',
         subject: 'White-label lisans',
       },
       {
         icon: Users,
         title: 'Yönetilen bulutta ekipler',
-        desc: 'Operasyonu tamamen atlayın: pushify.dev’i ekibinizle kullanın — proje bazlı yetkilendirme ve büyük filolar için hacim fiyatlandırması. Bugün standart planla başlayın, büyüyünce konuşalım.',
-        cta: 'Ekip fiyatı konuşalım',
+        desc: 'pushify.dev’i proje bazlı yetkilerle ve büyük filolar için hacim fiyatıyla kullanın.',
+        cta: 'Ekip fiyatını konuşalım',
         subject: 'Ekip / hacim fiyatlandırması',
       },
     ],
-    whyTitle: 'Ajanslar neden Pushify seçiyor',
+    whyEyebrow: 'Müşteri işleri için',
+    whyTitle: 'Her müşteri uygulamasının aldıkları',
     why: [
-      { icon: Server, text: 'Müşteri uygulamaları sizin sunucularınızda — istediğiniz VPS sağlayıcısı, sabit ve kontrol edilebilir maliyet.' },
-      { icon: GitBranch, text: 'Git push → build → HTTPS ile canlı, kesintisiz geçiş. Proje başına Dockerfile veya nginx ayarı yok.' },
-      { icon: Database, text: 'PostgreSQL, MySQL, Redis ve MongoDB — zamanlanmış yedekler ve web studio ile.' },
-      { icon: Package, text: 'Tek tık marketplace: WordPress, Ghost, n8n, Uptime Kuma ve 20 uygulama daha.' },
-      { icon: ShieldCheck, text: 'MIT lisanslı, açık kaynak — tedarikçi riski yok. Biz yok olsak bile platformunuz çalışmaya devam eder.' },
-      { icon: Languages, text: 'Arayüz Türkçe ve İngilizce.' },
+      { title: 'Sizin sunucularınız', text: 'İstediğiniz VPS sağlayıcısı ve bölge, kontrolünüzdeki maliyet.' },
+      { title: 'Push ile deploy', text: 'Git push, build ve kesintisiz geçişle HTTPS üzerinden yayında.' },
+      { title: 'Veritabanları', text: 'Zamanlanmış yedeklerle PostgreSQL, MySQL, Redis ve MongoDB.' },
+      { title: 'Tek tıkla uygulamalar', text: 'Marketplace’ten WordPress, Ghost, n8n, Uptime Kuma ve dahası.' },
+      { title: 'MIT lisanslı', text: 'Kod açık. Biz ortadan kalksak da platformunuz çalışmaya devam eder.' },
+      { title: 'Türkçe ve İngilizce', text: 'Panel iki dilde birden gelir.' },
     ],
+    howEyebrow: 'Süreç',
     howTitle: 'Nasıl başlıyor',
     how: [
-      { step: '1', title: 'Kısa bir görüşme', desc: 'Müşterilerinizi, stack’inizi ve sunucularınızı anlatın. Pushify uygun değilse bunu da dürüstçe söyleriz.' },
-      { step: '2', title: 'Pilot kurulum', desc: 'Altyapınızda, bir-iki gerçek müşteri uygulamasıyla çalışan bir platform kuruyoruz.' },
-      { step: '3', title: 'Yaygınlaştırma & destek', desc: 'Kalan taşımalar, ekip eğitimi ve üzerinde anlaştığımız bir destek hattı.' },
+      { title: 'Kısa bir görüşme', desc: 'Müşterilerinizi ve sunucularınızı anlatın. Uygun değilse açıkça söyleriz.' },
+      { title: 'Pilot kurulum', desc: 'Sunucularınızda bir iki gerçek müşteri uygulamasıyla çalışan bir platform.' },
+      { title: 'Yaygınlaştırma ve destek', desc: 'Kalan taşımalar, ekip eğitimi ve üzerinde anlaşılan bir destek hattı.' },
     ],
+    ctaEyebrow: 'İletişim',
     ctaTitle: 'Ne çalıştırdığınızı anlatın',
-    ctaDesc: 'Ajansınızı veya hosting işinizi birkaç cümleyle anlatmanız yeterli — bir iş günü içinde dönüş yaparız.',
+    ctaDesc: 'Ajansınızı ya da hosting işinizi birkaç cümleyle anlatmanız başlamak için yeterli.',
     ctaButton: 'E-posta gönderin',
-    ctaAlt: 'veya önce self-host dokümanlarına bakın',
+    ctaAlt: 'Self-host dokümanlarını okuyun',
   },
 } as const;
+
+function ClientBoard({ c }: { c: (typeof content)['en'] | (typeof content)['tr'] }) {
+  return (
+    <figure className="mx-auto max-w-3xl">
+      <div className="hp-card" style={{ width: '100%' }}>
+        <div className="hp-card-head">
+          <span>{c.boardTitle}</span>
+          <span className="hp-live">
+            <span className="hp-dot" aria-hidden="true" />
+            {BOARD.length}/{BOARD.length} {c.boardLive}
+          </span>
+        </div>
+        <table className="w-full text-left" style={{ borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ color: 'var(--hp-muted)' }} className="text-[0.625rem] uppercase tracking-[0.1em]">
+              {c.boardCols.map((col, i) => (
+                <th
+                  key={col}
+                  scope="col"
+                  className={`font-normal px-3 sm:px-4 pt-3 pb-2 ${i === 1 ? 'hidden sm:table-cell' : ''} ${i === 3 ? 'text-right' : ''}`}
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {BOARD.map((row) => (
+              <tr key={row.app} className="border-t" style={{ borderColor: 'var(--hp-line)' }}>
+                <td className="px-3 sm:px-4 py-2.5" style={{ color: 'var(--hp-ink)' }}>
+                  {row.app}
+                </td>
+                <td className="px-3 sm:px-4 py-2.5 hidden sm:table-cell" style={{ color: 'var(--hp-body)' }}>
+                  {row.kind}
+                </td>
+                <td className="px-3 sm:px-4 py-2.5" style={{ color: 'var(--hp-body)' }}>
+                  {row.server}
+                </td>
+                <td className="px-3 sm:px-4 py-2.5 text-right hp-live whitespace-nowrap">✓ {c.boardLive.toLowerCase()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <figcaption className="hp-mono text-center text-[12px] mt-4" style={{ color: 'var(--hp-muted)' }}>
+        {c.boardCaption}
+      </figcaption>
+    </figure>
+  );
+}
 
 export default function PartnersPage() {
   const { locale } = useTranslation();
   const c = content[locale === 'tr' ? 'tr' : 'en'];
 
   return (
-    <MarketingShell>
+    <MarketingShell noPad>
       <MarketingPageHero label={c.label} title={c.title} description={c.intro} />
 
-      <div className="lp-container max-w-5xl pb-24 space-y-20">
-        {/* Offer cards */}
-        <Reveal>
-          <section>
-            <h2 className="text-xl font-semibold tracking-tight mb-6 text-center" style={{ color: 'var(--lp-ink)' }}>
-              {c.offersTitle}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {c.offers.map((offer) => (
-                <div
-                  key={offer.title}
-                  className="rounded-2xl p-6 flex flex-col border"
-                  style={{ borderColor: 'var(--lp-border)', background: 'var(--bg-secondary)' }}
-                >
-                  <offer.icon className="w-5 h-5 mb-4" style={{ color: 'var(--lp-ink)' }} />
-                  <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
-                    {offer.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: 'var(--lp-body)' }}>
-                    {offer.desc}
-                  </p>
-                  <a
-                    href={`mailto:${CONTACT}?subject=${encodeURIComponent(`[Partners] ${offer.subject}`)}`}
-                    className="inline-flex items-center gap-1.5 text-sm font-medium hover:underline underline-offset-4"
-                    style={{ color: 'var(--lp-ink)' }}
-                  >
-                    {offer.cta}
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              ))}
-            </div>
-          </section>
-        </Reveal>
+      <section className="pb-20 md:pb-24">
+        <div className="lp-container">
+          <ClientBoard c={c} />
+        </div>
+      </section>
 
-        {/* Why */}
-        <Reveal>
-          <section>
-            <h2 className="text-xl font-semibold tracking-tight mb-6 text-center" style={{ color: 'var(--lp-ink)' }}>
-              {c.whyTitle}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 max-w-3xl mx-auto">
-              {c.why.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <item.icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: 'var(--lp-muted)' }} />
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
-                    {item.text}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </Reveal>
+      <MSection eyebrow={c.offersEyebrow} title={c.offersTitle} lead={c.offersLead} split>
+        <RuleGrid cols={3}>
+          {c.offers.map((offer) => (
+            <RuleCell key={offer.title} icon={offer.icon} title={offer.title} href={mailto(offer.subject)} linkLabel={offer.cta}>
+              {offer.desc}
+            </RuleCell>
+          ))}
+        </RuleGrid>
+      </MSection>
 
-        {/* How it starts */}
-        <Reveal>
-          <section>
-            <h2 className="text-xl font-semibold tracking-tight mb-6 text-center" style={{ color: 'var(--lp-ink)' }}>
-              {c.howTitle}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              {c.how.map((item) => (
-                <div key={item.step} className="text-center px-4">
-                  <div
-                    className="w-9 h-9 rounded-full mx-auto mb-3 flex items-center justify-center text-sm font-semibold border"
-                    style={{ borderColor: 'var(--lp-border)', color: 'var(--lp-ink)' }}
-                  >
-                    {item.step}
-                  </div>
-                  <h3 className="text-sm font-semibold mb-1.5" style={{ color: 'var(--lp-ink)' }}>
-                    {item.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-body)' }}>
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </Reveal>
+      <MSection eyebrow={c.whyEyebrow} title={c.whyTitle}>
+        <RuleGrid cols={3}>
+          {c.why.map((item) => (
+            <RuleCell key={item.title} title={item.title}>
+              {item.text}
+            </RuleCell>
+          ))}
+        </RuleGrid>
+      </MSection>
 
-        {/* CTA */}
-        <Reveal>
-          <section
-            className="rounded-2xl border text-center px-6 py-12"
-            style={{ borderColor: 'var(--lp-border)', background: 'var(--bg-secondary)' }}
-          >
-            <h2 className="text-2xl font-semibold tracking-tight mb-3" style={{ color: 'var(--lp-ink)' }}>
-              {c.ctaTitle}
-            </h2>
-            <p className="text-[15px] mb-6 max-w-xl mx-auto" style={{ color: 'var(--lp-body)' }}>
-              {c.ctaDesc}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href={`mailto:${CONTACT}?subject=${encodeURIComponent('[Partners] ')}`}
-                className="lp-cta text-sm"
-              >
-                {c.ctaButton}
-              </a>
-              <a
-                href="https://github.com/pushifydev/pushify_backend/blob/master/docs/SELF_HOSTING.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm hover:underline underline-offset-4"
-                style={{ color: 'var(--lp-muted)' }}
-              >
-                {c.ctaAlt}
-              </a>
-            </div>
-            <p className="text-xs mt-6 tabular-nums" style={{ color: 'var(--lp-muted)' }}>
-              {CONTACT}
-            </p>
-          </section>
-        </Reveal>
-      </div>
+      <MSection eyebrow={c.howEyebrow} title={c.howTitle}>
+        <Steps items={c.how.map((s) => ({ title: s.title, body: s.desc }))} />
+      </MSection>
+
+      <MSection eyebrow={c.ctaEyebrow} title={c.ctaTitle} lead={c.ctaDesc} align="center">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href={mailto('')} className="lp-cta w-full sm:w-auto">
+            {c.ctaButton}
+          </a>
+          <a href={SELF_HOST_DOCS} target="_blank" rel="noopener noreferrer" className="lp-cta-ghost w-full sm:w-auto">
+            {c.ctaAlt}
+            <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
+          </a>
+        </div>
+        <p className="hp-mono text-center text-[12px] mt-8" style={{ color: 'var(--hp-muted)' }}>
+          {CONTACT}
+        </p>
+      </MSection>
     </MarketingShell>
   );
 }

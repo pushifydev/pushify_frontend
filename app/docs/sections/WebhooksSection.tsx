@@ -10,24 +10,22 @@ export function WebhooksSection({ c, apiBase }: SectionProps) {
 
       <div>
         <h2 className="docs-h2">{c.webhooks.howItWorks}</h2>
-        <div className="space-y-3">
+        <ol className="docs-steps">
           {c.webhooks.steps.map((s, i) => (
-            <div key={i} className="flex items-start gap-3 docs-card-sm">
-              <div className="docs-step-num shrink-0">
-                {i + 1}
-              </div>
+            <li key={i}>
+              <span className="docs-step-num">{String(i + 1).padStart(2, '0')}</span>
               <div>
-                <h4 className="text-sm font-medium" style={{ color: 'var(--lp-ink)' }}>{s.title}</h4>
-                <p className="text-xs docs-muted-sm mt-0.5">{s.desc}</p>
+                <h3 className="docs-cell-title">{s.title}</h3>
+                <p className="docs-muted-sm mt-0.5">{s.desc}</p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
 
       <div>
         <h2 className="docs-h2">{c.webhooks.manualTitle}</h2>
-        <p className="text-sm docs-muted-sm mb-3">
+        <p className="docs-muted mb-4">
           {c.webhooks.manualDesc}
         </p>
         <CodeBlock
@@ -51,7 +49,7 @@ Body:
 
       <div>
         <h2 className="docs-h2">{c.webhooks.githubTitle}</h2>
-        <p className="text-sm docs-muted-sm mb-3">
+        <p className="docs-muted mb-4">
           {c.webhooks.githubDesc}
         </p>
         <CodeBlock

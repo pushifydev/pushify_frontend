@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { MarketingShell, MarketingPageHero } from '@/components/landing';
+import { MarketingShell } from '@/components/landing';
+import { ChangelogHero } from '../copy';
 import {
   ChangelogEntryList,
   ChangelogPager,
@@ -28,14 +29,10 @@ export default async function ChangelogArchivePage() {
   const pageCount = archivePageCount(entries.length);
 
   return (
-    <MarketingShell>
-      <MarketingPageHero
-        label="Changelog"
-        title="Release archive"
-        description="Older Pushify releases. The latest updates live on the main changelog."
-      />
+    <MarketingShell noPad>
+      <ChangelogHero archive />
 
-      <div className="lp-container max-w-3xl mx-auto pb-24 space-y-6">
+      <div className="lp-container max-w-5xl mx-auto pb-24 md:pb-32">
         <ChangelogPager page={1} pageCount={pageCount} className="pb-2" />
         <ChangelogEntryList entries={archiveSlice(entries, 1)} />
         <ChangelogPager page={1} pageCount={pageCount} />

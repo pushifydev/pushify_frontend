@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
 import { MarketingShell } from '@/components/landing';
 import { JsonLd } from '@/components/JsonLd';
 import { getBlogPost, listBlogPosts } from '@/lib/blog';
 import { BlogProse } from '../prose';
+import { BackToBlog, PostFooter, PostMeta } from '../copy';
 import { OG_IMAGE } from '@/lib/seo';
 
 interface Params {
@@ -49,15 +48,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-function formatDate(date: string): string {
-  return new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC',
-  });
-}
-
 export default async function BlogPostPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
   const post = await getBlogPost(slug);
@@ -88,61 +78,18 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
       />
 
       <article className="lp-container max-w-3xl pt-28 md:pt-36 pb-20 md:pb-28">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-1.5 text-sm mb-8 hover:underline underline-offset-4"
-          style={{ color: 'var(--lp-muted)' }}
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          Blog
-        </Link>
+        <BackToBlog />
 
-        <header className="mb-10">
-          <p
-            className="text-xs uppercase tracking-[0.08em] font-medium mb-3 tabular-nums"
-            style={{ color: 'var(--lp-muted)' }}
-          >
-            {formatDate(post.date)} · {post.readingMinutes} min read
-          </p>
-          <h1
-            className="text-3xl md:text-4xl font-semibold tracking-tight leading-tight mb-4"
-            style={{ color: 'var(--lp-ink)' }}
-          >
-            {post.title}
-          </h1>
-          <p className="text-lg leading-relaxed" style={{ color: 'var(--lp-body)' }}>
-            {post.description}
-          </p>
-          {post.author && (
-            <p className="text-sm mt-4" style={{ color: 'var(--lp-muted)' }}>
-              {post.author}
-            </p>
-          )}
+        <header className="blog-post-header">
+          <PostMeta date={post.date} minutes={post.readingMinutes} long />
+          <h1 className="blog-post-title" lang="en">{post.title}</h1>
+          <p className="blog-post-lead" lang="en">{post.description}</p>
+          {post.author && <p className="blog-post-author">{post.author}</p>}
         </header>
 
         <BlogProse blocks={post.blocks} />
 
-        <footer
-          className="mt-14 pt-8 border-t flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-          style={{ borderColor: 'var(--lp-border)' }}
-        >
-          <p className="text-sm" style={{ color: 'var(--lp-muted)' }}>
-            Questions or feedback? Open an issue on{' '}
-            <a
-              href="https://github.com/pushifydev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-4"
-              style={{ color: 'var(--lp-ink)' }}
-            >
-              GitHub
-            </a>
-            .
-          </p>
-          <Link href="/register" className="lp-cta text-sm py-2.5 px-5 shrink-0">
-            Deploy your first app
-          </Link>
-        </footer>
+        <PostFooter />
       </article>
     </MarketingShell>
   );

@@ -274,9 +274,9 @@ export default function ProjectsPage() {
                   <Link href={`/dashboard/projects/${project.id}`} className="flex items-center gap-3 min-w-0">
                     <div
                       className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: `${accent}14` }}
+                      style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-subtle)' }}
                     >
-                      <GitBranch className="w-4 h-4" style={{ color: accent }} />
+                      <GitBranch className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
                     </div>
                     <div className="min-w-0">
                       <h3
@@ -288,7 +288,7 @@ export default function ProjectsPage() {
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span
                           className="w-1.5 h-1.5 rounded-full shrink-0"
-                          style={{ background: accent, boxShadow: `0 0 4px ${accent}` }}
+                          style={{ background: accent }}
                         />
                         <span className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>
                           {project.status}

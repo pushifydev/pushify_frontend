@@ -25,18 +25,18 @@ export function ErrorsSection({ c, apiBase }: SectionProps) {
         <div className="docs-table-wrap">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b">
-                <th className="text-left px-4 py-3 docs-muted-sm font-medium text-xs">{c.labels.code}</th>
-                <th className="text-left px-4 py-3 docs-muted-sm font-medium text-xs">{c.labels.description}</th>
+              <tr>
+                <th>{c.labels.code}</th>
+                <th>{c.labels.description}</th>
               </tr>
             </thead>
             <tbody>
               {c.errors.statusRows.map((item) => (
-                <tr key={item.code} className="border-b last:border-0">
-                  <td className="px-4 py-3">
-                    <span className={`font-mono font-bold text-sm ${statusCodeColors[item.code]}`}>{item.code}</span>
+                <tr key={item.code}>
+                  <td>
+                    <span className={`font-mono font-medium text-sm ${statusCodeColors[item.code]}`}>{item.code}</span>
                   </td>
-                  <td className="px-4 py-3 docs-muted">{item.desc}</td>
+                  <td>{item.desc}</td>
                 </tr>
               ))}
             </tbody>
@@ -45,7 +45,7 @@ export function ErrorsSection({ c, apiBase }: SectionProps) {
       </div>
 
       <div>
-        <h2 className="docs-h2 mb-3">{c.errors.responseFormatTitle}</h2>
+        <h2 className="docs-h2">{c.errors.responseFormatTitle}</h2>
         <CodeBlock
           code={`{
   "error": {
@@ -59,51 +59,48 @@ export function ErrorsSection({ c, apiBase }: SectionProps) {
 
       <div>
         <h2 className="docs-h2">{c.errors.commonCodesTitle}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <dl className="docs-rows">
           {c.errors.errorCodes.map((item) => (
-            <div
-              key={item.code}
-              className="flex items-start gap-3 px-3.5 py-3 rounded-lg docs-card-sm"
-            >
-              <code className="px-2 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-mono shrink-0">
-                {item.code}
-              </code>
-              <span className="docs-muted-sm text-xs leading-relaxed">{item.desc}</span>
+            <div key={item.code}>
+              <dt>
+                <code className="docs-inline-code">{item.code}</code>
+              </dt>
+              <dd className="docs-muted-sm">{item.desc}</dd>
             </div>
           ))}
-        </div>
+        </dl>
       </div>
 
       <div>
-        <h2 className="docs-h2 mb-3">{c.errors.rateLimitsTitle}</h2>
-        <p className="text-sm docs-muted-sm mb-4">
+        <h2 className="docs-h2">{c.errors.rateLimitsTitle}</h2>
+        <p className="docs-muted mb-5">
           {c.errors.rateLimitsIntro}
         </p>
         <div className="docs-table-wrap">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b">
-                <th className="text-left px-4 py-3 docs-muted-sm font-medium text-xs">{c.labels.plan}</th>
-                <th className="text-left px-4 py-3 docs-muted-sm font-medium text-xs">{c.labels.rateLimit}</th>
+              <tr>
+                <th>{c.labels.plan}</th>
+                <th>{c.labels.rateLimit}</th>
               </tr>
             </thead>
             <tbody>
               {c.errors.rateLimitRows.map((item) => (
-                <tr key={item.plan} className="border-b last:border-0">
-                  <td className="px-4 py-3 font-medium" style={{ color: 'var(--lp-ink)' }}>{item.plan}</td>
-                  <td className="px-4 py-3 docs-muted font-mono text-xs">{item.limit}</td>
+                <tr key={item.plan}>
+                  <td style={{ color: 'var(--hp-ink)' }}>{item.plan}</td>
+                  <td className="font-mono text-xs">{item.limit}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="text-xs docs-muted-sm mt-3">
+        <p className="docs-muted-sm mt-3">
           {c.errors.rateLimitFooter}
         </p>
       </div>
 
       <div>
-        <h2 className="docs-h2 mb-3">{c.errors.exampleTitle}</h2>
+        <h2 className="docs-h2">{c.errors.exampleTitle}</h2>
         <CodeBlock
           code={`async function apiRequest(endpoint, options = {}) {
   const response = await fetch('${apiBase}' + endpoint, {

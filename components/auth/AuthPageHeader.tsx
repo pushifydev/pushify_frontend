@@ -9,11 +9,11 @@ export function AuthPageHeader({
 }) {
   return (
     <div className="mb-8">
-      <h2 className="text-3xl font-semibold tracking-tight mb-2 text-neutral-900 dark:text-white">
+      <h2 className="text-[2rem] leading-tight font-medium mb-2" style={{ color: 'var(--hp-ink, var(--text-primary))' }}>
         {title}
       </h2>
       {description && (
-        <p className="text-neutral-600 dark:text-neutral-400">{description}</p>
+        <p className="text-[15px]" style={{ color: 'var(--hp-body, var(--text-secondary))' }}>{description}</p>
       )}
     </div>
   );

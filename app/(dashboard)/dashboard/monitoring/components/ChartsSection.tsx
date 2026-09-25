@@ -94,7 +94,7 @@ export function ChartsSection({
         <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-[#a78bfa]" />
+              <HardDrive className="w-4 h-4 text-[var(--chart-1)]" />
               <span className="text-sm font-medium">{t('monitoring', 'memoryUsage')}</span>
             </div>
           </div>
@@ -104,8 +104,8 @@ export function ChartsSection({
                 <AreaChart data={chartData} margin={chartMargin}>
                   <defs>
                     <linearGradient id="memGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#a78bfa" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="#a78bfa" stopOpacity={0} />
+                      <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="3 3" vertical={false} />
@@ -123,11 +123,11 @@ export function ChartsSection({
                     type="monotone"
                     dataKey="memoryPercent"
                     name="Memory"
-                    stroke="#a78bfa"
+                    stroke="var(--chart-1)"
                     fill="url(#memGradient)"
                     strokeWidth={2}
                     dot={false}
-                    activeDot={{ r: 4, fill: '#a78bfa', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
+                    activeDot={{ r: 4, fill: 'var(--chart-1)', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -144,18 +144,18 @@ export function ChartsSection({
       <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Network className="w-4 h-4 text-[#34d399]" />
+            <Network className="w-4 h-4 text-[var(--chart-1)]" />
             <span className="text-sm font-medium">{t('monitoring', 'networkIO')}</span>
           </div>
           <div className="flex items-center gap-4 text-xs">
             <span className="flex items-center gap-1">
-              <div className="w-3 h-0.5 bg-[#34d399] rounded" />
-              <ArrowDownRight className="w-3 h-3 text-[#34d399]" />
+              <div className="w-3 h-0.5 bg-[var(--chart-1)] rounded" />
+              <ArrowDownRight className="w-3 h-3 text-[var(--chart-1)]" />
               {t('monitoring', 'totalNetworkIn')}
             </span>
             <span className="flex items-center gap-1">
-              <div className="w-3 h-0.5 bg-[#3b82f6] rounded" />
-              <ArrowUpRight className="w-3 h-3 text-[#3b82f6]" />
+              <div className="w-3 h-0.5 bg-[var(--chart-2)] rounded" />
+              <ArrowUpRight className="w-3 h-3 text-[var(--chart-2)]" />
               {t('monitoring', 'totalNetworkOut')}
             </span>
           </div>
@@ -178,19 +178,19 @@ export function ChartsSection({
                   type="monotone"
                   dataKey="networkRxMB"
                   name="Network In"
-                  stroke="#34d399"
+                  stroke="var(--chart-1)"
                   strokeWidth={2}
                   dot={false}
-                  activeDot={{ r: 4, fill: '#34d399', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
+                  activeDot={{ r: 4, fill: 'var(--chart-1)', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="networkTxMB"
                   name="Network Out"
-                  stroke="#3b82f6"
+                  stroke="var(--chart-2)"
                   strokeWidth={2}
                   dot={false}
-                  activeDot={{ r: 4, fill: '#3b82f6', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
+                  activeDot={{ r: 4, fill: 'var(--chart-2)', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>

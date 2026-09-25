@@ -1,66 +1,27 @@
 'use client';
 
-import {
-  LandingNavbar,
-  HeroSection,
-  ProductShowcaseSection,
-  StatsSection,
-  WhatIsPushifySection,
-  HowItWorksSection,
-  FrameworksSection,
-  MarketplacePreviewSection,
-  SiteBuilderSection,
-  ComparisonSection,
-  SecuritySection,
-  BillingHowItWorksSection,
-  FAQSection,
-  CTASection,
-  LandingFooter,
-} from '@/components/landing';
+import { LandingNavbar, LandingFooter } from '@/components/landing';
+import { HomeHero, HomeFeatures, HomeDeploys, HomeCost, HomeDifference, HomeFaq, HomeCta } from '@/components/landing/home';
 
+/**
+ * The homepage: monochrome, light falling on black, one live-green accent. Dark unless the
+ * visitor explicitly chose light (see components/landing/home/home.css). The longer sections that
+ * used to live here — marketplace, site builder, security, billing — have their own pages.
+ */
 export default function LandingPage() {
   return (
-    <div className="lp-page min-h-screen overflow-x-hidden">
-      <style jsx global>{`
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
-        @keyframes marquee-reverse {
-          0% {
-            transform: translateX(-33.333%);
-          }
-          100% {
-            transform: translateX(0);
-          }
-        }
-        .animate-marquee {
-          animation: marquee 40s linear infinite;
-        }
-        .animate-marquee-reverse {
-          animation: marquee-reverse 40s linear infinite;
-        }
-      `}</style>
-
+    <div className="hp min-h-screen overflow-x-hidden">
       <LandingNavbar />
-      <HeroSection />
-      <ProductShowcaseSection />
-      <StatsSection />
-      <WhatIsPushifySection />
-      <HowItWorksSection />
-      <FrameworksSection />
-      <MarketplacePreviewSection />
-      <SiteBuilderSection />
-      <ComparisonSection />
-      <SecuritySection />
-      <BillingHowItWorksSection />
-      <FAQSection />
-      <CTASection />
-      <LandingFooter />
+      <main>
+        <HomeHero />
+        <HomeFeatures />
+        <HomeDeploys />
+        <HomeCost />
+        <HomeDifference />
+        <HomeFaq />
+        <HomeCta />
+      </main>
+      <LandingFooter lit />
     </div>
   );
 }

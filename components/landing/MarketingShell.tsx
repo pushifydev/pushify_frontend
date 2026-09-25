@@ -12,10 +12,10 @@ interface MarketingShellProps {
 
 export function MarketingShell({ children, noPad }: MarketingShellProps) {
   return (
-    <div className="lp-page min-h-screen flex flex-col">
+    <div className="lp-page hp min-h-screen flex flex-col overflow-x-clip">
       <LandingNavbar />
       <main className={noPad ? undefined : 'flex-1'}>{children}</main>
-      <LandingFooter />
+      <LandingFooter lit />
     </div>
   );
 }
@@ -33,13 +33,13 @@ export function MarketingPageHero({
   description,
   align = 'center',
 }: MarketingPageHeroProps) {
-  const alignClass = align === 'center' ? 'text-center mx-auto max-w-3xl' : 'max-w-2xl';
+  const alignClass = align === 'center' ? 'text-center mx-auto max-w-4xl' : 'max-w-3xl';
 
   return (
-    <header className={`lp-container pt-20 md:pt-24 pb-12 md:pb-14 ${alignClass}`}>
-      {label && <p className="lp-label mb-4">{label}</p>}
+    <header className={`lp-container hp-page-hero ${alignClass}`}>
+      {label && <p className="lp-label mb-6">{label}</p>}
       <h1 className="lp-hero-title">{title}</h1>
-      {description && <p className="lp-lead mt-5">{description}</p>}
+      {description && <p className="lp-lead mt-6">{description}</p>}
     </header>
   );
 }

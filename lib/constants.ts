@@ -10,8 +10,10 @@ export const STATUS_COLORS = {
   error:    '#ef4444',
   info:     '#3b82f6',
   neutral:  '#52525e',
-  cyan:     '#6366f1',
-  purple:   '#a78bfa',
+  // Former brand accents. The product is monochrome now (colour is for status), so these are
+  // zinc greys that read on both the black and the white canvas; hex so `${c}14` alpha still works.
+  cyan:     '#71717a',
+  purple:   '#8e8e96',
   orange:   '#fb923c',
   pink:     '#f87171',
   green:    '#4ade80',

@@ -134,13 +134,13 @@ export function MetricsSection({
         <div className="p-4 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-[var(--text-secondary)]">{t('metrics', 'memory')}</span>
-            <div className="w-4 h-4 text-purple-400">
+            <div className="w-4 h-4 text-[var(--text-primary)]">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M4 5h16v14H4V5zm2 2v10h12V7H6z" />
               </svg>
             </div>
           </div>
-          <div className="text-2xl font-bold text-purple-400">
+          <div className="text-2xl font-bold text-[var(--text-primary)]">
             {formatPercent(current.memoryPercent)}
           </div>
           <div className="text-xs text-[var(--text-muted)] mt-1">
@@ -148,7 +148,7 @@ export function MetricsSection({
           </div>
           <div className="mt-2 h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-purple-400 transition-all duration-300"
+              className="h-full bg-[var(--text-primary)] transition-all duration-300"
               style={{ width: `${Math.min(current.memoryPercent, 100)}%` }}
             />
           </div>
@@ -158,16 +158,16 @@ export function MetricsSection({
         <div className="p-4 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-[var(--text-secondary)]">{t('metrics', 'network')}</span>
-            <Globe className="w-4 h-4 text-green-400" />
+            <Globe className="w-4 h-4 text-[var(--text-muted)]" />
           </div>
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-xs text-[var(--text-muted)]">↓ {t('metrics', 'networkIn')}</span>
-              <span className="text-sm font-medium text-green-400">{formatStorage(current.networkRxMB)}</span>
+              <span className="text-sm font-medium text-[var(--text-primary)]">{formatStorage(current.networkRxMB)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-[var(--text-muted)]">↑ {t('metrics', 'networkOut')}</span>
-              <span className="text-sm font-medium text-blue-400">{formatStorage(current.networkTxMB)}</span>
+              <span className="text-sm font-medium text-[var(--text-secondary)]">{formatStorage(current.networkTxMB)}</span>
             </div>
           </div>
         </div>
@@ -212,8 +212,8 @@ export function MetricsSection({
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="cpuGradientProject" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
@@ -241,8 +241,8 @@ export function MetricsSection({
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="memGradientProject" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#a78bfa" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#a78bfa" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
@@ -267,8 +267,8 @@ export function MetricsSection({
                   <XAxis dataKey="time" tick={{ fontSize: 10, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
                   <YAxis tick={{ fontSize: 10, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} width={40} tickFormatter={(v: number) => `${v.toFixed(0)} MB`} />
                   <Tooltip content={<MetricsTooltip />} />
-                  <Line type="monotone" dataKey="networkRxMB" name="Network In" stroke="#34d399" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#34d399' }} />
-                  <Line type="monotone" dataKey="networkTxMB" name="Network Out" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#3b82f6' }} />
+                  <Line type="monotone" dataKey="networkRxMB" name="Network In" stroke="var(--chart-1)" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: 'var(--chart-1)' }} />
+                  <Line type="monotone" dataKey="networkTxMB" name="Network Out" stroke="var(--chart-2)" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: 'var(--chart-2)' }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

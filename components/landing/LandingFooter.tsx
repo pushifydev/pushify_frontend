@@ -1,11 +1,12 @@
 'use client';
 
 import { useTranslation } from '@/hooks';
-import { LogoMark } from '@/components/logo';
+import { LogoMark, LogoGlyph } from '@/components/logo';
 import { MarketingLink } from './MarketingLink';
 import { Github, Mail, ArrowUpRight, Heart } from 'lucide-react';
 
-export function LandingFooter() {
+/** `lit` (the homepage): a large faint mark lit from below opens the footer. */
+export function LandingFooter({ lit = false }: { lit?: boolean } = {}) {
   const { t } = useTranslation();
 
   const links = {
@@ -74,12 +75,19 @@ export function LandingFooter() {
   ];
 
   return (
-    <footer className="border-t border-[var(--lp-border)]">
+    <footer className="hp-footer border-t border-[var(--lp-border)]">
+      {lit && (
+        <div className="hp-footer-mark" aria-hidden="true">
+          <LogoGlyph size={176} />
+        </div>
+      )}
+      {/* Light rising from the bottom edge of the page. */}
+      <div className="hp-footer-glow" aria-hidden="true" />
       <div className="lp-container py-14 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-x-8 gap-y-10">
           <div className="col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <LogoMark size={28} />
+              <LogoMark size={28} tone="page" />
               <span className="font-semibold text-base tracking-tight">Pushify</span>
             </div>
             <p className="text-sm leading-relaxed mb-5 max-w-xs" style={{ color: 'var(--lp-muted)' }}>
@@ -104,7 +112,10 @@ export function LandingFooter() {
 
           {Object.entries(links).map(([title, items]) => (
             <div key={title}>
-              <h4 className="text-xs font-medium mb-4" style={{ color: 'var(--lp-muted)' }}>
+              <h4
+                className="text-[12px] uppercase tracking-[0.1em] mb-4"
+                style={{ color: 'var(--lp-muted)', fontFamily: 'var(--font-label)' }}
+              >
                 {title}
               </h4>
               <ul className="space-y-2.5">

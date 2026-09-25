@@ -1,125 +1,134 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight, LayoutTemplate, Files, Globe } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { useTranslation } from '@/hooks';
-import { MarketingShell, MarketingPageHero, LandingSectionHeader, SiteBuilderMockup } from '@/components/landing';
+import { MarketingShell, MarketingPageHero, SiteBuilderMockup } from '@/components/landing';
+import { MSection, Steps, Faq } from '@/components/landing/MarketingKit';
+
+/**
+ * /sites. The old "What you get" grid repeated the four steps in longer words (designs, pages,
+ * publish), so it is gone; the one detail only it had — a custom domain or a plain port — is in the
+ * FAQ. Copy is inline so it can stay short without touching the shared locale files.
+ */
+const copy = {
+  en: {
+    label: 'Site builder',
+    title: 'A no-code website builder, hosted on your own server.',
+    lead: 'Pick a design, edit it on the page, publish to your own server. No code.',
+    ctaPrimary: 'Start building free',
+    ctaSecondary: 'See pricing',
+    howEyebrow: 'How it works',
+    howTitle: 'From template to live site in four steps.',
+    steps: [
+      { title: 'Pick a design', body: 'Start from a responsive template or a blank page. Switch designs anytime.' },
+      { title: 'Edit on the page', body: 'Click any text or block to edit it. Drag sections to reorder.' },
+      { title: 'Add your pages', body: 'About, Pricing, Contact: they all share one navigation bar.' },
+      { title: 'Publish', body: 'One click, to your own server, on a domain or a plain port.' },
+    ],
+    faqEyebrow: 'FAQ',
+    faqTitle: 'Questions, answered.',
+    faqs: [
+      { q: 'Do I need to know how to code?', a: 'No. Pick a design, edit text and blocks on the page, and publish. No HTML or CSS.' },
+      {
+        q: 'Where is my site published?',
+        a: 'To a server you own: any VPS connected over SSH, or, on a paid plan, a Hetzner server opened from the dashboard.',
+      },
+      {
+        q: 'Do I need a domain?',
+        a: 'No. Use a custom domain with automatic HTTPS, or serve the site on a plain port. You can add a domain later.',
+      },
+      { q: 'Can I build more than one page?', a: 'Yes, as many as you need. The builder keeps the shared navigation in sync.' },
+    ],
+    ctaEyebrow: 'Get started',
+    ctaTitle: 'Build your site on your own server.',
+    ctaBody: 'Free to start. No code, no third-party hosting.',
+    allFeatures: 'All features',
+  },
+  tr: {
+    label: 'Site kurucu',
+    title: 'Kendi sunucunuzda barınan, kodsuz bir web sitesi kurucusu.',
+    lead: 'Bir tasarım seçin, sayfa üzerinde düzenleyin, kendi sunucunuza yayınlayın. Kod yok.',
+    ctaPrimary: 'Ücretsiz oluşturmaya başlayın',
+    ctaSecondary: 'Fiyatları görün',
+    howEyebrow: 'Nasıl çalışır',
+    howTitle: 'Şablondan canlı siteye dört adımda.',
+    steps: [
+      { title: 'Bir tasarım seçin', body: 'Responsive bir şablonla ya da boş sayfayla başlayın. Tasarımı istediğiniz an değiştirin.' },
+      { title: 'Sayfa üzerinde düzenleyin', body: 'Herhangi bir metne ya da bloğa tıklayıp düzenleyin. Bölümleri sürükleyip sıralayın.' },
+      { title: 'Sayfalarınızı ekleyin', body: 'Hakkında, Fiyatlar, İletişim: hepsi aynı menüyü paylaşır.' },
+      { title: 'Yayınlayın', body: 'Tek tıkla kendi sunucunuza; bir alan adında ya da sade bir portta.' },
+    ],
+    faqEyebrow: 'SSS',
+    faqTitle: 'Sorular ve yanıtlar.',
+    faqs: [
+      {
+        q: 'Kod bilmem gerekiyor mu?',
+        a: 'Hayır. Bir tasarım seçin, metinleri ve blokları sayfa üzerinde düzenleyin ve yayınlayın. HTML ya da CSS yok.',
+      },
+      {
+        q: 'Sitem nereye yayınlanıyor?',
+        a: 'Sahip olduğunuz bir sunucuya: SSH ile bağladığınız herhangi bir VPS’e ya da ücretli planlarda panelden açtığınız bir Hetzner sunucusuna.',
+      },
+      {
+        q: 'Alan adına ihtiyacım var mı?',
+        a: 'Hayır. Otomatik HTTPS ile kendi alan adınızı kullanın ya da siteyi sade bir portta yayınlayın. Alan adını sonra da ekleyebilirsiniz.',
+      },
+      {
+        q: 'Birden fazla sayfa kurabilir miyim?',
+        a: 'Evet, ihtiyacınız kadar. Ortak menüyü kurucu senkron tutar.',
+      },
+    ],
+    ctaEyebrow: 'Başlayın',
+    ctaTitle: 'Sitenizi kendi sunucunuzda kurun.',
+    ctaBody: 'Ücretsiz başlayın. Kod yok, üçüncü taraf barındırma yok.',
+    allFeatures: 'Tüm özellikler',
+  },
+};
 
 export default function SitesPage() {
-  const { t } = useTranslation();
-
-  const steps = [
-    { title: t('sitesPage', 'step1Title'), desc: t('sitesPage', 'step1Desc') },
-    { title: t('sitesPage', 'step2Title'), desc: t('sitesPage', 'step2Desc') },
-    { title: t('sitesPage', 'step3Title'), desc: t('sitesPage', 'step3Desc') },
-    { title: t('sitesPage', 'step4Title'), desc: t('sitesPage', 'step4Desc') },
-  ];
-
-  const feats = [
-    { icon: LayoutTemplate, title: t('sitesPage', 'feat1Title'), desc: t('sitesPage', 'feat1Desc') },
-    { icon: Files, title: t('sitesPage', 'feat2Title'), desc: t('sitesPage', 'feat2Desc') },
-    { icon: Globe, title: t('sitesPage', 'feat3Title'), desc: t('sitesPage', 'feat3Desc') },
-  ];
-
-  const faqs = [
-    { q: t('sitesPage', 'faq1Q'), a: t('sitesPage', 'faq1A') },
-    { q: t('sitesPage', 'faq2Q'), a: t('sitesPage', 'faq2A') },
-    { q: t('sitesPage', 'faq3Q'), a: t('sitesPage', 'faq3A') },
-    { q: t('sitesPage', 'faq4Q'), a: t('sitesPage', 'faq4A') },
-  ];
+  const { locale } = useTranslation();
+  const c = copy[locale === 'tr' ? 'tr' : 'en'];
 
   return (
     <MarketingShell noPad>
-      <MarketingPageHero
-        label={t('sitesPage', 'eyebrow')}
-        title={t('sitesPage', 'h1')}
-        description={t('sitesPage', 'subtitle')}
-      />
+      <MarketingPageHero label={c.label} title={c.title} description={c.lead} />
 
-      <div className="lp-container -mt-4 mb-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <div className="lp-container -mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link href="/register" className="lp-cta group">
-          {t('sitesPage', 'ctaPrimary')}
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          {c.ctaPrimary}
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
         </Link>
         <Link href="/pricing" className="lp-cta-ghost">
-          {t('sitesPage', 'ctaSecondary')}
-          <ArrowUpRight className="w-4 h-4" />
+          {c.ctaSecondary}
+          <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
         </Link>
       </div>
 
-      <div className="lp-container max-w-4xl pt-10">
+      {/* The one object on this page: the editor itself. */}
+      <div className="lp-container max-w-4xl pt-14 pb-20 md:pb-28">
         <SiteBuilderMockup />
       </div>
 
-      {/* How it works */}
-      <section className="lp-section">
-        <div className="lp-container">
-          <LandingSectionHeader
-            title={t('sitesPage', 'howTitle')}
-            align="center"
-            className="mx-auto text-center"
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {steps.map((s, i) => (
-              <div key={s.title} className="lp-card p-5">
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold mb-3.5"
-                  style={{ color: 'var(--accent-cyan)', background: 'color-mix(in srgb, var(--accent-cyan) 12%, transparent)' }}
-                >
-                  {i + 1}
-                </div>
-                <h3 className="text-sm font-semibold mb-1.5" style={{ color: 'var(--lp-ink)' }}>{s.title}</h3>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--lp-muted)' }}>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <MSection id="how-it-works" eyebrow={c.howEyebrow} title={c.howTitle}>
+        <Steps items={c.steps} />
+      </MSection>
 
-      {/* Feature deep-dives */}
-      <section className="lp-section">
-        <div className="lp-container grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl">
-          {feats.map((f) => (
-            <div key={f.title} className="lp-card p-6">
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center mb-3.5"
-                style={{ color: 'var(--lp-ink)', background: 'var(--lp-border)' }}
-              >
-                <f.icon className="w-4 h-4" />
-              </div>
-              <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>{f.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <MSection id="faq" eyebrow={c.faqEyebrow} title={c.faqTitle} align="center">
+        <Faq items={c.faqs} />
+      </MSection>
 
-      {/* FAQ */}
-      <section className="lp-section">
-        <div className="lp-container max-w-3xl">
-          <LandingSectionHeader title={t('sitesPage', 'faqTitle')} align="center" className="mx-auto text-center" />
-          <div className="space-y-3">
-            {faqs.map((f) => (
-              <div key={f.q} className="lp-card p-5">
-                <h3 className="text-sm font-semibold mb-1.5" style={{ color: 'var(--lp-ink)' }}>{f.q}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>{f.a}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="lp-section">
-        <div className="lp-container max-w-2xl text-center">
-          <h2 className="lp-section-title mb-3">{t('sitesPage', 'ctaTitle')}</h2>
-          <p className="lp-lead mb-7">{t('sitesPage', 'ctaBody')}</p>
-          <Link href="/register" className="lp-cta group inline-flex">
-            {t('sitesPage', 'ctaButton')}
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+      <MSection eyebrow={c.ctaEyebrow} title={c.ctaTitle} lead={c.ctaBody} align="center">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link href="/register" className="lp-cta group">
+            {c.ctaPrimary}
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+          </Link>
+          <Link href="/features" className="lp-cta-ghost">
+            {c.allFeatures}
           </Link>
         </div>
-      </section>
+      </MSection>
     </MarketingShell>
   );
 }

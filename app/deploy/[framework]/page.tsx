@@ -3,211 +3,283 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { notFound } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/hooks';
-import { MarketingShell } from '@/components/landing';
+import { MarketingShell, MarketingPageHero } from '@/components/landing';
+import { MSection, RuleGrid, RuleCell, Steps, CodePanel } from '@/components/landing/MarketingKit';
+
+/*
+ * Six framework landing pages, one template. The steps follow what pushify-cli really does:
+ * `pushify init` logs in and creates (or links) a project from the directory's git remote;
+ * framework detection and the build happen on the server when the deploy runs.
+ */
+
+interface FrameworkCopy {
+  title: string;
+  description: string;
+  steps: { title: string; code?: string; description: string }[];
+  features: string[];
+  howToTitle: string;
+  whatYouGet: string;
+  readyTitle: string;
+  readyDesc: string;
+  startBtn: string;
+  docsBtn: string;
+}
 
 interface FrameworkData {
   name: string;
   slug: string;
-  icon: string;
-  color: string;
-  buildCommand: string;
-  detectMessage: string;
-  en: {
-    title: string;
-    description: string;
-    steps: { title: string; code?: string; description: string }[];
-    features: string[];
-    howToTitle: string;
-    whatYouGet: string;
-    readyTitle: string;
-    readyDesc: string;
-    startBtn: string;
-    docsBtn: string;
-  };
-  tr: {
-    title: string;
-    description: string;
-    steps: { title: string; code?: string; description: string }[];
-    features: string[];
-    howToTitle: string;
-    whatYouGet: string;
-    readyTitle: string;
-    readyDesc: string;
-    startBtn: string;
-    docsBtn: string;
-  };
+  en: FrameworkCopy;
+  tr: FrameworkCopy;
 }
+
+const INSTALL_EN = { title: 'Install the Pushify CLI', code: 'npm install -g pushify-cli', description: 'One global install. Everything it does also works from the dashboard.' };
+const INSTALL_TR = { title: "Pushify CLI'ı kurun", code: 'npm install -g pushify-cli', description: 'Tek bir global kurulum. Yaptığı her şey panelden de yapılabilir.' };
+const INIT_EN = { title: 'Create the project', code: 'pushify init', description: 'Signs you in with an API key and creates or links a project from this git remote.' };
+const INIT_TR = { title: 'Projeyi oluşturun', code: 'pushify init', description: 'API anahtarınızla giriş yapar; bu git remote’undan proje oluşturur ya da var olana bağlar.' };
+const DEPLOY_CODE = 'pushify deploy --prod --wait';
+
+const SHARED_EN = {
+  readyDesc: 'Free on one server you bring. Paid plans add managed servers and more projects.',
+  startBtn: 'Start for free',
+  docsBtn: 'Read the docs',
+};
+const SHARED_TR = {
+  readyDesc: 'Getirdiğiniz tek sunucuda ücretsiz. Ücretli planlar yönetilen sunucu ve daha fazla proje ekler.',
+  startBtn: 'Ücretsiz başlayın',
+  docsBtn: 'Dokümantasyonu okuyun',
+};
 
 const FRAMEWORKS: Record<string, FrameworkData> = {
   nextjs: {
     name: 'Next.js',
     slug: 'nextjs',
-    icon: 'N',
-    color: '#000000',
-    buildCommand: 'next build',
-    detectMessage: 'Detected: Next.js 15 + TypeScript',
     en: {
-      title: 'Deploy Next.js Apps',
+      title: 'Deploy Next.js apps',
       description:
-        'Deploy your Next.js 15 application to your own server with a single git push. Pushify auto-detects Next.js projects, configures the build pipeline, and deploys with zero configuration. Supports App Router, Pages Router, API routes, and server components.',
+        'Git push to your own server. Pushify detects Next.js, builds a Docker image and switches traffic with zero downtime.',
       steps: [
-        { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
-        { title: 'Initialize your project', code: 'pushify init', description: 'Pushify auto-detects your Next.js project, identifies the framework version, and configures the build pipeline automatically.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your Next.js app is built, optimized, and deployed to your server with automatic SSL via Let\'s Encrypt.' },
+        INSTALL_EN,
+        INIT_EN,
+        { title: 'Deploy to production', code: DEPLOY_CODE, description: 'The server detects Next.js, runs next build and serves the new container over HTTPS.' },
       ],
-      features: ['App Router & Pages Router support', 'Server Components & Server Actions', 'API Routes and middleware', 'Persistent .next/cache between builds', 'Environment variables management', 'Zero-downtime deployments'],
+      features: ['App Router and Pages Router', 'Server Components and Server Actions', 'API routes and middleware', '.next/cache kept between builds', 'Environment variables per project', 'Zero-downtime deploys'],
       howToTitle: 'How to deploy Next.js with Pushify',
       whatYouGet: 'What you get with Next.js on Pushify',
       readyTitle: 'Ready to deploy your Next.js app?',
-      readyDesc: 'Get started for free. No credit card required.',
-      startBtn: 'Start Deploying Free',
-      docsBtn: 'Read the Docs',
+      ...SHARED_EN,
     },
     tr: {
-      title: 'Next.js Uygulamalarını Deploy Edin',
+      title: 'Next.js uygulamalarını deploy edin',
       description:
-        'Next.js 15 uygulamanızı kendi sunucunuza tek bir git push ile deploy edin. Pushify, Next.js projelerini otomatik algılar, build pipeline\'ını yapılandırır ve sıfır konfigürasyonla deploy eder. App Router, Pages Router, API route\'lar ve server component\'ler desteklenir.',
+        'Kendi sunucunuza git push. Pushify Next.js’i algılar, Docker imajı derler ve trafiği kesintisiz geçirir.',
       steps: [
-        { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
-        { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, Next.js projenizi otomatik algılar, framework sürümünü belirler ve build pipeline\'ını otomatik yapılandırır.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Next.js uygulamanız build edilir, optimize edilir ve Let\'s Encrypt ile otomatik SSL sertifikasıyla sunucunuza deploy edilir.' },
+        INSTALL_TR,
+        INIT_TR,
+        { title: "Production'a deploy edin", code: DEPLOY_CODE, description: 'Sunucu Next.js’i algılar, next build’i çalıştırır ve yeni container’ı HTTPS üzerinden sunar.' },
       ],
-      features: ['App Router & Pages Router desteği', 'Server Components & Server Actions', 'API Routes ve middleware', 'Build\'ler arasında korunan .next/cache', 'Ortam değişkenleri yönetimi', 'Sıfır kesinti ile deployment'],
+      features: ['App Router ve Pages Router', 'Server Components ve Server Actions', 'API route’lar ve middleware', 'Build’ler arasında korunan .next/cache', 'Proje bazında ortam değişkenleri', 'Kesintisiz deploy'],
       howToTitle: 'Pushify ile Next.js nasıl deploy edilir',
-      whatYouGet: 'Pushify\'da Next.js ile neler elde edersiniz',
+      whatYouGet: "Pushify'da Next.js ile neler elde edersiniz",
       readyTitle: 'Next.js uygulamanızı deploy etmeye hazır mısınız?',
-      readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.',
-      startBtn: 'Ücretsiz Deploy Etmeye Başla',
-      docsBtn: 'Dokümantasyonu Oku',
+      ...SHARED_TR,
     },
   },
   react: {
-    name: 'React', slug: 'react', icon: 'R', color: '#61DAFB', buildCommand: 'vite build', detectMessage: 'Detected: React + Vite',
+    name: 'React',
+    slug: 'react',
     en: {
-      title: 'Deploy React Apps',
-      description: 'Deploy your React application — built with Vite, Create React App, or any React setup — to your own server. Pushify handles the build process, static file serving, and SSL configuration automatically.',
+      title: 'Deploy React apps',
+      description:
+        'Pushify builds your React app and serves it with nginx on your own server: SPA routing, asset caching and HTTPS included.',
       steps: [
-        { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
-        { title: 'Initialize your project', code: 'pushify init', description: 'Pushify detects your React project and configures static site deployment with optimized caching headers.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your React app is built, assets are optimized, and everything is deployed with automatic SSL.' },
+        INSTALL_EN,
+        INIT_EN,
+        { title: 'Deploy to production', code: DEPLOY_CODE, description: 'The server builds the app and serves dist (by default) from nginx over HTTPS.' },
       ],
-      features: ['Vite & Create React App support', 'SPA routing configuration', 'Asset optimization & caching', 'Environment variables', 'Preview deployments', 'Instant rollbacks'],
-      howToTitle: 'How to deploy React with Pushify', whatYouGet: 'What you get with React on Pushify', readyTitle: 'Ready to deploy your React app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
+      features: ['Vite out of the box', 'Create React App with output: build in pushify.yaml', 'SPA routing falls back to index.html', 'Long-lived cache headers for hashed assets', 'Preview deployments on paid plans', 'Rollbacks to previous deployments'],
+      howToTitle: 'How to deploy React with Pushify',
+      whatYouGet: 'What you get with React on Pushify',
+      readyTitle: 'Ready to deploy your React app?',
+      ...SHARED_EN,
     },
     tr: {
-      title: 'React Uygulamalarını Deploy Edin',
-      description: 'Vite, Create React App veya herhangi bir React kurulumu ile oluşturduğunuz uygulamanızı kendi sunucunuza deploy edin. Pushify, build sürecini, statik dosya sunumunu ve SSL yapılandırmasını otomatik olarak yönetir.',
+      title: 'React uygulamalarını deploy edin',
+      description:
+        'Pushify React uygulamanızı derler ve kendi sunucunuzda nginx ile sunar: SPA yönlendirmesi, önbellek ve HTTPS dahil.',
       steps: [
-        { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
-        { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, React projenizi algılar ve optimize edilmiş önbellek başlıklarıyla statik site deployment\'ını yapılandırır.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'React uygulamanız build edilir, asset\'ler optimize edilir ve otomatik SSL ile deploy edilir.' },
+        INSTALL_TR,
+        INIT_TR,
+        { title: "Production'a deploy edin", code: DEPLOY_CODE, description: 'Sunucu uygulamayı derler ve dist dizinini (varsayılan) nginx ile HTTPS üzerinden sunar.' },
       ],
-      features: ['Vite & Create React App desteği', 'SPA yönlendirme yapılandırması', 'Asset optimizasyonu & önbellekleme', 'Ortam değişkenleri', 'Önizleme deployment\'ları', 'Anlık geri alma'],
-      howToTitle: 'Pushify ile React nasıl deploy edilir', whatYouGet: 'Pushify\'da React ile neler elde edersiniz', readyTitle: 'React uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',
+      features: ['Vite hazır desteklenir', 'Create React App için pushify.yaml’da output: build', 'SPA yönlendirmesi index.html’e düşer', 'Hash’li dosyalar için uzun süreli önbellek başlıkları', 'Ücretli planlarda önizleme deploy’ları', 'Önceki deploy’lara geri dönüş'],
+      howToTitle: 'Pushify ile React nasıl deploy edilir',
+      whatYouGet: "Pushify'da React ile neler elde edersiniz",
+      readyTitle: 'React uygulamanızı deploy etmeye hazır mısınız?',
+      ...SHARED_TR,
     },
   },
   vue: {
-    name: 'Vue.js', slug: 'vue', icon: 'V', color: '#41B883', buildCommand: 'vite build', detectMessage: 'Detected: Vue.js 3 + Vite',
+    name: 'Vue.js',
+    slug: 'vue',
     en: {
-      title: 'Deploy Vue.js Apps',
-      description: 'Deploy your Vue.js application to your own server with zero configuration. Pushify supports Vue 3, Nuxt, and Vite-powered Vue projects with automatic framework detection and optimized builds.',
+      title: 'Deploy Vue.js apps',
+      description:
+        'Pushify detects Vue and Nuxt: a Vite build is served as static files, a Nuxt app runs as a Node server.',
       steps: [
-        { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
-        { title: 'Initialize your project', code: 'pushify init', description: 'Pushify detects Vue.js or Nuxt and configures the appropriate build and serve strategy.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your Vue app is built, deployed, and live with automatic SSL.' },
+        INSTALL_EN,
+        INIT_EN,
+        { title: 'Deploy to production', code: DEPLOY_CODE, description: 'The server detects Vue or Nuxt, picks static or Node serving and goes live over HTTPS.' },
       ],
-      features: ['Vue 3 Composition API', 'Nuxt 3 SSR support', 'Vite-powered builds', 'Static and SSR modes', 'Environment variables', 'Zero-downtime deployments'],
-      howToTitle: 'How to deploy Vue.js with Pushify', whatYouGet: 'What you get with Vue.js on Pushify', readyTitle: 'Ready to deploy your Vue.js app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
+      features: ['Vue 3 with Vite', 'Nuxt 3 server-side rendering', 'Static and SSR modes', 'SPA routing for static builds', 'Environment variables per project', 'Zero-downtime deploys'],
+      howToTitle: 'How to deploy Vue.js with Pushify',
+      whatYouGet: 'What you get with Vue.js on Pushify',
+      readyTitle: 'Ready to deploy your Vue.js app?',
+      ...SHARED_EN,
     },
     tr: {
-      title: 'Vue.js Uygulamalarını Deploy Edin',
-      description: 'Vue.js uygulamanızı sıfır konfigürasyonla kendi sunucunuza deploy edin. Pushify, Vue 3, Nuxt ve Vite destekli Vue projelerini otomatik framework algılama ve optimize edilmiş build\'ler ile destekler.',
+      title: 'Vue.js uygulamalarını deploy edin',
+      description:
+        'Pushify Vue ve Nuxt’u algılar: Vite build’i statik dosya olarak sunulur, Nuxt uygulaması Node sunucusu olarak çalışır.',
       steps: [
-        { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
-        { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, Vue.js veya Nuxt\'u algılar ve uygun build ve sunma stratejisini yapılandırır.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Vue uygulamanız build edilir, deploy edilir ve otomatik SSL ile yayına alınır.' },
+        INSTALL_TR,
+        INIT_TR,
+        { title: "Production'a deploy edin", code: DEPLOY_CODE, description: 'Sunucu Vue’yu ya da Nuxt’u algılar, statik ya da Node sunumu seçer ve HTTPS ile yayına alır.' },
       ],
-      features: ['Vue 3 Composition API', 'Nuxt 3 SSR desteği', 'Vite destekli build\'ler', 'Statik ve SSR modları', 'Ortam değişkenleri', 'Sıfır kesinti ile deployment'],
-      howToTitle: 'Pushify ile Vue.js nasıl deploy edilir', whatYouGet: 'Pushify\'da Vue.js ile neler elde edersiniz', readyTitle: 'Vue.js uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',
+      features: ['Vite ile Vue 3', 'Nuxt 3 sunucu taraflı render', 'Statik ve SSR modları', 'Statik build’lerde SPA yönlendirmesi', 'Proje bazında ortam değişkenleri', 'Kesintisiz deploy'],
+      howToTitle: 'Pushify ile Vue.js nasıl deploy edilir',
+      whatYouGet: "Pushify'da Vue.js ile neler elde edersiniz",
+      readyTitle: 'Vue.js uygulamanızı deploy etmeye hazır mısınız?',
+      ...SHARED_TR,
     },
   },
   python: {
-    name: 'Python', slug: 'python', icon: 'Py', color: '#3776AB', buildCommand: 'pip install -r requirements.txt', detectMessage: 'Detected: Python + FastAPI',
+    name: 'Python',
+    slug: 'python',
     en: {
-      title: 'Deploy Python Apps',
-      description: 'Deploy your Python web application — Flask, Django, FastAPI, or any WSGI/ASGI app — to your own server. Pushify detects your Python framework, installs dependencies, and configures the production server automatically.',
+      title: 'Deploy Python apps',
+      description:
+        'Django, Flask or FastAPI on your own server. Pushify installs dependencies and runs Gunicorn or Uvicorn for you.',
       steps: [
-        { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
-        { title: 'Initialize your project', code: 'pushify init', description: 'Pushify detects your Python framework from requirements.txt or pyproject.toml and configures Gunicorn/Uvicorn.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Dependencies are installed, your app is deployed with a production ASGI/WSGI server and automatic SSL.' },
+        INSTALL_EN,
+        INIT_EN,
+        { title: 'Deploy to production', code: DEPLOY_CODE, description: 'Reads requirements.txt or pyproject.toml, installs dependencies, starts Gunicorn or Uvicorn behind HTTPS.' },
       ],
-      features: ['Django, Flask, FastAPI support', 'Automatic Gunicorn/Uvicorn setup', 'Isolated Docker image per deploy', 'Cron jobs via pushify.yaml', 'Environment variables', 'Background workers via pushify.yaml'],
-      howToTitle: 'How to deploy Python with Pushify', whatYouGet: 'What you get with Python on Pushify', readyTitle: 'Ready to deploy your Python app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
+      features: ['Django, Flask and FastAPI', 'Gunicorn or Uvicorn set up for you', 'A fresh Docker image per deploy', 'Cron jobs via pushify.yaml', 'Environment variables per project', 'Background workers via pushify.yaml'],
+      howToTitle: 'How to deploy Python with Pushify',
+      whatYouGet: 'What you get with Python on Pushify',
+      readyTitle: 'Ready to deploy your Python app?',
+      ...SHARED_EN,
     },
     tr: {
-      title: 'Python Uygulamalarını Deploy Edin',
-      description: 'Flask, Django, FastAPI veya herhangi bir WSGI/ASGI uygulamanızı kendi sunucunuza deploy edin. Pushify, Python framework\'ünüzü algılar, bağımlılıkları kurar ve production sunucusunu otomatik yapılandırır.',
+      title: 'Python uygulamalarını deploy edin',
+      description:
+        'Kendi sunucunuzda Django, Flask ya da FastAPI. Pushify bağımlılıkları kurar, Gunicorn ya da Uvicorn’u sizin için çalıştırır.',
       steps: [
-        { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
-        { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, requirements.txt veya pyproject.toml\'dan Python framework\'ünüzü algılar ve Gunicorn/Uvicorn\'u yapılandırır.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Bağımlılıklar kurulur, uygulamanız production ASGI/WSGI sunucusu ve otomatik SSL ile deploy edilir.' },
+        INSTALL_TR,
+        INIT_TR,
+        { title: "Production'a deploy edin", code: DEPLOY_CODE, description: 'requirements.txt ya da pyproject.toml’u okur, bağımlılıkları kurar, Gunicorn ya da Uvicorn’u HTTPS arkasında başlatır.' },
       ],
-      features: ['Django, Flask, FastAPI desteği', 'Otomatik Gunicorn/Uvicorn kurulumu', 'Her deploy için izole Docker imajı', 'pushify.yaml ile cron görevleri', 'Ortam değişkenleri', 'pushify.yaml ile arka plan işçileri'],
-      howToTitle: 'Pushify ile Python nasıl deploy edilir', whatYouGet: 'Pushify\'da Python ile neler elde edersiniz', readyTitle: 'Python uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',
+      features: ['Django, Flask ve FastAPI', 'Gunicorn ya da Uvicorn sizin için ayarlanır', 'Her deploy için yeni bir Docker imajı', 'pushify.yaml ile cron görevleri', 'Proje bazında ortam değişkenleri', 'pushify.yaml ile arka plan worker’ları'],
+      howToTitle: 'Pushify ile Python nasıl deploy edilir',
+      whatYouGet: "Pushify'da Python ile neler elde edersiniz",
+      readyTitle: 'Python uygulamanızı deploy etmeye hazır mısınız?',
+      ...SHARED_TR,
     },
   },
   nodejs: {
-    name: 'Node.js', slug: 'nodejs', icon: 'JS', color: '#539E43', buildCommand: 'npm run build', detectMessage: 'Detected: Node.js + Express',
+    name: 'Node.js',
+    slug: 'nodejs',
     en: {
-      title: 'Deploy Node.js Apps',
-      description: 'Deploy your Node.js application — Express, Fastify, Koa, NestJS, or any Node.js server — to your own VPS. Pushify handles process management, environment configuration, and SSL setup automatically.',
+      title: 'Deploy Node.js apps',
+      description:
+        'Express, Fastify, NestJS or any Node.js server on your own VPS: containerised, restarted on crash, behind HTTPS.',
       steps: [
-        { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
-        { title: 'Initialize your project', code: 'pushify init', description: 'Pushify reads your package.json, detects the Node.js framework, and configures the start script.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Your Node.js app is deployed in a container with auto-restart, health checks, and automatic SSL.' },
+        INSTALL_EN,
+        INIT_EN,
+        { title: 'Deploy to production', code: DEPLOY_CODE, description: 'Builds from package.json, runs your start script and switches traffic once healthy.' },
       ],
-      features: ['Express, Fastify, NestJS, Koa support', 'Container auto-restart on crash', 'Automatic health checks', 'WebSocket support', 'Environment variables', 'Zero-downtime restarts'],
-      howToTitle: 'How to deploy Node.js with Pushify', whatYouGet: 'What you get with Node.js on Pushify', readyTitle: 'Ready to deploy your Node.js app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
+      features: ['Express, Fastify, NestJS and Koa', 'Container restarts after a crash', 'Health check before traffic switches', 'WebSockets through the proxy', 'Environment variables per project', 'Zero-downtime deploys'],
+      howToTitle: 'How to deploy Node.js with Pushify',
+      whatYouGet: 'What you get with Node.js on Pushify',
+      readyTitle: 'Ready to deploy your Node.js app?',
+      ...SHARED_EN,
     },
     tr: {
-      title: 'Node.js Uygulamalarını Deploy Edin',
-      description: 'Express, Fastify, Koa, NestJS veya herhangi bir Node.js sunucusunu kendi VPS\'inize deploy edin. Pushify, süreç yönetimini, ortam yapılandırmasını ve SSL kurulumunu otomatik olarak yönetir.',
+      title: 'Node.js uygulamalarını deploy edin',
+      description:
+        'Kendi VPS’inizde Express, Fastify, NestJS ya da herhangi bir Node.js sunucusu: container’da, çökünce yeniden başlar, HTTPS arkasında.',
       steps: [
-        { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
-        { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, package.json\'ınızı okur, Node.js framework\'ünü algılar ve başlatma script\'ini yapılandırır.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Node.js uygulamanız otomatik yeniden başlatma, sağlık kontrolleri ve otomatik SSL ile bir container içinde deploy edilir.' },
+        INSTALL_TR,
+        INIT_TR,
+        { title: "Production'a deploy edin", code: DEPLOY_CODE, description: 'package.json’dan derler, start script’inizi çalıştırır, sağlıklı olunca trafiği geçirir.' },
       ],
-      features: ['Express, Fastify, NestJS, Koa desteği', 'Çökmede otomatik yeniden başlatma', 'Otomatik sağlık kontrolleri', 'WebSocket desteği', 'Ortam değişkenleri', 'Sıfır kesinti ile yeniden başlatma'],
-      howToTitle: 'Pushify ile Node.js nasıl deploy edilir', whatYouGet: 'Pushify\'da Node.js ile neler elde edersiniz', readyTitle: 'Node.js uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',
+      features: ['Express, Fastify, NestJS ve Koa', 'Çökmeden sonra container yeniden başlar', 'Trafik geçmeden önce sağlık kontrolü', 'Proxy üzerinden WebSocket', 'Proje bazında ortam değişkenleri', 'Kesintisiz deploy'],
+      howToTitle: 'Pushify ile Node.js nasıl deploy edilir',
+      whatYouGet: "Pushify'da Node.js ile neler elde edersiniz",
+      readyTitle: 'Node.js uygulamanızı deploy etmeye hazır mısınız?',
+      ...SHARED_TR,
     },
   },
   laravel: {
-    name: 'Laravel', slug: 'laravel', icon: 'L', color: '#FF2D20', buildCommand: 'composer install --no-dev', detectMessage: 'Detected: Laravel 11 + PHP 8.3',
+    name: 'Laravel',
+    slug: 'laravel',
     en: {
-      title: 'Deploy Laravel Apps',
-      description: 'Deploy your Laravel application to your own server with zero configuration. Pushify sets up PHP-FPM with opcache, Composer dependencies, and Nginx configuration automatically.',
+      title: 'Deploy Laravel apps',
+      description:
+        'A PHP 8.3 image with PHP-FPM, opcache and nginx on your own server. Composer, config and route caches included.',
       steps: [
-        { title: 'Install Pushify CLI', code: 'npm install -g pushify-cli', description: 'Install the Pushify command-line tool globally.' },
-        { title: 'Initialize your project', code: 'pushify init', description: 'Pushify detects Laravel from composer.json and generates a Dockerfile with PHP-FPM and Nginx.' },
-        { title: 'Deploy to production', code: 'pushify deploy --prod', description: 'Composer install, config and route caching, and deployment — all automated with automatic SSL.' },
+        INSTALL_EN,
+        INIT_EN,
+        { title: 'Deploy to production', code: DEPLOY_CODE, description: 'Detects Laravel from composer.json, runs composer install and caches, serves over HTTPS.' },
       ],
-      features: ['PHP-FPM & Nginx configuration', 'Composer dependency management', 'PHP 8.3 image with opcache', 'Queue workers & cron jobs via pushify.yaml', 'Custom domains with automatic SSL', 'Rollbacks to previous deployments'],
-      howToTitle: 'How to deploy Laravel with Pushify', whatYouGet: 'What you get with Laravel on Pushify', readyTitle: 'Ready to deploy your Laravel app?', readyDesc: 'Get started for free. No credit card required.', startBtn: 'Start Deploying Free', docsBtn: 'Read the Docs',
+      features: ['PHP-FPM and nginx in one image', 'Composer dependencies installed at build', 'PHP 8.3 with opcache', 'Queue workers and cron via pushify.yaml', 'Custom domains with automatic SSL', 'Rollbacks to previous deployments'],
+      howToTitle: 'How to deploy Laravel with Pushify',
+      whatYouGet: 'What you get with Laravel on Pushify',
+      readyTitle: 'Ready to deploy your Laravel app?',
+      ...SHARED_EN,
     },
     tr: {
-      title: 'Laravel Uygulamalarını Deploy Edin',
-      description: 'Laravel uygulamanızı sıfır konfigürasyonla kendi sunucunuza deploy edin. Pushify, opcache\'li PHP-FPM, Composer bağımlılıkları ve Nginx yapılandırmasını otomatik olarak ayarlar.',
+      title: 'Laravel uygulamalarını deploy edin',
+      description:
+        'Kendi sunucunuzda PHP-FPM, opcache ve nginx içeren bir PHP 8.3 imajı. Composer, config ve route önbellekleri dahil.',
       steps: [
-        { title: 'Pushify CLI\'ı Kurun', code: 'npm install -g pushify-cli', description: 'Pushify komut satırı aracını global olarak kurun.' },
-        { title: 'Projenizi Başlatın', code: 'pushify init', description: 'Pushify, composer.json\'dan Laravel\'i algılar ve PHP-FPM ile Nginx içeren bir Dockerfile üretir.' },
-        { title: 'Production\'a Deploy Edin', code: 'pushify deploy --prod', description: 'Composer install, config ve route önbellekleme ve deployment — hepsi otomatik SSL ile otomatize edilir.' },
+        INSTALL_TR,
+        INIT_TR,
+        { title: "Production'a deploy edin", code: DEPLOY_CODE, description: 'composer.json’dan Laravel’i algılar, composer install ve önbellekleri çalıştırır, HTTPS ile sunar.' },
       ],
-      features: ['PHP-FPM & Nginx yapılandırması', 'Composer bağımlılık yönetimi', 'Opcache\'li PHP 8.3 imajı', 'pushify.yaml ile kuyruk işçileri & cron görevleri', 'Otomatik SSL ile özel alan adları', 'Önceki deployment\'lara geri dönüş'],
-      howToTitle: 'Pushify ile Laravel nasıl deploy edilir', whatYouGet: 'Pushify\'da Laravel ile neler elde edersiniz', readyTitle: 'Laravel uygulamanızı deploy etmeye hazır mısınız?', readyDesc: 'Ücretsiz başlayın. Kredi kartı gerekmez.', startBtn: 'Ücretsiz Deploy Etmeye Başla', docsBtn: 'Dokümantasyonu Oku',
+      features: ['Tek imajda PHP-FPM ve nginx', 'Composer bağımlılıkları build sırasında kurulur', 'Opcache’li PHP 8.3', 'pushify.yaml ile kuyruk worker’ları ve cron', 'Otomatik SSL ile özel alan adları', 'Önceki deploy’lara geri dönüş'],
+      howToTitle: 'Pushify ile Laravel nasıl deploy edilir',
+      whatYouGet: "Pushify'da Laravel ile neler elde edersiniz",
+      readyTitle: 'Laravel uygulamanızı deploy etmeye hazır mısınız?',
+      ...SHARED_TR,
     },
   },
 };
+
+const ui = {
+  en: {
+    label: 'Deploy guide',
+    where: 'to your own server',
+    howEyebrow: 'Steps',
+    howLead: 'Connect a server first: your own VPS over SSH, or a managed Hetzner server.',
+    terminalTitle: 'terminal',
+    featuresEyebrow: 'Included',
+    ctaEyebrow: 'Get started',
+    related: 'Compare',
+  },
+  tr: {
+    label: 'Deploy rehberi',
+    where: 'kendi sunucunuzda',
+    howEyebrow: 'Adımlar',
+    howLead: 'Önce bir sunucu bağlayın: SSH ile kendi VPS’iniz ya da yönetilen bir Hetzner sunucusu.',
+    terminalTitle: 'terminal',
+    featuresEyebrow: 'Neler dahil',
+    ctaEyebrow: 'Başlayın',
+    related: 'Karşılaştırın',
+  },
+} as const;
 
 export default function DeployFrameworkPage() {
   const params = useParams();
@@ -217,124 +289,96 @@ export default function DeployFrameworkPage() {
 
   if (!fw) notFound();
 
-  const content = fw[locale] || fw.en;
-
-  const speedLine = locale === 'tr' ? '60 Saniyeden Kısa Sürede' : 'in Under 60 Seconds';
+  const lang = locale === 'tr' ? 'tr' : 'en';
+  const content = fw[lang];
+  const u = ui[lang];
 
   return (
     <MarketingShell noPad>
-      <header className="lp-container pt-20 md:pt-24 pb-12 text-center max-w-3xl mx-auto">
-        <div
-          className="inline-flex items-center justify-center w-14 h-14 rounded-xl text-xl font-bold mb-6 border mx-auto"
-          style={{ borderColor: 'var(--lp-border)', backgroundColor: `${fw.color}12`, color: fw.color }}
-        >
-          {fw.icon}
-        </div>
-        <h1 className="lp-hero-title">
-          {content.title}
-          <br />
-          <span className="font-normal" style={{ color: 'var(--lp-muted)' }}>
-            {speedLine}
-          </span>
-        </h1>
-        <p className="lp-lead mt-5">{content.description}</p>
-      </header>
+      <MarketingPageHero
+        label={u.label}
+        title={
+          <>
+            {content.title}
+            <br />
+            <span style={{ color: 'var(--hp-muted)' }}>{u.where}</span>
+          </>
+        }
+        description={content.description}
+      />
 
-      <section className="lp-container max-w-3xl pb-16">
-        <h2 className="lp-section-title text-center mb-10">{content.howToTitle}</h2>
-        <div className="space-y-8">
-          {content.steps.map((step, i) => (
-            <div key={i} className="flex gap-5">
-              <div
-                className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-sm font-semibold border"
-                style={{ borderColor: 'var(--lp-border)', color: 'var(--lp-ink)' }}
-              >
-                {i + 1}
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--lp-ink)' }}>
-                  {step.title}
-                </h3>
+      {/* The whole flow in one terminal, directly under the hero. */}
+      <section className="pb-20 md:pb-24">
+        <div className="lp-container max-w-3xl">
+          <CodePanel title={`${u.terminalTitle} · ${fw.name}`}>
+            <span>$ {INSTALL_EN.code}</span>
+            {'\n\n'}
+            <span>$ pushify init</span>
+            {'\n'}
+            <span style={{ color: 'var(--hp-muted)' }}>✔ Created my-app (my-app){'\n'}  Repository: https://github.com/you/my-app @ main</span>
+            {'\n\n'}
+            <span>$ {DEPLOY_CODE}</span>
+            {'\n'}
+            <span style={{ color: 'var(--hp-muted)' }}>✔ Deployment triggered!{'\n'}  Branch: main (production){'\n'}✔ Deployment successful!</span>
+            {'\n'}
+            <span style={{ color: 'var(--hp-live)' }}>  ✓ Your application is now live</span>
+          </CodePanel>
+        </div>
+      </section>
+
+      <MSection id="how" eyebrow={u.howEyebrow} title={content.howToTitle} lead={u.howLead}>
+        <Steps
+          items={content.steps.map((step) => ({
+            title: step.title,
+            body: (
+              <>
                 {step.code && (
-                  <div
-                    className="lp-preview px-4 py-3 mb-3 font-mono text-sm"
-                    style={{ color: 'var(--lp-ink)' }}
-                  >
+                  <code className="hp-mono block mb-2 text-[13px] break-all" style={{ color: 'var(--hp-ink)' }}>
                     $ {step.code}
-                  </div>
+                  </code>
                 )}
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--lp-muted)' }}>
-                  {step.description}
-                </p>
-              </div>
-            </div>
+                {step.description}
+              </>
+            ),
+          }))}
+        />
+      </MSection>
+
+      <MSection id="features" eyebrow={u.featuresEyebrow} title={content.whatYouGet}>
+        <RuleGrid cols={3}>
+          {content.features.map((feature) => (
+            <RuleCell key={feature} title={feature} />
           ))}
-        </div>
-      </section>
+        </RuleGrid>
+      </MSection>
 
-      <section className="lp-container max-w-3xl pb-16">
-        <div className="lp-preview">
-          <div
-            className="flex items-center gap-2 px-4 py-3 border-b"
-            style={{ borderColor: 'var(--lp-border)' }}
-          >
-            <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-            <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-            <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-            <span className="ml-2 text-xs font-mono" style={{ color: 'var(--lp-muted)' }}>
-              pushify-cli
-            </span>
-          </div>
-          <div className="p-5 font-mono text-sm leading-7" style={{ color: 'var(--lp-ink)' }}>
-            <div>$ pushify init</div>
-            <div style={{ color: 'var(--lp-muted)' }}>◆ {fw.detectMessage}</div>
-            <div style={{ color: 'var(--lp-muted)' }}>▸ Configuring build pipeline...</div>
-            <div className="mt-2">$ pushify deploy --prod</div>
-            <div style={{ color: 'var(--lp-muted)' }}>▸ Running: {fw.buildCommand}</div>
-            <div style={{ color: 'var(--lp-muted)' }}>▸ Deploying to your server...</div>
-            <div className="text-emerald-600 dark:text-emerald-400">✓ Live at https://app.pushify.dev</div>
-          </div>
-        </div>
-      </section>
-
-      <section className="lp-container max-w-3xl pb-16">
-        <h2 className="lp-section-title text-center mb-8">{content.whatYouGet}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {content.features.map((feature, i) => (
-            <div key={i} className="lp-card flex items-center gap-3 p-4">
-              <div
-                className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400"
-                style={{ background: 'var(--lp-border)' }}
-              >
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="currentColor">
-                  <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <span className="text-sm" style={{ color: 'var(--lp-muted)' }}>
-                {feature}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="lp-container max-w-3xl pb-24 md:pb-32 text-center">
-        <h2 className="lp-section-title mb-4">{content.readyTitle}</h2>
-        <p className="lp-lead mb-8 max-w-lg mx-auto">{content.readyDesc}</p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/register" className="lp-cta">
+      <MSection eyebrow={u.ctaEyebrow} title={content.readyTitle} lead={content.readyDesc} align="center">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link href="/register" className="lp-cta w-full sm:w-auto">
             {content.startBtn}
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
-          <Link href="/docs" className="lp-cta-ghost">
+          <Link href="/docs" className="lp-cta-ghost w-full sm:w-auto">
             {content.docsBtn}
           </Link>
         </div>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/vs/coolify" className="lp-cta-ghost text-sm">Pushify vs Coolify</Link>
-          <Link href="/vs/vercel" className="lp-cta-ghost text-sm">Pushify vs Vercel</Link>
-          <Link href="/features" className="lp-cta-ghost text-sm">Features</Link>
-        </div>
-      </section>
+        <nav aria-label={u.related} className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          {[
+            { href: '/vs/coolify', label: 'Pushify vs Coolify' },
+            { href: '/vs/vercel', label: 'Pushify vs Vercel' },
+            { href: '/features', label: lang === 'tr' ? 'Özellikler' : 'Features' },
+          ].map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="hp-mono text-[12px] uppercase tracking-[0.1em] hover:underline underline-offset-4"
+              style={{ color: 'var(--hp-body)' }}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+      </MSection>
 
       {/* JSON-LD HowTo Schema */}
       <script
@@ -345,7 +389,6 @@ export default function DeployFrameworkPage() {
             '@type': 'HowTo',
             name: `How to deploy a ${fw.name} app with Pushify`,
             description: fw.en.description,
-            totalTime: 'PT1M',
             tool: { '@type': 'HowToTool', name: 'pushify-cli' },
             step: fw.en.steps.map((step, i) => ({
               '@type': 'HowToStep',
