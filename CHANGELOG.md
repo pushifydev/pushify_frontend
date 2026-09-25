@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.68] - 2026-09-25
+
+### Changed
+- **The rest of the dashboard, screen by screen.** Modals share one shell (`.dash-modal`, dialog roles, mono eyebrow, pill footer); toasts are monochrome cards with a status-coloured icon; menus, the command palette and keyboard shortcuts share `.dash-menu` and `.dash-kbd`; empty states are one `EmptyState` (`[ LABEL ]`, a line, one action) and skeletons shimmer in the real layout's shape; native selects, switches and segmented controls match the inputs. Project detail has an underline tab strip, compact deployment rows with a quiet mono pipeline, a sectioned settings form with a sticky index, and hairline lists for env vars, domains, cron, workers and notifications. Database detail and the Data Browser, server detail, both terminals (black, off-white, green only for the prompt) and the site editor's chrome follow.
+- **Docs, section by section.** Titled code panels with a copy button, hairline parameter tables, callouts as hairline cards, `#` anchors on every heading and deep links that open the right section; the mobile menu traps focus and closes on Esc.
+- **Social previews in the new look.** A new default card and one per page (features, pricing, apps, comparisons, blog posts, app pages…), rendered with Inter and Geist Mono over the hero's light.
+- **Small labels are easier to read.** Muted and eyebrow greys raised to ≥4.5:1 on every surface they sit on.
+
+### Added
+- **The dashboard on the homepage.** A section with three real screenshots (overview, project, database) behind tabs, captioned as sample data.
+
+### Fixed
+- **Copying a masked connection string or password copied the dots.**
+- **The notification settings toggle was invisible when on, in dark mode.**
+- **English strings in the Turkish dashboard** (terminal and shell titles, Pushify URL and SSL badges, Nginx settings, site editor, data browser labels).
+- **Blog and app pages showed the generic preview image** instead of their own.
+- **The homepage headline was reported as painted late** because it faded in from transparent; it now only slides.
+
 ## [0.2.0-beta.67] - 2026-09-25
 
 ### Changed
