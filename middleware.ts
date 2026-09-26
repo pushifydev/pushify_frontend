@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { LOCALE_COOKIE, LOCALE_HEADER, isSupportedLocale, localeFromAcceptLanguage } from '@/lib/locale-request';
+import { LOCALE_COOKIE, LOCALE_HEADER, PATH_HEADER, isSupportedLocale, localeFromAcceptLanguage } from '@/lib/locale-request';
 
 /**
  * Decide the language before the page is rendered.
@@ -19,6 +19,7 @@ export function middleware(request: NextRequest) {
   // visit there is no cookie yet, and this carries the Accept-Language answer for that request.
   const headers = new Headers(request.headers);
   headers.set(LOCALE_HEADER, locale);
+  headers.set(PATH_HEADER, request.nextUrl.pathname);
 
   const response = NextResponse.next({ request: { headers } });
 

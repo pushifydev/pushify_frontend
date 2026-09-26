@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { type SupportedLocale, DEFAULT_LOCALE, SUPPORTED_LOCALES, loadLocale } from '@/lib/i18n';
+import { type SupportedLocale, DEFAULT_LOCALE, SUPPORTED_LOCALES, loadLocale, isLocaleLoaded } from '@/lib/i18n';
 import { safeStorage } from '@/lib/safe-storage';
 import { LOCALE_COOKIE } from '@/lib/locale-request';
 
@@ -71,4 +71,16 @@ export function migrateLegacyLocale(): void {
   } catch {
     /* unreadable leftover — the cookie already holds a usable value */
   }
+}
+
+/**
+ * On the public site a Turkish visitor hydrates with the site's slice of the dictionary. Fetch the
+ * rest once the page is up, so a move into the dashboard reads in Turkish from the first frame.
+ */
+export function completeDictionary(): void {
+  const { locale } = useLocaleStore.getState();
+  if (isLocaleLoaded(locale)) return;
+  void loadLocale(locale).then(() =>
+    useLocaleStore.setState({ dictVersion: useLocaleStore.getState().dictVersion + 1 })
+  );
 }

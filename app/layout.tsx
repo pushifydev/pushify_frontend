@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import localFont from 'next/font/local';
 import { Providers } from './providers';
-import { MARKETING_PATH_PATTERN } from '@/lib/marketing-routes';
+import { MARKETING_PATH_PATTERN, isMarketingPath } from '@/lib/marketing-routes';
 import { Analytics } from '@/components/Analytics';
 import './globals.css';
 import './marketing.css';
-import { LOCALE_HEADER, isSupportedLocale } from '@/lib/locale-request';
+import { LOCALE_HEADER, PATH_HEADER, isSupportedLocale } from '@/lib/locale-request';
 import { DEFAULT_LOCALE, type SupportedLocale } from '@/lib/i18n';
 import { ensureDictionaryOnServer } from '@/lib/i18n/server';
 import { version as appVersion } from '../package.json';
@@ -158,6 +158,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await requestLocale();
+  // The public site hydrates with its slice of the Turkish dictionary (a third of the bytes that
+  // block the first paint); anything else gets the whole thing.
+  const trScript = isMarketingPath((await headers()).get(PATH_HEADER) ?? '') ? '/i18n/tr-site' : '/i18n/tr';
   // Before anything renders: the components below print their text from this dictionary.
   await ensureDictionaryOnServer(locale);
 
@@ -172,7 +175,7 @@ export default async function RootLayout({
             is versioned and served immutable, so it is fetched once and never again. */}
         {locale === 'tr' && (
           // eslint-disable-next-line @next/next/no-sync-scripts
-          <script src={`/i18n/tr?v=${appVersion}`} />
+          <script src={`${trScript}?v=${appVersion}`} />
         )}
         <script
           type="application/ld+json"

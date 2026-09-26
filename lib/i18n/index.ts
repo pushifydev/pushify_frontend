@@ -30,33 +30,47 @@ const translations: Partial<Record<SupportedLocale, TranslationKeys>> = {
  *
  * Read lazily rather than at module evaluation, because whoever parks it may run afterwards.
  */
-type DictionaryHost = { __PUSHIFY_I18N_TR?: TranslationKeys };
+type DictionaryHost = { __PUSHIFY_I18N_TR?: TranslationKeys; __PUSHIFY_I18N_TR_PARTIAL?: boolean };
+
+/** False while tr holds only the public site's namespaces (see site-namespaces.ts). */
+let trComplete = false;
 
 const adoptParkedDictionary = (): void => {
   if (translations.tr) return;
-  const parked = (globalThis as DictionaryHost).__PUSHIFY_I18N_TR;
-  if (parked) translations.tr = parked;
+  const host = globalThis as DictionaryHost;
+  if (host.__PUSHIFY_I18N_TR) {
+    translations.tr = host.__PUSHIFY_I18N_TR;
+    trComplete = !host.__PUSHIFY_I18N_TR_PARTIAL;
+  }
 };
 
 /** Make a dictionary available to every module graph in this process. */
 export const installDictionary = (locale: SupportedLocale, dictionary: TranslationKeys): void => {
   translations[locale] = dictionary;
-  if (locale === 'tr') (globalThis as DictionaryHost).__PUSHIFY_I18N_TR = dictionary;
+  if (locale === 'tr') {
+    trComplete = true;
+    (globalThis as DictionaryHost).__PUSHIFY_I18N_TR = dictionary;
+    (globalThis as DictionaryHost).__PUSHIFY_I18N_TR_PARTIAL = false;
+  }
 };
 
 let trPromise: Promise<void> | null = null;
 
-/** Ensure a locale's dictionary is in memory. Resolves immediately for en/loaded. */
+/** Ensure a locale's full dictionary is in memory. Resolves immediately for en/loaded. */
 export const loadLocale = (locale: SupportedLocale): Promise<void> => {
   adoptParkedDictionary();
-  if (locale !== 'tr' || translations.tr) return Promise.resolve();
+  if (locale !== 'tr' || (translations.tr && trComplete)) return Promise.resolve();
   trPromise ??= import('./locales/tr').then((m) => {
     translations.tr = m.tr;
+    trComplete = true;
   });
   return trPromise;
 };
 
-export const isLocaleLoaded = (locale: SupportedLocale): boolean => !!translations[locale];
+export const isLocaleLoaded = (locale: SupportedLocale): boolean => {
+  adoptParkedDictionary();
+  return locale === 'tr' ? !!translations.tr && trComplete : !!translations[locale];
+};
 
 // ============ Functions ============
 
@@ -74,7 +88,8 @@ export const t = <C extends keyof TranslationKeys>(
   key: keyof TranslationKeys[C]
 ): string => {
   // getTranslations falls back to en while a lazy dictionary is still loading
-  const categoryTranslations = getTranslations(locale)[category];
+  // A namespace missing from a partial dictionary reads in English until the rest arrives.
+  const categoryTranslations = getTranslations(locale)[category] ?? translations[DEFAULT_LOCALE]![category];
   if (!categoryTranslations) {
     return String(key);
   }

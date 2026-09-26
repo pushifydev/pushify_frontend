@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { useLocaleStore, migrateLegacyLocale } from '@/stores/locale';
+import { useLocaleStore, migrateLegacyLocale, completeDictionary } from '@/stores/locale';
 import { useThemeStore, applyTheme } from '@/stores/theme';
 
 /**
@@ -21,6 +21,10 @@ export function AfterHydration() {
 
   useEffect(() => {
     migrateLegacyLocale();
+    // After the page is interactive, not before: it must not compete with the first paint.
+    const idle = (globalThis as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
+    if (idle) idle(completeDictionary);
+    else setTimeout(completeDictionary, 1500);
   }, []);
 
   // Also on every route change: the public site is always dark, the dashboard follows the
