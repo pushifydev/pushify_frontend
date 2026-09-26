@@ -58,10 +58,11 @@ export function PageHeader({
               <h1 className="truncate max-w-full">{title}</h1>
               {badge}
             </div>
+            {/* A div, not a p: pages pass skeletons and links here, and a div inside a p breaks hydration. */}
             {description && (
-              <p className="text-[var(--text-secondary)] mt-1.5 text-sm leading-relaxed break-words max-w-2xl">
+              <div className="text-[var(--text-secondary)] mt-1.5 text-sm leading-relaxed break-words max-w-2xl">
                 {description}
-              </p>
+              </div>
             )}
             {meta && meta.filter(Boolean).length > 0 && (
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-3 text-[13px] text-[var(--text-muted)]">
