@@ -9,6 +9,8 @@ import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type SupportedLocale } from './i18n'
 
 export const LOCALE_COOKIE = 'pushify-lang';
 export const LOCALE_HEADER = 'x-pushify-locale';
+/** The request path, passed to the root layout (which has no other way to know it). */
+export const PATH_HEADER = 'x-pushify-path';
 
 export const isSupportedLocale = (value: string | null | undefined): value is SupportedLocale =>
   !!value && (SUPPORTED_LOCALES as readonly string[]).includes(value);
