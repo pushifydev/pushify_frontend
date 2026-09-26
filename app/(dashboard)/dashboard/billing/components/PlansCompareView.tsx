@@ -1,12 +1,16 @@
 'use client';
 
-import Link from 'next/link';
-import { ArrowLeft, Check, Minus, Loader2 } from 'lucide-react';
+import { Check, Minus, Loader2 } from 'lucide-react';
 import NumberFlow from '@number-flow/react';
 import { useTranslation } from '@/hooks';
 import type { PlanType, PlanLimits, AvailablePlans } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
 import { cn } from '@/lib/utils';
+import { PageHeader, MetaLabel } from '@/components/dashboard/PageKit';
+
+/** Tint for the recommended plan, as on the public pricing table. */
+const RECOMMENDED_TINT = 'bg-[color-mix(in_srgb,var(--text-primary)_4%,transparent)]';
+const RECOMMENDED: PlanType = 'pro';
 
 const PAID_TIERS: PlanType[] = ['hobby', 'pro', 'business'];
 const ALL_TIERS: PlanType[] = ['free', 'hobby', 'pro', 'business', 'enterprise'];
@@ -108,29 +112,14 @@ function BillingToggle({
   const { t } = useTranslation();
 
   return (
-    <div
-      className="inline-flex rounded-lg border border-[var(--border-subtle)] p-0.5 text-sm"
-      role="group"
-    >
+    <div className="dash-segmented shrink-0" role="group" aria-label={t('billing', 'billingCycleMonthly') + ' / ' + t('billing', 'billingCycleYearly')}>
       {(['monthly', 'yearly'] as const).map((cycle) => {
         const active = (cycle === 'monthly') === isMonthly;
         return (
-          <button
-            key={cycle}
-            type="button"
-            onClick={() => onChange(cycle)}
-            className={cn(
-              'px-3.5 py-1.5 rounded-md font-medium transition-colors',
-              active
-                ? 'bg-[var(--text-primary)] text-[var(--bg-primary)]'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
-            )}
-          >
+          <button key={cycle} type="button" onClick={() => onChange(cycle)} aria-pressed={active}>
             {cycle === 'monthly' ? t('billing', 'billingCycleMonthly') : t('billing', 'billingCycleYearly')}
             {cycle === 'yearly' && (
-              <span className={cn('ml-1.5 text-[11px]', active ? 'opacity-80' : 'opacity-60')}>
-                {t('billing', 'billingCycleYearlySave')}
-              </span>
+              <span className="terminal-text text-[10px] opacity-70">{t('billing', 'billingCycleYearlySave')}</span>
             )}
           </button>
         );
@@ -162,19 +151,14 @@ function PlanButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
+      aria-busy={pending}
       className={cn(
-        'w-full h-10 rounded-lg text-sm font-medium transition-colors',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
-        isCurrent && 'bg-[var(--bg-tertiary)] text-[var(--text-muted)]',
-        !isCurrent &&
-          isUpgrade &&
-          'bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90',
-        !isCurrent &&
-          !isUpgrade &&
-          'border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]',
+        'btn w-full justify-center disabled:cursor-not-allowed',
+        isCurrent ? 'btn-secondary disabled:opacity-100 text-[var(--text-muted)]' : isUpgrade ? 'btn-primary' : 'btn-secondary',
+        !isCurrent && 'disabled:opacity-50',
       )}
     >
-      {pending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : label}
+      {pending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" aria-hidden /> : label}
     </button>
   );
 }
@@ -217,18 +201,21 @@ function PaidPlanColumn({
       <div className="flex flex-col h-full p-6 sm:p-7 min-h-[20rem]">
         <div className="mb-5 min-h-[1.25rem]">
           {isRecommended && (
-            <span className="text-[11px] font-medium text-[var(--text-muted)]">
+            <span className="dash-section-label text-[var(--text-primary)]!">
               {t('billing', 'planMostPopular')}
             </span>
           )}
           {isCurrent && !isRecommended && (
-            <span className="text-[11px] font-medium text-[var(--text-muted)]">
+            <span className="dash-section-label">
               {t('billing', 'currentPlanBadge')}
             </span>
           )}
         </div>
 
-        <h3 className="text-base font-medium text-[var(--text-primary)]">{plan.name}</h3>
+        <h3 className="text-base font-medium text-[var(--text-primary)] flex items-center gap-2">
+          {plan.name}
+          {isCurrent && isRecommended && <span className="badge badge-neutral">{t('billing', 'currentPlanBadge')}</span>}
+        </h3>
 
         <div className="mt-4 mb-8">
           <div className="flex items-baseline gap-1">
@@ -322,7 +309,7 @@ function EdgePlanRow({
         <div className="flex items-center gap-2 flex-wrap">
           <h3 className="text-sm font-medium text-[var(--text-primary)]">{plan.name}</h3>
           {isCurrent && (
-            <span className="text-[10px] font-medium text-[var(--text-muted)] px-1.5 py-0.5 rounded border border-[var(--border-subtle)]">
+            <span className="badge badge-neutral">
               {t('billing', 'currentPlanBadge')}
             </span>
           )}
@@ -366,56 +353,68 @@ function ComparisonTable({
 
   return (
     <section className="min-w-0">
-      <h2 className="text-sm font-medium text-[var(--text-primary)] mb-1">
-        {t('homepage', 'fullPlanComparisonTitle')}
-      </h2>
-      <p className="text-xs text-[var(--text-muted)] mb-4">{t('billing', 'comparePlansSubtitle')}</p>
+      <h2 className="dash-section-label mb-1.5">{t('homepage', 'fullPlanComparisonTitle')}</h2>
+      <p className="text-[13px] text-[var(--text-secondary)] mb-4">{t('billing', 'comparePlansSubtitle')}</p>
 
-      <div className="rounded-xl border border-[var(--border-subtle)] overflow-hidden bg-[var(--bg-secondary)]">
+      <div className="rounded-[14px] border border-[var(--border-subtle)] overflow-hidden bg-[var(--bg-secondary)]">
         <div className="overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
-          <table className="min-w-[720px] w-full text-sm">
+          <table className="min-w-[720px] w-full text-[13px] border-collapse">
             <thead>
-              <tr className="border-b border-[var(--border-subtle)] text-[var(--text-muted)]">
-                <th className="dash-plans-th-sticky text-left font-normal py-3 pl-4 pr-3 w-[40%]">
+              <tr className="border-b border-[var(--border-default)]">
+                <th
+                  scope="col"
+                  className="dash-plans-th-sticky text-left font-normal py-3 pl-4 sm:pl-5 pr-3 w-[36%] font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.1em] text-[var(--text-muted)]"
+                >
                   {t('homepage', 'comparisonColumnFeature')}
                 </th>
                 {ALL_TIERS.map((key) => {
                   const p = plans[key];
                   if (!p) return null;
+                  const rec = key === RECOMMENDED;
                   return (
-                    <th key={key} className="font-normal py-3 px-3 text-center min-w-[5.5rem]">
-                      <span className="block text-[var(--text-primary)] font-medium">{p.name}</span>
+                    <th
+                      key={key}
+                      scope="col"
+                      className={cn(
+                        'font-normal py-3 px-3 text-center min-w-[5.5rem] font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.1em]',
+                        rec ? cn('text-[var(--text-primary)]', RECOMMENDED_TINT) : 'text-[var(--text-muted)]',
+                      )}
+                    >
+                      {p.name}
                     </th>
                   );
                 })}
               </tr>
             </thead>
             <tbody>
-              {COMPARE_ROWS.map((row, i) => (
-                <tr
-                  key={row.key}
-                  className={cn(
-                    'border-b border-[var(--border-subtle)] last:border-0',
-                    i % 2 === 1 && 'dash-plans-row-alt bg-[var(--bg-tertiary)]/40',
-                  )}
-                >
-                  <td className="dash-plans-th-sticky py-2.5 pl-4 pr-3 text-[var(--text-secondary)] bg-inherit">
+              {COMPARE_ROWS.map((row) => (
+                <tr key={row.key} className="border-b border-[var(--border-subtle)] last:border-0">
+                  <th
+                    scope="row"
+                    className="dash-plans-th-sticky text-left font-normal py-3 pl-4 sm:pl-5 pr-3 text-[var(--text-secondary)] bg-[var(--bg-secondary)]"
+                  >
                     {t('billing', row.labelKey)}
-                  </td>
+                  </th>
                   {ALL_TIERS.map((key) => {
                     const p = plans[key];
                     if (!p) return null;
                     const value = p.limits[row.key];
                     return (
-                      <td key={key} className="py-2.5 px-3 text-center text-[var(--text-primary)]">
+                      <td
+                        key={key}
+                        className={cn(
+                          'py-3 px-3 text-center text-[var(--text-primary)]',
+                          key === RECOMMENDED && RECOMMENDED_TINT,
+                        )}
+                      >
                         {row.type === 'boolean' ? (
                           (value as boolean) ? (
-                            <Check className="w-3.5 h-3.5 mx-auto opacity-70" strokeWidth={2} />
+                            <Check className="w-3.5 h-3.5 mx-auto" strokeWidth={2} aria-label="✓" />
                           ) : (
-                            <span className="text-[var(--text-muted)] opacity-30">—</span>
+                            <span className="text-[var(--text-muted)] opacity-40" aria-label="—">—</span>
                           )
                         ) : (
-                          <span className="tabular-nums text-xs font-medium">
+                          <span className="terminal-text tabular-nums text-xs">
                             {formatLimit(value as number, 'number', row.unit, unlimitedLabel)}
                           </span>
                         )}
@@ -464,31 +463,24 @@ export function PlansCompareView({
   };
 
   return (
-    <div className="dash-page max-w-4xl space-y-10 animate-slide-in pb-12 min-w-0">
-      <Link
-        href="/dashboard/billing"
-        className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" />
-        {t('billing', 'title')}
-      </Link>
+    <div className="dash-page max-w-5xl space-y-8 animate-slide-in pb-12 min-w-0">
+      <div className="space-y-4">
+        <PageHeader
+          back={{ href: '/dashboard/billing', label: t('billing', 'title') }}
+          title={t('billing', 'comparePlans')}
+          description={t('billing', 'comparePlansSubtitle')}
+          meta={[
+            plans[currentPlan] ? (
+              <MetaLabel key="current">
+                {t('billing', 'currentPlanBadge')}: {plans[currentPlan].name}
+              </MetaLabel>
+            ) : null,
+          ]}
+          actions={<BillingToggle isMonthly={isMonthly} onChange={onBillingCycleChange} />}
+        />
+      </div>
 
-      <header className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1
-            className="text-2xl font-semibold tracking-tight text-[var(--text-primary)]"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            {t('billing', 'comparePlans')}
-          </h1>
-          <p className="text-sm text-[var(--text-muted)] mt-1.5 max-w-md leading-relaxed">
-            {t('billing', 'comparePlansSubtitle')}
-          </p>
-        </div>
-        <BillingToggle isMonthly={isMonthly} onChange={onBillingCycleChange} />
-      </header>
-
-      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] overflow-hidden min-w-0">
+      <div className="rounded-[14px] border border-[var(--border-subtle)] bg-[var(--bg-secondary)] overflow-hidden min-w-0">
         <div className="dash-plans-scroll min-w-0">
           {PAID_TIERS.map((planKey) => {
             const plan = plans[planKey];
@@ -538,7 +530,7 @@ export function PlansCompareView({
 
       <ComparisonTable plans={plans} unlimitedLabel={unlimitedLabel} />
 
-      <p className="text-xs text-[var(--text-muted)] leading-relaxed text-center max-w-lg mx-auto">
+      <p className="text-xs text-[var(--text-muted)] leading-relaxed text-center max-w-lg mx-auto -mt-2">
         {t('billing', 'plansPricingNote')}
       </p>
       <p className="text-xs text-[var(--text-muted)] leading-relaxed text-center max-w-md mx-auto">

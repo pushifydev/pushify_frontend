@@ -5,10 +5,10 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useTranslation, useUpdateProfile, useChangePassword } from '@/hooks';
 import { useAuthStore } from '@/stores/auth';
 import { showSuccessToast, showErrorToast } from '@/lib/toast-i18n';
-import { SettingsCard, SettingsField } from './SettingsCard';
+import { SettingsSection, SettingsField } from '@/components/dashboard/SettingsParts';
 
 export function ProfileTab() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { user, checkAuth } = useAuthStore();
   // OAuth-only accounts (Google/GitHub) have no password yet — they SET one here
   const hasPassword = user?.hasPassword ?? true;
@@ -68,17 +68,26 @@ export function ProfileTab() {
   };
 
   const isProfileChanged = name !== user?.name || avatarUrl !== (user?.avatarUrl || '');
+  const showLabel = locale === 'tr' ? 'Şifreyi göster' : 'Show password';
+  const hideLabel = locale === 'tr' ? 'Şifreyi gizle' : 'Hide password';
   const canChangePassword = (!hasPassword || currentPassword) && newPassword && confirmPassword;
 
-  return (
-    <div className="space-y-5 animate-in fade-in duration-200">
-      <div>
-        <h2 className="text-xl font-semibold mb-1">{t('profile', 'title')}</h2>
-        <p className="text-[var(--text-secondary)]">{t('profile', 'description')}</p>
-      </div>
+  const reveal = (shown: boolean, toggle: () => void) => (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={shown ? hideLabel : showLabel}
+      aria-pressed={shown}
+      className="absolute right-1.5 top-1/2 -translate-y-1/2 dash-icon-action"
+    >
+      {shown ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+    </button>
+  );
 
-      {/* Personal Information Card */}
-      <SettingsCard
+  return (
+    <>
+      <SettingsSection
+        id="profile-info"
         title={t('profile', 'personalInfo')}
         description={t('profile', 'personalInfoDesc')}
         footer={
@@ -91,43 +100,42 @@ export function ProfileTab() {
           </button>
         }
       >
-        <div className="space-y-4 max-w-md">
-          <SettingsField label={t('profile', 'name')} htmlFor="profile-name">
-            <input
-              id="profile-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t('profile', 'namePlaceholder')}
-              className="input w-full"
-            />
-          </SettingsField>
+        <SettingsField label={t('profile', 'name')} htmlFor="profile-name">
+          <input
+            id="profile-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={t('profile', 'namePlaceholder')}
+            className="input w-full"
+            autoComplete="name"
+          />
+        </SettingsField>
 
-          <SettingsField label={t('profile', 'email')} htmlFor="profile-email" hint={t('profile', 'emailHint')}>
-            <input
-              id="profile-email"
-              type="email"
-              value={user?.email || ''}
-              disabled
-              className="input w-full opacity-60 cursor-not-allowed"
-            />
-          </SettingsField>
+        <SettingsField label={t('profile', 'email')} htmlFor="profile-email" hint={t('profile', 'emailHint')}>
+          <input
+            id="profile-email"
+            type="email"
+            value={user?.email || ''}
+            disabled
+            className="input w-full terminal-text opacity-60 cursor-not-allowed"
+          />
+        </SettingsField>
 
-          <SettingsField label={t('profile', 'avatarUrl')} htmlFor="profile-avatar" hint={t('profile', 'avatarHint')}>
-            <input
-              id="profile-avatar"
-              type="url"
-              value={avatarUrl}
-              onChange={(e) => setAvatarUrl(e.target.value)}
-              placeholder={t('profile', 'avatarUrlPlaceholder')}
-              className="input w-full"
-            />
-          </SettingsField>
-        </div>
-      </SettingsCard>
+        <SettingsField label={t('profile', 'avatarUrl')} htmlFor="profile-avatar" hint={t('profile', 'avatarHint')}>
+          <input
+            id="profile-avatar"
+            type="url"
+            value={avatarUrl}
+            onChange={(e) => setAvatarUrl(e.target.value)}
+            placeholder={t('profile', 'avatarUrlPlaceholder')}
+            className="input w-full terminal-text"
+          />
+        </SettingsField>
+      </SettingsSection>
 
-      {/* Change Password Card */}
-      <SettingsCard
+      <SettingsSection
+        id="profile-password"
         title={hasPassword ? t('profile', 'changePassword') : t('profile', 'setPassword')}
         description={hasPassword ? t('profile', 'changePasswordDesc') : t('profile', 'setPasswordDesc')}
         footer={
@@ -144,8 +152,7 @@ export function ProfileTab() {
           </button>
         }
       >
-        <div className="space-y-4 max-w-md">
-          {hasPassword && (
+        {hasPassword && (
           <SettingsField label={t('profile', 'currentPassword')} htmlFor="profile-current-password">
             <div className="relative">
               <input
@@ -154,58 +161,45 @@ export function ProfileTab() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="••••••••"
-                className="input w-full pr-12"
+                className="input w-full pr-11!"
                 autoComplete="current-password"
               />
-              <button
-                type="button"
-                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
-              >
-                {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+              {reveal(showCurrentPassword, () => setShowCurrentPassword(!showCurrentPassword))}
             </div>
           </SettingsField>
-          )}
+        )}
 
-          <SettingsField
-            label={t('profile', 'newPassword')}
-            htmlFor="profile-new-password"
-            hint={t('profile', 'passwordRequirements')}
-          >
-            <div className="relative">
-              <input
-                id="profile-new-password"
-                type={showNewPassword ? 'text' : 'password'}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="••••••••"
-                className="input w-full pr-12"
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
-              >
-                {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </SettingsField>
-
-          <SettingsField label={t('profile', 'confirmNewPassword')} htmlFor="profile-confirm-password">
+        <SettingsField
+          label={t('profile', 'newPassword')}
+          htmlFor="profile-new-password"
+          hint={t('profile', 'passwordRequirements')}
+        >
+          <div className="relative">
             <input
-              id="profile-confirm-password"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              id="profile-new-password"
+              type={showNewPassword ? 'text' : 'password'}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               placeholder="••••••••"
-              className="input w-full"
+              className="input w-full pr-11!"
               autoComplete="new-password"
             />
-          </SettingsField>
-        </div>
-      </SettingsCard>
-    </div>
+            {reveal(showNewPassword, () => setShowNewPassword(!showNewPassword))}
+          </div>
+        </SettingsField>
+
+        <SettingsField label={t('profile', 'confirmNewPassword')} htmlFor="profile-confirm-password">
+          <input
+            id="profile-confirm-password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            className="input w-full"
+            autoComplete="new-password"
+          />
+        </SettingsField>
+      </SettingsSection>
+    </>
   );
 }

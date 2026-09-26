@@ -8,12 +8,12 @@ import {
   Loader2,
   RefreshCw,
   Unlink,
-  Zap,
   EyeOff,
   AlertCircle,
   Sparkles,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks';
+import { SettingsSection } from '@/components/dashboard/SettingsParts';
 import { FRAMEWORKS } from '@/lib/frameworks';
 import type { useImportSource } from '../hooks/useImportSource';
 
@@ -148,85 +148,74 @@ export function ImportSourceStep({
 }: ImportSourceStepProps) {
   const { t } = useTranslation();
 
+  const sources: {
+    id: typeof sourceType;
+    icon: React.ReactNode;
+    title: string;
+    desc: string;
+    connected?: boolean;
+  }[] = [
+    { id: 'git', icon: <GitBranch className="w-4 h-4" />, title: t('newProject', 'gitUrl'), desc: t('newProject', 'gitUrlDesc') },
+    {
+      id: 'github',
+      icon: <Github className="w-4 h-4" />,
+      title: t('newProject', 'connectGithub'),
+      desc: t('newProject', 'connectGithubDesc'),
+      connected: !!githubStatus?.connected,
+    },
+    {
+      id: 'gitlab',
+      icon: <Globe className="w-4 h-4" />,
+      title: t('newProject', 'connectGitlab'),
+      desc: t('newProject', 'connectGitlabDesc'),
+      connected: !!gitlabStatus?.connected,
+    },
+    { id: 'template', icon: <Sparkles className="w-4 h-4" />, title: t('newProject', 'template'), desc: t('newProject', 'templateDesc') },
+  ];
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold mb-2">{t('newProject', 'importSource')}</h2>
-        <p className="text-[var(--text-secondary)]">{t('newProject', 'importSourceDesc')}</p>
-      </div>
-
+    <SettingsSection
+      id="np-source"
+      title={t('newProject', 'importSource')}
+      description={t('newProject', 'importSourceDesc')}
+      padded
+    >
+    <div className="space-y-5">
       {/* Source Type Selection */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <button
-          onClick={() => setSourceType('git')}
-          className={`p-5 rounded-xl border-2 text-left transition-all duration-200 ${
-            sourceType === 'git'
-              ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5'
-              : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
-          }`}
-        >
-          <GitBranch className={`w-8 h-8 mb-3 ${sourceType === 'git' ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)]'}`} />
-          <h3 className="font-semibold mb-1">{t('newProject', 'gitUrl')}</h3>
-          <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'gitUrlDesc')}</p>
-        </button>
-
-        <button
-          onClick={() => setSourceType('github')}
-          className={`p-5 rounded-xl border-2 text-left transition-all duration-200 relative ${
-            sourceType === 'github'
-              ? 'border-[var(--accent-purple)] bg-[var(--accent-purple)]/5'
-              : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
-          }`}
-        >
-          {githubStatus?.connected && (
-            <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-xs bg-[var(--status-success)]/20 text-[var(--status-success)] flex items-center gap-1">
-              <Check className="w-3 h-3" />
-              {t('newProject', 'connected')}
-            </div>
-          )}
-          <Github className={`w-8 h-8 mb-3 ${sourceType === 'github' ? 'text-[var(--accent-purple)]' : 'text-[var(--text-muted)]'}`} />
-          <h3 className="font-semibold mb-1">{t('newProject', 'connectGithub')}</h3>
-          <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'connectGithubDesc')}</p>
-        </button>
-
-        <button
-          onClick={() => setSourceType('gitlab')}
-          className={`p-5 rounded-xl border-2 text-left transition-all duration-200 relative ${
-            sourceType === 'gitlab'
-              ? 'border-orange-500 bg-orange-500/5'
-              : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
-          }`}
-        >
-          {gitlabStatus?.connected && (
-            <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-xs bg-[var(--status-success)]/20 text-[var(--status-success)] flex items-center gap-1">
-              <Check className="w-3 h-3" />
-              {t('newProject', 'connected')}
-            </div>
-          )}
-          <Globe className={`w-8 h-8 mb-3 ${sourceType === 'gitlab' ? 'text-orange-500' : 'text-[var(--text-muted)]'}`} />
-          <h3 className="font-semibold mb-1">{t('newProject', 'connectGitlab')}</h3>
-          <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'connectGitlabDesc')}</p>
-        </button>
-
-        <button
-          onClick={() => setSourceType('template')}
-          className={`p-5 rounded-xl border-2 text-left transition-all duration-200 ${
-            sourceType === 'template'
-              ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5'
-              : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
-          }`}
-        >
-          <Sparkles className={`w-8 h-8 mb-3 ${sourceType === 'template' ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)]'}`} />
-          <h3 className="font-semibold mb-1">{t('newProject', 'template')}</h3>
-          <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'templateDesc')}</p>
-        </button>
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2"
+        role="radiogroup"
+        aria-label={t('newProject', 'importSource')}
+      >
+        {sources.map((src) => (
+          <button
+            key={src.id}
+            type="button"
+            role="radio"
+            aria-checked={sourceType === src.id}
+            onClick={() => setSourceType(src.id)}
+            className="dash-option text-left !flex-col !gap-2"
+          >
+            <span className="flex items-center justify-between w-full gap-2 text-[var(--text-secondary)]">
+              {src.icon}
+              {src.connected && (
+                <span className="inline-flex items-center gap-1.5 dash-section-label !text-[10px]">
+                  <span className="dash-status-dot is-success" aria-hidden />
+                  {t('newProject', 'connected')}
+                </span>
+              )}
+            </span>
+            <span className="text-sm font-medium text-[var(--text-primary)]">{src.title}</span>
+            <span className="text-xs leading-relaxed text-[var(--text-muted)]">{src.desc}</span>
+          </button>
+        ))}
       </div>
 
       {/* Git URL Input */}
       {sourceType === 'git' && (
-        <div className="space-y-4 pt-4 border-t border-[var(--border-subtle)]">
+        <div className="space-y-4 pt-5 border-t border-[var(--border-subtle)]">
           <div>
-            <label className="block text-sm font-medium mb-2">{t('newProject', 'repositoryUrl')}</label>
+            <label className="dash-field-label !pt-0 mb-2">{t('newProject', 'repositoryUrl')}</label>
             <input
               type="url"
               value={repositoryUrl}
@@ -236,7 +225,7 @@ export function ImportSourceStep({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">{t('newProject', 'branch')}</label>
+            <label className="dash-field-label !pt-0 mb-2">{t('newProject', 'branch')}</label>
             <input
               type="text"
               value={gitBranch}
@@ -250,19 +239,19 @@ export function ImportSourceStep({
 
       {/* GitHub Connect */}
       {sourceType === 'github' && (
-        <div className="pt-4 border-t border-[var(--border-subtle)]">
+        <div className="pt-5 border-t border-[var(--border-subtle)]">
           {hasAppInstallation && !useAppPicker && (
             <button
               type="button"
               onClick={() => setPreferOAuthPicker(false)}
-              className="mb-3 text-xs font-medium text-[var(--accent-purple)] hover:underline underline-offset-4"
+              className="mb-3 text-xs font-medium text-[var(--text-muted)] hover:underline underline-offset-4"
             >
               ← {t('newProject', 'githubAppUsePicker')}
             </button>
           )}
           {isLoadingGitHubStatus ? (
-            <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
-              <Loader2 className="w-8 h-8 animate-spin text-[var(--accent-purple)] mx-auto mb-3" />
+            <div className="dash-empty is-bare">
+              <Loader2 className="w-5 h-5 animate-spin text-[var(--text-muted)] mx-auto mb-3" />
               <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'checkingGitHub')}</p>
             </div>
           ) : useAppPicker ? (
@@ -277,16 +266,16 @@ export function ImportSourceStep({
                       : `https://github.com/settings/installations/${inst.installationId}`
                     : 'https://github.com/settings/installations');
                 return (
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
+                  <div className="dash-callout flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div className="flex items-center gap-2 text-sm min-w-0">
-                      <Check className="w-4 h-4 shrink-0 text-[var(--status-success)]" />
+                      <span className="dash-status-dot is-success" aria-hidden />
                       <span className="truncate">
                         {t('newProject', 'githubAppInstalledOn')}{' '}
                         {installations.length > 1 ? (
                           <select
                             value={selectedAppInstallationId ?? ''}
                             onChange={(e) => setSelectedAppInstallationId(Number(e.target.value))}
-                            className="input inline-block w-auto py-0.5 px-2 text-sm"
+                            className="select inline-block !w-auto !py-0.5 !pl-2 text-sm"
                           >
                             {installations.map((i) => (
                               <option key={i.installationId} value={i.installationId}>@{i.accountLogin}</option>
@@ -301,18 +290,18 @@ export function ImportSourceStep({
                       </span>
                     </div>
                     <div className="flex items-center gap-2 shrink-0 flex-wrap">
-                      <a href={manageUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary text-xs py-1.5 px-3">
+                      <a href={manageUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm">
                         {t('newProject', 'githubAppManage')}
                       </a>
-                      <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]">
+                      <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost btn-sm">
                         {t('newProject', 'githubAppAddAccount')}
                       </button>
                       {githubStatus?.connected ? (
-                        <button type="button" onClick={() => setPreferOAuthPicker(true)} className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]">
+                        <button type="button" onClick={() => setPreferOAuthPicker(true)} className="btn btn-ghost btn-sm">
                           {t('newProject', 'githubAppUseOAuth')}
                         </button>
                       ) : (
-                        <button type="button" onClick={() => githubConnect.mutate()} disabled={githubConnect.isPending} className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]">
+                        <button type="button" onClick={() => githubConnect.mutate()} disabled={githubConnect.isPending} className="btn btn-ghost btn-sm">
                           {t('newProject', 'githubOrConnectAccount')}
                         </button>
                       )}
@@ -332,10 +321,10 @@ export function ImportSourceStep({
                 <Globe className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
               </div>
 
-              <div className="max-h-64 overflow-y-auto rounded-xl border border-[var(--border-subtle)]">
+              <div className="dash-rows max-h-72 !overflow-y-auto">
                 {isLoadingAppRepos ? (
                   <div className="p-6 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-purple)] mx-auto mb-2" />
+                    <Loader2 className="w-6 h-6 animate-spin text-[var(--text-muted)] mx-auto mb-2" />
                     <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'loadingRepos')}</p>
                   </div>
                 ) : appReposError ? (
@@ -353,18 +342,19 @@ export function ImportSourceStep({
                       <button
                         key={repo.id}
                         type="button"
+                        aria-pressed={active}
                         onClick={() => selectAppRepo(repo)}
-                        className={`w-full p-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--bg-tertiary)] transition-colors ${active ? 'bg-[var(--accent-purple)]/10' : ''}`}
+                        className={`w-full px-4 py-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--hover-overlay)] transition-colors ${active ? 'bg-[var(--hover-overlay-lg)]' : ''}`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${active ? 'bg-[var(--text-primary)] text-[var(--on-accent)]' : 'bg-[var(--bg-tertiary)]'}`}>
-                            {repo.private ? <EyeOff className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
-                          </div>
+                          <span className="text-[var(--text-muted)] shrink-0" title={repo.private ? 'Private' : 'Public'}>
+                            {repo.private ? <EyeOff className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
+                          </span>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium truncate">{repo.fullName.split('/').pop()}</div>
-                            <div className="text-xs text-[var(--text-muted)] truncate">{repo.fullName} · {repo.defaultBranch}</div>
+                            <div className="text-sm font-medium text-[var(--text-primary)] truncate">{repo.fullName.split('/').pop()}</div>
+                            <div className="terminal-text text-xs text-[var(--text-muted)] truncate">{repo.fullName} · {repo.defaultBranch}</div>
                           </div>
-                          {active && <Check className="w-5 h-5 text-[var(--accent-purple)]" />}
+                          {active && <Check className="w-4 h-4 text-[var(--text-primary)]" />}
                         </div>
                       </button>
                     );
@@ -374,7 +364,7 @@ export function ImportSourceStep({
 
               {selectedAppRepo && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'branch')}</label>
+                  <label className="dash-field-label !pt-0 mb-2">{t('newProject', 'branch')}</label>
                   <input
                     type="text"
                     value={gitBranch}
@@ -386,14 +376,14 @@ export function ImportSourceStep({
               )}
             </div>
           ) : !githubStatus?.connected ? (
-            <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
-              <Github className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">{t('newProject', 'githubIntegration')}</h3>
+            <div className="dash-empty is-bare">
+                            <h3 className="dash-empty-title mb-1.5">{t('newProject', 'githubIntegration')}</h3>
               <p className="text-sm text-[var(--text-muted)] mb-4">{t('newProject', 'githubIntegrationDesc')}</p>
               <div className="flex flex-col items-center gap-2">
                 {appInstallations?.configured && (
                   <>
                     <button
+                      type="button"
                       onClick={() => githubAppInstall.mutate()}
                       disabled={githubAppInstall.isPending}
                       className="btn btn-primary"
@@ -417,6 +407,7 @@ export function ImportSourceStep({
                 )}
 
                 <button
+                  type="button"
                   onClick={() => githubConnect.mutate()}
                   disabled={githubConnect.isPending}
                   className={appInstallations?.configured ? 'btn btn-ghost text-sm mt-1' : 'btn btn-primary'}
@@ -439,9 +430,9 @@ export function ImportSourceStep({
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
-                <div className="flex items-center gap-2 text-sm text-[var(--status-success)] min-w-0">
-                  <Check className="w-4 h-4 shrink-0" />
+              <div className="dash-callout flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] min-w-0">
+                  <span className="dash-status-dot is-success" aria-hidden />
                   <span className="truncate">
                     {t('newProject', 'connectedAs')}{' '}
                     <span className="font-medium">@{githubStatus.username}</span>
@@ -452,7 +443,7 @@ export function ImportSourceStep({
                     type="button"
                     onClick={handleChangeGithubAccount}
                     disabled={githubBusy}
-                    className="btn btn-secondary text-xs py-1.5 px-3"
+                    className="btn btn-secondary btn-sm"
                   >
                     {githubBusy ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -465,7 +456,7 @@ export function ImportSourceStep({
                     type="button"
                     onClick={handleDisconnectGithub}
                     disabled={githubBusy}
-                    className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]"
+                    className="btn btn-ghost btn-sm"
                   >
                     <Unlink className="w-3.5 h-3.5" />
                     {t('newProject', 'disconnectGithub')}
@@ -475,21 +466,20 @@ export function ImportSourceStep({
 
               {githubStatus?.hasRepoScope === false && (
                 <div
-                  className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg text-sm"
-                  style={{ background: 'var(--dash-accent-bg)', border: '1px solid var(--glass-border-md)', color: 'var(--text-secondary)' }}
+                  className="dash-callout dash-callout-attention flex-col sm:flex-row sm:items-center gap-3 text-sm text-[var(--text-secondary)]"
                 >
                   <span className="flex-1">{t('newProject', 'githubOauthPublicOnly')}</span>
                   <div className="flex items-center gap-2 shrink-0">
-                    <button type="button" onClick={() => githubConnect.mutate()} disabled={githubConnect.isPending} className="btn btn-primary text-xs py-1.5 px-3">
+                    <button type="button" onClick={() => githubConnect.mutate()} disabled={githubConnect.isPending} className="btn btn-primary btn-sm">
                       {githubConnect.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                       {t('newProject', 'githubReconnect')}
                     </button>
                     {hasAppInstallation ? (
-                      <button type="button" onClick={() => setPreferOAuthPicker(false)} className="btn btn-ghost text-xs py-1.5 px-3">
+                      <button type="button" onClick={() => setPreferOAuthPicker(false)} className="btn btn-ghost btn-sm">
                         {t('newProject', 'githubAppUsePicker')}
                       </button>
                     ) : appInstallations?.configured ? (
-                      <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost text-xs py-1.5 px-3">
+                      <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost btn-sm">
                         {t('newProject', 'githubAppInstall')}
                       </button>
                     ) : null}
@@ -510,10 +500,10 @@ export function ImportSourceStep({
               </div>
 
               {/* Repository list */}
-              <div className="max-h-64 overflow-y-auto rounded-xl border border-[var(--border-subtle)]">
+              <div className="dash-rows max-h-72 !overflow-y-auto">
                 {isLoadingRepos ? (
                   <div className="p-6 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-purple)] mx-auto mb-2" />
+                    <Loader2 className="w-6 h-6 animate-spin text-[var(--text-muted)] mx-auto mb-2" />
                     <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'loadingRepos')}</p>
                   </div>
                 ) : filteredRepos.length === 0 ? (
@@ -525,31 +515,25 @@ export function ImportSourceStep({
                     {filteredRepos.map((repo) => (
                       <button
                         key={repo.id}
+                        type="button"
+                        aria-pressed={selectedRepo?.id === repo.id}
                         onClick={() => setSelectedRepo(repo)}
-                        className={`w-full p-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--bg-tertiary)] transition-colors ${
-                          selectedRepo?.id === repo.id ? 'bg-[var(--accent-purple)]/10' : ''
+                        className={`w-full px-4 py-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--hover-overlay)] transition-colors ${
+                          selectedRepo?.id === repo.id ? 'bg-[var(--hover-overlay-lg)]' : ''
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                            selectedRepo?.id === repo.id
-                              ? 'bg-[var(--text-primary)] text-[var(--on-accent)]'
-                              : 'bg-[var(--bg-tertiary)]'
-                          }`}>
-                            {repo.private ? (
-                              <EyeOff className="w-4 h-4" />
-                            ) : (
-                              <Globe className="w-4 h-4" />
-                            )}
-                          </div>
+                          <span className="text-[var(--text-muted)] shrink-0" title={repo.private ? 'Private' : 'Public'}>
+                            {repo.private ? <EyeOff className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
+                          </span>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium truncate">{repo.name}</div>
-                            <div className="text-xs text-[var(--text-muted)] truncate">
+                            <div className="text-sm font-medium text-[var(--text-primary)] truncate">{repo.name}</div>
+                            <div className="terminal-text text-xs text-[var(--text-muted)] truncate">
                               {repo.description || repo.full_name}
                             </div>
                           </div>
                           {selectedRepo?.id === repo.id && (
-                            <Check className="w-5 h-5 text-[var(--accent-purple)]" />
+                            <Check className="w-4 h-4 text-[var(--text-primary)]" />
                           )}
                         </div>
                       </button>
@@ -557,9 +541,10 @@ export function ImportSourceStep({
                     {/* Load More Button */}
                     {hasMore && !repoSearchQuery && (
                       <button
+                        type="button"
                         onClick={() => loadMore()}
                         disabled={isLoadingMore}
-                        className="w-full p-3 text-center text-sm text-[var(--accent-purple)] hover:bg-[var(--bg-tertiary)] transition-colors border-t border-[var(--border-subtle)] disabled:opacity-50"
+                        className="w-full p-3 text-center text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay)] transition-colors border-t border-[var(--border-subtle)] disabled:opacity-50"
                       >
                         {isLoadingMore ? (
                           <span className="flex items-center justify-center gap-2">
@@ -578,7 +563,7 @@ export function ImportSourceStep({
               {/* Branch selection */}
               {selectedRepo && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'branch')}</label>
+                  <label className="dash-field-label !pt-0 mb-2">{t('newProject', 'branch')}</label>
                   {isLoadingBranches ? (
                     <div className="input flex items-center gap-2 text-[var(--text-muted)]">
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -588,7 +573,7 @@ export function ImportSourceStep({
                     <select
                       value={gitBranch}
                       onChange={(e) => setGitBranch(e.target.value)}
-                      className="input"
+                      className="select terminal-text"
                     >
                       {githubBranches?.map((branch) => (
                         <option key={branch.name} value={branch.name}>
@@ -602,15 +587,15 @@ export function ImportSourceStep({
 
               {/* Framework detection status */}
               {selectedRepo && gitBranch && (
-                <div className="p-3 rounded-lg bg-[var(--bg-tertiary)] text-sm">
+                <div className="dash-callout text-[13px]">
                   {isDetectingFramework ? (
                     <div className="flex items-center gap-2 text-[var(--text-muted)]">
                       <Loader2 className="w-4 h-4 animate-spin" />
                       {t('newProject', 'detectingFramework')}
                     </div>
                   ) : frameworkDetection?.framework ? (
-                    <div className="flex items-center gap-2 text-[var(--status-success)]">
-                      <Zap className="w-4 h-4" />
+                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                      <span className="dash-status-dot is-success" aria-hidden />
                       {t('newProject', 'detectedFramework')}: <span className="font-medium">{frameworkDetection.framework}</span>
                     </div>
                   ) : (
@@ -627,18 +612,18 @@ export function ImportSourceStep({
       )}
 
       {sourceType === 'gitlab' && (
-        <div className="pt-4 border-t border-[var(--border-subtle)]">
+        <div className="pt-5 border-t border-[var(--border-subtle)]">
           {isLoadingGitLabStatus ? (
-            <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
-              <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto mb-3" />
+            <div className="dash-empty is-bare">
+              <Loader2 className="w-5 h-5 animate-spin text-[var(--text-muted)] mx-auto mb-3" />
               <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'checkingGitLab')}</p>
             </div>
           ) : !gitlabStatus?.connected ? (
-            <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] text-center">
-              <Globe className="w-12 h-12 text-orange-500 mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">{t('newProject', 'gitlabIntegration')}</h3>
+            <div className="dash-empty is-bare">
+                            <h3 className="dash-empty-title mb-1.5">{t('newProject', 'gitlabIntegration')}</h3>
               <p className="text-sm text-[var(--text-muted)] mb-4">{t('newProject', 'gitlabIntegrationDesc')}</p>
               <button
+                type="button"
                 onClick={() => gitlabConnect.mutate()}
                 disabled={gitlabConnect.isPending}
                 className="btn btn-primary"
@@ -655,9 +640,9 @@ export function ImportSourceStep({
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
-                <div className="flex items-center gap-2 text-sm text-[var(--status-success)] min-w-0">
-                  <Check className="w-4 h-4 shrink-0" />
+              <div className="dash-callout flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] min-w-0">
+                  <span className="dash-status-dot is-success" aria-hidden />
                   <span className="truncate">
                     {t('newProject', 'connectedAs')}{' '}
                     <span className="font-medium">@{gitlabStatus.username}</span>
@@ -668,7 +653,7 @@ export function ImportSourceStep({
                     type="button"
                     onClick={handleChangeGitlabAccount}
                     disabled={gitlabBusy}
-                    className="btn btn-secondary text-xs py-1.5 px-3"
+                    className="btn btn-secondary btn-sm"
                   >
                     {gitlabBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                     {t('newProject', 'changeGitlabAccount')}
@@ -677,7 +662,7 @@ export function ImportSourceStep({
                     type="button"
                     onClick={handleDisconnectGitlab}
                     disabled={gitlabBusy}
-                    className="btn btn-ghost text-xs py-1.5 px-3 text-[var(--text-secondary)]"
+                    className="btn btn-ghost btn-sm"
                   >
                     <Unlink className="w-3.5 h-3.5" />
                     {t('newProject', 'disconnectGitlab')}
@@ -696,10 +681,10 @@ export function ImportSourceStep({
                 <Globe className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
               </div>
 
-              <div className="max-h-64 overflow-y-auto rounded-xl border border-[var(--border-subtle)]">
+              <div className="dash-rows max-h-72 !overflow-y-auto">
                 {isLoadingGitLabRepos ? (
                   <div className="p-6 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-orange-500 mx-auto mb-2" />
+                    <Loader2 className="w-6 h-6 animate-spin text-[var(--text-muted)] mx-auto mb-2" />
                     <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'loadingRepos')}</p>
                   </div>
                 ) : filteredGitlabRepos.length === 0 ? (
@@ -711,29 +696,32 @@ export function ImportSourceStep({
                     {filteredGitlabRepos.map((repo) => (
                       <button
                         key={repo.id}
+                        type="button"
+                        aria-pressed={selectedGitLabRepo?.id === repo.id}
                         onClick={() => setSelectedGitLabRepo(repo)}
-                        className={`w-full p-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--bg-tertiary)] transition-colors ${
-                          selectedGitLabRepo?.id === repo.id ? 'bg-orange-500/10' : ''
+                        className={`w-full px-4 py-3 text-left border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--hover-overlay)] transition-colors ${
+                          selectedGitLabRepo?.id === repo.id ? 'bg-[var(--hover-overlay-lg)]' : ''
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium truncate">{repo.full_name}</div>
-                            <div className="text-xs text-[var(--text-muted)] truncate">
+                            <div className="text-sm font-medium text-[var(--text-primary)] truncate">{repo.full_name}</div>
+                            <div className="terminal-text text-xs text-[var(--text-muted)] truncate">
                               {repo.description || repo.html_url}
                             </div>
                           </div>
                           {selectedGitLabRepo?.id === repo.id && (
-                            <Check className="w-5 h-5 text-orange-500" />
+                            <Check className="w-4 h-4 text-[var(--text-primary)]" />
                           )}
                         </div>
                       </button>
                     ))}
                     {gitlabHasMore && !gitlabRepoSearchQuery && (
                       <button
+                        type="button"
                         onClick={() => gitlabLoadMore()}
                         disabled={isLoadingMoreGitlab}
-                        className="w-full p-3 text-center text-sm text-orange-500 hover:bg-[var(--bg-tertiary)] transition-colors border-t border-[var(--border-subtle)]"
+                        className="w-full p-3 text-center text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay)] transition-colors border-t border-[var(--border-subtle)]"
                       >
                         {isLoadingMoreGitlab ? (
                           <span className="flex items-center justify-center gap-2">
@@ -751,7 +739,7 @@ export function ImportSourceStep({
 
               {selectedGitLabRepo && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">{t('newProject', 'branch')}</label>
+                  <label className="dash-field-label !pt-0 mb-2">{t('newProject', 'branch')}</label>
                   {isLoadingGitLabBranches ? (
                     <div className="input flex items-center gap-2 text-[var(--text-muted)]">
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -761,7 +749,7 @@ export function ImportSourceStep({
                     <select
                       value={gitBranch}
                       onChange={(e) => setGitBranch(e.target.value)}
-                      className="input"
+                      className="select terminal-text"
                     >
                       {gitlabBranches?.map((branch) => (
                         <option key={branch.name} value={branch.name}>
@@ -774,15 +762,15 @@ export function ImportSourceStep({
               )}
 
               {selectedGitLabRepo && gitBranch && (
-                <div className="p-3 rounded-lg bg-[var(--bg-tertiary)] text-sm">
+                <div className="dash-callout text-[13px]">
                   {isDetectingFramework ? (
                     <div className="flex items-center gap-2 text-[var(--text-muted)]">
                       <Loader2 className="w-4 h-4 animate-spin" />
                       {t('newProject', 'detectingFramework')}
                     </div>
                   ) : frameworkDetection?.framework ? (
-                    <div className="flex items-center gap-2 text-[var(--status-success)]">
-                      <Zap className="w-4 h-4" />
+                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                      <span className="dash-status-dot is-success" aria-hidden />
                       {t('newProject', 'detectedFramework')}:{' '}
                       <span className="font-medium">{frameworkDetection.framework}</span>
                     </div>
@@ -801,8 +789,8 @@ export function ImportSourceStep({
 
       {/* Template Selection */}
       {sourceType === 'template' && (
-        <div className="pt-4 border-t border-[var(--border-subtle)]">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="pt-5 border-t border-[var(--border-subtle)]">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2" role="radiogroup" aria-label={t('newProject', 'template')}>
             {FRAMEWORKS.slice(0, 6).map((fw) => (
               <button
                 key={fw.id}
@@ -810,19 +798,19 @@ export function ImportSourceStep({
                   setSelectedFramework(fw.id);
                   setProjectName(`my-${fw.id}-app`);
                 }}
-                className={`p-4 rounded-xl border transition-all duration-200 ${
-                  selectedFramework === fw.id
-                    ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5'
-                    : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
-                }`}
+                type="button"
+                role="radio"
+                aria-checked={selectedFramework === fw.id}
+                className="dash-option !items-center"
               >
-                <span className="text-3xl mb-2 block">{fw.icon}</span>
-                <span className="font-medium">{fw.name}</span>
+                <span className="text-xl leading-none" aria-hidden>{fw.icon}</span>
+                <span className="text-sm font-medium text-[var(--text-primary)]">{fw.name}</span>
               </button>
             ))}
           </div>
         </div>
       )}
     </div>
+    </SettingsSection>
   );
 }

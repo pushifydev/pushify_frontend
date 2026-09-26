@@ -8,9 +8,6 @@ export { ApiKeysTab } from './ApiKeysTab';
 export { RegistriesTab } from './RegistriesTab';
 export { SsoTab } from './SsoTab';
 
-// Shared layout primitives
-export { SettingsCard, SettingsField, SettingsRow } from './SettingsCard';
-
 // Modal Components
 export { Modal, ModalActions, AlertBox } from './Modal';
 export { TwoFactorSetupModal } from './TwoFactorSetupModal';

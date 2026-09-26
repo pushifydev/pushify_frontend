@@ -63,9 +63,9 @@ export function BackupListPanel({
   const latestVerification = latest?.metadata?.verification;
 
   return (
-    <section className="dash-rows">
-      <div className="dash-row flex items-center justify-between gap-3">
-        <h2 className="dash-panel-title">{t('databases', 'backupHistory')}</h2>
+    <section className="min-w-0 space-y-3" aria-labelledby="db-backups-title">
+      <div className="flex items-center justify-between gap-3">
+        <h2 id="db-backups-title" className="dash-section-label">{t('databases', 'backupHistory')}</h2>
         <button
           type="button"
           onClick={onCreate}
@@ -78,9 +78,10 @@ export function BackupListPanel({
 
       {!loading && backups.length > 0 && (
         <div
-          className="dash-row flex items-start gap-2.5 py-2.5! text-xs"
-          style={{ background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
+          className="dash-callout text-xs"
+          style={{ color: 'var(--text-secondary)' }}
           title={t('databases', 'backupVerifyHint')}
+          role="note"
         >
           {latestVerification?.status === 'verified' ? (
             <ShieldCheck className="w-3.5 h-3.5 mt-px shrink-0" style={{ color: 'var(--status-success)' }} aria-hidden="true" />
@@ -104,6 +105,7 @@ export function BackupListPanel({
         </div>
       )}
 
+      <div className="dash-rows">
       {loading ? (
         <div className="dash-row py-10! flex justify-center" role="status" aria-live="polite">
           <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
@@ -120,9 +122,10 @@ export function BackupListPanel({
           const verification = backup.metadata?.verification;
           const tone = backupTone(backup.status);
           return (
-            <div key={backup.id} className="dash-row flex items-center gap-3 py-2.5!">
+            <div key={backup.id} className="dash-row flex items-center gap-3">
+              <span className={`dash-status-dot ${tone === 'neutral' ? '' : `is-${tone}`}`} aria-hidden="true" />
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium tabular-nums" style={{ color: 'var(--text-primary)' }}>
+                <p className="text-sm font-medium tabular-nums" style={{ color: 'var(--text-primary)' }}>
                   {new Date(backup.startedAt).toLocaleString()}
                 </p>
                 <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -199,6 +202,7 @@ export function BackupListPanel({
           );
         })
       )}
+      </div>
     </section>
   );
 }

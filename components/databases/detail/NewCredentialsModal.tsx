@@ -3,6 +3,7 @@
 import { RefreshCw } from 'lucide-react';
 import type { DatabaseCredentials } from '@/lib/api';
 import { formatMessage } from '@/lib/i18n/format-message';
+import { Modal } from '@/components/Modal';
 import { CopyField } from './CopyField';
 import { type T } from './_shared';
 
@@ -27,26 +28,13 @@ export function NewCredentialsModal({
   t: T;
 }) {
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
-      style={{ background: 'color-mix(in srgb, var(--bg-primary) 70%, transparent)' }}
+    <Modal
+      isOpen
+      onClose={onClose}
+      title={t('databases', 'newCredentialsTitle')}
+      description={t('databases', 'passwordResetSuccess')}
     >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="new-credentials-title"
-        className="w-full max-w-md rounded-[14px] p-6 space-y-4"
-        style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)' }}
-      >
-        <div>
-          <h3 id="new-credentials-title" className="text-lg flex items-center gap-2">
-            <span className="dash-status-dot is-success" aria-hidden="true" />
-            {t('databases', 'newCredentialsTitle')}
-          </h3>
-          <p className="text-[13px] mt-1.5 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            {t('databases', 'passwordResetSuccess')}
-          </p>
-        </div>
+      <div className="space-y-4">
         <CopyField
           label={t('databases', 'password')}
           value={credentials.password}
@@ -80,10 +68,12 @@ export function NewCredentialsModal({
             </button>
           </div>
         )}
-        <button type="button" onClick={onClose} className="btn btn-primary w-full">
+      </div>
+      <div className="dash-modal-footer">
+        <button type="button" onClick={onClose} className="btn btn-primary">
           {t('common', 'close')}
         </button>
       </div>
-    </div>
+    </Modal>
   );
 }

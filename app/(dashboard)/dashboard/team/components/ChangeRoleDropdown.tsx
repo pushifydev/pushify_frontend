@@ -56,8 +56,6 @@ export function ChangeRoleDropdown({ memberId, currentRole, disabled }: ChangeRo
     { value: 'viewer', label: t('team', 'viewer'), desc: t('team', 'viewerDesc') },
   ];
 
-  const CurrentIcon = roleIcons[currentRole];
-
   return (
     <div className="relative" ref={dropdownRef}>
       <button
@@ -66,9 +64,9 @@ export function ChangeRoleDropdown({ memberId, currentRole, disabled }: ChangeRo
         disabled={disabled || updateRole.isPending}
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        className="flex items-center gap-2 h-8 px-3 rounded-full bg-[var(--bg-secondary)] hover:border-[var(--border-default)] border border-[var(--border-subtle)] text-[13px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label={`${t('team', 'role')}: ${t('team', currentRole)}`}
+        className="btn btn-secondary btn-sm disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <CurrentIcon className="w-3.5 h-3.5 text-[var(--text-muted)]" />
         <span className="capitalize">{t('team', currentRole)}</span>
         <ChevronDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
       </button>

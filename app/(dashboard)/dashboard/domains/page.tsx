@@ -2,17 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  ArrowRightLeft,
-  Check,
-  CreditCard,
-  Globe,
-  Loader2,
-  RefreshCw,
-  Search,
-  Settings2,
-  X,
-} from 'lucide-react';
+import { ArrowRightLeft, CreditCard, Loader2, Search, Settings2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useDomainSalesConfig,
@@ -33,6 +23,8 @@ import { Modal, ModalActions } from '@/components/Modal';
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/EmptyState';
 import { ListSkeleton } from '@/components/Skeletons';
+import { MetaLabel, PageHeader, RowList } from '@/components/dashboard/PageKit';
+import { SettingsSwitch } from '@/components/dashboard/SettingsParts';
 
 const TERM_OPTIONS = [1, 2, 3, 5];
 
@@ -175,217 +167,207 @@ export default function DomainsPage() {
       day: 'numeric',
     });
 
-  return (
-    <div className="p-6 max-w-5xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2.5">
-          <Globe className="w-6 h-6" style={{ color: 'var(--accent-cyan)' }} />
-          {t('domainSales', 'title')}
-        </h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-1">{t('domainSales', 'subtitle')}</p>
-      </div>
+  const statusLabel = (d: (typeof purchased)[number]) =>
+    d.status === 'expired'
+      ? t('domainSales', 'expired')
+      : d.status === 'transfer_pending'
+        ? t('domainSales', 'transferPendingChip')
+        : d.status === 'transfer_failed'
+          ? t('domainSales', 'transferFailedChip')
+          : `${t('domainSales', 'expires')} ${dateFmt(d.expiresAt)}`;
+  const statusDot = (status: string) =>
+    status === 'active'
+      ? 'is-success'
+      : status === 'transfer_pending'
+        ? 'is-warning'
+        : status === 'expired' || status === 'transfer_failed'
+          ? 'is-error'
+          : '';
 
-      {!configLoading && config && !config.enabled ? (
-        <div className="p-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-center">
-          <Globe className="w-8 h-8 mx-auto mb-3 text-[var(--text-muted)]" />
-          <h2 className="font-semibold mb-1">{t('domainSales', 'notEnabled')}</h2>
-          <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto">
-            {t('domainSales', 'notEnabledDesc')}
-          </p>
-        </div>
+  const salesOff = !configLoading && config && !config.enabled;
+
+  return (
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
+      <PageHeader
+        title={t('domainSales', 'title')}
+        description={t('domainSales', 'subtitle')}
+        meta={
+          purchased.length > 0
+            ? [
+                <MetaLabel key="count">
+                  {purchased.length} {t('domainSales', 'purchasedTitle')}
+                </MetaLabel>,
+              ]
+            : undefined
+        }
+        actions={
+          salesOff ? undefined : (
+            <button type="button" onClick={() => setTransferOpen(true)} className="btn btn-secondary justify-center">
+              <ArrowRightLeft className="w-4 h-4" />
+              {t('domainSales', 'transferBtn')}
+            </button>
+          )
+        }
+      />
+
+      {salesOff ? (
+        <EmptyState
+          label={t('domainSales', 'title')}
+          title={t('domainSales', 'notEnabled')}
+          description={t('domainSales', 'notEnabledDesc')}
+        />
       ) : (
         <>
           {/* Search */}
-          <form onSubmit={submitSearch} className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={t('domainSales', 'searchPlaceholder')}
-                className="w-full h-11 pl-9 pr-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)]"
-                style={{ fontFamily: 'var(--font-mono)' }}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={input.trim().length < 2 || search.isFetching}
-              className="btn btn-primary h-11 px-5 disabled:opacity-50"
-            >
-              {search.isFetching ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                t('domainSales', 'searchButton')
-              )}
-            </button>
-          </form>
-          <p className="text-xs text-[var(--text-muted)] -mt-6">{t('domainSales', 'walletNote')}</p>
-
-          {/* Results */}
-          {query && (
-            <div className="space-y-2">
-              {search.isFetching && (
-                <div className="p-4 text-sm text-[var(--text-secondary)] flex items-center gap-2">
+          <section className="dash-rows" aria-label={t('domainSales', 'searchButton')}>
+            <form onSubmit={submitSearch} className="dash-toolbar py-2.5! border-b-0!">
+              <div className="relative flex-1 min-w-0">
+                <Search
+                  className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none"
+                  aria-hidden
+                />
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={t('domainSales', 'searchPlaceholder')}
+                  aria-label={t('domainSales', 'searchPlaceholder')}
+                  className="input pl-9! terminal-text"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={input.trim().length < 2 || search.isFetching}
+                className="btn btn-primary shrink-0"
+              >
+                {search.isFetching ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  {t('domainSales', 'searching')}
-                </div>
-              )}
-              {search.error && !search.isFetching && (
-                <div className="p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-sm text-red-400">
-                  {search.error.message}
-                </div>
-              )}
-              {!search.isFetching &&
-                (search.data ?? []).map((r) => (
-                  <div
-                    key={r.domainName}
-                    className="flex items-center gap-3 p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
-                  >
-                    {r.available ? (
-                      <Check className="w-4 h-4 shrink-0 text-emerald-500" />
-                    ) : (
-                      <X className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
-                    )}
-                    <span
-                      className="text-sm font-semibold truncate"
-                      style={{ fontFamily: 'var(--font-mono)' }}
-                    >
-                      {r.domainName}
-                    </span>
-                    <span
-                      className="text-[11px] px-2 py-0.5 rounded-full shrink-0"
-                      style={
-                        r.available
-                          ? {
-                              color: '#10b981',
-                              background: 'rgba(16,185,129,0.10)',
-                              border: '1px solid rgba(16,185,129,0.25)',
-                            }
-                          : {
-                              color: 'var(--text-muted)',
-                              background: 'var(--bg-tertiary)',
-                              border: '1px solid var(--border-subtle)',
-                            }
-                      }
-                    >
-                      {r.premium
-                        ? t('domainSales', 'premium')
-                        : r.available
-                          ? t('domainSales', 'available')
-                          : t('domainSales', 'unavailable')}
-                    </span>
-                    {r.available && r.priceCents !== null && (
-                      <>
-                        <span className="ml-auto text-sm font-semibold shrink-0">
-                          {formatUsd(r.priceCents)}
-                          <span className="text-xs text-[var(--text-muted)] font-normal">
-                            {t('domainSales', 'perYear')}
-                          </span>
+                ) : (
+                  t('domainSales', 'searchButton')
+                )}
+              </button>
+            </form>
+
+            {query && search.isFetching && (
+              <div className="dash-row flex items-center gap-2 text-sm text-[var(--text-secondary)]" role="status">
+                <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
+                {t('domainSales', 'searching')}
+              </div>
+            )}
+            {query && search.error && !search.isFetching && (
+              <div className="dash-row text-sm text-[var(--status-error)]" role="alert">
+                {search.error.message}
+              </div>
+            )}
+            {query &&
+              !search.isFetching &&
+              (search.data ?? []).map((r) => (
+                <div key={r.domainName} className="dash-row flex items-center gap-3 min-w-0">
+                  <span className={`dash-status-dot ${r.available ? 'is-success' : ''}`} aria-hidden />
+                  <span className="terminal-text text-sm font-medium truncate text-[var(--text-primary)]">
+                    {r.domainName}
+                  </span>
+                  <span className={`badge shrink-0 ${r.available ? 'badge-success' : 'badge-neutral'}`}>
+                    {r.premium
+                      ? t('domainSales', 'premium')
+                      : r.available
+                        ? t('domainSales', 'available')
+                        : t('domainSales', 'unavailable')}
+                  </span>
+                  {r.available && r.priceCents !== null && (
+                    <>
+                      <span className="ml-auto terminal-text text-sm shrink-0 text-[var(--text-primary)]">
+                        {formatUsd(r.priceCents)}
+                        <span className="text-xs text-[var(--text-muted)]">{t('domainSales', 'perYear')}</span>
+                      </span>
+                      {r.renewalPriceCents !== null && r.renewalPriceCents !== r.priceCents && (
+                        <span className="hidden sm:inline text-xs text-[var(--text-muted)] shrink-0">
+                          {t('domainSales', 'renewsAt')} {formatUsd(r.renewalPriceCents)}
                         </span>
-                        {r.renewalPriceCents !== null && r.renewalPriceCents !== r.priceCents && (
-                          <span className="hidden sm:inline text-[11px] text-[var(--text-muted)] shrink-0">
-                            {t('domainSales', 'renewsAt')} {formatUsd(r.renewalPriceCents)}
-                          </span>
-                        )}
-                        <button
-                          onClick={() => {
-                            setBuyTarget(r);
-                            setSelectedProject('');
-                            setYears(1);
-                          }}
-                          className="btn btn-primary h-8 text-xs shrink-0"
-                        >
-                          {t('domainSales', 'buy')}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                ))}
-            </div>
-          )}
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBuyTarget(r);
+                          setSelectedProject('');
+                          setYears(1);
+                        }}
+                        className="btn btn-primary btn-sm shrink-0"
+                      >
+                        {t('domainSales', 'buy')}
+                      </button>
+                    </>
+                  )}
+                </div>
+              ))}
+          </section>
+          <p className="text-xs text-[var(--text-muted)] -mt-3">{t('domainSales', 'walletNote')}</p>
 
           {/* Purchased domains */}
-          <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">{t('domainSales', 'purchasedTitle')}</h2>
-              <button
-                onClick={() => setTransferOpen(true)}
-                className="btn btn-ghost h-8 text-xs"
-                style={{ border: '1px solid var(--border-subtle)' }}
-              >
-                <ArrowRightLeft className="w-3.5 h-3.5" />
-                {t('domainSales', 'transferBtn')}
-              </button>
-            </div>
-            {purchasedLoading ? (
-              <ListSkeleton rows={2} height={52} />
-            ) : purchased.length === 0 ? (
-              <EmptyState variant="bare" label={t('domainSales', 'title')} title={t('domainSales', 'purchasedEmpty')} />
-            ) : (
-              <div className="space-y-2">
-                {purchased.map((d) => {
-                  const project = projects.find((p) => p.id === d.projectId);
-                  return (
-                    <div
-                      key={d.id}
-                      className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]"
-                    >
-                      <span
-                        className="text-sm font-semibold"
-                        style={{ fontFamily: 'var(--font-mono)' }}
-                      >
-                        {d.domainName}
-                      </span>
-                      <span className="text-xs text-[var(--text-muted)]">
-                        {d.status === 'expired'
-                          ? t('domainSales', 'expired')
-                          : d.status === 'transfer_pending'
-                            ? t('domainSales', 'transferPendingChip')
-                            : d.status === 'transfer_failed'
-                              ? t('domainSales', 'transferFailedChip')
-                              : `${t('domainSales', 'expires')}: ${dateFmt(d.expiresAt)}`}
-                      </span>
+          {purchasedLoading ? (
+            <ListSkeleton rows={2} height={52} />
+          ) : purchased.length === 0 ? (
+            <EmptyState label={t('domainSales', 'purchasedTitle')} title={t('domainSales', 'purchasedEmpty')} />
+          ) : (
+            <RowList label={t('domainSales', 'purchasedTitle')}>
+              {purchased.map((d) => {
+                const project = projects.find((p) => p.id === d.projectId);
+                const switchId = `autorenew-${d.id}`;
+                return (
+                  <div key={d.id} className="dash-row flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <span className={`dash-status-dot ${statusDot(d.status)}`} aria-hidden />
+                      <div className="min-w-0">
+                        {d.status === 'active' ? (
+                          <Link
+                            href={`/dashboard/domains/${encodeURIComponent(d.domainName)}`}
+                            className="terminal-text text-sm font-medium truncate block text-[var(--text-primary)] hover:underline underline-offset-4"
+                          >
+                            {d.domainName}
+                          </Link>
+                        ) : (
+                          <span className="terminal-text text-sm font-medium truncate block">{d.domainName}</span>
+                        )}
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-[var(--text-muted)]">
+                          <span>{statusLabel(d)}</span>
+                          {project && (
+                            <span>
+                              {t('domainSales', 'attachedProject')}: {project.name}
+                            </span>
+                          )}
+                          {d.lastRenewalError && (
+                            <span className="text-[var(--status-warning)]">{t('domainSales', 'renewalIssue')}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0 pl-[1.125rem] sm:pl-0">
+                      <label htmlFor={switchId} className="text-xs text-[var(--text-muted)] cursor-pointer select-none">
+                        {t('domainSales', 'autoRenew')}
+                      </label>
+                      <SettingsSwitch
+                        id={switchId}
+                        checked={d.autoRenew}
+                        disabled={autoRenewMutation.isPending || d.status === 'expired'}
+                        onChange={(enabled) =>
+                          autoRenewMutation.mutate({ domainName: d.domainName, enabled })
+                        }
+                        label={`${t('domainSales', 'autoRenew')} · ${d.domainName}`}
+                      />
                       {d.status === 'active' && (
                         <Link
                           href={`/dashboard/domains/${encodeURIComponent(d.domainName)}`}
-                          className="btn btn-ghost h-7 text-xs"
+                          className="btn btn-secondary btn-sm"
                         >
                           <Settings2 className="w-3.5 h-3.5" />
                           {t('domainSales', 'manage')}
                         </Link>
                       )}
-                      {project && (
-                        <span className="text-xs text-[var(--text-muted)]">
-                          {t('domainSales', 'attachedProject')}: {project.name}
-                        </span>
-                      )}
-                      {d.lastRenewalError && (
-                        <span className="text-[11px] text-amber-500">
-                          {t('domainSales', 'renewalIssue')}
-                        </span>
-                      )}
-                      <label className="sm:ml-auto flex items-center gap-2 text-xs cursor-pointer select-none">
-                        <RefreshCw className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                        {t('domainSales', 'autoRenew')}
-                        <input
-                          type="checkbox"
-                          checked={d.autoRenew}
-                          disabled={autoRenewMutation.isPending || d.status === 'expired'}
-                          onChange={(e) =>
-                            autoRenewMutation.mutate({
-                              domainName: d.domainName,
-                              enabled: e.target.checked,
-                            })
-                          }
-                          className="accent-[var(--accent-cyan)]"
-                        />
-                      </label>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                  </div>
+                );
+              })}
+            </RowList>
+          )}
         </>
       )}
 
@@ -397,7 +379,7 @@ export default function DomainsPage() {
           title={t('domainSales', 'transferTitle')}
           description={t('domainSales', 'transferDesc')}
         >
-            <label className="block text-xs text-[var(--text-muted)] mb-1.5">
+            <label htmlFor="transfer-domain" className="dash-section-label block mb-1.5">
               {t('domainSales', 'transferDomainLabel')}
             </label>
             <div className="flex gap-2 mb-4">
@@ -405,14 +387,13 @@ export default function DomainsPage() {
                 value={transferDomain}
                 onChange={(e) => setTransferDomain(e.target.value)}
                 placeholder="mydomain.com"
-                className="flex-1 h-10 px-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)]"
-                style={{ fontFamily: 'var(--font-mono)' }}
+                id="transfer-domain"
+                className="input flex-1 min-w-0 terminal-text"
               />
               <button
                 onClick={requestTransferQuote}
                 disabled={transferQuoteMutation.isPending || transferDomain.trim().length < 4}
-                className="btn btn-ghost h-10 text-xs disabled:opacity-50"
-                style={{ border: '1px solid var(--border-subtle)' }}
+                className="btn btn-secondary shrink-0"
               >
                 {transferQuoteMutation.isPending ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -424,23 +405,21 @@ export default function DomainsPage() {
 
             {transferQuote && (
               <>
-                <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
-                  <span className="text-xs text-[var(--text-muted)]">
+                <div className="dash-kv mb-4">
+                  <span>
                     {t('domainSales', 'transferPriceLabel')} · {transferQuote.domainName}
                   </span>
-                  <span className="text-base font-bold" style={{ fontFamily: 'var(--font-mono)' }}>
-                    {formatUsd(transferQuote.retailCents)}
-                  </span>
+                  <span>{formatUsd(transferQuote.retailCents)}</span>
                 </div>
 
-                <label className="block text-xs text-[var(--text-muted)] mb-1.5">
+                <label htmlFor="transfer-auth" className="dash-section-label block mb-1.5">
                   {t('domainSales', 'transferAuthLabel')}
                 </label>
                 <input
+                  id="transfer-auth"
                   value={transferAuth}
                   onChange={(e) => setTransferAuth(e.target.value)}
-                  className="w-full h-10 px-3 mb-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)]"
-                  style={{ fontFamily: 'var(--font-mono)' }}
+                  className="input terminal-text mb-3"
                 />
               </>
             )}
@@ -453,7 +432,7 @@ export default function DomainsPage() {
               <button
                 onClick={() => setTransferOpen(false)}
                 disabled={startTransferMutation.isPending}
-                className="btn btn-ghost h-10"
+                className="btn btn-ghost"
               >
                 {t('common', 'cancel')}
               </button>
@@ -462,7 +441,7 @@ export default function DomainsPage() {
                 disabled={
                   startTransferMutation.isPending || !transferQuote || !transferAuth.trim()
                 }
-                className="btn btn-primary h-10 disabled:opacity-60"
+                className="btn btn-primary"
               >
                 {startTransferMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -483,46 +462,32 @@ export default function DomainsPage() {
           title={t('domainSales', 'confirmTitle')}
           description={t('domainSales', 'confirmBody')}
         >
-            <p className="text-sm mb-4 font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>
-              {buyTarget.domainName}
-            </p>
+            <p className="terminal-text text-sm mb-4 font-medium">{buyTarget.domainName}</p>
 
-            <label className="block text-xs text-[var(--text-muted)] mb-1.5">
+            <span id="domain-term-label" className="dash-section-label block mb-1.5">
               {t('domainSales', 'termLabel')}
-            </label>
-            <div className="flex gap-2 mb-4">
+            </span>
+            <div className="dash-segmented mb-4" role="group" aria-labelledby="domain-term-label">
               {TERM_OPTIONS.map((n) => (
                 <button
                   key={n}
                   type="button"
                   onClick={() => setYears(n)}
-                  className="flex-1 h-9 rounded-lg text-xs font-medium transition-colors"
-                  style={
-                    years === n
-                      ? {
-                          background: 'var(--accent-cyan)',
-                          color: '#fff',
-                          border: '1px solid var(--accent-cyan)',
-                        }
-                      : {
-                          background: 'var(--bg-tertiary)',
-                          color: 'var(--text-secondary)',
-                          border: '1px solid var(--border-subtle)',
-                        }
-                  }
+                  aria-pressed={years === n}
                 >
                   {yearsLabel(n)}
                 </button>
               ))}
             </div>
 
-            <label className="block text-xs text-[var(--text-muted)] mb-1.5">
+            <label htmlFor="domain-attach" className="dash-section-label block mb-1.5">
               {t('domainSales', 'confirmAttach')}
             </label>
             <select
+              id="domain-attach"
               value={selectedProject}
               onChange={(e) => setSelectedProject(e.target.value)}
-              className="w-full h-10 px-3 mb-4 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none"
+              className="select mb-4"
             >
               <option value="">{t('domainSales', 'confirmNoProject')}</option>
               {projects.map((p) => (
@@ -532,28 +497,25 @@ export default function DomainsPage() {
               ))}
             </select>
 
-            <div className="flex items-center justify-between mb-5 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
-              <span className="text-xs text-[var(--text-muted)]">
+            <div className="dash-kv mb-1">
+              <span>
                 {t('domainSales', 'totalLabel')} · {yearsLabel(years)}
               </span>
-              <span className="text-base font-bold" style={{ fontFamily: 'var(--font-mono)' }}>
-                {formatUsd(totalCents)}
-              </span>
+              <span className="text-sm!">{formatUsd(totalCents)}</span>
             </div>
 
             <ModalActions>
               <button
                 onClick={() => setBuyTarget(null)}
                 disabled={purchaseMutation.isPending || checkoutMutation.isPending}
-                className="btn btn-ghost h-10"
+                className="btn btn-ghost"
               >
                 {t('common', 'cancel')}
               </button>
               <button
                 onClick={payWithCard}
                 disabled={purchaseMutation.isPending || checkoutMutation.isPending}
-                className="btn btn-ghost h-10 disabled:opacity-60"
-                style={{ border: '1px solid var(--border-subtle)' }}
+                className="btn btn-secondary"
               >
                 {checkoutMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -565,7 +527,7 @@ export default function DomainsPage() {
               <button
                 onClick={confirmPurchase}
                 disabled={purchaseMutation.isPending || checkoutMutation.isPending}
-                className="btn btn-primary h-10 disabled:opacity-60"
+                className="btn btn-primary"
               >
                 {purchaseMutation.isPending ? (
                   <>

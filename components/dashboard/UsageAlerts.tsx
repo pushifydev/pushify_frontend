@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { AlertTriangle, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { cn } from '@/lib/utils';
 import type { UsageWarning, UsageWarningKey } from '@/lib/api/services/dashboard.service';
@@ -50,17 +50,10 @@ export function UsageAlerts({ warnings, className, variant = 'default' }: UsageA
   const inSheet = variant === 'sheet';
 
   return (
-    <aside className={cn('min-w-0', inSheet ? '' : 'dash-panel dash-callout-attention p-4 sm:p-5 h-full', className)} aria-labelledby="dash-usage-alerts-title">
+    <aside className={cn('min-w-0', inSheet ? '' : 'dash-card p-4 sm:p-5 h-full', className)} aria-labelledby="dash-usage-alerts-title">
       <div className="dash-panel-header !mb-3">
         <div className="dash-panel-title" id="dash-usage-alerts-title">
-          {inSheet ? (
-            <span className="dash-section-label !mb-0">{t('dashboard', 'usageAlertsTitle')}</span>
-          ) : (
-            <>
-              <AlertTriangle className="w-4 h-4 text-[var(--text-secondary)]" />
-              <span>{t('dashboard', 'usageAlertsTitle')}</span>
-            </>
-          )}
+          <span className="dash-section-label !mb-0">{t('dashboard', 'usageAlertsTitle')}</span>
         </div>
         <Link
           href="/dashboard/billing/plans"
@@ -84,7 +77,7 @@ export function UsageAlerts({ warnings, className, variant = 'default' }: UsageA
               <span className="text-xs font-medium text-[var(--text-secondary)] truncate">
                 {t('dashboard', usageLabelKeys[w.key])}
               </span>
-              <span className="dash-mono-caption text-[var(--text-secondary)] tabular-nums shrink-0">
+              <span className="terminal-text text-xs text-[var(--text-secondary)] tabular-nums shrink-0">
                 {w.used}/{w.limit}
               </span>
             </div>

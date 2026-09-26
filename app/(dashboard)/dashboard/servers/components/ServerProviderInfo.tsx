@@ -60,7 +60,7 @@ export function ServerNetworkSection({
 
   return (
     <ServerDetailSection icon={Network} title={t('servers', 'network')}>
-      <div className="space-y-3">
+      <div>
         {server.ipv4 && (
           <CopyField
             label="IPv4"
@@ -91,32 +91,11 @@ export function ServerNetworkSection({
       </div>
 
       {providerData.traffic && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-          <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
-            <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-              {t('servers', 'trafficIngoing')}
-            </p>
-            <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              {formatBytes(providerData.traffic.ingoing)}
-            </p>
-          </div>
-          <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
-            <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-              {t('servers', 'trafficOutgoing')}
-            </p>
-            <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              {formatBytes(providerData.traffic.outgoing)}
-            </p>
-          </div>
-          <div className="rounded-lg p-4" style={{ background: 'var(--bg-tertiary)' }}>
-            <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--text-muted)' }}>
-              {t('servers', 'trafficIncluded')}
-            </p>
-            <p className="font-mono text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              {formatBytes(providerData.traffic.included)}
-            </p>
-          </div>
-        </div>
+        <>
+          <InfoRow label={t('servers', 'trafficIngoing')} value={formatBytes(providerData.traffic.ingoing)} />
+          <InfoRow label={t('servers', 'trafficOutgoing')} value={formatBytes(providerData.traffic.outgoing)} />
+          <InfoRow label={t('servers', 'trafficIncluded')} value={formatBytes(providerData.traffic.included)} />
+        </>
       )}
     </ServerDetailSection>
   );
@@ -135,7 +114,7 @@ export function ServerProviderPanels({
     <>
       {providerData.serverType && (
         <ServerDetailSection icon={Box} title={t('servers', 'serverType')}>
-          <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+          <div>
             <InfoRow label={t('servers', 'fieldType')} value={providerData.serverType.name} />
             <InfoRow label={t('servers', 'fieldDescription')} value={providerData.serverType.description} />
             <InfoRow
@@ -153,7 +132,7 @@ export function ServerProviderPanels({
 
       {providerData.image && (
         <ServerDetailSection icon={Globe} title={t('servers', 'image')}>
-          <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+          <div>
             <InfoRow label={t('servers', 'fieldType')} value={providerData.image.name} />
             <InfoRow label={t('servers', 'fieldDescription')} value={providerData.image.description} />
             <InfoRow
@@ -167,7 +146,7 @@ export function ServerProviderPanels({
 
       {providerData.location && (
         <ServerDetailSection icon={MapPin} title={t('servers', 'location')}>
-          <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+          <div>
             <InfoRow label={t('servers', 'city')} value={providerData.location.city} />
             <InfoRow label={t('servers', 'country')} value={providerData.location.country} />
             {providerData.datacenter && (
@@ -179,8 +158,8 @@ export function ServerProviderPanels({
       )}
 
       {providerData.protection && (
-        <ServerDetailSection icon={Shield} iconColor="var(--accent-purple)" title={t('servers', 'protection')}>
-          <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+        <ServerDetailSection icon={Shield} title={t('servers', 'protection')}>
+          <div>
             <InfoRow
               label={t('servers', 'deleteProtection')}
               value={
@@ -202,7 +181,7 @@ export function ServerProviderPanels({
       )}
 
       <ServerDetailSection icon={Clock} title={t('servers', 'timestamps')}>
-        <div className="rounded-lg px-4" style={{ background: 'var(--bg-tertiary)' }}>
+        <div>
           <InfoRow label={t('servers', 'createdAtLabel')} value={formatShortDate(server.createdAt)} />
           <InfoRow label={t('servers', 'updatedAtLabel')} value={formatShortDate(server.updatedAt)} />
           {server.lastSeenAt && (

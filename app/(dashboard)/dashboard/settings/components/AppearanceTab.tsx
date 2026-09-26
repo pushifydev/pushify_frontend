@@ -9,7 +9,7 @@ import { useLocaleStore } from '@/stores/locale';
 import { useLocale } from '@/components/LocaleProvider';
 import { type SupportedLocale } from '@/lib/i18n';
 import { showSuccessToast } from '@/lib/toast-i18n';
-import { SettingsCard } from './SettingsCard';
+import { SettingsField, SettingsSection } from '@/components/dashboard/SettingsParts';
 
 const themes: { id: Theme; labelKey: 'light' | 'dark' | 'system' }[] = [
   { id: 'light', labelKey: 'light' },
@@ -17,9 +17,9 @@ const themes: { id: Theme; labelKey: 'light' | 'dark' | 'system' }[] = [
   { id: 'system', labelKey: 'system' },
 ];
 
-const languages: { id: SupportedLocale; labelKey: 'english' | 'turkish'; flag: string }[] = [
-  { id: 'en', labelKey: 'english', flag: '🇺🇸' },
-  { id: 'tr', labelKey: 'turkish', flag: '🇹🇷' },
+const languages: { id: SupportedLocale; labelKey: 'english' | 'turkish' }[] = [
+  { id: 'en', labelKey: 'english' },
+  { id: 'tr', labelKey: 'turkish' },
 ];
 
 const PREVIEW_COLORS = {
@@ -80,89 +80,61 @@ export function AppearanceTab() {
   };
 
   return (
-    <div className="space-y-5 animate-in fade-in duration-200">
-      <div>
-        <h2 className="text-xl font-semibold mb-1">{t('appearance', 'title')}</h2>
-        <p className="text-[var(--text-secondary)]">{t('appearance', 'description')}</p>
-      </div>
-
-      {/* Theme Selection — each option previews itself */}
-      <SettingsCard title={t('appearance', 'theme')} description={t('appearance', 'themeDesc')}>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl">
+    <SettingsSection
+      id="appearance"
+      title={t('appearance', 'title')}
+      description={t('appearance', 'description')}
+    >
+      {/* Theme — each option previews itself */}
+      <SettingsField label={t('appearance', 'theme')} hint={t('appearance', 'themeDesc')}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3" role="group" aria-label={t('appearance', 'theme')}>
           {themes.map((themeOption) => {
             const isActive = theme === themeOption.id;
             return (
               <button
                 key={themeOption.id}
+                type="button"
                 onClick={() => handleThemeChange(themeOption.id)}
                 aria-pressed={isActive}
-                className={`group relative rounded-xl border overflow-hidden text-left transition-colors ${
+                className={`group relative rounded-[10px] border overflow-hidden text-left transition-colors ${
                   isActive
-                    ? 'border-[var(--accent-cyan)]'
+                    ? 'border-[var(--text-primary)]'
                     : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
                 }`}
               >
-                <div className="aspect-[16/10]">
+                <div className="aspect-[16/10]" aria-hidden>
                   <ThemePreview theme={themeOption.id} />
                 </div>
-                <div className="flex items-center justify-between px-3 py-2.5 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
+                <div className="flex items-center justify-between gap-2 px-3 h-9 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
                   <span
-                    className={`text-sm ${
-                      isActive
-                        ? 'font-medium text-[var(--text-primary)]'
-                        : 'text-[var(--text-secondary)]'
+                    className={`text-[13px] ${
+                      isActive ? 'font-medium text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'
                     }`}
                   >
                     {t('appearance', themeOption.labelKey)}
                   </span>
-                  {isActive && (
-                    <span className="flex items-center justify-center w-4.5 h-4.5 rounded-full bg-[var(--accent-cyan)]">
-                      <Check className="w-3 h-3 text-white" />
-                    </span>
-                  )}
+                  {isActive && <Check className="w-3.5 h-3.5 text-[var(--text-primary)]" aria-hidden />}
                 </div>
               </button>
             );
           })}
         </div>
-      </SettingsCard>
+      </SettingsField>
 
-      {/* Language Selection */}
-      <SettingsCard title={t('appearance', 'language')} description={t('appearance', 'languageDesc')}>
-        <div className="flex flex-col sm:flex-row gap-2.5 max-w-xl">
-          {languages.map((lang) => {
-            const isActive = locale === lang.id;
-            return (
-              <button
-                key={lang.id}
-                onClick={() => handleLanguageChange(lang.id)}
-                aria-pressed={isActive}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl border flex-1 transition-colors ${
-                  isActive
-                    ? 'border-[var(--accent-cyan)] bg-[var(--bg-tertiary)]/40'
-                    : 'border-[var(--border-subtle)] hover:border-[var(--border-default)] hover:bg-[var(--bg-tertiary)]/40'
-                }`}
-              >
-                <span className="text-xl">{lang.flag}</span>
-                <span
-                  className={`text-sm ${
-                    isActive
-                      ? 'font-medium text-[var(--text-primary)]'
-                      : 'text-[var(--text-secondary)]'
-                  }`}
-                >
-                  {t('appearance', lang.labelKey)}
-                </span>
-                {isActive && (
-                  <span className="ml-auto flex items-center justify-center w-4.5 h-4.5 rounded-full bg-[var(--accent-cyan)]">
-                    <Check className="w-3 h-3 text-white" />
-                  </span>
-                )}
-              </button>
-            );
-          })}
+      <SettingsField label={t('appearance', 'language')} hint={t('appearance', 'languageDesc')}>
+        <div className="dash-segmented" role="group" aria-label={t('appearance', 'language')}>
+          {languages.map((lang) => (
+            <button
+              key={lang.id}
+              type="button"
+              onClick={() => handleLanguageChange(lang.id)}
+              aria-pressed={locale === lang.id}
+            >
+              {t('appearance', lang.labelKey)}
+            </button>
+          ))}
         </div>
-      </SettingsCard>
-    </div>
+      </SettingsField>
+    </SettingsSection>
   );
 }

@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Boxes, Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { useTranslation, useRegistries, useCreateRegistry, useDeleteRegistry } from '@/hooks';
 import { formatTimeAgo } from '@/lib/formatters';
-import { SkeletonKeyValueRow } from '@/components/Skeleton';
-import { SettingsCard } from './SettingsCard';
+import { EmptyState } from '@/components/EmptyState';
+import { SettingsSection } from '@/components/dashboard/SettingsParts';
 import { Modal, ModalActions, AlertBox } from './Modal';
 
 /**
@@ -46,84 +46,87 @@ export function RegistriesTab() {
   };
 
   return (
-    <div className="space-y-5 animate-in fade-in duration-200">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <h2 className="text-xl font-semibold mb-1">{t('registries', 'title')}</h2>
-          <p className="text-[var(--text-secondary)]">{t('registries', 'description')}</p>
-        </div>
-        <button onClick={() => setShowAdd(true)} className="btn btn-primary justify-center w-full sm:w-auto shrink-0">
-          <Plus className="w-4 h-4" />
-          {t('registries', 'add')}
-        </button>
-      </div>
-
-      <SettingsCard title={t('registries', 'listTitle')}>
-        <div className="-mx-5 -mb-5 md:-mx-6 border-t border-[var(--border-subtle)]">
-          {isLoading ? (
-            <div className="divide-y divide-[var(--border-subtle)]">
-              {[1, 2].map((i) => (
-                <SkeletonKeyValueRow key={i} />
-              ))}
-            </div>
-          ) : registries.length === 0 ? (
-            <div className="p-12 bg-[var(--bg-secondary)] text-center">
-              <div className="inline-flex p-4 rounded-2xl bg-[var(--bg-tertiary)] mb-4">
-                <Boxes className="w-8 h-8 text-[var(--text-muted)]" />
+    <>
+      <SettingsSection
+        id="registries"
+        title={t('registries', 'title')}
+        description={t('registries', 'description')}
+        action={
+          <button onClick={() => setShowAdd(true)} className="btn btn-primary btn-sm">
+            <Plus className="w-4 h-4" />
+            {t('registries', 'add')}
+          </button>
+        }
+      >
+        {isLoading ? (
+          <div className="dash-settings-rows" aria-busy>
+            {[1, 2].map((i) => (
+              <div key={i} className="dash-row space-y-2" aria-hidden>
+                <div className="dash-skeleton h-3.5 w-32 rounded" />
+                <div className="dash-skeleton h-3 w-56 rounded" />
               </div>
-              <h3 className="text-lg font-medium mb-2">{t('registries', 'empty')}</h3>
-              <p className="text-[var(--text-secondary)] mb-6 max-w-sm mx-auto">
-                {t('registries', 'emptyDesc')}
-              </p>
-              <button onClick={() => setShowAdd(true)} className="btn btn-primary">
-                <Plus className="w-4 h-4" />
-                {t('registries', 'add')}
-              </button>
-            </div>
-          ) : (
-            <div className="divide-y divide-[var(--border-subtle)]">
-              {registries.map((registry) => (
-                <div key={registry.id} className="px-5 md:px-6 py-4 flex items-center justify-between gap-4">
+            ))}
+          </div>
+        ) : registries.length === 0 ? (
+          <EmptyState
+            variant="bare"
+            title={t('registries', 'empty')}
+            description={t('registries', 'emptyDesc')}
+            action={{
+              label: t('registries', 'add'),
+              onClick: () => setShowAdd(true),
+              icon: <Plus className="w-4 h-4" />,
+            }}
+          />
+        ) : (
+          <div className="dash-settings-rows">
+            {registries.map((registry) => (
+              <div key={registry.id} className="dash-row flex items-center justify-between gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  <span className={`dash-status-dot mt-[7px] ${registry.lastUsedAt ? 'is-success' : ''}`} aria-hidden />
                   <div className="min-w-0">
-                    <p className="font-medium truncate">{registry.name}</p>
-                    <p className="text-sm text-[var(--text-secondary)] truncate terminal-text">
-                      {registry.registry} · {registry.username}
-                    </p>
-                    <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                      {registry.lastUsedAt
-                        ? t('registries', 'lastUsed').replace('{time}', formatTimeAgo(registry.lastUsedAt, t))
-                        : t('registries', 'neverUsed')}
-                    </p>
+                    <p className="text-sm font-medium text-[var(--text-primary)] truncate">{registry.name}</p>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 terminal-text text-xs text-[var(--text-muted)] min-w-0">
+                      <span className="text-[var(--text-secondary)] truncate">
+                        {registry.registry} · {registry.username}
+                      </span>
+                      <span>
+                        {registry.lastUsedAt
+                          ? t('registries', 'lastUsed').replace('{time}', formatTimeAgo(registry.lastUsedAt, t))
+                          : t('registries', 'neverUsed')}
+                      </span>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => setToDelete(registry.id)}
-                    className="btn btn-ghost h-8 text-xs shrink-0"
-                    aria-label={t('registries', 'remove')}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </SettingsCard>
+                <button
+                  onClick={() => setToDelete(registry.id)}
+                  className="dash-icon-action w-8! h-8!"
+                  aria-label={`${t('registries', 'remove')} ${registry.name}`}
+                  title={t('registries', 'remove')}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </SettingsSection>
 
       <Modal isOpen={showAdd} onClose={close} title={t('registries', 'add')}>
         <div className="space-y-4">
           {error && <AlertBox variant="error">{error}</AlertBox>}
           <label className="block">
-            <span className="text-sm font-medium">{t('registries', 'host')}</span>
+            <span className="dash-field-label pt-0!">{t('registries', 'host')}</span>
             <input
               value={form.registry}
               onChange={(e) => setForm({ ...form, registry: e.target.value })}
               placeholder="ghcr.io"
               className="input w-full mt-1 terminal-text"
             />
-            <span className="text-xs text-[var(--text-muted)]">{t('registries', 'hostHint')}</span>
+            <span className="dash-field-hint block mt-1.5!">{t('registries', 'hostHint')}</span>
           </label>
           <label className="block">
-            <span className="text-sm font-medium">{t('registries', 'username')}</span>
+            <span className="dash-field-label pt-0!">{t('registries', 'username')}</span>
             <input
               value={form.username}
               onChange={(e) => setForm({ ...form, username: e.target.value })}
@@ -132,7 +135,7 @@ export function RegistriesTab() {
             />
           </label>
           <label className="block">
-            <span className="text-sm font-medium">{t('registries', 'password')}</span>
+            <span className="dash-field-label pt-0!">{t('registries', 'password')}</span>
             <input
               type="password"
               value={form.password}
@@ -140,10 +143,10 @@ export function RegistriesTab() {
               autoComplete="new-password"
               className="input w-full mt-1 terminal-text"
             />
-            <span className="text-xs text-[var(--text-muted)]">{t('registries', 'passwordHint')}</span>
+            <span className="dash-field-hint block mt-1.5!">{t('registries', 'passwordHint')}</span>
           </label>
           <label className="block">
-            <span className="text-sm font-medium">{t('registries', 'name')}</span>
+            <span className="dash-field-label pt-0!">{t('registries', 'name')}</span>
             <input
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -184,6 +187,6 @@ export function RegistriesTab() {
           </button>
         </ModalActions>
       </Modal>
-    </div>
+    </>
   );
 }

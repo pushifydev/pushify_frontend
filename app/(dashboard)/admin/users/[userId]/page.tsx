@@ -1,18 +1,13 @@
 'use client';
 
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import {
-  ChevronLeft, Building2, Folder, Server, Database, MonitorSmartphone, History,
-  LogIn, UserPlus, KeyRound, ShieldAlert, Activity, Rocket,
-} from 'lucide-react';
 import { useTranslation, useAdminUser } from '@/hooks';
 import type { AdminTimelineEntry } from '@/lib/api';
-import { STATUS_COLORS, ROLE_COLORS, getStatusColor } from '@/lib/constants';
-import { Skeleton } from '@/components/Skeleton';
+import { getStatusColor } from '@/lib/constants';
+import { MetaLabel, PageHeader } from '@/components/dashboard/PageKit';
 import {
-  AdminPanel, AdminError, Avatar, EmptyRow,
-  rowBorder, authEventLabel, authEventColor, methodLabel, planBadgeClass, describeUserAgent,
+  AdminPanel, AdminError, EmptyRow, LoadingRows,
+  authEventLabel, authEventDot, methodLabel, planBadgeClass, describeUserAgent,
   timeOfDay, dayKey, dayLabel, shortDate, relative,
 } from '../../shared';
 
@@ -21,7 +16,16 @@ export default function AdminUserPage() {
   const { userId } = useParams<{ userId: string }>();
   const { data, isLoading, error, refetch } = useAdminUser(userId);
 
-  if (error) return <AdminError error={error} onRetry={() => refetch()} />;
+  const back = { href: '/admin/users', label: t('admin', 'navUsers') };
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <PageHeader back={back} crumb="…" title={t('admin', 'title')} />
+        <AdminError error={error} onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   const lastSeen = data
     ? [
@@ -32,71 +36,61 @@ export default function AdminUserPage() {
     : null;
 
   return (
-    <div className="space-y-4">
-      <Link href="/admin/users" className="dash-link inline-flex items-center gap-1">
-        <ChevronLeft className="w-3.5 h-3.5" />
-        {t('admin', 'backToUsers')}
-      </Link>
-
+    <div className="space-y-8 min-w-0">
       {/* Who */}
-      <section className="dash-panel">
+      <div className="space-y-4">
         {isLoading || !data ? (
-          <div className="flex items-center gap-4">
-            <Skeleton className="w-12 h-12 rounded-full" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-5 w-48 rounded" />
-              <Skeleton className="h-3.5 w-64 rounded" />
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-            <Avatar name={data.user.name} avatarUrl={data.user.avatarUrl} size={48} />
-            <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-semibold tracking-tight truncate">{data.user.name}</h2>
-              <p className="text-sm truncate" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-                {data.user.email}
-              </p>
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                <Chip>{t('admin', 'joined')} {shortDate(data.user.createdAt)}</Chip>
-                <Chip>{methodLabel(t, data.user.signupMethod)}</Chip>
-                <Chip tone={data.user.emailVerified ? STATUS_COLORS.success : STATUS_COLORS.warning}>
-                  {data.user.emailVerified ? t('admin', 'emailVerified') : t('admin', 'emailUnverified')}
-                </Chip>
-                <Chip tone={data.user.twoFactorEnabled ? STATUS_COLORS.success : undefined}>
-                  {data.user.twoFactorEnabled ? t('admin', 'twoFactorOn') : t('admin', 'twoFactorOff')}
-                </Chip>
-                <Chip>{data.user.hasPassword ? t('admin', 'passwordSet') : t('admin', 'oauthOnly')}</Chip>
+          <>
+            <div className="dash-skeleton h-4 w-40 rounded" aria-hidden />
+            <div className="flex items-center gap-4" aria-busy>
+              <div className="flex-1 space-y-2">
+                <div className="dash-skeleton h-7 w-56 rounded" aria-hidden />
+                <div className="dash-skeleton h-3.5 w-72 rounded" aria-hidden />
               </div>
             </div>
-            <div className="text-left sm:text-right shrink-0">
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{t('admin', 'lastSeen')}</p>
-              <p className="text-sm font-medium">{relative(lastSeen, t)}</p>
-            </div>
-          </div>
+          </>
+        ) : (
+          <PageHeader
+            back={back}
+            title={data.user.name}
+            badge={
+              <span className={`badge ${data.user.emailVerified ? 'badge-success' : 'badge-warning'}`}>
+                {data.user.emailVerified ? t('admin', 'emailVerified') : t('admin', 'emailUnverified')}
+              </span>
+            }
+            description={<span className="terminal-text text-[13px]">{data.user.email}</span>}
+            meta={[
+              <MetaLabel key="method">{methodLabel(t, data.user.signupMethod)}</MetaLabel>,
+              <MetaLabel key="2fa">{data.user.twoFactorEnabled ? t('admin', 'twoFactorOn') : t('admin', 'twoFactorOff')}</MetaLabel>,
+              <MetaLabel key="pw">{data.user.hasPassword ? t('admin', 'passwordSet') : t('admin', 'oauthOnly')}</MetaLabel>,
+              <span key="joined">{t('admin', 'joined')} {shortDate(data.user.createdAt)}</span>,
+              <span key="seen">{t('admin', 'lastSeen')} {relative(lastSeen, t)}</span>,
+            ]}
+          />
         )}
-      </section>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start min-w-0">
         {/* What they own */}
-        <div className="lg:col-span-2 space-y-4">
-          <AdminPanel title={t('admin', 'orgsTitle')} icon={<Building2 className="w-4 h-4" />} meta={data?.organizations.length}>
-            {!data ? <Loading /> : data.organizations.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
+        <div className="lg:col-span-2 space-y-8 min-w-0">
+          <AdminPanel title={t('admin', 'orgsTitle')} meta={data?.organizations.length}>
+            {!data ? <LoadingRows /> : data.organizations.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
               <ul>
-                {data.organizations.map((o, idx) => (
-                  <li key={o.id} className="px-5 py-3" style={rowBorder(idx)}>
+                {data.organizations.map((o) => (
+                  <li key={o.id} className="dash-row">
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm font-medium truncate">{o.name}</span>
-                      <span className={planBadgeClass(o.plan)}>{o.plan}</span>
+                      <span className="text-sm font-medium text-[var(--text-primary)] truncate">{o.name}</span>
+                      <span className={`${planBadgeClass(o.plan)} shrink-0`}>{o.plan}</span>
                     </div>
-                    <p className="text-xs mt-1 flex flex-wrap gap-x-2" style={{ color: 'var(--text-muted)' }}>
-                      <span style={{ color: ROLE_COLORS[o.role] }}>{o.role}</span>
-                      <span>· {o.memberCount} {t('admin', 'members')}</span>
-                      <span>· {o.projectCount} {t('admin', 'projects').toLowerCase()}</span>
+                    <p className="terminal-text text-xs mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[var(--text-muted)]">
+                      <span className="text-[var(--text-secondary)]">{o.role}</span>
+                      <span>{o.memberCount} {t('admin', 'members')}</span>
+                      <span>{o.projectCount} {t('admin', 'projects').toLowerCase()}</span>
                       {o.infraWalletBalanceCents !== 0 && (
-                        <span>· {t('admin', 'wallet')} ${(o.infraWalletBalanceCents / 100).toFixed(2)}</span>
+                        <span>{t('admin', 'wallet')} ${(o.infraWalletBalanceCents / 100).toFixed(2)}</span>
                       )}
                       {o.billingStatus !== 'active' && (
-                        <span style={{ color: STATUS_COLORS.error }}>· {o.billingStatus}</span>
+                        <span className="text-[var(--status-error)]">{o.billingStatus}</span>
                       )}
                     </p>
                   </li>
@@ -105,18 +99,18 @@ export default function AdminUserPage() {
             )}
           </AdminPanel>
 
-          <AdminPanel title={t('admin', 'projectsTitle')} icon={<Folder className="w-4 h-4" />} meta={data?.projects.length}>
-            {!data ? <Loading /> : data.projects.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
+          <AdminPanel title={t('admin', 'projectsTitle')} meta={data?.projects.length}>
+            {!data ? <LoadingRows /> : data.projects.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
               <ul>
-                {data.projects.map((p, idx) => (
-                  <li key={p.id} className="px-5 py-3 flex items-center gap-3" style={rowBorder(idx)}>
-                    <span className="dash-status-dot shrink-0" style={{ background: getStatusColor(p.lastDeploymentStatus ?? p.status) }} />
+                {data.projects.map((p) => (
+                  <li key={p.id} className="dash-row flex items-start gap-3">
+                    <span className="dash-status-dot mt-[7px]" style={{ background: getStatusColor(p.lastDeploymentStatus ?? p.status) }} aria-hidden />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-3">
-                        <span className="text-sm font-medium truncate">{p.name}</span>
-                        <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>{shortDate(p.createdAt)}</span>
+                        <span className="text-sm font-medium text-[var(--text-primary)] truncate">{p.name}</span>
+                        <span className="terminal-text text-xs shrink-0 text-[var(--text-muted)]">{shortDate(p.createdAt)}</span>
                       </div>
-                      <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
+                      <p className="terminal-text text-xs mt-1 truncate text-[var(--text-muted)]">
                         {p.deploymentCount} {t('admin', 'deploys')}
                         {p.lastDeploymentAt
                           ? ` · ${t('admin', 'lastDeploy')} ${p.lastDeploymentStatus} ${relative(p.lastDeploymentAt, t)}`
@@ -130,20 +124,20 @@ export default function AdminUserPage() {
             )}
           </AdminPanel>
 
-          <AdminPanel title={t('admin', 'serversTitle')} icon={<Server className="w-4 h-4" />} meta={data?.servers.length}>
-            {!data ? <Loading /> : data.servers.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
+          <AdminPanel title={t('admin', 'serversTitle')} meta={data?.servers.length}>
+            {!data ? <LoadingRows /> : data.servers.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
               <ul>
-                {data.servers.map((s, idx) => (
-                  <li key={s.id} className="px-5 py-3 flex items-center gap-3" style={rowBorder(idx)}>
-                    <span className="dash-status-dot shrink-0" style={{ background: getStatusColor(s.status) }} />
+                {data.servers.map((s) => (
+                  <li key={s.id} className="dash-row flex items-start gap-3">
+                    <span className="dash-status-dot mt-[7px]" style={{ background: getStatusColor(s.status) }} aria-hidden />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-3">
-                        <span className="text-sm font-medium truncate">{s.name}</span>
-                        <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>{shortDate(s.createdAt)}</span>
+                        <span className="text-sm font-medium text-[var(--text-primary)] truncate">{s.name}</span>
+                        <span className="terminal-text text-xs shrink-0 text-[var(--text-muted)]">{shortDate(s.createdAt)}</span>
                       </div>
-                      <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
+                      <p className="terminal-text text-xs mt-1 truncate text-[var(--text-muted)]">
                         {s.provider} · {s.isManaged ? t('admin', 'managed') : t('admin', 'byos')} · {s.region} · {s.size}
-                        {s.ipv4 && <span style={{ fontFamily: 'var(--font-mono)' }}> · {s.ipv4}</span>}
+                        {s.ipv4 && ` · ${s.ipv4}`}
                       </p>
                     </div>
                   </li>
@@ -152,15 +146,18 @@ export default function AdminUserPage() {
             )}
           </AdminPanel>
 
-          <AdminPanel title={t('admin', 'databasesTitle')} icon={<Database className="w-4 h-4" />} meta={data?.databases.length}>
-            {!data ? <Loading /> : data.databases.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
+          <AdminPanel title={t('admin', 'databasesTitle')} meta={data?.databases.length}>
+            {!data ? <LoadingRows /> : data.databases.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
               <ul>
-                {data.databases.map((d, idx) => (
-                  <li key={d.id} className="px-5 py-3 flex items-center gap-3" style={rowBorder(idx)}>
-                    <span className="dash-status-dot shrink-0" style={{ background: getStatusColor(d.status) }} />
+                {data.databases.map((d) => (
+                  <li key={d.id} className="dash-row flex items-center gap-3">
+                    <span className="dash-status-dot" style={{ background: getStatusColor(d.status) }} aria-hidden />
                     <div className="flex-1 min-w-0 flex items-center justify-between gap-3">
-                      <span className="text-sm font-medium truncate">{d.name} <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>{d.type}</span></span>
-                      <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>{shortDate(d.createdAt)}</span>
+                      <span className="text-sm font-medium text-[var(--text-primary)] truncate">
+                        {d.name}
+                        <span className="dash-section-label ml-2">{d.type}</span>
+                      </span>
+                      <span className="terminal-text text-xs shrink-0 text-[var(--text-muted)]">{shortDate(d.createdAt)}</span>
                     </div>
                   </li>
                 ))}
@@ -168,16 +165,16 @@ export default function AdminUserPage() {
             )}
           </AdminPanel>
 
-          <AdminPanel title={t('admin', 'sessionsTitle')} icon={<MonitorSmartphone className="w-4 h-4" />} meta={data?.sessions.length}>
-            {!data ? <Loading /> : data.sessions.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
+          <AdminPanel title={t('admin', 'sessionsTitle')} meta={data?.sessions.length}>
+            {!data ? <LoadingRows /> : data.sessions.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
               <ul>
-                {data.sessions.map((s, idx) => (
-                  <li key={s.id} className="px-5 py-3" style={rowBorder(idx)}>
+                {data.sessions.map((s) => (
+                  <li key={s.id} className="dash-row">
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm truncate">{describeUserAgent(s.userAgent) ?? '—'}</span>
-                      <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>{relative(s.createdAt, t)}</span>
+                      <span className="text-sm text-[var(--text-primary)] truncate">{describeUserAgent(s.userAgent) ?? '—'}</span>
+                      <span className="text-xs shrink-0 text-[var(--text-muted)]">{relative(s.createdAt, t)}</span>
                     </div>
-                    <p className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    <p className="terminal-text text-xs mt-1 text-[var(--text-muted)]">
                       {s.ipAddress ?? '—'} · {t('admin', 'expires')} {shortDate(s.expiresAt)}
                     </p>
                   </li>
@@ -188,13 +185,8 @@ export default function AdminUserPage() {
         </div>
 
         {/* What they did — one thread, newest first */}
-        <AdminPanel
-          title={t('admin', 'timelineTitle')}
-          icon={<History className="w-4 h-4" />}
-          meta={data?.timeline.length}
-          className="lg:col-span-3"
-        >
-          {!data ? <Loading rows={6} /> : data.timeline.length === 0 ? (
+        <AdminPanel title={t('admin', 'timelineTitle')} meta={data?.timeline.length} className="lg:col-span-3">
+          {!data ? <LoadingRows rows={6} /> : data.timeline.length === 0 ? (
             <EmptyRow>{t('admin', 'timelineEmpty')}</EmptyRow>
           ) : (
             <Timeline entries={data.timeline} />
@@ -206,26 +198,6 @@ export default function AdminUserPage() {
 }
 
 // ============ Pieces ============
-
-function Loading({ rows = 3 }: { rows?: number }) {
-  return (
-    <div className="px-5 py-4 space-y-3">
-      {[...Array(rows)].map((_, i) => <Skeleton key={i} className="h-8 w-full rounded" />)}
-    </div>
-  );
-}
-
-function Chip({ children, tone }: { children: React.ReactNode; tone?: string }) {
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs"
-      style={{ background: 'var(--bg-tertiary)', color: tone ?? 'var(--text-secondary)' }}
-    >
-      {tone && <span className="w-1.5 h-1.5 rounded-full" style={{ background: tone }} />}
-      {children}
-    </span>
-  );
-}
 
 function Timeline({ entries }: { entries: AdminTimelineEntry[] }) {
   const { t } = useTranslation();
@@ -239,86 +211,73 @@ function Timeline({ entries }: { entries: AdminTimelineEntry[] }) {
   }
 
   return (
-    <div className="px-5 py-2">
+    <div>
       {groups.map((group) => (
-        <div key={group.key}>
-          <div
-            className="sticky top-0 z-[1] py-2 text-xs font-medium"
-            style={{ background: 'var(--bg-secondary)', color: 'var(--text-muted)' }}
-          >
+        <section key={group.key} className="dash-row pt-0! pb-2!" aria-label={group.label}>
+          <h3 className="dash-section-label sticky top-0 z-[1] -mx-4 sm:-mx-5 px-4 sm:px-5 pt-3 pb-2 bg-[var(--bg-secondary)]">
             {group.label}
-          </div>
-          <ol className="ml-2.5 pl-6 relative" style={{ borderLeft: '1px solid var(--glass-border)' }}>
+          </h3>
+          <ol className="relative ml-[3px] border-l border-[var(--border-subtle)]">
             {group.entries.map((entry, i) => {
               const v = describe(entry, t);
               return (
-                <li key={`${entry.kind}-${entry.at}-${i}`} className="relative py-2">
+                <li key={`${entry.kind}-${entry.at}-${i}`} className="relative pl-5 py-2">
                   <span
-                    className="absolute -left-[35px] top-2 w-[22px] h-[22px] rounded-full flex items-center justify-center"
-                    style={{ background: 'var(--bg-secondary)', border: `1px solid ${v.color}`, color: v.color }}
+                    className={`dash-status-dot absolute -left-[3.5px] top-[15px] ${v.dot ?? ''}`}
+                    style={v.color ? { background: v.color } : undefined}
                     aria-hidden
-                  >
-                    {v.icon}
-                  </span>
+                  />
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-sm">
+                      <p className="text-[13px] text-[var(--text-primary)] break-words">
                         {v.title}
                         {v.status && (
-                          <span
-                            className="ml-2 text-xs px-1.5 py-0.5 rounded align-middle"
-                            style={{ background: `${v.color}18`, color: v.color, fontFamily: 'var(--font-mono)' }}
-                          >
-                            {v.status}
-                          </span>
+                          <span className={`badge ml-2 align-middle ${statusBadge(v.status)}`}>{v.status}</span>
                         )}
                       </p>
                       {v.detail && (
-                        <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>{v.detail}</p>
+                        <p className="terminal-text text-xs mt-1 truncate text-[var(--text-muted)]">{v.detail}</p>
                       )}
                       {v.error && (
-                        <p className="text-xs mt-1 break-words" style={{ color: STATUS_COLORS.error, fontFamily: 'var(--font-mono)' }}>
-                          {v.error}
-                        </p>
+                        <p className="terminal-text text-xs mt-1.5 break-words text-[var(--status-error)]">{v.error}</p>
                       )}
                     </div>
-                    <span className="text-xs shrink-0 tabular-nums" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    <time dateTime={entry.at} className="terminal-text text-xs shrink-0 tabular-nums text-[var(--text-muted)]">
                       {timeOfDay(entry.at)}
-                    </span>
+                    </time>
                   </div>
                 </li>
               );
             })}
           </ol>
-        </div>
+        </section>
       ))}
     </div>
   );
 }
 
+function statusBadge(status: string): string {
+  if (/fail|error|cancel/i.test(status)) return 'badge-error';
+  if (/success|ready|live|running|active|completed/i.test(status)) return 'badge-success';
+  if (/build|deploy|pending|queued|progress/i.test(status)) return 'badge-warning';
+  return 'badge-neutral';
+}
+
 type T = ReturnType<typeof useTranslation>['t'];
 
 function describe(entry: AdminTimelineEntry, t: T): {
-  icon: React.ReactNode;
-  color: string;
+  /** `.dash-status-dot` modifier; otherwise `color` (status hex) or the muted default. */
+  dot?: string;
+  color?: string;
   title: string;
   detail?: string;
   status?: string;
   error?: string | null;
 } {
-  const iconClass = 'w-3 h-3';
-  const neutral = 'var(--text-muted)';
-
   switch (entry.kind) {
-    case 'auth': {
-      const failed = entry.event === 'login_failed' || entry.event === 'two_factor_failed';
-      const icon = entry.event === 'register' ? <UserPlus className={iconClass} />
-        : failed ? <ShieldAlert className={iconClass} />
-        : entry.event === 'two_factor_required' ? <KeyRound className={iconClass} />
-        : <LogIn className={iconClass} />;
+    case 'auth':
       return {
-        icon,
-        color: authEventColor(entry.event),
+        dot: authEventDot(entry.event),
         title: authEventLabel(t, entry.event),
         detail: [
           `${t('admin', 'via')} ${methodLabel(t, entry.method)}`,
@@ -326,24 +285,19 @@ function describe(entry: AdminTimelineEntry, t: T): {
           describeUserAgent(entry.userAgent),
         ].filter(Boolean).join(' · '),
       };
-    }
     case 'activity':
       return {
-        icon: <Activity className={iconClass} />,
-        color: neutral,
         title: entry.description,
         detail: [entry.action, entry.projectName].filter(Boolean).join(' · '),
       };
     case 'project':
       return {
-        icon: <Folder className={iconClass} />,
-        color: STATUS_COLORS.purple,
+        dot: 'is-active',
         title: `${t('admin', 'tlProject')} · ${entry.name}`,
         detail: entry.gitProvider ?? undefined,
       };
     case 'deployment':
       return {
-        icon: <Rocket className={iconClass} />,
         color: getStatusColor(entry.status),
         title: `${t('admin', 'tlDeploy')} · ${entry.projectName}`,
         status: entry.status,
@@ -352,15 +306,13 @@ function describe(entry: AdminTimelineEntry, t: T): {
       };
     case 'server':
       return {
-        icon: <Server className={iconClass} />,
-        color: STATUS_COLORS.orange,
+        dot: 'is-active',
         title: `${entry.isManaged ? t('admin', 'tlServerManaged') : t('admin', 'tlServerByos')} · ${entry.name}`,
         detail: entry.provider,
       };
     case 'database':
       return {
-        icon: <Database className={iconClass} />,
-        color: STATUS_COLORS.cyan,
+        dot: 'is-active',
         title: `${t('admin', 'tlDatabase')} · ${entry.name}`,
         detail: entry.type,
       };

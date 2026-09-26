@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Boxes, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useServerContainers } from '@/hooks/useServers';
 import { formatMessage } from '@/lib/i18n/format-message';
@@ -23,14 +23,13 @@ export function ServerContainersPanel({ server }: { server: Server }) {
   const sorted = [...containers].sort((a, b) => b.memoryUsageMb - a.memoryUsageMb);
 
   return (
-    <section className="dash-panel p-4 sm:p-5 space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="dash-panel-title">
-          <Boxes className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
+    <section className="min-w-0" aria-labelledby={`server-containers-${server.id}`}>
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-2.5">
+        <h2 id={`server-containers-${server.id}`} className="dash-section-label">
           {t('servers', 'containersTitle')}
-        </h3>
+        </h2>
         {data && containers.length > 0 && (
-          <p className="dash-mono-caption tabular-nums">
+          <p className="terminal-text text-xs text-[var(--text-muted)] tabular-nums">
             {formatMessage(t('servers', 'containersTotals'), {
               cpu: String(data.totals.cpuPercent),
               mem: String(data.totals.memoryUsageMb),
@@ -39,28 +38,33 @@ export function ServerContainersPanel({ server }: { server: Server }) {
           </p>
         )}
       </div>
-
+      <div className="dash-rows">
       {isLoading && (
-        <div className="py-6 flex justify-center">
-          <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} />
+        <div className="dash-row flex justify-center">
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
         </div>
       )}
 
-      {error && <p className="text-sm text-[var(--status-error)]">{t('servers', 'containersFailed')}</p>}
+      {error && (
+        <div className="dash-row flex items-center gap-2.5 text-[13px] text-[var(--text-secondary)]" role="alert">
+          <span className="dash-status-dot is-error" aria-hidden="true" />
+          {t('servers', 'containersFailed')}
+        </div>
+      )}
 
       {data && containers.length === 0 && (
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{t('servers', 'containersEmpty')}</p>
+        <div className="dash-row text-[13px] text-[var(--text-muted)]">{t('servers', 'containersEmpty')}</div>
       )}
 
       {sorted.length > 0 && (
-        <ul className="-mx-4 sm:-mx-5 border-y border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)]">
+        <ul className="divide-y divide-[var(--border-subtle)]">
           {sorted.map((c) => (
-            <li key={c.projectId} className="px-4 sm:px-5 py-2.5 grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-4 gap-y-1.5 items-center">
+            <li key={c.projectId} className="dash-row grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-4 gap-y-1.5 items-center">
               <div className="min-w-0">
-                <Link href={`/dashboard/projects/${c.projectId}`} className="text-sm font-medium hover:underline underline-offset-4 truncate block rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]" style={{ color: 'var(--text-primary)' }}>
+                <Link href={`/dashboard/projects/${c.projectId}`} className="text-sm font-medium text-[var(--text-primary)] hover:underline underline-offset-2 truncate block rounded-sm">
                   {c.projectName}
                 </Link>
-                <p className="text-[11px] truncate" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                <p className="terminal-text text-[11px] truncate text-[var(--text-muted)] mt-0.5">
                   {c.containerName}
                   {c.status !== 'running' && <span className="ml-1.5 text-[var(--status-warning)]">· {c.status}</span>}
                 </p>
@@ -72,7 +76,8 @@ export function ServerContainersPanel({ server }: { server: Server }) {
         </ul>
       )}
 
-      <p className="dash-caption">{t('servers', 'containersHint')}</p>
+      </div>
+      <p className="text-xs text-[var(--text-muted)] mt-2">{t('servers', 'containersHint')}</p>
     </section>
   );
 }
@@ -80,7 +85,7 @@ export function ServerContainersPanel({ server }: { server: Server }) {
 function ShareBar({ label, value, share, className = '' }: { label: string; value: string; share: number; className?: string }) {
   return (
     <div className={`min-w-0 ${className}`}>
-      <div className="flex items-center justify-between text-[11px] mb-1 tabular-nums" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+      <div className="terminal-text flex items-center justify-between text-[11px] mb-1 tabular-nums text-[var(--text-muted)]">
         <span>{label} · {value}</span>
         <span>{share}%</span>
       </div>

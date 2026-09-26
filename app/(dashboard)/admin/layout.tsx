@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { notFound, usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Activity, KeyRound } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useTranslation } from '@/hooks';
+import { MetaLabel, PageHeader } from '@/components/dashboard/PageKit';
 
 /**
  * Operator-only area. The real gate is the API (ADMIN_EMAILS + 2FA → everyone else 404);
@@ -20,47 +20,45 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) return null;
   if (!user.isPlatformAdmin) notFound();
 
+  // A user's page is a detail screen: it brings its own header with a breadcrumb back.
+  const isDetail = /^\/admin\/users\/[^/]+/.test(pathname);
+
   const tabs = [
-    { href: '/admin', label: t('admin', 'navOverview'), icon: LayoutDashboard, exact: true },
-    { href: '/admin/users', label: t('admin', 'navUsers'), icon: Users },
-    { href: '/admin/activity', label: t('admin', 'navActivity'), icon: Activity },
-    { href: '/admin/signins', label: t('admin', 'navSignins'), icon: KeyRound },
+    { href: '/admin', label: t('admin', 'navOverview'), exact: true },
+    { href: '/admin/users', label: t('admin', 'navUsers') },
+    { href: '/admin/activity', label: t('admin', 'navActivity') },
+    { href: '/admin/signins', label: t('admin', 'navSignins') },
   ];
 
   return (
-    <div className="dash-page space-y-5 animate-slide-in">
-      <div>
-        <p className="dash-eyebrow mb-1">{t('admin', 'eyebrow')}</p>
-        <h1 className="text-xl font-semibold tracking-tight">{t('admin', 'title')}</h1>
-        <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-          {t('admin', 'subtitle')}
-        </p>
-      </div>
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
+      {!isDetail && (
+        <>
+          <PageHeader
+            title={t('admin', 'title')}
+            description={t('admin', 'subtitle')}
+            meta={[<MetaLabel key="scope">{t('admin', 'eyebrow')}</MetaLabel>, <span key="who" className="terminal-text text-xs truncate">{user.email}</span>]}
+          />
 
-      <nav className="flex items-center gap-1.5 overflow-x-auto pb-1" aria-label={t('admin', 'title')}>
-        {tabs.map((tab) => {
-          const active = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href);
-          const Icon = tab.icon;
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              aria-current={active ? 'page' : undefined}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all"
-              style={{
-                background: active ? 'var(--dash-accent-bg)' : 'var(--bg-secondary)',
-                color: active ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                border: active ? '1px solid var(--dash-accent-border-strong)' : '1px solid var(--glass-border)',
-              }}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {tab.label}
-            </Link>
-          );
-        })}
-      </nav>
+          <nav className="dash-tabs" aria-label={t('admin', 'title')}>
+            {tabs.map((tab) => {
+              const active = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href);
+              return (
+                <Link
+                  key={tab.href}
+                  href={tab.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={`dash-tab${active ? ' is-active' : ''}`}
+                >
+                  {tab.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </>
+      )}
 
-      {children}
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }

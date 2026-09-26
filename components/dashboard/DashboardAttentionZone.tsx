@@ -31,8 +31,8 @@ export function DashboardAttentionZone({ active }: DashboardAttentionZoneProps) 
 
   if (isLoading) {
     return (
-      <div className="mb-4 min-w-0">
-        <Skeleton className="h-9 w-full max-w-xs rounded-lg" />
+      <div className="min-w-0">
+        <Skeleton className="h-11 w-full rounded-[14px]" />
       </div>
     );
   }
@@ -46,20 +46,19 @@ export function DashboardAttentionZone({ active }: DashboardAttentionZoneProps) 
 
   return (
     <>
-      <div className="mb-4 min-w-0">
+      <div className="dash-rows">
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
-          className="group w-full flex items-center justify-between gap-3 py-2 text-left rounded-lg hover:bg-[var(--hover-overlay)] transition-colors"
+          className="group dash-row w-full flex items-center gap-3 text-left hover:bg-[var(--hover-overlay)] transition-colors"
+          aria-haspopup="dialog"
           aria-label={formatMessage(t('dashboard', 'attentionIssueCount'), { count: issueCount })}
         >
-          <span className="text-sm text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">
+          <span className="dash-status-dot is-warning" aria-hidden />
+          <span className="flex-1 min-w-0 text-sm font-medium text-[var(--text-primary)]">
             {t('dashboard', 'attentionZoneTitle')}
-            <span className="text-[var(--text-muted)] tabular-nums">
-              {' '}
-              · {issueCount}
-            </span>
           </span>
+          <span className="terminal-text text-xs text-[var(--text-muted)] tabular-nums">{issueCount}</span>
           <ChevronRight className="w-4 h-4 shrink-0 text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-colors" />
         </button>
       </div>
@@ -85,7 +84,7 @@ export function DashboardAttentionZone({ active }: DashboardAttentionZoneProps) 
                 </p>
                 <Link
                   href="/dashboard/billing"
-                  className="btn btn-primary text-xs w-fit inline-flex items-center gap-1 mt-1"
+                  className="btn btn-primary btn-sm w-fit mt-1"
                   onClick={() => setSheetOpen(false)}
                 >
                   {t('billing', 'infraTopUp')}

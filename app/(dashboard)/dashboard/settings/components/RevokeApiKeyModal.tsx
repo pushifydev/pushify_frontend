@@ -28,13 +28,13 @@ export function RevokeApiKeyModal({
       <p className="text-[var(--text-secondary)]">{t('apiKeys', 'revokeConfirm')}</p>
 
       <ModalActions>
-        <button onClick={onClose} className="btn btn-secondary">
+        <button onClick={onClose} className="btn btn-ghost">
           {t('common', 'cancel')}
         </button>
         <button
           onClick={handleRevoke}
           disabled={isPending}
-          className="btn bg-red-500 hover:bg-red-600 text-white"
+          className="btn btn-danger"
         >
           {isPending ? t('apiKeys', 'revoking') : t('apiKeys', 'revoke')}
         </button>

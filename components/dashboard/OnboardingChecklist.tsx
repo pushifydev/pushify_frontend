@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Check, Circle, Server, FolderKanban, Rocket, ArrowRight, X } from 'lucide-react';
+import { Check, ArrowRight, X } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useState, useEffect } from 'react';
 
@@ -19,10 +19,10 @@ interface OnboardingChecklistProps {
 
 type StepId = 'server' | 'project' | 'deploy';
 
-const STEPS: { id: StepId; href: string; icon: typeof Server }[] = [
-  { id: 'server', href: '/dashboard/servers/new', icon: Server },
-  { id: 'project', href: '/dashboard/projects/new', icon: FolderKanban },
-  { id: 'deploy', href: '/dashboard/projects/new', icon: Rocket },
+const STEPS: { id: StepId; href: string }[] = [
+  { id: 'server', href: '/dashboard/servers/new' },
+  { id: 'project', href: '/dashboard/projects/new' },
+  { id: 'deploy', href: '/dashboard/projects/new' },
 ];
 
 function stepDone(id: StepId, progress: OnboardingProgress): boolean {
@@ -63,40 +63,29 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
   };
 
   return (
-    <section
-      className="dash-panel !p-0 mb-5 sm:mb-6 overflow-hidden min-w-0"
-      aria-label={t('dashboard', 'onboardingTitle')}
-    >
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 px-4 sm:px-5 py-4 border-b border-[var(--border-subtle)]">
-        <div>
-          <p className="text-sm font-semibold">{t('dashboard', 'onboardingTitle')}</p>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
-            {t('dashboard', 'onboardingSubtitle')}
-          </p>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <span
-            className="text-xs font-medium tabular-nums"
-            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
-          >
+    <section className="min-w-0" aria-labelledby="dash-onboarding-title">
+      <div className="flex items-center justify-between gap-3 mb-2.5">
+        <h2 id="dash-onboarding-title" className="dash-section-label">
+          {t('dashboard', 'onboardingTitle')}
+          <span className="ml-2 tabular-nums opacity-70">
             {completedCount}/{STEPS.length}
           </span>
-          <button
-            type="button"
-            onClick={dismiss}
-            className="p-1.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors"
-            aria-label={t('dashboard', 'onboardingDismiss')}
-          >
-            <X className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-          </button>
-        </div>
+        </h2>
+        <button
+          type="button"
+          onClick={dismiss}
+          className="dash-icon-action"
+          aria-label={t('dashboard', 'onboardingDismiss')}
+          title={t('dashboard', 'onboardingDismiss')}
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
       </div>
 
-      <ol className="divide-y divide-[var(--border-subtle)]">
+      <ol className="dash-rows">
         {STEPS.map((step, index) => {
           const done = stepDone(step.id, progress);
           const prevDone = index === 0 || stepDone(STEPS[index - 1].id, progress);
-          const Icon = step.icon;
           const titleKey =
             step.id === 'server'
               ? 'onboardingStepServerTitle'
@@ -111,58 +100,48 @@ export function OnboardingChecklist({ progress }: OnboardingChecklistProps) {
                 : 'onboardingStepDeployDesc';
 
           return (
-            <li key={step.id} className="flex items-stretch">
-              <div
-                className="flex flex-1 flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-4 min-w-0"
-                style={{ opacity: prevDone || done ? 1 : 0.55 }}
-              >
-                <div
-                  className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border ${
-                    done
-                      ? 'border-emerald-500/30 bg-emerald-500/10'
-                      : 'border-[var(--border-subtle)] bg-[var(--bg-tertiary)]'
-                  }`}
-                >
+            <li
+              key={step.id}
+              className="dash-row flex flex-col sm:flex-row sm:items-center gap-3"
+              style={{ opacity: prevDone || done ? 1 : 0.55 }}
+            >
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                <span className="w-4 h-5 flex items-center justify-center shrink-0" aria-hidden>
                   {done ? (
-                    <Check className="w-4 h-4 text-emerald-500" strokeWidth={2.5} />
+                    <Check className="w-3.5 h-3.5 text-[var(--status-success)]" strokeWidth={2.5} />
                   ) : (
-                    <Icon className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                    <span className={`dash-status-dot ${prevDone ? 'is-active' : ''}`} />
                   )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{t('dashboard', titleKey)}</p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                    {t('dashboard', descKey)}
+                </span>
+                <div className="min-w-0">
+                  <p className={`text-sm font-medium ${done ? 'text-[var(--text-muted)] line-through decoration-[var(--border-default)]' : 'text-[var(--text-primary)]'}`}>
+                    {t('dashboard', titleKey)}
                   </p>
+                  <p className="text-xs mt-0.5 text-[var(--text-muted)]">{t('dashboard', descKey)}</p>
                 </div>
-                {!done && prevDone && (
-                  <Link
-                    href={step.href}
-                    className="btn btn-primary text-xs shrink-0 w-full sm:w-auto justify-center"
-                  >
-                    {t('dashboard', 'onboardingContinue')}
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                )}
-                {!done && !prevDone && (
-                  <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>
-                    {t('dashboard', 'onboardingLocked')}
-                  </span>
-                )}
               </div>
+              {!done && prevDone && (
+                <Link href={step.href} className="btn btn-primary btn-sm shrink-0 justify-center self-start sm:self-auto">
+                  {t('dashboard', 'onboardingContinue')}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              )}
+              {!done && !prevDone && (
+                <span className="dash-section-label shrink-0">{t('dashboard', 'onboardingLocked')}</span>
+              )}
             </li>
           );
         })}
       </ol>
 
-      <div className="px-4 sm:px-5 py-3 flex flex-wrap gap-x-4 gap-y-2 text-xs" style={{ background: 'var(--bg-tertiary)' }}>
-        <Link href="/docs" className="dash-link hover:underline">
+      <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2.5 text-xs">
+        <Link href="/docs" className="dash-link">
           {t('dashboard', 'onboardingDocs')}
         </Link>
-        <Link href="/dashboard/marketplace" className="hover:underline" style={{ color: 'var(--text-secondary)' }}>
+        <Link href="/dashboard/marketplace" className="dash-link">
           {t('dashboard', 'onboardingMarketplace')}
         </Link>
-        <Link href="/dashboard/sites" className="hover:underline" style={{ color: 'var(--text-secondary)' }}>
+        <Link href="/dashboard/sites" className="dash-link">
           {t('dashboard', 'onboardingSiteStudio')}
         </Link>
       </div>

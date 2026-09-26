@@ -36,13 +36,14 @@ export function ConnectedProjectsPanel({
   const envValid = ENV_NAME_RE.test(envVarName);
 
   return (
-    <section className="dash-rows">
-      <div className="dash-row">
-        <h2 className="dash-panel-title">{t('databases', 'connectedProjects')}</h2>
-        <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+    <section className="min-w-0" aria-labelledby="db-connected-title">
+      <div className="mb-2.5">
+        <h2 id="db-connected-title" className="dash-section-label">{t('databases', 'connectedProjects')}</h2>
+        <p className="text-[13px] mt-1.5 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           {t('databases', 'connectedProjectsHint')}
         </p>
       </div>
+      <div className="dash-rows">
 
       {connections.length === 0 ? (
         <div className="dash-row">
@@ -57,13 +58,14 @@ export function ConnectedProjectsPanel({
           const elsewhere =
             project?.serverId !== undefined && project.serverId !== database.serverId && !database.externalAccess;
           return (
-            <div key={connection.id} className="dash-row flex items-center gap-3 py-2.5!">
+            <div key={connection.id} className="dash-row flex items-center gap-3">
+              <span className="dash-status-dot is-success" aria-hidden="true" />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                   {project ? (
                     <Link
                       href={`/dashboard/projects/${project.id}`}
-                      className="text-[13px] font-medium truncate underline-offset-4 hover:underline focus-visible:underline"
+                      className="text-sm font-medium truncate underline-offset-4 hover:underline focus-visible:underline"
                       style={{ color: 'var(--text-primary)' }}
                     >
                       {project.name}
@@ -149,6 +151,7 @@ export function ConnectedProjectsPanel({
           </button>
         </form>
       )}
+      </div>
     </section>
   );
 }

@@ -70,7 +70,7 @@ export default function TemplateCard({ template, index, deployLabel }: TemplateC
           {/* Header: icon + meta */}
           <div className="flex items-start gap-3.5 mb-3.5">
             <div
-              className="w-11 h-11 rounded-lg flex items-center justify-center text-xl shrink-0 transition-transform duration-300 group-hover:scale-110"
+              className="w-11 h-11 rounded-lg flex items-center justify-center text-xl shrink-0"
               style={{
                 background: 'var(--bg-tertiary)',
                 border: '1px solid var(--border-subtle)',
@@ -133,7 +133,7 @@ export default function TemplateCard({ template, index, deployLabel }: TemplateC
           {/* Footer: tags + deploy */}
           <div
             className="flex items-center justify-between pt-3"
-            style={{ borderTop: '1px solid var(--glass-divider)' }}
+            style={{ borderTop: '1px solid var(--border-subtle)' }}
           >
             <div className="flex gap-1.5 overflow-hidden">
               {template.tags.slice(0, 2).map((tag) => (

@@ -5,5 +5,5 @@ export { ConnectionPanel } from './ConnectionPanel';
 export { NetworkAccessPanel } from './NetworkAccessPanel';
 export { ConnectedProjectsPanel } from './ConnectedProjectsPanel';
 export { BackupListPanel } from './BackupListPanel';
-export { DatabaseSidebar } from './DatabaseSidebar';
+export { DatabaseSidebar, DatabaseSettingsPanel } from './DatabaseSidebar';
 export { NewCredentialsModal } from './NewCredentialsModal';

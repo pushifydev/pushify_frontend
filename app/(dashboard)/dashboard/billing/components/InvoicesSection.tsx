@@ -1,7 +1,8 @@
 'use client';
 
-import { ArrowUpRight, FileText, Receipt } from 'lucide-react';
+import { ArrowUpRight, FileText } from 'lucide-react';
 import { useInvoices, useTranslation } from '@/hooks';
+import { SettingsSection } from '@/components/dashboard/SettingsParts';
 
 function formatAmount(cents: number, currency: string): string {
   return new Intl.NumberFormat('en-US', {
@@ -10,82 +11,63 @@ function formatAmount(cents: number, currency: string): string {
   }).format(cents / 100);
 }
 
-function statusStyle(status: string | null): React.CSSProperties {
+function statusBadge(status: string | null): string {
   switch (status) {
     case 'paid':
-      return { color: '#16a34a', background: 'rgba(34,197,94,0.10)', border: '1px solid rgba(34,197,94,0.25)' };
+      return 'badge-success';
     case 'open':
-      return { color: '#a16207', background: 'rgba(234,179,8,0.10)', border: '1px solid rgba(234,179,8,0.3)' };
+      return 'badge-warning';
+    case 'uncollectible':
+      return 'badge-error';
     default:
-      return {
-        color: 'var(--text-muted)',
-        background: 'var(--bg-tertiary)',
-        border: '1px solid var(--border-subtle)',
-      };
+      return 'badge-neutral';
   }
 }
 
-export function InvoicesSection() {
+export function InvoicesSection({ id }: { id?: string }) {
   const { t, locale } = useTranslation();
   const { data: invoices = [], isLoading } = useInvoices();
 
   if (isLoading || invoices.length === 0) return null;
 
   return (
-    <section className="dash-panel p-5 sm:p-6">
-      <div className="dash-panel-header">
-        <div className="dash-panel-title min-w-0">
-          <Receipt className="w-4 h-4 shrink-0 text-[var(--text-secondary)]" />
-          <span className="truncate">{t('billing', 'invoicesTitle')}</span>
-        </div>
-      </div>
-
-      <ul className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+    <SettingsSection id={id} title={t('billing', 'invoicesTitle')}>
+      <ul className="-mx-5">
         {invoices.map((inv) => (
           <li
             key={inv.id}
-            className="grid grid-cols-[1fr_auto] sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto_auto_auto] items-center gap-x-4 gap-y-1 py-2.5"
-            style={{ borderColor: 'var(--border-subtle)' }}
+            className="dash-row flex flex-wrap items-center gap-x-4 gap-y-1.5"
           >
-            <span
-              className="text-sm truncate tabular-nums"
-              style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
-            >
-              {inv.number ?? inv.id.slice(0, 12)}
-            </span>
-            <span className="text-xs tabular-nums sm:order-none order-3 col-span-2 sm:col-span-1 text-[var(--text-muted)]">
-              {new Date(inv.createdAt).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })}
-            </span>
-            <span
-              className="hidden sm:inline-flex text-[11px] px-2 py-0.5 rounded-full w-fit justify-self-start"
-              style={statusStyle(inv.status)}
-            >
-              {inv.status ?? '—'}
-            </span>
-            <span
-              className="text-sm font-medium tabular-nums text-right justify-self-end"
-              style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
-            >
+            <div className="min-w-0 flex-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="terminal-text text-[13px] text-[var(--text-primary)] truncate tabular-nums">
+                {inv.number ?? inv.id.slice(0, 12)}
+              </span>
+              <span className="terminal-text text-[11px] text-[var(--text-muted)] tabular-nums">
+                {new Date(inv.createdAt).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </span>
+              <span className={`badge ${statusBadge(inv.status)}`}>{inv.status ?? '—'}</span>
+            </div>
+            <span className="terminal-text text-[13px] font-medium text-[var(--text-primary)] tabular-nums shrink-0">
               {formatAmount(inv.amountPaidCents || inv.amountDueCents, inv.currency)}
             </span>
-            <span className="flex items-center gap-0.5 col-span-2 sm:col-span-1 justify-self-start sm:justify-self-end">
+            <span className="flex items-center gap-1 shrink-0">
               {inv.hostedInvoiceUrl && (
                 <a
                   href={inv.hostedInvoiceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-ghost h-8 text-xs"
+                  className="btn btn-ghost btn-sm"
                 >
                   <ArrowUpRight className="w-3.5 h-3.5" />
                   {t('billing', 'invoiceView')}
                 </a>
               )}
               {inv.invoicePdf && (
-                <a href={inv.invoicePdf} className="btn btn-ghost h-8 text-xs">
+                <a href={inv.invoicePdf} className="btn btn-ghost btn-sm">
                   <FileText className="w-3.5 h-3.5" />
                   PDF
                 </a>
@@ -94,6 +76,6 @@ export function InvoicesSection() {
           </li>
         ))}
       </ul>
-    </section>
+    </SettingsSection>
   );
 }

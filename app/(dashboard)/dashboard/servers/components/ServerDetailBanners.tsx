@@ -1,9 +1,18 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { SERVER_STATUS_COLORS } from '@/lib/constants';
 import type { ServerStatus } from '@/lib/api';
 
+const STATUS_BADGE: Record<ServerStatus, string> = {
+  running: 'badge-success',
+  provisioning: 'badge-warning',
+  rebooting: 'badge-warning',
+  deleting: 'badge-warning',
+  error: 'badge-error',
+  stopped: 'badge-neutral',
+};
+
+/** Server status as the product's mono status badge. */
 export function StatusBadge({
   status,
   label,
@@ -11,26 +20,10 @@ export function StatusBadge({
   status: ServerStatus;
   label: string;
 }) {
-  const accent = SERVER_STATUS_COLORS[status] ?? 'var(--text-muted)';
-
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
-      style={{
-        background: `${accent}18`,
-        border: `1px solid ${accent}35`,
-        color: accent,
-      }}
-    >
-      <span
-        className="w-1.5 h-1.5 rounded-full shrink-0"
-        style={{ background: accent }}
-      />
-      {label}
-    </span>
-  );
+  return <span className={`badge shrink-0 ${STATUS_BADGE[status] ?? 'badge-neutral'}`}>{label}</span>;
 }
 
+/** A one-line notice under the header (setup progress, errors, ready). Colour only on the dot. */
 export function SetupBanner({
   variant,
   title,
@@ -40,47 +33,21 @@ export function SetupBanner({
   variant: 'info' | 'error' | 'success';
   title: string;
   description: string;
-  icon: ReactNode;
+  /** Optional leading glyph (a spinner while something runs); a status dot otherwise. */
+  icon?: ReactNode;
 }) {
-  const styles = {
-    info: {
-      border: 'var(--accent-cyan)',
-      bg: 'rgba(34,211,238,0.06)',
-      title: 'var(--accent-cyan)',
-    },
-    error: {
-      border: 'var(--status-error)',
-      bg: 'rgba(239,68,68,0.06)',
-      title: 'var(--status-error)',
-    },
-    success: {
-      border: 'var(--status-success)',
-      bg: 'rgba(34,197,94,0.06)',
-      title: 'var(--status-success)',
-    },
-  }[variant];
-
+  const dot = variant === 'error' ? 'is-error' : variant === 'success' ? 'is-success' : 'is-warning';
   return (
     <div
-      className="rounded-xl p-5 flex items-start gap-4"
-      style={{
-        background: styles.bg,
-        border: `1px solid color-mix(in srgb, ${styles.border} 35%, transparent)`,
-      }}
+      className={`dash-callout${variant === 'error' ? ' dash-callout-attention' : ''} items-start`}
+      role={variant === 'error' ? 'alert' : 'status'}
     >
-      <div
-        className="w-10 h-10 rounded-lg dash-section-icon"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
-      >
-        {icon}
-      </div>
+      <span className="w-4 h-5 flex items-center justify-center shrink-0 text-[var(--text-muted)]" aria-hidden>
+        {icon ?? <span className={`dash-status-dot ${dot}`} />}
+      </span>
       <div className="min-w-0">
-        <h3 className="text-sm font-semibold" style={{ color: styles.title }}>
-          {title}
-        </h3>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          {description}
-        </p>
+        <p className="text-sm font-medium text-[var(--text-primary)]">{title}</p>
+        <p className="text-[13px] mt-0.5 text-[var(--text-secondary)]">{description}</p>
       </div>
     </div>
   );

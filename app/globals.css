@@ -2537,3 +2537,66 @@ html.dark .dash-app.dash-modal-root select {
   border-color: var(--accent-cyan);
   background: var(--hover-overlay);
 }
+
+/* ── Account settings + operator admin (brief v4) ─────────────────────────────
+   The account-settings section index is the project settings index with an
+   active item and group headings; below lg it becomes an underline strip. */
+.dash-app .dash-settings-nav a[aria-current='page'] {
+  color: var(--text-primary);
+  border-left-color: var(--text-primary);
+}
+.dash-app .dash-settings-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.dash-app .dash-settings-nav-group + .dash-settings-nav-group {
+  margin-top: 1.25rem;
+}
+.dash-app .dash-settings-nav-heading {
+  padding: 0 0 0.375rem;
+  font-family: var(--font-label);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+@media (min-width: 1024px) {
+  .dash-app .dash-settings-strip {
+    display: none;
+  }
+}
+/* Rows that sit flush inside a settings section body (sessions, keys, registries). */
+.dash-app .dash-settings-rows {
+  margin: -0.25rem -1.25rem;
+}
+.dash-app .dash-settings-rows > .dash-row {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+/* Admin: hairline table header over a .dash-rows list. */
+.dash-app .dash-rows-head {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-label);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+@media (min-width: 640px) {
+  .dash-app .dash-rows-head {
+    padding: 0.5rem 1.25rem;
+  }
+}
+.dash-app a.dash-row {
+  transition: background var(--transition-fast);
+}
+.dash-app a.dash-row:hover {
+  background: var(--hover-overlay);
+}
+.dash-app a.dash-row:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: -2px;
+}

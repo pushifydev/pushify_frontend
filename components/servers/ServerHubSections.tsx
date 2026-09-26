@@ -3,8 +3,6 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
-  Folder,
-  Database,
   Plus,
   Rocket,
   Wallet,
@@ -14,6 +12,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useTranslation, useProjects, useDatabases } from '@/hooks';
+import { RowList } from '@/components/dashboard/PageKit';
 import type { Server, Project, Database as DatabaseType } from '@/lib/api';
 import { CreateDatabaseModal } from '@/app/(dashboard)/dashboard/databases/components/CreateDatabaseModal';
 
@@ -78,58 +77,57 @@ export function ServerNextStepsCard({ server }: { server: Server }) {
   if (steps.length === 0) return null;
 
   return (
-    <div className="dash-panel p-4 sm:p-5">
-      <h3 className="dash-section-label mb-3">{t('servers', 'hubNextStepsTitle')}</h3>
-      <ul className="space-y-1">
-        {steps.map((step) => {
-          const content = (
-            <span className="flex items-start gap-2.5 text-sm text-[var(--text-secondary)]">
-              <span className="mt-0.5 text-[var(--text-muted)]" aria-hidden="true">{step.icon}</span>
-              <span>{t('servers', step.labelKey)}</span>
-            </span>
+    <RowList label={t('servers', 'hubNextStepsTitle')}>
+      {steps.map((step) => {
+        const content = (
+          <>
+            <span className="text-[var(--text-muted)] shrink-0" aria-hidden="true">{step.icon}</span>
+            <span className="flex-1 min-w-0 text-sm text-[var(--text-primary)]">{t('servers', step.labelKey)}</span>
+          </>
+        );
+
+        if (step.href) {
+          return (
+            <Link
+              key={step.id}
+              href={step.href}
+              className="dash-row group flex items-center gap-3 hover:bg-[var(--hover-overlay)] transition-colors"
+            >
+              {content}
+              <ChevronRight className="w-4 h-4 shrink-0 text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" aria-hidden="true" />
+            </Link>
           );
+        }
 
-          if (step.href) {
-            return (
-              <li key={step.id}>
-                <Link
-                  href={step.href}
-                  className="flex items-center justify-between gap-2 rounded-[10px] px-2 py-1.5 -mx-2 hover:bg-[var(--hover-overlay)] transition-colors group focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
-                >
-                  {content}
-                  <ChevronRight className="w-4 h-4 shrink-0 text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" aria-hidden="true" />
-                </Link>
-              </li>
-            );
-          }
-
-          return <li key={step.id}>{content}</li>;
-        })}
-      </ul>
-    </div>
+        return (
+          <div key={step.id} className="dash-row flex items-center gap-3">
+            {content}
+          </div>
+        );
+      })}
+    </RowList>
   );
 }
 
-function ProjectRow({ project }: { project: Project }) {
-  const statusClass =
-    project.status === 'active' ? 'badge-success' : project.status === 'paused' ? 'badge-warning' : 'badge-error';
+function projectDot(status: string): string {
+  return status === 'active' ? 'is-success' : status === 'paused' ? 'is-warning' : 'is-error';
+}
 
+function ProjectRow({ project }: { project: Project }) {
   return (
     <Link
       href={`/dashboard/projects/${project.id}`}
-      className="flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-[var(--hover-overlay)] transition-colors group focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--text-primary)]"
+      className="dash-row group flex items-center gap-3 hover:bg-[var(--hover-overlay)] transition-colors"
     >
-      <div className="min-w-0 flex items-center gap-2">
-        <Folder className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
-        <div className="min-w-0">
-          <p className="text-sm font-medium truncate">{project.name}</p>
-          <p className="text-xs text-[var(--text-muted)] font-mono truncate">{project.slug}</p>
-        </div>
+      <span className={`dash-status-dot ${projectDot(project.status)}`} aria-hidden="true" />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium text-[var(--text-primary)] truncate group-hover:underline underline-offset-2">
+          {project.name}
+        </p>
+        <p className="terminal-text text-xs text-[var(--text-muted)] truncate mt-0.5">{project.slug}</p>
       </div>
-      <div className="flex items-center gap-2 shrink-0">
-        <span className={`badge ${statusClass}`}>{project.status}</span>
-        <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" aria-hidden="true" />
-      </div>
+      {project.status !== 'active' && <span className="badge badge-warning shrink-0">{project.status}</span>}
+      <ChevronRight className="w-4 h-4 shrink-0 text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" aria-hidden="true" />
     </Link>
   );
 }
@@ -140,57 +138,54 @@ export function ServerProjectsSection({ serverId }: { serverId: string }) {
   const onServer = useMemo(() => projects.filter((p) => p.serverId === serverId), [projects, serverId]);
 
   return (
-    <div id="server-hub-projects" className="dash-panel p-4 sm:p-5 scroll-mt-6">
-      <div className="dash-panel-header !mb-3">
-        <div className="dash-panel-title">
-          <Folder className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
-          {t('servers', 'hubProjectsTitle')}
-        </div>
-        <Link
-          href={`/dashboard/projects/new?serverId=${serverId}`}
-          className="dash-link flex items-center gap-1 shrink-0"
-        >
-          {t('servers', 'hubNewProject')}
-          <Plus className="w-3 h-3" aria-hidden="true" />
-        </Link>
-      </div>
-
-      {isLoading ? (
-        <div className="flex justify-center py-6">
-          <Loader2 className="w-5 h-5 animate-spin text-[var(--text-muted)]" />
-        </div>
-      ) : onServer.length === 0 ? (
-        <p className="text-sm text-[var(--text-muted)]">{t('servers', 'hubProjectsEmpty')}</p>
-      ) : (
-        <div className="rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] overflow-hidden">
-          {onServer.map((p) => (
-            <ProjectRow key={p.id} project={p} />
-          ))}
-        </div>
-      )}
+    <div id="server-hub-projects" className="scroll-mt-6 min-w-0">
+      <RowList
+        label={
+          <>
+            {t('servers', 'hubProjectsTitle')}
+            {onServer.length > 0 && <span className="ml-2 opacity-60 tabular-nums">{onServer.length}</span>}
+          </>
+        }
+        action={
+          <Link href={`/dashboard/projects/new?serverId=${serverId}`} className="btn btn-secondary btn-sm">
+            <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+            {t('servers', 'hubNewProject')}
+          </Link>
+        }
+      >
+        {isLoading ? (
+          <div className="dash-row flex justify-center">
+            <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
+          </div>
+        ) : onServer.length === 0 ? (
+          <div className="dash-row text-[13px] text-[var(--text-muted)]">{t('servers', 'hubProjectsEmpty')}</div>
+        ) : (
+          onServer.map((p) => <ProjectRow key={p.id} project={p} />)
+        )}
+      </RowList>
     </div>
   );
 }
 
 function DatabaseRow({ database }: { database: DatabaseType }) {
-  const statusClass =
+  const dot =
     database.status === 'running'
-      ? 'badge-success'
+      ? 'is-success'
       : database.status === 'error'
-        ? 'badge-error'
+        ? 'is-error'
         : database.status === 'provisioning'
-          ? 'badge-warning'
-          : 'badge-neutral';
+          ? 'is-warning'
+          : '';
   return (
-    <div className="flex items-center justify-between gap-3 px-3 py-2.5">
-      <div className="min-w-0 flex items-center gap-2">
-        <Database className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
-        <div className="min-w-0">
-          <p className="text-sm font-medium truncate">{database.name}</p>
-          <p className="text-xs text-[var(--text-muted)] font-mono">{database.type}</p>
-        </div>
+    <div className="dash-row flex items-center gap-3">
+      <span className={`dash-status-dot ${dot}`} aria-hidden="true" />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium text-[var(--text-primary)] truncate">{database.name}</p>
+        <p className="font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] mt-0.5">
+          {database.type}
+        </p>
       </div>
-      <span className={`badge shrink-0 ${statusClass}`}>{database.status}</span>
+      <span className="dash-section-label shrink-0">{database.status}</span>
     </div>
   );
 }
@@ -215,37 +210,33 @@ export function ServerDatabasesSection({
 
   return (
     <>
-      <div id="server-hub-databases" className="dash-panel p-4 sm:p-5 scroll-mt-6">
-        <div className="dash-panel-header !mb-3">
-          <div className="dash-panel-title">
-            <Database className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
-            {t('servers', 'hubDatabasesTitle')}
-          </div>
-          {canCreate && (
-            <button
-              type="button"
-              onClick={() => setCreateOpen(true)}
-              className="dash-link flex items-center gap-1 shrink-0"
-            >
-              {t('servers', 'hubAddDatabase')}
-              <Plus className="w-3 h-3" aria-hidden="true" />
-            </button>
+      <div id="server-hub-databases" className="scroll-mt-6 min-w-0">
+        <RowList
+          label={
+            <>
+              {t('servers', 'hubDatabasesTitle')}
+              {onServer.length > 0 && <span className="ml-2 opacity-60 tabular-nums">{onServer.length}</span>}
+            </>
+          }
+          action={
+            canCreate ? (
+              <button type="button" onClick={() => setCreateOpen(true)} className="btn btn-secondary btn-sm">
+                <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+                {t('servers', 'hubAddDatabase')}
+              </button>
+            ) : undefined
+          }
+        >
+          {isLoading ? (
+            <div className="dash-row flex justify-center">
+              <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
+            </div>
+          ) : onServer.length === 0 ? (
+            <div className="dash-row text-[13px] text-[var(--text-muted)]">{t('servers', 'hubDatabasesEmpty')}</div>
+          ) : (
+            onServer.map((d) => <DatabaseRow key={d.id} database={d} />)
           )}
-        </div>
-
-        {isLoading ? (
-          <div className="flex justify-center py-6">
-            <Loader2 className="w-5 h-5 animate-spin text-[var(--text-muted)]" />
-          </div>
-        ) : onServer.length === 0 ? (
-          <p className="text-sm text-[var(--text-muted)]">{t('servers', 'hubDatabasesEmpty')}</p>
-        ) : (
-          <div className="rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] overflow-hidden">
-            {onServer.map((d) => (
-              <DatabaseRow key={d.id} database={d} />
-            ))}
-          </div>
-        )}
+        </RowList>
       </div>
 
       {createOpen && (

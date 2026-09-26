@@ -10,16 +10,17 @@ import TemplateCard from './components/TemplateCard';
 import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
 import { CrossPromoBanner } from '@/components/dashboard/CrossPromoBanner';
 import { EmptyState } from '@/components/EmptyState';
+import { MetaLabel, PageHeader, TabPanel, Tabs } from '@/components/dashboard/PageKit';
 
-const CATEGORIES: { key: MarketplaceCategory | 'all'; color: string }[] = [
-  { key: 'all', color: 'var(--text-primary)' },
-  { key: 'cms', color: 'var(--text-primary)' },
-  { key: 'automation', color: 'var(--text-primary)' },
-  { key: 'monitoring', color: 'var(--text-primary)' },
-  { key: 'storage', color: 'var(--text-primary)' },
-  { key: 'devtools', color: 'var(--text-primary)' },
-  { key: 'analytics', color: 'var(--text-primary)' },
-  { key: 'database', color: 'var(--text-primary)' },
+const CATEGORIES: (MarketplaceCategory | 'all')[] = [
+  'all',
+  'cms',
+  'automation',
+  'monitoring',
+  'storage',
+  'devtools',
+  'analytics',
+  'database',
 ];
 
 const CATEGORY_I18N: Record<string, string> = {
@@ -34,7 +35,7 @@ const CATEGORY_I18N: Record<string, string> = {
 };
 
 export default function MarketplacePage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<MarketplaceCategory | 'all'>('all');
   const [pageTab, setPageTab] = useState<'catalog' | 'installed'>('catalog');
@@ -58,24 +59,35 @@ export default function MarketplacePage() {
   const featured = filtered.filter((t) => t.featured);
   const rest = filtered.filter((t) => !t.featured);
 
+  const tabs = [
+    { id: 'catalog' as const, label: t('marketplace', 'tabCatalog') },
+    { id: 'installed' as const, label: t('marketplace', 'tabInstalled') },
+  ];
+
+  const grid = (list: typeof filtered, offset: number) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {list.map((template, i) => (
+        <TemplateCard
+          key={template.id}
+          template={template}
+          index={i + offset}
+          deployLabel={t('marketplace', 'deploy')}
+        />
+      ))}
+    </div>
+  );
+
   return (
-    <div className="dash-page max-w-6xl space-y-8 animate-slide-in">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-          <div>
-            <h1
-              className="text-2xl font-bold tracking-tight"
-              style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}
-            >
-              {t('marketplace', 'title')}
-            </h1>
-            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              {t('marketplace', 'description')}
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
+      <PageHeader
+        title={t('marketplace', 'title')}
+        description={t('marketplace', 'description')}
+        meta={
+          templates && templates.length > 0 && activeCategory === 'all'
+            ? [<MetaLabel key="count">{templates.length} {locale === 'tr' ? 'uygulama' : 'apps'}</MetaLabel>]
+            : undefined
+        }
+      />
 
       <CrossPromoBanner
         message={t('marketplace', 'siteStudioBanner')}
@@ -83,137 +95,73 @@ export default function MarketplacePage() {
         href="/dashboard/sites"
       />
 
-      <div className="flex gap-1 p-1 rounded-lg w-fit border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
-        {(['catalog', 'installed'] as const).map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setPageTab(tab)}
-            className="px-3.5 py-1.5 rounded-md text-sm transition-colors"
-            style={{
-              background: pageTab === tab ? 'var(--bg-tertiary)' : 'transparent',
-              color: pageTab === tab ? 'var(--text-primary)' : 'var(--text-muted)',
-              fontWeight: pageTab === tab ? 500 : 400,
-            }}
-          >
-            {t('marketplace', tab === 'catalog' ? 'tabCatalog' : 'tabInstalled')}
-          </button>
-        ))}
-      </div>
+      <Tabs items={tabs} active={pageTab} onChange={setPageTab} label={t('marketplace', 'title')} idPrefix="marketplace-tab" />
 
-      {pageTab === 'installed' ? (
-        <InstalledAppsPanel />
-      ) : (
-        <>
-      {/* Search + Filters */}
-      <div className="space-y-4">
-        {/* Search */}
-        <div className="relative">
-          <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
-            style={{ color: 'var(--text-muted)' }}
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('marketplace', 'searchPlaceholder')}
-            className="input pl-10!"
-            style={{ maxWidth: 420 }}
-          />
-        </div>
+      <TabPanel idPrefix="marketplace-tab" active={pageTab}>
+        {pageTab === 'installed' ? (
+          <InstalledAppsPanel />
+        ) : (
+          <div className="space-y-6 min-w-0">
+            {/* Search + category filter */}
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center min-w-0">
+              <div className="relative w-full lg:max-w-xs">
+                <Search
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none"
+                  aria-hidden
+                />
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('marketplace', 'searchPlaceholder')}
+                  aria-label={t('marketplace', 'searchPlaceholder')}
+                  className="input pl-10!"
+                />
+              </div>
+              <div className="overflow-x-auto min-w-0 [scrollbar-width:none]">
+                <div className="dash-segmented" role="group" aria-label={t('marketplace', 'categoryAll')}>
+                  {CATEGORIES.map((key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setActiveCategory(key)}
+                      aria-pressed={activeCategory === key}
+                    >
+                      {t('marketplace', CATEGORY_I18N[key] as 'categoryAll')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-        {/* Category Pills */}
-        <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map(({ key, color }) => {
-            const isActive = activeCategory === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveCategory(key)}
-                className="px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all duration-200"
-                style={{
-                  background: isActive ? color : 'transparent',
-                  color: isActive ? 'var(--on-accent)' : 'var(--text-secondary)',
-                  border: `1px solid ${isActive ? color : 'var(--border-default)'}`,
-                }}
-              >
-                {t('marketplace', CATEGORY_I18N[key] as any)}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+            {isLoading && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <SkeletonMarketplaceTemplateCard key={i} />
+                ))}
+              </div>
+            )}
 
-      {/* Loading */}
-      {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <SkeletonMarketplaceTemplateCard key={i} />
-          ))}
-        </div>
-      )}
+            {!isLoading && filtered.length === 0 && (
+              <EmptyState label={t('marketplace', 'title')} title={t('marketplace', 'noTemplates')} />
+            )}
 
-      {/* Empty State */}
-      {!isLoading && filtered.length === 0 && (
-        <EmptyState label={t('marketplace', 'title')} title={t('marketplace', 'noTemplates')} />
-      )}
+            {featured.length > 0 && (
+              <section className="space-y-3">
+                <h2 className="dash-section-label">{t('marketplace', 'featured')}</h2>
+                {grid(featured, 0)}
+              </section>
+            )}
 
-      {/* Featured Section */}
-      {featured.length > 0 && (
-        <div>
-          <h2
-            className="text-xs font-semibold uppercase tracking-widest mb-4 flex items-center gap-2"
-            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
-          >
-            <span
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ background: 'var(--accent-cyan)' }}
-            />
-            {t('marketplace', 'featured')}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {featured.map((template, i) => (
-              <TemplateCard
-                key={template.id}
-                template={template}
-                index={i}
-                deployLabel={t('marketplace', 'deploy')}
-              />
-            ))}
+            {rest.length > 0 && (
+              <section className="space-y-3">
+                {featured.length > 0 && <h2 className="dash-section-label">{t('marketplace', 'categoryAll')}</h2>}
+                {grid(rest, featured.length)}
+              </section>
+            )}
           </div>
-        </div>
-      )}
-
-      {/* All Templates */}
-      {rest.length > 0 && (
-        <div>
-          {featured.length > 0 && (
-            <h2
-              className="text-xs font-semibold uppercase tracking-widest mb-4 flex items-center gap-2"
-              style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
-            >
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: 'var(--text-muted)' }}
-              />
-              {t('marketplace', 'categoryAll')}
-            </h2>
-          )}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {rest.map((template, i) => (
-              <TemplateCard
-                key={template.id}
-                template={template}
-                index={i + featured.length}
-                deployLabel={t('marketplace', 'deploy')}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-        </>
-      )}
+        )}
+      </TabPanel>
     </div>
   );
 }

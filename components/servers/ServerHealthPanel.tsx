@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, HardDrive, Loader2, RefreshCw, Box } from 'lucide-react';
+import { Loader2, RefreshCw } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { formatMessage } from '@/lib/i18n/format-message';
 import { useServerHealth } from '@/hooks/useServers';
@@ -17,26 +17,32 @@ export function ServerHealthPanel({ server }: { server: Server }) {
   if (!canScan) return null;
 
   return (
-    <section className="dash-panel p-4 sm:p-5 space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="dash-panel-title">
-          <HardDrive className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
+    <section className="min-w-0" aria-labelledby={`server-health-${server.id}`}>
+      <div className="flex items-center justify-between gap-3 mb-2.5">
+        <h2 id={`server-health-${server.id}`} className="dash-section-label">
           {t('servers', 'serverHealthTitle')}
-        </h3>
+        </h2>
         <button
           type="button"
           onClick={() => refetch()}
           disabled={isLoading || isFetching}
-          className="btn btn-secondary btn-sm inline-flex items-center gap-2"
+          className="btn btn-secondary btn-sm"
         >
           {isLoading || isFetching ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
           ) : (
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-3.5 h-3.5" />
           )}
           {t('servers', 'healthScan')}
         </button>
       </div>
+      <div className="dash-card p-4 sm:p-5 space-y-4 min-w-0">
+      {!health && !error && (
+        <p className="text-[13px] text-[var(--text-muted)] flex items-center gap-2">
+          <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+          {t('common', 'loading')}
+        </p>
+      )}
 
       {error && (
         <p className="text-sm text-[var(--status-error)]">{t('servers', 'healthScanFailed')}</p>
@@ -48,7 +54,7 @@ export function ServerHealthPanel({ server }: { server: Server }) {
             <div className="flex items-baseline justify-between gap-3">
               <span className="dash-stat-label !mt-0">{t('servers', 'diskUsage')}</span>
               <span
-                className={`font-mono text-xs tabular-nums ${
+                className={`terminal-text text-xs tabular-nums ${
                   health.disk.critical
                     ? 'text-[var(--status-error)]'
                     : health.disk.warn
@@ -91,8 +97,8 @@ export function ServerHealthPanel({ server }: { server: Server }) {
 
           {health.orphans.length > 0 ? (
             <div className="dash-callout dash-callout-attention">
-              <div className="flex items-start gap-2 mb-2">
-                <AlertTriangle className="w-4 h-4 text-[var(--status-warning)] shrink-0 mt-0.5" aria-hidden="true" />
+              <div className="flex items-start gap-2.5 mb-2">
+                <span className="dash-status-dot is-warning mt-1.5" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-medium text-[var(--text-primary)]">
                     {formatMessage(t('servers', 'orphanContainersTitle'), {
@@ -104,16 +110,13 @@ export function ServerHealthPanel({ server }: { server: Server }) {
                   </p>
                 </div>
               </div>
-              <ul className="rounded-[10px] border border-[var(--border-subtle)] divide-y divide-[var(--border-subtle)] overflow-hidden text-xs font-mono">
+              <ul className="dash-rows terminal-text text-xs">
                 {health.orphans.map((o: { name: string; slug: string; status: string; ports: string }) => (
                   <li
                     key={o.name}
-                    className="flex flex-wrap gap-x-3 gap-y-1 px-3 py-2"
+                    className="dash-row !py-2 flex flex-wrap gap-x-3 gap-y-1"
                   >
-                    <span className="flex items-center gap-1">
-                      <Box className="w-3 h-3 text-[var(--text-muted)]" aria-hidden="true" />
-                      {o.name}
-                    </span>
+                    <span className="text-[var(--text-primary)]">{o.name}</span>
                     {o.ports && <span className="text-[var(--text-muted)]">{o.ports}</span>}
                     <span className="text-[var(--text-muted)]">{o.status}</span>
                   </li>
@@ -121,7 +124,8 @@ export function ServerHealthPanel({ server }: { server: Server }) {
               </ul>
             </div>
           ) : (
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-[13px] text-[var(--text-muted)] flex items-center gap-2">
+              <span className="dash-status-dot is-success" aria-hidden="true" />
               {formatMessage(t('servers', 'noOrphanContainers'), {
                 count: health.pushifyContainerCount,
               })}
@@ -129,6 +133,7 @@ export function ServerHealthPanel({ server }: { server: Server }) {
           )}
         </>
       )}
+      </div>
     </section>
   );
 }

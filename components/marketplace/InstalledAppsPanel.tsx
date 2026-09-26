@@ -6,19 +6,21 @@ import { useTranslation } from '@/hooks';
 import { useMarketplaceDeployments } from '@/hooks/useMarketplace';
 import type { MarketplaceDeployment } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
-import { STATUS_COLORS } from '@/lib/constants';
 import { Skeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
+import { RowList } from '@/components/dashboard/PageKit';
 
 export function InstalledAppsPanel() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { data: installs = [], isLoading } = useMarketplaceDeployments();
 
   if (isLoading) {
     return (
-      <div className="space-y-2">
+      <div className="dash-rows" role="status" aria-label={t('common', 'loading')}>
         {[1, 2, 3].map((i) => (
-          <Skeleton key={i} className="h-16 rounded-xl" />
+          <div key={i} className="dash-row">
+            <Skeleton className="h-5 w-2/3 rounded" />
+          </div>
         ))}
       </div>
     );
@@ -35,47 +37,46 @@ export function InstalledAppsPanel() {
   }
 
   return (
-    <div className="space-y-2">
+    <RowList label={t('marketplace', 'tabInstalled')}>
       {installs.map((install: MarketplaceDeployment) => {
         const project = install.project;
-        const statusColor =
-          project?.status === 'active' ? STATUS_COLORS.success : STATUS_COLORS.neutral;
+        const live = project?.status === 'active';
 
         return (
-          <Link
-            key={install.id}
-            href={`/dashboard/projects/${install.projectId}`}
-            className="group flex items-center gap-4 rounded-xl px-4 py-3 transition-all"
-            style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-          >
-            <span className="text-2xl shrink-0" role="img" aria-hidden>
+          <div key={install.id} className="dash-row flex items-center gap-3 min-w-0">
+            <span className={`dash-status-dot ${live ? 'is-success' : ''}`} aria-hidden />
+            <span className="text-lg leading-none shrink-0" aria-hidden>
               {install.templateIcon ?? '📦'}
             </span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate group-hover:text-[var(--accent-cyan)] transition-colors">
+              <Link
+                href={`/dashboard/projects/${install.projectId}`}
+                className="text-sm font-medium truncate block text-[var(--text-primary)] hover:underline underline-offset-4"
+              >
                 {install.templateName ?? install.templateId}
-              </p>
-              <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
+              </Link>
+              <p className="terminal-text text-xs mt-0.5 truncate text-[var(--text-muted)]">
                 {project?.name ?? install.projectId}
                 {project?.slug ? ` · ${project.slug}` : ''}
                 {install.appVersion ? ` · v${install.appVersion}` : ''}
               </p>
             </div>
-            {project && (
-              <span
-                className="text-xs px-2 py-0.5 rounded-full shrink-0 capitalize"
-                style={{ background: `${statusColor}18`, color: statusColor }}
-              >
-                {project.status}
-              </span>
+            {project && !live && (
+              <span className="badge badge-neutral shrink-0">{project.status}</span>
             )}
-            <span className="text-xs shrink-0 hidden sm:block" style={{ color: 'var(--text-muted)' }}>
+            <span className="text-xs shrink-0 hidden sm:block text-[var(--text-muted)]">
               {formatTimeAgo(install.createdAt, t)}
             </span>
-            <ArrowUpRight className="w-3.5 h-3.5 shrink-0 opacity-40 group-hover:opacity-100" />
-          </Link>
+            <Link
+              href={`/dashboard/projects/${install.projectId}`}
+              className="btn btn-secondary btn-sm shrink-0"
+            >
+              {locale === 'tr' ? 'Aç' : 'Open'}
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         );
       })}
-    </div>
+    </RowList>
   );
 }

@@ -2,13 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { KeyRound } from 'lucide-react';
 import { useTranslation, useAdminAuthEvents } from '@/hooks';
-import { SkeletonActivityRow } from '@/components/Skeleton';
 import { formatShortDate } from '@/lib/formatters';
 import {
-  AdminPanel, AdminError, Pager, EmptyRow,
-  rowBorder, authEventLabel, authEventColor, methodLabel, describeUserAgent, relative,
+  AdminPanel, AdminError, Pager, EmptyRow, LoadingRows,
+  authEventLabel, authEventDot, methodLabel, describeUserAgent, relative,
 } from '../shared';
 
 const PAGE_SIZE = 50;
@@ -23,49 +21,44 @@ export default function AdminSigninsPage() {
   const items = data?.items ?? [];
 
   return (
-    <AdminPanel
-      title={t('admin', 'signinsTitle')}
-      icon={<KeyRound className="w-4 h-4" />}
-      meta={isLoading ? '…' : data?.total}
-    >
+    <AdminPanel title={t('admin', 'signinsTitle')} meta={isLoading ? '…' : data?.total}>
       {isLoading ? (
-        <div>
-          {[...Array(8)].map((_, i) => (
-            <div key={i} style={rowBorder(i)}><SkeletonActivityRow /></div>
-          ))}
-        </div>
+        <LoadingRows rows={8} />
       ) : items.length === 0 ? (
         <EmptyRow>{t('admin', 'signinsEmpty')}</EmptyRow>
       ) : (
         <ul>
-          {items.map((item, idx) => {
-            const color = authEventColor(item.event);
+          {items.map((item) => {
             const device = describeUserAgent(item.userAgent);
             return (
-              <li key={item.id} className="flex items-start gap-3 px-5 py-3" style={rowBorder(idx)}>
-                <span className="dash-status-dot mt-1.5 shrink-0" style={{ background: color }} />
+              <li key={item.id} className="dash-row flex items-start gap-3">
+                <span className={`dash-status-dot mt-[7px] ${authEventDot(item.event)}`} aria-hidden />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm">
-                    {authEventLabel(t, item.event)}
-                    <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>
+                  <p className="text-sm text-[var(--text-primary)]">
+                    <span className="font-medium">{authEventLabel(t, item.event)}</span>
+                    <span className="text-[13px] ml-2 text-[var(--text-muted)]">
                       {t('admin', 'via')} {methodLabel(t, item.method)}
                     </span>
                   </p>
-                  <p className="text-xs mt-0.5 flex flex-wrap gap-x-2" style={{ color: 'var(--text-muted)' }}>
+                  <p className="terminal-text text-xs mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[var(--text-muted)] min-w-0">
                     {item.user ? (
-                      <Link href={`/admin/users/${item.user.id}`} className="dash-link" style={{ fontFamily: 'var(--font-mono)' }}>
+                      <Link href={`/admin/users/${item.user.id}`} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:underline underline-offset-2 truncate">
                         {item.user.email}
                       </Link>
                     ) : (
                       <span>{t('admin', 'unknownUser')}</span>
                     )}
-                    {item.ipAddress && <span style={{ fontFamily: 'var(--font-mono)' }}>· {item.ipAddress}</span>}
-                    {device && <span>· {device}</span>}
+                    {item.ipAddress && <span>{item.ipAddress}</span>}
+                    {device && <span>{device}</span>}
                   </p>
                 </div>
-                <p className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }} title={formatShortDate(item.createdAt)}>
+                <time
+                  dateTime={item.createdAt}
+                  className="text-xs shrink-0 text-[var(--text-muted)] tabular-nums"
+                  title={formatShortDate(item.createdAt)}
+                >
                   {relative(item.createdAt, t)}
-                </p>
+                </time>
               </li>
             );
           })}
