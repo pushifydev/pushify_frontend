@@ -40,7 +40,7 @@ export default function SiteTemplateDetailPage() {
   }
 
   return (
-    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-clip">
       <PageHeader
         back={{ href: '/dashboard/sites', label: t('siteStudio', 'badge') }}
         title={template.name}

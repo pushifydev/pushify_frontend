@@ -9,6 +9,7 @@ import {
   AdminPanel, AdminError, Avatar, Pager, EmptyRow, LoadingRows,
   methodLabel, planBadgeClass, relative, shortDate,
 } from '../shared';
+import { Select } from '@/components/ui/select';
 
 const COLS = 'lg:grid-cols-[minmax(0,1fr)_5rem_13rem_6rem_7rem_1rem]';
 
@@ -71,19 +72,18 @@ export default function AdminUsersPage() {
               aria-label={t('admin', 'searchPlaceholder')}
             />
           </label>
-          {/* .select is width:100%, so the width lives on a wrapper */}
-          <div className="w-40 shrink-0">
-            <select
-              value={sort}
-              onChange={(e) => { setSort(e.target.value as AdminUserSort); setPage(1); }}
-              className="select h-9 py-0! text-[13px]!"
-              aria-label={t('admin', 'sortNewest')}
-            >
-              <option value="newest">{t('admin', 'sortNewest')}</option>
-              <option value="last_seen">{t('admin', 'sortLastSeen')}</option>
-              <option value="most_active">{t('admin', 'sortMostActive')}</option>
-            </select>
-          </div>
+          <Select
+            size="sm"
+            value={sort}
+            onValueChange={(v) => { setSort(v as AdminUserSort); setPage(1); }}
+            className="w-40 shrink-0"
+            aria-label={t('admin', 'sortNewest')}
+            options={[
+              { value: 'newest', label: t('admin', 'sortNewest') },
+              { value: 'last_seen', label: t('admin', 'sortLastSeen') },
+              { value: 'most_active', label: t('admin', 'sortMostActive') },
+            ]}
+          />
         </div>
       </div>
 

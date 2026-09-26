@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { X } from 'lucide-react';
 import type { Database, Project } from '@/lib/api';
 import { iconButtonClass, type T } from './_shared';
+import { Select } from '@/components/ui/select';
 
 const ENV_NAME_RE = /^[A-Za-z_][A-Za-z0-9_]{0,63}$/;
 
@@ -113,19 +114,16 @@ export function ConnectedProjectsPanel({
             setProjectId('');
           }}
         >
-          <select
+          <Select
             value={projectId}
-            onChange={(event) => setProjectId(event.target.value)}
-            className="select flex-1 min-w-0 py-2! text-sm"
+            onValueChange={setProjectId}
+            className="flex-1 min-w-0"
             aria-label={t('databases', 'selectProject')}
-          >
-            <option value="">{t('databases', 'selectProject')}</option>
-            {available.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.name}
-              </option>
-            ))}
-          </select>
+            options={[
+              { value: '', label: t('databases', 'selectProject') },
+              ...available.map((project) => ({ value: project.id, label: project.name })),
+            ]}
+          />
           <input
             value={envVarName}
             onChange={(event) => setEnvVarName(event.target.value.trim())}
@@ -135,17 +133,20 @@ export function ConnectedProjectsPanel({
             aria-invalid={!envValid}
             aria-label={t('databases', 'envVarLabel')}
           />
-          <select
+          <Select
             value={readonlyAvailable ? permissions : 'readwrite'}
-            onChange={(event) => setPermissions(event.target.value as 'readwrite' | 'readonly')}
-            className="select sm:w-40 py-2! text-sm"
+            onValueChange={(v) => setPermissions(v as 'readwrite' | 'readonly')}
+            className="sm:w-40"
             aria-label={t('databases', 'accessReadWrite')}
-          >
-            <option value="readwrite">{t('databases', 'accessReadWrite')}</option>
-            <option value="readonly" disabled={!readonlyAvailable}>
-              {readonlyAvailable ? t('databases', 'accessReadOnly') : t('databases', 'readonlyNotForRedis')}
-            </option>
-          </select>
+            options={[
+              { value: 'readwrite', label: t('databases', 'accessReadWrite') },
+              {
+                value: 'readonly',
+                label: readonlyAvailable ? t('databases', 'accessReadOnly') : t('databases', 'readonlyNotForRedis'),
+                disabled: !readonlyAvailable,
+              },
+            ]}
+          />
           <button type="submit" disabled={pending || !projectId || !envValid} className="btn btn-primary shrink-0">
             {pending ? '…' : t('databases', 'connectProject')}
           </button>

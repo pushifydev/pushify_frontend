@@ -66,7 +66,7 @@ export default function SettingsPage() {
   const activeLabel = allTabs.find((tab) => tab.id === activeTab);
 
   return (
-    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-clip">
       <PageHeader
         title={t('navigation', 'settings')}
         description={t('navigation', 'settingsDescription')}

@@ -19,6 +19,7 @@ import { VolumesSection } from './VolumesSection';
 import { PreviewDeploymentsSection } from './PreviewDeploymentsSection';
 import { GitHubAccessSection } from './GitHubAccessSection';
 import { SettingsField, SettingsSection, SettingsSwitch } from './SettingsParts';
+import { Select } from '@/components/ui/select';
 
 export function SettingsTab({
   project,
@@ -509,19 +510,19 @@ export function SettingsTab({
               hint={t('projectDetail', 'serverSelectionHint')}
               htmlFor="settings-server-select"
             >
-              <select
+              <Select
                 id="settings-server-select"
                 value={selectedServerId || ''}
-                onChange={(e) => setSelectedServerId(e.target.value || null)}
-                className="input"
-              >
-                <option value="">{t('projectDetail', 'noServerSelected')}</option>
-                {availableServers.map((server) => (
-                  <option key={server.id} value={server.id}>
-                    {server.name} ({server.ipv4})
-                  </option>
-                ))}
-              </select>
+                onValueChange={(v) => setSelectedServerId(v || null)}
+                className="w-full"
+                options={[
+                  { value: '', label: t('projectDetail', 'noServerSelected') },
+                  ...availableServers.map((server) => ({
+                    value: server.id,
+                    label: `${server.name} (${server.ipv4 ?? ''})`,
+                  })),
+                ]}
+              />
             </SettingsField>
             {project.serverId && (
               <SettingsField label={t('projectDetail', 'currentServer')}>

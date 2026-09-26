@@ -6,6 +6,7 @@ import { Modal, ModalActions, AlertBox } from '@/components/Modal';
 import type { StudioColumn } from '@/lib/api';
 import { detectDelimiter, parseCsv } from '@/lib/csv-parse';
 import { monoStyle, type T } from './_shared';
+import { Select } from '@/components/ui/select';
 
 interface ImportCsvModalProps {
   table: string;
@@ -164,26 +165,24 @@ export function ImportCsvModal({ table, columns, onClose, onImportBatch, t }: Im
                   <tr style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}>
                     {mapping.map((column, index) => (
                       <th key={index} className="px-2 py-2 text-left align-top">
-                        <select
+                        <Select
+                          size="sm"
                           value={column ?? ''}
-                          onChange={(e) =>
+                          onValueChange={(v) =>
                             setMapping((prev) =>
                               prev.map((entry, position) =>
-                                position === index ? e.target.value || null : entry
+                                position === index ? v || null : entry
                               )
                             )
                           }
-                          className="select text-xs! py-1.5! w-full"
-                          style={{ ...mono, minWidth: 130 }}
+                          className="w-full min-w-[130px]"
+                          mono
                           aria-label={headerRow?.[index] ?? `#${index + 1}`}
-                        >
-                          <option value="">{t('databases', 'studioCsvSkipColumn')}</option>
-                          {editable.map((candidate) => (
-                            <option key={candidate.name} value={candidate.name}>
-                              {candidate.name}
-                            </option>
-                          ))}
-                        </select>
+                          options={[
+                            { value: '', label: t('databases', 'studioCsvSkipColumn') },
+                            ...editable.map((candidate) => ({ value: candidate.name, label: candidate.name })),
+                          ]}
+                        />
                         {headerRow && (
                           <span className="block dash-mono-caption text-[10px]! font-normal mt-1 truncate">
                             {headerRow[index]}

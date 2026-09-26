@@ -11,6 +11,7 @@ import type { CreateServerInput } from '@/lib/api';
 import { toast } from 'sonner';
 import { ManagedCloudProviderBar } from '@/components/servers/ManagedCloudProviderBar';
 import { getSizeDisallowLabel } from '@/lib/servers/size-disallow';
+import { Select } from '@/components/ui/select';
 
 type Mode = 'managed' | 'byos';
 type AuthMethod = 'ssh_key' | 'password';
@@ -187,17 +188,16 @@ export default function NewServerPage() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 ) : (
-                  <select
+                  <Select
                     id="ns-region"
                     value={managedData.region}
-                    onChange={(e) => setManagedData({ ...managedData, region: e.target.value })}
-                    className="select"
-                  >
-                    <option value="">{t('servers', 'selectRegion')}</option>
-                    {regions.map((region) => (
-                      <option key={region.id} value={region.id}>{region.name}</option>
-                    ))}
-                  </select>
+                    onValueChange={(v) => setManagedData({ ...managedData, region: v })}
+                    className="w-full"
+                    options={[
+                      { value: '', label: t('servers', 'selectRegion') },
+                      ...regions.map((region) => ({ value: region.id, label: region.name })),
+                    ]}
+                  />
                 )}
               </SettingsField>
               <SettingsField label={t('servers', 'image')} htmlFor="ns-image">
@@ -206,17 +206,16 @@ export default function NewServerPage() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 ) : (
-                  <select
+                  <Select
                     id="ns-image"
                     value={managedData.image}
-                    onChange={(e) => setManagedData({ ...managedData, image: e.target.value })}
-                    className="select"
-                  >
-                    <option value="">{t('servers', 'selectImage')}</option>
-                    {images.map((image) => (
-                      <option key={image.id} value={image.id}>{image.name}</option>
-                    ))}
-                  </select>
+                    onValueChange={(v) => setManagedData({ ...managedData, image: v })}
+                    className="w-full"
+                    options={[
+                      { value: '', label: t('servers', 'selectImage') },
+                      ...images.map((image) => ({ value: image.id, label: image.name })),
+                    ]}
+                  />
                 )}
               </SettingsField>
             </SettingsSection>

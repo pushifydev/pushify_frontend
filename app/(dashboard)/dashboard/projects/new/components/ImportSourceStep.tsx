@@ -10,12 +10,12 @@ import {
   Unlink,
   EyeOff,
   AlertCircle,
-  Sparkles,
-} from 'lucide-react';
+  Sparkles, Lock } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { SettingsSection } from '@/components/dashboard/SettingsParts';
 import { FRAMEWORKS } from '@/lib/frameworks';
 import type { useImportSource } from '../hooks/useImportSource';
+import { Select } from '@/components/ui/select';
 
 type ImportSource = ReturnType<typeof useImportSource>;
 
@@ -272,15 +272,17 @@ export function ImportSourceStep({
                       <span className="truncate">
                         {t('newProject', 'githubAppInstalledOn')}{' '}
                         {installations.length > 1 ? (
-                          <select
-                            value={selectedAppInstallationId ?? ''}
-                            onChange={(e) => setSelectedAppInstallationId(Number(e.target.value))}
-                            className="select inline-block !w-auto !py-0.5 !pl-2 text-sm"
-                          >
-                            {installations.map((i) => (
-                              <option key={i.installationId} value={i.installationId}>@{i.accountLogin}</option>
-                            ))}
-                          </select>
+                          <Select
+                            size="sm"
+                            value={String(selectedAppInstallationId ?? '')}
+                            onValueChange={(v) => setSelectedAppInstallationId(Number(v))}
+                            className="align-middle"
+                            aria-label={t('newProject', 'githubAppInstalledOn')}
+                            options={installations.map((i) => ({
+                              value: String(i.installationId),
+                              label: `@${i.accountLogin}`,
+                            }))}
+                          />
                         ) : (
                           <span className="font-medium">@{inst?.accountLogin}</span>
                         )}
@@ -570,17 +572,18 @@ export function ImportSourceStep({
                       {t('newProject', 'loadingBranches')}
                     </div>
                   ) : (
-                    <select
+                    <Select
                       value={gitBranch}
-                      onChange={(e) => setGitBranch(e.target.value)}
-                      className="select terminal-text"
-                    >
-                      {githubBranches?.map((branch) => (
-                        <option key={branch.name} value={branch.name}>
-                          {branch.name} {branch.protected && '🔒'}
-                        </option>
-                      ))}
-                    </select>
+                      onValueChange={setGitBranch}
+                      className="w-full"
+                      mono
+                      aria-label={t('newProject', 'branch')}
+                      options={(githubBranches ?? []).map((branch) => ({
+                        value: branch.name,
+                        label: branch.name,
+                        icon: branch.protected ? <Lock className="w-3.5 h-3.5" aria-label="protected" /> : undefined,
+                      }))}
+                    />
                   )}
                 </div>
               )}
@@ -746,17 +749,18 @@ export function ImportSourceStep({
                       {t('newProject', 'loadingBranches')}
                     </div>
                   ) : (
-                    <select
+                    <Select
                       value={gitBranch}
-                      onChange={(e) => setGitBranch(e.target.value)}
-                      className="select terminal-text"
-                    >
-                      {gitlabBranches?.map((branch) => (
-                        <option key={branch.name} value={branch.name}>
-                          {branch.name} {branch.protected && '🔒'}
-                        </option>
-                      ))}
-                    </select>
+                      onValueChange={setGitBranch}
+                      className="w-full"
+                      mono
+                      aria-label={t('newProject', 'branch')}
+                      options={(gitlabBranches ?? []).map((branch) => ({
+                        value: branch.name,
+                        label: branch.name,
+                        icon: branch.protected ? <Lock className="w-3.5 h-3.5" aria-label="protected" /> : undefined,
+                      }))}
+                    />
                   )}
                 </div>
               )}

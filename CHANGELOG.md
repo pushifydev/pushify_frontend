@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.70] - 2026-09-26
+
+### Added
+- **One select for the whole product** (`components/ui/select.tsx`, on Radix Select). With a mouse it opens a styled listbox — the dashboard's panel, hairline border, highlighted row, a tick on the chosen option, keyboard and typeahead, groups, icons and descriptions per option; on a touch screen the same trigger opens the platform's own picker. Two sizes (`md` for forms, a `sm` pill for toolbars and table rows). All 33 native selects moved to it: team data access, monitoring, logs toolbar, env, project and server settings, new project and new server, domains and DNS, API keys, SSO, database backups and connections, the data browser, admin users and the site editor. Protected branches show a lock icon instead of an emoji.
+
+### Fixed
+- **The open list of a select ignored the theme**: it was drawn by the browser and OS, light in dark mode on some systems.
+- **Page header descriptions** that contain a skeleton or a link no longer nest a div inside a p (a hydration error on the overview).
+
 ## [0.2.0-beta.69] - 2026-09-26
 
 ### Changed

@@ -45,7 +45,7 @@ export default function AlertsPage() {
     (summary?.failedDeliveries24h ?? 0) > 0 || (summary?.unhealthyProjects ?? 0) > 0;
 
   return (
-    <div className="dash-page max-w-5xl min-w-0 space-y-6 pb-10 animate-slide-in overflow-x-hidden">
+    <div className="dash-page max-w-5xl min-w-0 space-y-6 pb-10 animate-slide-in overflow-x-clip">
       <PageHeader
         title={t('alerts', 'title')}
         description={t('alerts', 'description')}

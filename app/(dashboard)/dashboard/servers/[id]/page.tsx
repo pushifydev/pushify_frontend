@@ -175,7 +175,7 @@ export default function ServerDetailPage({ params }: PageProps) {
   };
 
   return (
-    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-clip">
       <PageHeader
         back={{ href: '/dashboard/servers', label: t('navigation', 'servers') }}
         crumb={server.name}
