@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.69] - 2026-09-26
+
+### Changed
+- **Every dashboard page is built like the project detail screen.** A plain page header (breadcrumb on sub-pages, title, status badge, one-line description, a mono meta line, pill actions on the right), underline tab strips where a page has parallel views, hairline row lists instead of card grids, key/value rows, toolbars on top of lists, and settings as sectioned forms with the label on the left and the control on the right. The anatomy lives in `components/dashboard/PageKit.tsx` and `components/dashboard/SettingsParts.tsx`.
+  - **Overview:** counts in the header, projects, activity, onboarding and quick actions as rows.
+  - **Projects, servers, databases, domains:** row lists with a status dot, mono facts and a `…` menu. Server detail and database detail gain `?tab=` tabs (server: overview, workloads, network, activity, details; database: overview, projects, backups, settings).
+  - **New project and new server:** step strip and settings sections; server sizes as a radio row list.
+  - **Monitoring, alerts, activity, team, billing:** stat cards, one toolbar card for filters and charts, tabs on alerts, member rows with their controls on the right, billing as sections with a sticky index.
+  - **Account settings (8 tabs) and the admin panel** in the same layout.
+- The projects list is a single row list; the cards/table toggle is gone.
+
+### Fixed
+- **A small select rendered its value as dots** (team data-access, monitoring project picker): the shared select padding overrode the compact size.
+- **The top-up row in billing** repeated the section's description as its label.
+
 ## [0.2.0-beta.68] - 2026-09-25
 
 ### Changed
