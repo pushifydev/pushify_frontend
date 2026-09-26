@@ -8,6 +8,9 @@ import {
   updateBillingEmail,
   createCheckoutSession,
   createPortalSession,
+  changePlan,
+  payOutstanding,
+  createPaymentMethodSession,
   getSubscriptionStatus,
   cancelSubscription,
   resumeSubscription,
@@ -89,6 +92,48 @@ export function useCreateCheckoutSession() {
   return useMutation({
     mutationFn: async (input: CheckoutInput) => {
       const result = await createCheckoutSession(input);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (data) => {
+      window.location.href = data.url;
+    },
+  });
+}
+
+/** Plan change on an existing subscription. The caller decides what to do with the result. */
+export function useChangePlan() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: CheckoutInput) => {
+      const result = await changePlan(input);
+      if (result.error) throw Object.assign(new Error(result.error.message), { code: result.error.code });
+      return result.data!;
+    },
+    onSuccess: (data) => {
+      if (data.status === 'changed') queryClient.invalidateQueries({ queryKey: billingKeys.all });
+    },
+  });
+}
+
+export function usePayOutstanding() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const result = await payOutstanding();
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (data) => {
+      if (data.status !== 'payment_required') queryClient.invalidateQueries({ queryKey: billingKeys.all });
+    },
+  });
+}
+
+export function useUpdatePaymentMethod() {
+  return useMutation({
+    mutationFn: async () => {
+      const result = await createPaymentMethodSession();
       if (result.error) throw new Error(result.error.message);
       return result.data!;
     },

@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.71] - 2026-09-26
+
+### Fixed
+- **Upgrading a paid plan did not take the payment.** The plans page sent subscribers to a new Checkout session; it now changes the existing subscription (backend beta.65) after a short confirmation that says what is charged. If the bank declines the card or asks for 3-D Secure, Stripe's invoice page opens and the upgrade applies once it is paid.
+
+### Added
+- **Past-due banner actions:** "Pay now" retries the unpaid invoices on the card on file (or opens the invoice page if the bank refuses), "Update card" opens Stripe's card-only page; coming back from it retries the unpaid invoices on the new card.
+
 ## [0.2.0-beta.70] - 2026-09-26
 
 ### Added

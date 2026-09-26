@@ -158,6 +158,46 @@ export const createCheckoutSession = async (
   }
 };
 
+export type PlanChangeResult =
+  | { status: 'changed'; plan: PlanType }
+  | { status: 'payment_required'; payUrl: string }
+  | { status: 'checkout_required' };
+
+export type PayOutstandingResult =
+  | { status: 'paid'; paidCount: number }
+  | { status: 'nothing_due' }
+  | { status: 'payment_required'; payUrl: string };
+
+/** Switch an existing subscription in place (upgrades are charged immediately, pro-rata). */
+export const changePlan = async (input: CheckoutInput): Promise<ApiResponse<PlanChangeResult>> => {
+  try {
+    const response = await api.post<{ data: PlanChangeResult }>('/billing/change-plan', input);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+/** Retry every open invoice on the card on file. */
+export const payOutstanding = async (): Promise<ApiResponse<PayOutstandingResult>> => {
+  try {
+    const response = await api.post<{ data: PayOutstandingResult }>('/billing/pay-outstanding');
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+/** Stripe page that only replaces the card; unpaid invoices are retried when it changes. */
+export const createPaymentMethodSession = async (): Promise<ApiResponse<{ url: string }>> => {
+  try {
+    const response = await api.post<{ data: { url: string } }>('/billing/payment-method');
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const createPortalSession = async (): Promise<ApiResponse<{ url: string }>> => {
   try {
     const response = await api.post<{ data: { url: string } }>('/billing/portal');
