@@ -1811,6 +1811,17 @@ export interface TranslationKeys {
     billingStatusPastDueDesc: string;
     billingStatusSuspendedTitle: string;
     billingStatusSuspendedDesc: string;
+    payNow: string;
+    updateCard: string;
+    paymentReceived: string;
+    nothingDue: string;
+    cardUpdated: string;
+    openingPaymentPage: string;
+    changePlanTitle: string;
+    changePlanUpgradeDesc: string;
+    changePlanDowngradeDesc: string;
+    changePlanConfirm: string;
+    planChanged: string;
     grandfatherBanner: string;
     usagePlanLimitNote: string;
     grandfatherBoostItem: string;
@@ -4919,6 +4930,17 @@ export const en: TranslationKeys = {
     billingStatusSuspendedTitle: 'Platform subscription ended',
     billingStatusSuspendedDesc:
       'Your plan was downgraded and active projects were paused. Managed servers were stopped. Renew your plan to resume.',
+    payNow: 'Pay now',
+    updateCard: 'Update card',
+    paymentReceived: 'Payment received. Your account is active again.',
+    nothingDue: 'There are no unpaid invoices.',
+    cardUpdated: 'Card updated. Unpaid invoices are retried on the new card.',
+    openingPaymentPage: 'Your bank needs to confirm this payment. Opening the payment page…',
+    changePlanTitle: 'Switch to {plan}?',
+    changePlanUpgradeDesc: 'Your card on file is charged now for the rest of this billing period, pro-rated. The new limits apply right away.',
+    changePlanDowngradeDesc: 'The new plan applies right away. The unused part of your current plan is credited to your next invoice.',
+    changePlanConfirm: 'Switch plan',
+    planChanged: 'You are now on {plan}.',
   },
   servers: {
     title: 'Servers',

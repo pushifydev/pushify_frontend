@@ -1,50 +1,91 @@
 'use client';
 
 import { useState } from 'react';
-import { useAvailablePlans, useBillingInfo, useCreateCheckoutSession, useCreatePortalSession } from '@/hooks';
+import { useRouter } from 'next/navigation';
+import {
+  useAvailablePlans,
+  useBillingInfo,
+  useChangePlan,
+  useCreateCheckoutSession,
+  useCreatePortalSession,
+  useTranslation,
+} from '@/hooks';
 import type { PlanType } from '@/lib/api';
 import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/lib/api/get-error-message';
 import { appT } from '@/lib/i18n/app-translate';
+import { formatMessage } from '@/lib/i18n/format-message';
 import { Skeleton } from '@/components/Skeleton';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { PlansCompareView } from '../components/PlansCompareView';
 
 export default function PlansPage() {
+  const { t } = useTranslation();
+  const router = useRouter();
   const { data: plans, isLoading: plansLoading } = useAvailablePlans();
   const { data: billingInfo, isLoading: billingLoading } = useBillingInfo();
 
   const checkout = useCreateCheckoutSession();
   const portal = useCreatePortalSession();
+  const changePlan = useChangePlan();
   const [pendingPlan, setPendingPlan] = useState<PlanType | null>(null);
+  const [confirmPlan, setConfirmPlan] = useState<PlanType | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const currentPlan = billingInfo?.plan || 'free';
   const isLoading = plansLoading || billingLoading;
 
-  const handlePlanAction = (planKey: PlanType) => {
+  const fail = (err: unknown) => {
+    toast.error(appT('errors', 'somethingWentWrong'), { description: getApiErrorMessage(err) });
+    setPendingPlan(null);
+  };
+
+  const startCheckout = (planKey: PlanType) => {
     setPendingPlan(planKey);
-    if (planKey === 'free') {
-      portal.mutate(undefined, {
-        onError: (err) => {
-          toast.error(appT('errors', 'somethingWentWrong'), { description: getApiErrorMessage(err) });
+    checkout.mutate({ planType: planKey, billingCycle }, { onError: fail });
+  };
+
+  // An organisation that already pays switches its subscription in place: the upgrade is charged
+  // to the card on file now. If the bank declines or wants 3-D Secure, Stripe's invoice page takes over.
+  const switchPlan = (planKey: PlanType) => {
+    setPendingPlan(planKey);
+    changePlan.mutate(
+      { planType: planKey, billingCycle },
+      {
+        onSuccess: (result) => {
+          if (result.status === 'checkout_required') {
+            checkout.mutate({ planType: planKey, billingCycle }, { onError: fail });
+            return;
+          }
+          if (result.status === 'payment_required') {
+            toast.message(t('billing', 'openingPaymentPage'));
+            window.location.href = result.payUrl;
+            return;
+          }
+          setConfirmPlan(null);
           setPendingPlan(null);
+          toast.success(formatMessage(t('billing', 'planChanged'), { plan: plans?.[result.plan]?.name ?? result.plan }));
+          router.push('/dashboard/billing');
         },
-      });
+        onError: (err) => {
+          setConfirmPlan(null);
+          fail(err);
+        },
+      },
+    );
+  };
+
+  const handlePlanAction = (planKey: PlanType) => {
+    if (planKey === 'free') {
+      setPendingPlan(planKey);
+      portal.mutate(undefined, { onError: fail });
       return;
     }
     if (planKey === 'enterprise') {
       window.open('mailto:sales@pushify.dev?subject=Enterprise Plan Inquiry', '_blank');
-      setPendingPlan(null);
       return;
     }
-    checkout.mutate(
-      { planType: planKey, billingCycle },
-      {
-        onError: (err) => {
-          toast.error(appT('errors', 'somethingWentWrong'), { description: getApiErrorMessage(err) });
-          setPendingPlan(null);
-        },
-      },
-    );
+    if (currentPlan === 'free') startCheckout(planKey);
+    else setConfirmPlan(planKey);
   };
 
   if (isLoading) {
@@ -66,14 +107,33 @@ export default function PlansPage() {
 
   if (!plans) return null;
 
+  const isUpgrade = confirmPlan !== null && plans[confirmPlan].price > plans[currentPlan].price;
+
   return (
-    <PlansCompareView
-      plans={plans}
-      currentPlan={currentPlan}
-      billingCycle={billingCycle}
-      onBillingCycleChange={setBillingCycle}
-      pendingPlan={pendingPlan}
-      onPlanAction={handlePlanAction}
-    />
+    <>
+      <PlansCompareView
+        plans={plans}
+        currentPlan={currentPlan}
+        billingCycle={billingCycle}
+        onBillingCycleChange={setBillingCycle}
+        pendingPlan={pendingPlan}
+        onPlanAction={handlePlanAction}
+      />
+      <ConfirmDialog
+        open={confirmPlan !== null}
+        onOpenChange={(open) => {
+          if (!open && !changePlan.isPending) setConfirmPlan(null);
+        }}
+        variant="info"
+        title={formatMessage(t('billing', 'changePlanTitle'), { plan: confirmPlan ? plans[confirmPlan].name : '' })}
+        description={t('billing', isUpgrade ? 'changePlanUpgradeDesc' : 'changePlanDowngradeDesc')}
+        confirmText={t('billing', 'changePlanConfirm')}
+        cancelText={t('common', 'cancel')}
+        loading={changePlan.isPending || checkout.isPending}
+        onConfirm={() => {
+          if (confirmPlan) switchPlan(confirmPlan);
+        }}
+      />
+    </>
   );
 }

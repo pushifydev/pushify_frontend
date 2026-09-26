@@ -13,6 +13,8 @@ import {
   useOrganization,
   useInvoices,
   useInfraBilling,
+  usePayOutstanding,
+  useUpdatePaymentMethod,
   billingKeys,
 } from '@/hooks';
 import { confirmInfraTopUp } from '@/lib/api';
@@ -59,10 +61,40 @@ export default function BillingPage() {
   // Same queries the wallet / invoice sections use (shared cache): only index sections that render.
   const { data: infraData } = useInfraBilling();
   const { data: invoices = [] } = useInvoices();
+  const payOutstanding = usePayOutstanding();
+  const updatePaymentMethod = useUpdatePaymentMethod();
+
+  const handlePayNow = () => {
+    payOutstanding.mutate(undefined, {
+      onSuccess: (result) => {
+        if (result.status === 'paid') toast.success(t('billing', 'paymentReceived'));
+        else if (result.status === 'nothing_due') toast.message(t('billing', 'nothingDue'));
+        else {
+          toast.message(t('billing', 'openingPaymentPage'));
+          window.location.href = result.payUrl;
+        }
+      },
+      onError: (err) => toast.error(t('errors', 'somethingWentWrong'), { description: err.message }),
+    });
+  };
+
+  const handleUpdateCard = () => {
+    updatePaymentMethod.mutate(undefined, {
+      onError: (err) => toast.error(t('errors', 'somethingWentWrong'), { description: err.message }),
+    });
+  };
 
   useEffect(() => {
     const topup = searchParams.get('infra_topup');
     const sessionId = searchParams.get('session_id');
+
+    // Back from Stripe's card page: the webhook retries unpaid invoices on the new card.
+    if (searchParams.get('card') === 'updated') {
+      toast.success(t('billing', 'cardUpdated'));
+      queryClient.invalidateQueries({ queryKey: billingKeys.all });
+      window.history.replaceState(null, '', '/dashboard/billing');
+      return;
+    }
 
     const clearTopUpParams = () => {
       window.history.replaceState(null, '', '/dashboard/billing');
@@ -185,9 +217,27 @@ export default function BillingPage() {
           <div className="space-y-1 min-w-0">
             <p className="font-medium text-sm">{t('billing', 'billingStatusPastDueTitle')}</p>
             <p className="text-[13px] text-[var(--text-secondary)]">{t('billing', 'billingStatusPastDueDesc')}</p>
-            <Link href="/dashboard/billing/plans" className="dash-link">
-              {t('billing', 'comparePlans')}
-            </Link>
+            <div className="flex flex-wrap gap-2 pt-2">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handlePayNow}
+                disabled={payOutstanding.isPending}
+              >
+                {payOutstanding.isPending && (
+                  <span className="w-3.5 h-3.5 border-2 border-current/30 border-t-current rounded-full animate-spin" />
+                )}
+                {t('billing', 'payNow')}
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleUpdateCard}
+                disabled={updatePaymentMethod.isPending}
+              >
+                {t('billing', 'updateCard')}
+              </button>
+            </div>
           </div>
         </div>
       )}

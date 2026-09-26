@@ -1855,6 +1855,17 @@ export const tr: TranslationKeys = {
     billingStatusSuspendedTitle: 'Platform aboneliği sona erdi',
     billingStatusSuspendedDesc:
       'Planınız düşürüldü ve aktif projeler duraklatıldı. Yönetilen sunucular durduruldu. Devam etmek için planınızı yenileyin.',
+    payNow: 'Şimdi öde',
+    updateCard: 'Kartı güncelle',
+    paymentReceived: 'Ödeme alındı. Hesabın yeniden aktif.',
+    nothingDue: 'Ödenmemiş fatura yok.',
+    cardUpdated: 'Kart güncellendi. Ödenmemiş faturalar yeni kartla yeniden deneniyor.',
+    openingPaymentPage: 'Bu ödemenin bankan tarafından onaylanması gerekiyor. Ödeme sayfası açılıyor…',
+    changePlanTitle: '{plan} planına geçilsin mi?',
+    changePlanUpgradeDesc: 'Kayıtlı kartından bu dönemin kalanı için orantılı ücret hemen alınır. Yeni limitler hemen geçerli olur.',
+    changePlanDowngradeDesc: 'Yeni plan hemen geçerli olur. Mevcut planının kullanılmayan kısmı bir sonraki faturana alacak olarak yansır.',
+    changePlanConfirm: 'Planı değiştir',
+    planChanged: 'Artık {plan} planındasın.',
   },
   servers: {
     title: 'Sunucular',
