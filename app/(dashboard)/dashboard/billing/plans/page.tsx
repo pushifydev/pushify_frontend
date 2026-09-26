@@ -49,7 +49,7 @@ export default function PlansPage() {
 
   if (isLoading) {
     return (
-      <div className="dash-page max-w-4xl space-y-10 animate-slide-in pb-12 min-w-0">
+      <div className="dash-page max-w-5xl space-y-8 animate-slide-in pb-12 min-w-0">
         <Skeleton className="h-4 w-28" />
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
           <div className="space-y-2 flex-1">

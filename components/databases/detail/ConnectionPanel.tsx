@@ -2,6 +2,7 @@
 
 import { KeyRound } from 'lucide-react';
 import type { Database, DatabaseCredentials } from '@/lib/api';
+import { SettingsSection } from '@/components/dashboard/SettingsParts';
 import { CopyField } from './CopyField';
 import { type T } from './_shared';
 
@@ -31,20 +32,22 @@ export function ConnectionPanel({
   const mask = (value: string) => value.replace(/:[^:@]+@/, ':••••••••@');
 
   return (
-    <section className="dash-panel">
-      <div className="dash-panel-header">
-        <h2 className="dash-panel-title">{t('databases', 'connectionDetails')}</h2>
+    <SettingsSection
+      id="db-connection"
+      title={t('databases', 'connectionDetails')}
+      padded
+      action={
         <button
           type="button"
           onClick={onResetPassword}
           disabled={!canResetPassword}
-          className="btn btn-ghost btn-sm"
+          className="btn btn-secondary btn-sm"
         >
           <KeyRound className="w-3.5 h-3.5" />
           {t('databases', 'resetPassword')}
         </button>
-      </div>
-
+      }
+    >
       <div className="space-y-4">
         {internalStr && (
           <div>
@@ -113,6 +116,6 @@ export function ConnectionPanel({
           />
         </div>
       </div>
-    </section>
+    </SettingsSection>
   );
 }

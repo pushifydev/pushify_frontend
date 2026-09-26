@@ -4,12 +4,13 @@ import { Check } from 'lucide-react';
 import type { Step } from './types';
 
 interface ProgressStepsProps {
-  steps: { id: Step; label: string; icon: React.ReactNode }[];
+  steps: { id: Step; label: string; icon?: React.ReactNode }[];
   currentStep: Step;
   currentStepIndex: number;
   setCurrentStep: (step: Step) => void;
 }
 
+/** The wizard's steps as the dashboard's underline strip: numbered, done steps ticked, later ones locked. */
 export function ProgressSteps({
   steps,
   currentStep,
@@ -17,49 +18,33 @@ export function ProgressSteps({
   setCurrentStep,
 }: ProgressStepsProps) {
   return (
-    <div className="mb-10">
-      <div className="flex items-center justify-between relative">
-        {/* Progress line */}
-        <div className="absolute top-5 left-0 right-0 h-0.5 bg-[var(--border-subtle)]">
-          <div
-            className="h-full bg-gradient-to-r from-[var(--accent-cyan)] to-[var(--accent-purple)] transition-all duration-500"
-            style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
-          />
-        </div>
-
+    <nav className="dash-tabs" aria-label="Steps">
+      <ol className="flex items-stretch gap-6 min-w-0">
         {steps.map((step, index) => {
           const isCompleted = index < currentStepIndex;
           const isCurrent = step.id === currentStep;
+          const reachable = index <= currentStepIndex;
 
           return (
-            <button
-              key={step.id}
-              onClick={() => index <= currentStepIndex && setCurrentStep(step.id)}
-              disabled={index > currentStepIndex}
-              className={`relative z-10 flex flex-col items-center gap-2 ${
-                index <= currentStepIndex ? 'cursor-pointer' : 'cursor-not-allowed'
-              }`}
-            >
-              <div className={`
-                w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
-                ${isCompleted
-                  ? 'dash-accent-fill'
-                  : isCurrent
-                    ? 'bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-purple)] text-[var(--bg-primary)]'
-                    : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)]'
-                }
-              `}>
-                {isCompleted ? <Check className="w-5 h-5" /> : step.icon}
-              </div>
-              <span className={`text-sm font-medium hidden sm:block ${
-                isCurrent ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'
-              }`}>
+            <li key={step.id} className="flex">
+              <button
+                type="button"
+                onClick={() => reachable && setCurrentStep(step.id)}
+                disabled={!reachable}
+                aria-current={isCurrent ? 'step' : undefined}
+                className={`dash-tab${isCurrent ? ' is-active' : ''} disabled:cursor-not-allowed disabled:opacity-60`}
+              >
+                {isCompleted ? (
+                  <Check className="w-3 h-3 text-[var(--status-success)]" aria-hidden />
+                ) : (
+                  <span className="tabular-nums opacity-70">{String(index + 1).padStart(2, '0')}</span>
+                )}
                 {step.label}
-              </span>
-            </button>
+              </button>
+            </li>
           );
         })}
-      </div>
-    </div>
+      </ol>
+    </nav>
   );
 }

@@ -122,7 +122,7 @@ export function RegenerateBackupCodesModal({
           )}
 
           <ModalActions>
-            <button onClick={handleClose} className="btn btn-secondary">
+            <button onClick={handleClose} className="btn btn-ghost">
               {t('common', 'cancel')}
             </button>
             <button
@@ -157,7 +157,7 @@ export function RegenerateBackupCodesModal({
             <button onClick={handleCopyBackupCodes} className="btn btn-secondary w-full">
               {copiedBackupCodes ? (
                 <>
-                  <Check className="w-4 h-4 text-green-400" />
+                  <Check className="w-4 h-4 text-[var(--status-success)]" />
                   {t('apiKeys', 'keyCopied')}
                 </>
               ) : (

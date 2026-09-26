@@ -2,13 +2,14 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useSiteStudioTemplates, useSiteStudioStacks } from '@/hooks/useSiteStudio';
 import type { SiteStudioCategory, SiteStudioStack } from '@/lib/api';
 import SiteTemplateCard from './components/SiteTemplateCard';
 import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
 import { CrossPromoBanner } from '@/components/dashboard/CrossPromoBanner';
+import { EmptyState } from '@/components/EmptyState';
 import { STACK_I18N } from './lib/stacks';
 
 const CATEGORIES: (SiteStudioCategory | 'all')[] = [
@@ -78,9 +79,9 @@ export default function SiteStudioPage() {
       .join(' · ') ?? '';
 
   return (
-    <div className="max-w-5xl mx-auto pb-16 animate-slide-in">
-      {/* Hero — Cal.com style: typography-first, no gradient box */}
-      <header className="pt-2 pb-14 border-b border-[var(--ss-line)] mb-12">
+    <div className="dash-page max-w-7xl min-w-0 pb-8 animate-slide-in">
+      {/* Hero — the one showcase moment; the rest of the page follows the dashboard anatomy */}
+      <header className="pt-2 pb-12 border-b border-[var(--ss-line)] mb-8">
         <p className="ss-eyebrow mb-4">{t('siteStudio', 'badge')}</p>
         <h1 className="ss-display text-[2.25rem] sm:text-[2.75rem] leading-[1.1] mb-5 max-w-2xl">
           {t('siteStudio', 'title')}
@@ -101,135 +102,135 @@ export default function SiteStudioPage() {
         )}
       </header>
 
-      <div className="mb-10">
+      <div className="space-y-6 min-w-0">
         <CrossPromoBanner
           message={t('siteStudio', 'marketplaceBanner')}
           ctaLabel={t('siteStudio', 'marketplaceBannerCta')}
           href="/dashboard/marketplace"
         />
-      </div>
 
-      {/* Search */}
-      <div className="relative mb-10">
-        <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-          style={{ color: 'var(--ss-muted)' }}
-          strokeWidth={1.75}
-        />
-        <input
-          type="search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t('siteStudio', 'searchPlaceholder')}
-          className="ss-input"
-          aria-label={t('siteStudio', 'searchPlaceholder')}
-        />
-      </div>
-
-      {/* Filters */}
-      <div className="space-y-8 mb-12">
-        <div>
-          <p className="ss-section-label">{t('siteStudio', 'filterCategory')}</p>
-          <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((key) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setActiveCategory(key)}
-                className="ss-pill"
-                data-active={activeCategory === key}
-              >
-                {t('siteStudio', CATEGORY_I18N[key] as 'categoryAll')}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p className="ss-section-label">{t('siteStudio', 'filterPlatform')}</p>
-          <div className="flex flex-wrap gap-2">
-            {STACK_FILTERS.map((stack) => (
-              <button
-                key={stack}
-                type="button"
-                onClick={() => setActiveStack(stack)}
-                className="ss-pill"
-                data-active={activeStack === stack}
-              >
-                {stack === 'all'
-                  ? t('siteStudio', 'categoryAll')
-                  : t('siteStudio', STACK_I18N[stack] as 'stackWordpress')}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <SkeletonMarketplaceTemplateCard key={i} />
-          ))}
-        </div>
-      )}
-
-      {!isLoading && filtered.length === 0 && (
-        <p className="text-center py-20 ss-muted">{t('siteStudio', 'noTemplates')}</p>
-      )}
-
-      {featured.length > 0 && (
-        <section className="mb-14">
-          <h2 className="ss-section-label mb-5">{t('siteStudio', 'featured')}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {featured.map((template, i) => (
-              <SiteTemplateCard
-                key={template.id}
-                template={template}
-                index={i}
-                launchLabel={t('siteStudio', 'launch')}
-                categoryLabel={getCategoryLabel(template.category)}
+        {/* Search + filters */}
+        <section className="dash-rows" aria-label={t('siteStudio', 'searchPlaceholder')}>
+          <div className="dash-toolbar px-4! py-3!">
+            <div className="relative w-full sm:max-w-sm">
+              <Search
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-[var(--text-muted)]"
+                aria-hidden
               />
-            ))}
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('siteStudio', 'searchPlaceholder')}
+                className="input pl-10!"
+                aria-label={t('siteStudio', 'searchPlaceholder')}
+              />
+            </div>
+          </div>
+          <div className="dash-row flex flex-col gap-2 md:flex-row md:items-center md:gap-4 min-w-0">
+            <span id="ss-filter-category" className="dash-section-label w-24 shrink-0">
+              {t('siteStudio', 'filterCategory')}
+            </span>
+            <div className="overflow-x-auto min-w-0 [scrollbar-width:none]">
+              <div className="dash-segmented" role="group" aria-labelledby="ss-filter-category">
+                {CATEGORIES.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setActiveCategory(key)}
+                    aria-pressed={activeCategory === key}
+                  >
+                    {t('siteStudio', CATEGORY_I18N[key] as 'categoryAll')}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="dash-row flex flex-col gap-2 md:flex-row md:items-center md:gap-4 min-w-0">
+            <span id="ss-filter-platform" className="dash-section-label w-24 shrink-0">
+              {t('siteStudio', 'filterPlatform')}
+            </span>
+            <div className="overflow-x-auto min-w-0 [scrollbar-width:none]">
+              <div className="dash-segmented" role="group" aria-labelledby="ss-filter-platform">
+                {STACK_FILTERS.map((stack) => (
+                  <button
+                    key={stack}
+                    type="button"
+                    onClick={() => setActiveStack(stack)}
+                    aria-pressed={activeStack === stack}
+                  >
+                    {stack === 'all'
+                      ? t('siteStudio', 'categoryAll')
+                      : t('siteStudio', STACK_I18N[stack] as 'stackWordpress')}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
-      )}
 
-      {rest.length > 0 && (
-        <section className="mb-14">
-          {featured.length > 0 && (
-            <h2 className="ss-section-label mb-5">{t('siteStudio', 'allTemplates')}</h2>
-          )}
+        {isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {rest.map((template, i) => (
-              <SiteTemplateCard
-                key={template.id}
-                template={template}
-                index={i + featured.length}
-                launchLabel={t('siteStudio', 'launch')}
-                categoryLabel={getCategoryLabel(template.category)}
-              />
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonMarketplaceTemplateCard key={i} />
             ))}
           </div>
-        </section>
-      )}
+        )}
 
-      <hr className="ss-divider mb-10" />
+        {!isLoading && filtered.length === 0 && (
+          <EmptyState label={t('siteStudio', 'badge')} title={t('siteStudio', 'noTemplates')} />
+        )}
 
-      {/* Footer CTA */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div>
-          <p className="text-[0.9375rem] font-medium mb-1" style={{ color: 'var(--ss-ink)' }}>
-            {t('siteStudio', 'devCtaTitle')}
-          </p>
-          <p className="ss-muted">{t('siteStudio', 'devCtaDesc')}</p>
+        {featured.length > 0 && (
+          <section className="space-y-3">
+            <h2 className="dash-section-label">{t('siteStudio', 'featured')}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {featured.map((template, i) => (
+                <SiteTemplateCard
+                  key={template.id}
+                  template={template}
+                  index={i}
+                  launchLabel={t('siteStudio', 'launch')}
+                  categoryLabel={getCategoryLabel(template.category)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {rest.length > 0 && (
+          <section className="space-y-3">
+            {featured.length > 0 && <h2 className="dash-section-label">{t('siteStudio', 'allTemplates')}</h2>}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {rest.map((template, i) => (
+                <SiteTemplateCard
+                  key={template.id}
+                  template={template}
+                  index={i + featured.length}
+                  launchLabel={t('siteStudio', 'launch')}
+                  categoryLabel={getCategoryLabel(template.category)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Developer path */}
+        <div className="dash-rows">
+          <div className="dash-row flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-[var(--text-primary)]">{t('siteStudio', 'devCtaTitle')}</p>
+              <p className="text-[13px] mt-0.5 text-[var(--text-secondary)]">{t('siteStudio', 'devCtaDesc')}</p>
+            </div>
+            <Link href="/dashboard/projects/new" className="btn btn-secondary btn-sm shrink-0">
+              {t('siteStudio', 'devCtaLink')}
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
-        <Link href="/dashboard/projects/new" className="ss-link inline-flex items-center gap-1 shrink-0">
-          {t('siteStudio', 'devCtaLink')}
-          <ArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
-        </Link>
-      </div>
 
-      <p className="ss-muted mt-10 text-center text-xs">{t('siteStudio', 'roadmap')}</p>
+        <p className="text-xs text-center text-[var(--text-muted)]">{t('siteStudio', 'roadmap')}</p>
+      </div>
     </div>
   );
 }

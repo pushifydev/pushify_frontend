@@ -2,45 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import {
-  Bell,
-  BellRing,
-  HeartPulse,
-  Mail,
-  MessageSquare,
-  Webhook,
-  ArrowUpRight,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Plus,
-  Activity, MessageCircle} from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, ChevronRight, Plus } from 'lucide-react';
 import { useAlertsOverview, useTranslation, useBillingInfo } from '@/hooks';
-import { STATUS_COLORS } from '@/lib/constants';
 import { formatTimeAgo } from '@/lib/formatters';
 import { Skeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
+import { PageHeader, MetaLabel, Tabs, TabPanel, RowList } from '@/components/dashboard/PageKit';
 
 type AlertsTab = 'channels' | 'health' | 'delivery';
-
-const channelIcons: Record<string, typeof MessageSquare> = {
-  slack: MessageSquare,
-  email: Mail,
-  webhook: Webhook,
-  discord: MessageCircle,
-};
-
-function StatusDot({ ok }: { ok: boolean }) {
-  return (
-    <span
-      className="w-1.5 h-1.5 rounded-full shrink-0"
-      style={{
-        background: ok ? STATUS_COLORS.success : STATUS_COLORS.error,
-        boxShadow: `0 0 5px ${ok ? `${STATUS_COLORS.success}80` : `${STATUS_COLORS.error}80`}`,
-      }}
-    />
-  );
-}
 
 export default function AlertsPage() {
   const { t } = useTranslation();
@@ -50,23 +19,23 @@ export default function AlertsPage() {
 
   const healthPlanEnabled = billing?.features.healthChecks ?? false;
 
-  const tabs: { id: AlertsTab; label: string }[] = [
-    { id: 'channels', label: t('alerts', 'tabChannels') },
-    { id: 'health', label: t('alerts', 'tabHealth') },
-    { id: 'delivery', label: t('alerts', 'tabDelivery') },
+  const tabs: { id: AlertsTab; label: string; count?: number }[] = [
+    { id: 'channels', label: t('alerts', 'tabChannels'), count: data?.channels.length },
+    { id: 'health', label: t('alerts', 'tabHealth'), count: data?.healthChecks.length },
+    { id: 'delivery', label: t('alerts', 'tabDelivery'), count: data?.recentLogs.length },
   ];
 
   if (isLoading) {
     return (
-      <div className="dash-page max-w-5xl space-y-6 pb-10">
-        <Skeleton className="h-8 w-48 rounded" />
-        <Skeleton className="h-4 w-72 rounded" />
+      <div className="dash-page max-w-5xl min-w-0 space-y-6 pb-10">
+        <PageHeader title={t('alerts', 'title')} description={t('alerts', 'description')} />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-20 rounded-xl" />
+            <Skeleton key={i} className="h-[5.5rem] rounded-[14px]" />
           ))}
         </div>
-        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-10 w-full max-w-sm rounded" />
+        <Skeleton className="h-64 rounded-[14px]" />
       </div>
     );
   }
@@ -76,354 +45,209 @@ export default function AlertsPage() {
     (summary?.failedDeliveries24h ?? 0) > 0 || (summary?.unhealthyProjects ?? 0) > 0;
 
   return (
-    <div className="dash-page max-w-5xl pb-10 stagger-children min-w-0 overflow-x-hidden">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
-          <Bell className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />
-          {t('alerts', 'title')}
-        </h1>
-        <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-          {t('alerts', 'description')}
-        </p>
-      </div>
+    <div className="dash-page max-w-5xl min-w-0 space-y-6 pb-10 animate-slide-in overflow-x-hidden">
+      <PageHeader
+        title={t('alerts', 'title')}
+        description={t('alerts', 'description')}
+        badge={
+          summary ? (
+            <span className={`badge shrink-0 ${hasIssues ? 'badge-error' : 'badge-success'}`}>
+              {hasIssues ? t('monitoring', 'unhealthy') : t('monitoring', 'healthy')}
+            </span>
+          ) : undefined
+        }
+        meta={
+          summary
+            ? [
+                <MetaLabel key="ch">
+                  {summary.activeChannels}/{summary.totalChannels} {t('alerts', 'statChannels')}
+                </MetaLabel>,
+                <MetaLabel key="pr">
+                  {summary.projectsWithChannels} {t('alerts', 'statProjects')}
+                </MetaLabel>,
+              ]
+            : undefined
+        }
+        actions={
+          <Link href="/dashboard/projects" className="btn btn-primary justify-center">
+            <Plus className="w-4 h-4" />
+            {t('alerts', 'addChannelHint')}
+          </Link>
+        }
+      />
 
       {summary && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            {
-              label: t('alerts', 'statChannels'),
-              value: `${summary.activeChannels}/${summary.totalChannels}`,
-              accent: STATUS_COLORS.cyan,
-            },
-            {
-              label: t('alerts', 'statProjects'),
-              value: String(summary.projectsWithChannels),
-              accent: STATUS_COLORS.purple,
-            },
-            {
-              label: t('alerts', 'statFailed24h'),
-              value: String(summary.failedDeliveries24h),
-              accent:
-                summary.failedDeliveries24h > 0 ? STATUS_COLORS.error : STATUS_COLORS.neutral,
-            },
-            {
-              label: t('alerts', 'statUnhealthy'),
-              value: String(summary.unhealthyProjects),
-              accent:
-                summary.unhealthyProjects > 0 ? STATUS_COLORS.error : STATUS_COLORS.success,
-            },
+            { label: t('alerts', 'statChannels'), value: `${summary.activeChannels}/${summary.totalChannels}`, bad: false },
+            { label: t('alerts', 'statProjects'), value: String(summary.projectsWithChannels), bad: false },
+            { label: t('alerts', 'statFailed24h'), value: String(summary.failedDeliveries24h), bad: summary.failedDeliveries24h > 0 },
+            { label: t('alerts', 'statUnhealthy'), value: String(summary.unhealthyProjects), bad: summary.unhealthyProjects > 0 },
           ].map((card) => (
-            <div
-              key={card.label}
-              className="rounded-xl p-4"
-              style={{
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--glass-border)',
-              }}
-            >
+            <div key={card.label} className="dash-stat-card p-4 min-w-0">
               <p
-                className="stat-number"
-                style={{
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: card.accent,
-                  letterSpacing: '-0.03em',
-                }}
+                className="dash-stat-value text-[1.5rem]!"
+                style={card.bad ? { color: 'var(--status-error)' } : undefined}
               >
                 {card.value}
               </p>
-              <p
-                style={{
-                  fontSize: 10,
-                  fontFamily: 'var(--font-mono)',
-                  color: 'var(--text-muted)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em',
-                  marginTop: 6,
-                }}
-              >
-                {card.label}
-              </p>
+              <p className="dash-stat-label truncate">{card.label}</p>
             </div>
           ))}
         </div>
       )}
 
       {hasIssues && (
-        <div
-          className="flex items-start gap-3 rounded-xl px-4 py-3 mb-5"
-          style={{
-            background: `${STATUS_COLORS.error}10`,
-            border: `1px solid ${STATUS_COLORS.error}30`,
-          }}
-        >
-          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: STATUS_COLORS.error }} />
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            {t('alerts', 'issuesBanner')}
-          </p>
+        <div className="dash-callout dash-callout-attention items-center" role="status">
+          <AlertTriangle className="w-4 h-4 shrink-0 text-[var(--status-error)]" aria-hidden />
+          <p className="text-[13px] text-[var(--text-secondary)]">{t('alerts', 'issuesBanner')}</p>
         </div>
       )}
 
-      <div
-        className="flex gap-1 p-1 rounded-lg mb-5 w-fit"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-      >
-        {tabs.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setTab(item.id)}
-            className="px-3 py-1.5 rounded-md text-sm transition-colors"
-            style={{
-              background: tab === item.id ? 'var(--bg-tertiary)' : 'transparent',
-              color: tab === item.id ? 'var(--text-primary)' : 'var(--text-muted)',
-              fontWeight: tab === item.id ? 500 : 400,
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
+      <Tabs items={tabs} active={tab} onChange={setTab} label={t('alerts', 'title')} idPrefix="alerts-tab" />
 
-      {tab === 'channels' && (
-        <section>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3">
-            <h2 className="text-sm font-semibold">{t('alerts', 'channelsTitle')}</h2>
-            <Link href="/dashboard/projects" className="btn btn-secondary text-xs py-1.5 justify-center w-full sm:w-auto shrink-0">
-              <Plus className="w-3.5 h-3.5" />
-              {t('alerts', 'addChannelHint')}
-            </Link>
-          </div>
-
-          {!data?.channels.length ? (
-            <EmptyBlock
-              icon={BellRing}
+      <TabPanel idPrefix="alerts-tab" active={tab}>
+        {tab === 'channels' &&
+          (!data?.channels.length ? (
+            <EmptyState
+              label={t('navigation', 'alerts')}
               title={t('alerts', 'noChannelsTitle')}
               description={t('alerts', 'noChannelsDesc')}
-              href="/dashboard/projects"
-              cta={t('navigation', 'projects')}
+              action={{ label: t('navigation', 'projects'), href: '/dashboard/projects' }}
             />
           ) : (
-            <div className="space-y-2">
-              {data.channels.map((ch) => {
-                const Icon = channelIcons[ch.type] ?? Bell;
-                return (
-                  <Link
-                    key={ch.id}
-                    href={`/dashboard/projects/${ch.projectId}?tab=notifications`}
-                    className="group flex items-center gap-3 rounded-xl px-4 py-3 transition-all"
-                    style={{
-                      background: 'var(--bg-secondary)',
-                      border: '1px solid var(--glass-border)',
-                    }}
-                  >
-                    <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: `${STATUS_COLORS.cyan}14`, color: STATUS_COLORS.cyan }}
+            <RowList label={t('alerts', 'channelsTitle')}>
+              {data.channels.map((ch) => (
+                <Link
+                  key={ch.id}
+                  href={`/dashboard/projects/${ch.projectId}?tab=notifications`}
+                  className="dash-row group flex items-center gap-3 hover:bg-[var(--hover-overlay)] transition-colors"
+                >
+                  <span className={`dash-status-dot ${ch.isActive ? 'is-success' : ''}`} aria-hidden />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{ch.name}</p>
+                    <p className="terminal-text text-[11px] mt-0.5 text-[var(--text-muted)] truncate">
+                      {ch.projectName} · {ch.events.length} {t('alerts', 'events')}
+                    </p>
+                  </div>
+                  <span className="dash-section-label shrink-0 hidden sm:inline">
+                    {t('notifications', ch.type as 'slack')}
+                  </span>
+                  <span className={`badge shrink-0 ${ch.isActive ? 'badge-success' : 'badge-neutral'}`}>
+                    {ch.isActive ? t('notifications', 'active') : t('notifications', 'inactive')}
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] shrink-0" aria-hidden />
+                </Link>
+              ))}
+            </RowList>
+          ))}
+
+        {tab === 'health' && (
+          <div className="space-y-4">
+            {!healthPlanEnabled && (
+              <div className="dash-callout dash-callout-attention flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-[13px] text-[var(--text-secondary)]">{t('alerts', 'healthPlanUpgrade')}</p>
+                <Link href="/dashboard/billing/plans" className="btn btn-secondary btn-sm shrink-0">
+                  {t('alerts', 'upgradePlan')}
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
+
+            {!data?.healthChecks.length ? (
+              <EmptyState
+                label={t('navigation', 'alerts')}
+                title={t('alerts', 'noProjectsTitle')}
+                description={t('alerts', 'noProjectsDesc')}
+                action={{ label: t('navigation', 'newProject'), href: '/dashboard/projects/new' }}
+              />
+            ) : (
+              <RowList label={t('alerts', 'healthTitle')}>
+                {data.healthChecks.map((hc) => {
+                  const isUnhealthy =
+                    hc.isActive &&
+                    hc.lastStatus &&
+                    (hc.lastStatus === 'unhealthy' || hc.lastStatus === 'timeout');
+                  const isHealthy = hc.isActive && hc.lastStatus === 'healthy';
+                  const dot = !hc.isActive ? '' : isUnhealthy ? 'is-error' : isHealthy ? 'is-success' : 'is-warning';
+
+                  return (
+                    <Link
+                      key={hc.projectId}
+                      href={`/dashboard/projects/${hc.projectId}?tab=settings`}
+                      className="dash-row group flex items-center gap-3 hover:bg-[var(--hover-overlay)] transition-colors"
                     >
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{ch.name}</p>
-                      <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
-                        {ch.projectName} · {t('notifications', ch.type as 'slack')} ·{' '}
-                        {ch.events.length} {t('alerts', 'events')}
-                      </p>
-                    </div>
-                    <span
-                      className="text-xs px-2 py-0.5 rounded-full shrink-0"
-                      style={{
-                        background: ch.isActive ? `${STATUS_COLORS.success}18` : 'var(--bg-tertiary)',
-                        color: ch.isActive ? STATUS_COLORS.success : 'var(--text-muted)',
-                      }}
-                    >
-                      {ch.isActive ? t('notifications', 'active') : t('notifications', 'inactive')}
-                    </span>
-                    <ArrowUpRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 shrink-0" />
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      )}
+                      <span className={`dash-status-dot ${dot}`} aria-hidden />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{hc.projectName}</p>
+                        <p className="terminal-text text-[11px] mt-0.5 text-[var(--text-muted)] truncate">
+                          {hc.isActive
+                            ? `${hc.endpoint} · ${hc.intervalSeconds}s`
+                            : t('alerts', 'healthDisabled')}
+                          {hc.lastCheckedAt && <> · {formatTimeAgo(hc.lastCheckedAt, t)}</>}
+                        </p>
+                      </div>
+                      {hc.isActive && hc.lastStatus && (
+                        <span
+                          className={`badge shrink-0 ${
+                            isHealthy ? 'badge-success' : isUnhealthy ? 'badge-error' : 'badge-warning'
+                          }`}
+                        >
+                          {t(
+                            'healthChecks',
+                            hc.lastStatus === 'timeout' ? 'statusTimeout' : (hc.lastStatus as 'healthy')
+                          )}
+                        </span>
+                      )}
+                      {!hc.isActive && (
+                        <span className="dash-section-label shrink-0">{t('alerts', 'notConfigured')}</span>
+                      )}
+                      <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] shrink-0" aria-hidden />
+                    </Link>
+                  );
+                })}
+              </RowList>
+            )}
+          </div>
+        )}
 
-      {tab === 'health' && (
-        <section>
-          {!healthPlanEnabled && (
-            <div
-              className="rounded-xl px-4 py-3 mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-              style={{
-                background: `${STATUS_COLORS.orange}10`,
-                border: `1px solid ${STATUS_COLORS.orange}35`,
-              }}
-            >
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                {t('alerts', 'healthPlanUpgrade')}
-              </p>
-              <Link href="/dashboard/billing/plans" className="text-xs shrink-0" style={{ color: 'var(--accent-cyan)' }}>
-                {t('alerts', 'upgradePlan')}
-                <ArrowUpRight className="w-3 h-3 inline ml-0.5" />
-              </Link>
-            </div>
-          )}
-
-          <h2 className="text-sm font-semibold mb-3">{t('alerts', 'healthTitle')}</h2>
-
-          {!data?.healthChecks.length ? (
-            <EmptyBlock
-              icon={HeartPulse}
-              title={t('alerts', 'noProjectsTitle')}
-              description={t('alerts', 'noProjectsDesc')}
-              href="/dashboard/projects/new"
-              cta={t('navigation', 'newProject')}
-            />
-          ) : (
-            <div className="space-y-2">
-              {data.healthChecks.map((hc) => {
-                const isUnhealthy =
-                  hc.isActive &&
-                  hc.lastStatus &&
-                  (hc.lastStatus === 'unhealthy' || hc.lastStatus === 'timeout');
-                const isHealthy = hc.isActive && hc.lastStatus === 'healthy';
-
-                return (
-                  <Link
-                    key={hc.projectId}
-                    href={`/dashboard/projects/${hc.projectId}?tab=settings`}
-                    className="group flex items-center gap-3 rounded-xl px-4 py-3 transition-all"
-                    style={{
-                      background: 'var(--bg-secondary)',
-                      border: `1px solid ${isUnhealthy ? `${STATUS_COLORS.error}40` : 'var(--glass-border)'}`,
-                    }}
-                  >
-                    <HeartPulse
-                      className="w-4 h-4 shrink-0"
-                      style={{
-                        color: !hc.isActive
-                          ? 'var(--text-muted)'
-                          : isUnhealthy
-                            ? STATUS_COLORS.error
-                            : isHealthy
-                              ? STATUS_COLORS.success
-                              : '#f59e0b',
-                      }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{hc.projectName}</p>
-                      <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                        {hc.isActive
-                          ? `${hc.endpoint} · ${hc.intervalSeconds}s`
-                          : t('alerts', 'healthDisabled')}
-                        {hc.lastCheckedAt && (
-                          <> · {formatTimeAgo(hc.lastCheckedAt, t)}</>
-                        )}
-                      </p>
-                    </div>
-                    {hc.isActive && hc.lastStatus && (
-                      <span
-                        className={`badge text-xs shrink-0 ${
-                          isHealthy ? 'badge-success' : isUnhealthy ? 'badge-error' : 'badge-warning'
-                        }`}
-                      >
-                        {t(
-                          'healthChecks',
-                          hc.lastStatus === 'timeout'
-                            ? 'statusTimeout'
-                            : (hc.lastStatus as 'healthy')
-                        )}
-                      </span>
-                    )}
-                    {!hc.isActive && (
-                      <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>
-                        {t('alerts', 'notConfigured')}
-                      </span>
-                    )}
-                    <ArrowUpRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 shrink-0" />
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      )}
-
-      {tab === 'delivery' && (
-        <section>
-          <h2 className="text-sm font-semibold mb-3">{t('alerts', 'deliveryTitle')}</h2>
-
-          {!data?.recentLogs.length ? (
-            <EmptyBlock
-              icon={Activity}
+        {tab === 'delivery' &&
+          (!data?.recentLogs.length ? (
+            <EmptyState
+              label={t('navigation', 'alerts')}
               title={t('alerts', 'noLogsTitle')}
               description={t('alerts', 'noLogsDesc')}
             />
           ) : (
-            <div
-              className="rounded-xl overflow-hidden"
-              style={{ border: '1px solid var(--glass-border)' }}
-            >
-              {data.recentLogs.map((log, idx) => (
-                <div
-                  key={log.id}
-                  className="flex flex-col gap-2 sm:flex-row sm:items-center gap-x-3 px-4 py-3 min-w-0"
-                  style={{
-                    background: 'var(--bg-secondary)',
-                    borderTop: idx > 0 ? '1px solid var(--glass-border)' : undefined,
-                  }}
-                >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <StatusDot ok={log.status === 'sent'} />
+            <RowList label={t('alerts', 'deliveryTitle')}>
+              {data.recentLogs.map((log) => {
+                const ok = log.status === 'sent';
+                return (
+                  <div key={log.id} className="dash-row flex items-center gap-3 min-w-0">
+                    <span className={`dash-status-dot ${ok ? 'is-success' : 'is-error'}`} aria-hidden />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">
-                        {log.projectName} — {log.channelName}
+                        {log.projectName} <span className="text-[var(--text-muted)]">—</span> {log.channelName}
                       </p>
-                      <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
+                      <p className="terminal-text text-[11px] mt-0.5 truncate text-[var(--text-muted)]">
                         {log.eventType}
-                        {log.errorMessage ? ` · ${log.errorMessage}` : ''}
+                        {log.errorMessage ? (
+                          <span className="text-[var(--status-error)]"> · {log.errorMessage}</span>
+                        ) : null}
                       </p>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                    {log.status === 'sent' ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 shrink-0" style={{ color: STATUS_COLORS.success }} />
-                    ) : (
-                      <XCircle className="w-3.5 h-3.5 shrink-0" style={{ color: STATUS_COLORS.error }} />
-                    )}
-                    <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>
+                    <span className={`badge shrink-0 hidden sm:inline-flex ${ok ? 'badge-success' : 'badge-error'}`}>
+                      {log.status}
+                    </span>
+                    <span className="terminal-text text-[11px] text-[var(--text-muted)] shrink-0 tabular-nums">
                       {formatTimeAgo(log.sentAt, t)}
                     </span>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+                );
+              })}
+            </RowList>
+          ))}
+      </TabPanel>
     </div>
-  );
-}
-
-/** Alerts' empty tabs: the shared empty state; `icon` is kept for the call sites but not drawn. */
-function EmptyBlock({
-  title,
-  description,
-  href,
-  cta,
-}: {
-  icon: React.ElementType;
-  title: string;
-  description: string;
-  href?: string;
-  cta?: string;
-}) {
-  const { t } = useTranslation();
-  return (
-    <EmptyState
-      label={t('navigation', 'alerts')}
-      title={title}
-      description={description}
-      action={href && cta ? { label: cta, href } : undefined}
-    />
   );
 }

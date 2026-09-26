@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowUpRight, ListChecks } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { formatTimeAgo } from '@/lib/formatters';
@@ -68,17 +68,10 @@ export function OperationsPanel({
   ];
 
   return (
-    <div className={cn('min-w-0', inSheet ? '' : 'dash-panel p-4 sm:p-5', className)} aria-labelledby="dash-ops-title">
+    <div className={cn('min-w-0', inSheet ? '' : 'dash-card p-4 sm:p-5', className)} aria-labelledby="dash-ops-title">
       <div className="dash-panel-header">
         <div className="dash-panel-title" id="dash-ops-title">
-          {inSheet ? (
-            <span className="dash-section-label !mb-0">{t('dashboard', 'opsPanelTitle')}</span>
-          ) : (
-            <>
-              <ListChecks className="w-4 h-4 text-[var(--text-secondary)]" />
-              {t('dashboard', 'opsPanelTitle')}
-            </>
-          )}
+          <span className="dash-section-label !mb-0">{t('dashboard', 'opsPanelTitle')}</span>
         </div>
         <Link href="/dashboard/activity" className="dash-link flex items-center gap-1 text-xs shrink-0">
           {t('navigation', 'activity')}
@@ -105,11 +98,14 @@ export function OperationsPanel({
       )}
 
       {showActions && (
-        <ul className="space-y-2 min-w-0">
+        <ul className="dash-rows">
           {actionItems.map((item) => (
-            <li key={item.id} className="min-w-0">
-              <Link href={item.href} className="group dash-alert-row min-w-0">
-                <span className={cn('dash-status-dot mt-1.5 shrink-0', severityDotClass[item.severity])} />
+            <li key={item.id} className="dash-row !p-0 min-w-0">
+              <Link
+                href={item.href}
+                className="group flex items-start gap-3 px-4 py-3 sm:px-5 min-w-0 hover:bg-[var(--hover-overlay)] transition-colors"
+              >
+                <span className={cn('dash-status-dot mt-1.5 shrink-0', severityDotClass[item.severity])} aria-hidden />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[var(--text-primary)] group-hover:underline underline-offset-2">
                     {item.title}
@@ -131,14 +127,14 @@ export function OperationsPanel({
             <p className="dash-section-label !mb-0">{t('dashboard', 'opsRecentFailures')}</p>
             <span className="dash-mono-caption tabular-nums">{recentFailures.length}</span>
           </div>
-          <ul className="space-y-2 min-w-0">
+          <ul className="dash-rows">
             {recentFailures.map((f) => (
-              <li key={f.id} className="min-w-0">
+              <li key={f.id} className="dash-row !p-0 min-w-0">
                 <Link
                   href={`/dashboard/projects/${f.projectId}?tab=deployments`}
-                  className="group dash-list-row dash-list-row--failure min-w-0"
+                  className="group flex items-start gap-3 px-4 py-3 sm:px-5 min-w-0 hover:bg-[var(--hover-overlay)] transition-colors"
                 >
-                  <span className="dash-status-dot is-error shrink-0" />
+                  <span className="dash-status-dot is-error mt-1.5 shrink-0" aria-hidden />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate text-[var(--text-primary)] group-hover:underline underline-offset-2">
                       {f.projectName}
@@ -147,7 +143,7 @@ export function OperationsPanel({
                       {f.errorMessage || t('dashboard', 'opsNoErrorMessage')}
                     </p>
                   </div>
-                  <span className="dash-caption dash-failure-time shrink-0 max-w-[5rem] text-right">
+                  <span className="terminal-text text-xs text-[var(--text-muted)] shrink-0 max-w-[6rem] text-right">
                     {formatTimeAgo(f.createdAt, t)}
                   </span>
                 </Link>

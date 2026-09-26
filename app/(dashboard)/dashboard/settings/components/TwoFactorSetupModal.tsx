@@ -64,7 +64,7 @@ export function TwoFactorSetupModal({
       {/* Step 1: QR Code */}
       <div className="mb-6 mt-4">
         <div className="flex items-center gap-2 mb-3">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] text-sm font-semibold">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full border border-[var(--border-default)] text-[var(--text-secondary)] terminal-text text-xs">
             1
           </span>
           <h3 className="font-medium">{t('security', 'scanQrCode')}</h3>
@@ -80,7 +80,7 @@ export function TwoFactorSetupModal({
       {/* Step 2: Verification Code */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] text-sm font-semibold">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full border border-[var(--border-default)] text-[var(--text-secondary)] terminal-text text-xs">
             2
           </span>
           <h3 className="font-medium">{t('security', 'enterCode')}</h3>
@@ -104,7 +104,7 @@ export function TwoFactorSetupModal({
       {/* Step 3: Backup Codes */}
       <div className="mb-2">
         <div className="flex items-center gap-2 mb-3">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] text-sm font-semibold">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full border border-[var(--border-default)] text-[var(--text-secondary)] terminal-text text-xs">
             3
           </span>
           <h3 className="font-medium">{t('security', 'backupCodes')}</h3>
@@ -113,8 +113,8 @@ export function TwoFactorSetupModal({
           {t('security', 'backupCodesDesc')}
         </p>
         <div className="ml-8">
-          <div className="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 mb-3">
-            <div className="flex items-start gap-2 text-yellow-400 text-sm mb-3">
+          <div className="p-4 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] mb-3">
+            <div className="flex items-start gap-2 text-[var(--status-warning)] text-sm mb-3">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{t('security', 'backupCodesWarning')}</span>
             </div>
@@ -132,7 +132,7 @@ export function TwoFactorSetupModal({
           <button onClick={handleCopyBackupCodes} className="btn btn-secondary w-full">
             {copiedBackupCodes ? (
               <>
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-4 h-4 text-[var(--status-success)]" />
                 {t('apiKeys', 'keyCopied')}
               </>
             ) : (
@@ -146,7 +146,7 @@ export function TwoFactorSetupModal({
       </div>
 
       <ModalActions>
-        <button onClick={handleClose} className="btn btn-secondary">
+        <button onClick={handleClose} className="btn btn-ghost">
           {t('common', 'cancel')}
         </button>
         <button

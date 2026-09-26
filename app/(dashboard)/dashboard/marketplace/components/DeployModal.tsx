@@ -123,15 +123,8 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
                     <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} />
                   </div>
                 ) : readyServers.length === 0 ? (
-                  <div
-                    className="flex items-center gap-2 p-3 rounded-lg text-sm"
-                    style={{
-                      background: 'rgba(245,158,11,0.08)',
-                      border: '1px solid rgba(245,158,11,0.2)',
-                      color: '#f59e0b',
-                    }}
-                  >
-                    <AlertCircle className="w-4 h-4 shrink-0" />
+                  <div className="dash-callout dash-callout-attention items-center text-sm" role="note">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-[var(--status-warning)]" aria-hidden />
                     {t('marketplace', 'noServers')}
                   </div>
                 ) : (
@@ -196,10 +189,7 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
                           {envVar.key}
                         </label>
                         {envVar.required && !envVar.generate && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded" style={{
-                            background: 'rgba(239,68,68,0.1)',
-                            color: '#f87171',
-                          }}>
+                          <span className="badge badge-warning">
                             {t('marketplace', 'required')}
                           </span>
                         )}
@@ -272,7 +262,7 @@ export default function DeployModal({ isOpen, template, onClose }: DeployModalPr
                 {template.requiresDatabase && (
                   <div className="flex justify-between text-sm">
                     <span style={{ color: 'var(--text-muted)' }}>{t('marketplace', 'requiresDatabase')}</span>
-                    <span style={{ color: '#f59e0b' }}>{template.requiresDatabase.type}</span>
+                    <span className="terminal-text" style={{ color: 'var(--text-primary)' }}>{template.requiresDatabase.type}</span>
                   </div>
                 )}
               </div>

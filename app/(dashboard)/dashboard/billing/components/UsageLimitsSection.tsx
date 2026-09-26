@@ -1,22 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  TrendingUp,
-  AlertTriangle,
-  ArrowUpRight,
-  Server,
-  Database,
-  Folder,
-  Rocket,
-  Users,
-  Globe,
-  Clock,
-  HardDrive,
-  Activity,
-  CircleHelp,
-  type LucideIcon,
-} from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, CircleHelp } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import type { UsageStats } from '@/lib/api/services/billing.service';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
@@ -30,20 +15,7 @@ import {
   type UsageLevel,
 } from '@/lib/billing-usage';
 import { formatMessage } from '@/lib/i18n/format-message';
-import { STATUS_COLORS } from '@/lib/constants';
-import { cn } from '@/lib/utils';
-
-const USAGE_ICONS: Record<keyof UsageStats, LucideIcon> = {
-  servers: Server,
-  databases: Database,
-  projects: Folder,
-  deploymentsThisMonth: Rocket,
-  buildMinutesThisMonth: Clock,
-  storageGb: HardDrive,
-  bandwidthGb: Activity,
-  teamMembers: Users,
-  customDomains: Globe,
-};
+import { SettingsSection } from '@/components/dashboard/SettingsParts';
 
 type BillingUsageLabelKey = keyof Pick<
   TranslationKeys['billing'],
@@ -75,11 +47,12 @@ const USAGE_LABEL_KEYS: Record<keyof UsageStats, BillingUsageLabelKey> = {
   customDomains: 'customDomains',
 };
 
-const BAR_COLORS: Record<UsageLevel, string> = {
-  ok: 'var(--accent-cyan)',
-  warning: STATUS_COLORS.warning,
-  danger: STATUS_COLORS.error,
-  unavailable: 'var(--text-muted)',
+/** Metric-track fill modifier per usage level (ink when fine, colour only near the limit). */
+const FILL_CLASS: Record<UsageLevel, string> = {
+  ok: '',
+  warning: ' is-warning',
+  danger: ' is-critical',
+  unavailable: ' is-low',
 };
 
 export function UsageLimitsAlert({ usage }: { usage: UsageStats }) {
@@ -90,38 +63,23 @@ export function UsageLimitsAlert({ usage }: { usage: UsageStats }) {
   const hasDanger = warnings.some((w) => w.level === 'danger');
 
   return (
-    <div
-      className={cn(
-        'dash-panel p-4 flex flex-col sm:flex-row sm:items-center gap-3',
-        hasDanger ? 'dash-callout-attention' : 'border-[var(--border-subtle)]',
-      )}
-      style={
-        hasDanger
-          ? undefined
-          : {
-              background: `${STATUS_COLORS.warning}10`,
-              borderColor: `${STATUS_COLORS.warning}33`,
-            }
-      }
-    >
-      <div className="flex gap-3 min-w-0 flex-1">
+    <div className="dash-callout dash-callout-attention flex-col gap-3 sm:flex-row sm:items-center" role="status">
+      <div className="flex gap-2.5 min-w-0 flex-1">
         <AlertTriangle
-          className="w-5 h-5 shrink-0 mt-0.5"
-          style={{ color: hasDanger ? STATUS_COLORS.error : STATUS_COLORS.warning }}
+          className="w-4 h-4 shrink-0 mt-0.5"
+          style={{ color: hasDanger ? 'var(--status-error)' : 'var(--status-warning)' }}
+          aria-hidden
         />
         <div className="min-w-0">
           <p className="text-sm font-medium text-[var(--text-primary)]">
             {hasDanger ? t('billing', 'usageAtLimitTitle') : t('billing', 'usageNearLimitTitle')}
           </p>
-          <p className="text-xs mt-1 text-[var(--text-secondary)] leading-relaxed">
+          <p className="text-[13px] mt-0.5 text-[var(--text-secondary)] leading-relaxed">
             {t('billing', 'usageNearLimitDesc')}
           </p>
         </div>
       </div>
-      <Link
-        href="/dashboard/billing/plans"
-        className="btn btn-primary text-xs shrink-0 inline-flex items-center gap-1"
-      >
+      <Link href="/dashboard/billing/plans" className="btn btn-primary btn-sm shrink-0">
         {t('billing', 'usageUpgradeCta')}
         <ArrowUpRight className="w-3.5 h-3.5" />
       </Link>
@@ -129,117 +87,91 @@ export function UsageLimitsAlert({ usage }: { usage: UsageStats }) {
   );
 }
 
-export function UsageLimitsSection({ usage }: { usage: UsageStats }) {
+export function UsageLimitsSection({ usage, id }: { usage: UsageStats; id?: string }) {
   const { t } = useTranslation();
   const unlimitedLabel = t('billing', 'unlimited');
 
   return (
-    <section className="dash-panel p-5 sm:p-6">
-      <div className="dash-panel-header">
-        <div className="dash-panel-title min-w-0">
-          <TrendingUp className="w-4 h-4 shrink-0 text-[var(--text-secondary)]" />
-          <span className="truncate">{t('billing', 'usage')}</span>
-        </div>
-        <Link href="/dashboard/billing/plans" className="dash-link flex items-center gap-1 shrink-0">
+    <SettingsSection
+      id={id}
+      title={t('billing', 'usage')}
+      action={
+        <Link href="/dashboard/billing/plans" className="btn btn-secondary btn-sm">
           {t('billing', 'comparePlans')}
-          <ArrowUpRight className="w-3 h-3" />
+          <ArrowUpRight className="w-3.5 h-3.5" />
         </Link>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      }
+    >
+      <ul className="-mx-5">
         {USAGE_DISPLAY_ORDER.map((key) => {
           const item = usage[key];
-          const Icon = USAGE_ICONS[key];
           const level = usageLevel(item.used, item.limit, item.unlimited);
           const percent = usagePercent(item.used, item.limit, item.unlimited);
-          const barColor = BAR_COLORS[level];
+          const hintKey = USAGE_HINT_KEYS[key];
+          const label = t('billing', USAGE_LABEL_KEYS[key]);
 
           return (
-            <div
+            <li
               key={key}
-              className={cn(
-                'rounded-lg p-3.5 border border-transparent',
-                level === 'danger' && 'border-[var(--status-error)]/25',
-                level === 'warning' && 'border-[var(--status-warning)]/20',
-              )}
-              style={{ background: 'var(--bg-tertiary)' }}
+              className="dash-row grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto] items-center gap-x-5 gap-y-2"
             >
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Icon className="w-4 h-4 shrink-0 text-[var(--text-muted)]" strokeWidth={2} />
-                  <p className="text-xs font-medium text-[var(--text-secondary)] truncate flex items-center gap-1">
-                    {t('billing', USAGE_LABEL_KEYS[key])}
-                    {USAGE_HINT_KEYS[key] && (
-                      <span
-                        className="inline-flex shrink-0 text-[var(--text-muted)]"
-                        title={t('billing', USAGE_HINT_KEYS[key]!)}
-                      >
-                        <CircleHelp className="w-3.5 h-3.5" aria-hidden />
-                      </span>
-                    )}
+              <div className="min-w-0">
+                <p className="text-[13px] font-medium text-[var(--text-primary)] flex items-center gap-1.5 min-w-0">
+                  <span className="truncate">{label}</span>
+                  {hintKey && (
+                    <span className="inline-flex shrink-0 text-[var(--text-muted)]" title={t('billing', hintKey)}>
+                      <CircleHelp className="w-3.5 h-3.5" aria-hidden />
+                      <span className="sr-only">{t('billing', hintKey)}</span>
+                    </span>
+                  )}
+                </p>
+                {hasPlanLimitBonus(item) && (
+                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5 tabular-nums">
+                    {formatMessage(t('billing', 'usagePlanLimitNote'), {
+                      planLimit: String(item.planLimit),
+                    })}
                   </p>
-                </div>
-                {(level === 'warning' || level === 'danger') && (
-                  <span
-                    className="text-[10px] font-semibold uppercase tracking-wide shrink-0"
-                    style={{
-                      color: level === 'danger' ? STATUS_COLORS.error : STATUS_COLORS.warning,
-                    }}
-                  >
-                    {level === 'danger'
-                      ? t('billing', 'usageBadgeLimit')
-                      : t('billing', 'usageBadgeNear')}
-                  </span>
+                )}
+                {level === 'unavailable' && item.limit <= 0 && (
+                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{t('billing', 'usageNotOnPlan')}</p>
                 )}
               </div>
 
-              <p
-                className="text-base font-semibold tabular-nums text-[var(--text-primary)] mb-2"
-                style={{ fontFamily: 'var(--font-mono)' }}
+              <div
+                className="dash-metric-track col-span-2 sm:col-span-1 row-start-2 sm:row-start-auto"
+                role="progressbar"
+                aria-label={label}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={percent}
               >
-                {item.used}
-                <span className="text-sm font-normal text-[var(--text-muted)]">
-                  {' '}
-                  / {formatUsageLimit(item, unlimitedLabel)}
-                  {key === 'buildMinutesThisMonth' && !item.unlimited && item.limit > 0 && (
-                    <span className="text-xs"> {t('billing', 'usageMinutesUnit')}</span>
-                  )}
-                </span>
-              </p>
-
-              <div className="h-1.5 rounded-full overflow-hidden bg-[var(--glass-border)]">
                 <div
-                  className="h-full rounded-full bar-grow transition-[width] duration-300"
-                  style={{
-                    width: `${item.unlimited ? Math.min(percent, 100) : percent}%`,
-                    background: barColor,
-                    opacity: level === 'unavailable' ? 0.35 : 1,
-                  }}
+                  className={`dash-metric-fill${FILL_CLASS[level]}`}
+                  style={{ width: `${item.unlimited ? Math.min(percent, 100) : percent}%` }}
                 />
               </div>
 
-              {!item.unlimited && item.limit > 0 && (
-                <p className="text-[11px] text-[var(--text-muted)] mt-2 tabular-nums">
-                  {percent}% {t('billing', 'used')}
-                </p>
-              )}
-
-              {hasPlanLimitBonus(item) && (
-                <p className="text-[11px] text-[var(--accent-cyan)] mt-1 tabular-nums">
-                  {formatMessage(t('billing', 'usagePlanLimitNote'), {
-                    planLimit: String(item.planLimit),
-                  })}
-                </p>
-              )}
-
-              {level === 'unavailable' && item.limit <= 0 && (
-                <p className="text-[11px] text-[var(--text-muted)] mt-2">
-                  {t('billing', 'usageNotOnPlan')}
-                </p>
-              )}
-            </div>
+              <div className="flex items-center justify-end gap-2 shrink-0">
+                {(level === 'warning' || level === 'danger') && (
+                  <span className={`badge ${level === 'danger' ? 'badge-error' : 'badge-warning'}`}>
+                    {level === 'danger' ? t('billing', 'usageBadgeLimit') : t('billing', 'usageBadgeNear')}
+                  </span>
+                )}
+                <span className="terminal-text text-xs tabular-nums text-[var(--text-primary)] whitespace-nowrap">
+                  {item.used}
+                  <span className="text-[var(--text-muted)]">
+                    {' / '}
+                    {formatUsageLimit(item, unlimitedLabel)}
+                    {key === 'buildMinutesThisMonth' && !item.unlimited && item.limit > 0 && (
+                      <> {t('billing', 'usageMinutesUnit')}</>
+                    )}
+                  </span>
+                </span>
+              </div>
+            </li>
           );
         })}
-      </div>
-    </section>
+      </ul>
+    </SettingsSection>
   );
 }

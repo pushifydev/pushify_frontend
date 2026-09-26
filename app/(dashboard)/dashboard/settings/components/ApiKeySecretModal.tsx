@@ -28,13 +28,6 @@ export function ApiKeySecretModal({ isOpen, onClose, secretKey }: ApiKeySecretMo
       title={t('apiKeys', 'secretKey')}
       maxWidth="lg"
     >
-      <div className="flex items-center gap-2 text-green-400 mb-4 -mt-2">
-        <div className="p-2 rounded-full bg-green-500/20">
-          <Check className="w-5 h-5" />
-        </div>
-        <span className="font-medium">API Key Created Successfully</span>
-      </div>
-
       <AlertBox variant="warning">
         {t('apiKeys', 'secretKeyWarning')}
       </AlertBox>
@@ -45,7 +38,7 @@ export function ApiKeySecretModal({ isOpen, onClose, secretKey }: ApiKeySecretMo
           <button onClick={handleCopyKey} className="btn btn-secondary shrink-0">
             {copiedKey ? (
               <>
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-4 h-4 text-[var(--status-success)]" />
                 {t('apiKeys', 'keyCopied')}
               </>
             ) : (

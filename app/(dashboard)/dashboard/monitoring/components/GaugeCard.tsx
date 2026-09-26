@@ -2,52 +2,56 @@
 
 import React from 'react';
 
+/** One aggregate figure: mono label, value, a quiet sub line and the metric track. */
 export function GaugeCard({
   label,
   value,
   subValue,
-  icon: Icon,
   maxValue = 100,
   suffix = '%',
   thresholds = true,
+  decimals = 1,
 }: {
   label: string;
   value: number;
   subValue?: string;
-  icon: React.ElementType;
+  /** @deprecated stat cards no longer draw an icon; kept so callers need not change */
+  icon?: React.ElementType;
   /** @deprecated cards are monochrome; kept so callers need not change */
   color?: string;
   maxValue?: number;
   suffix?: string;
   /** Warn/alert colours only mean something for a utilisation figure, not for a count or a total. */
   thresholds?: boolean;
+  decimals?: number;
 }) {
   const percentage = Math.min((value / maxValue) * 100, 100);
-  const barColor = !thresholds
-    ? 'var(--text-primary)'
+  const level = !thresholds
+    ? ''
     : percentage > 85
-      ? 'var(--status-error)'
+      ? ' is-critical'
       : percentage > 60
-        ? 'var(--status-warning)'
-        : 'var(--text-primary)';
+        ? ' is-warning'
+        : '';
 
   return (
-    <div className="dash-stat-card p-5">
-      <div className="flex items-center justify-between mb-4">
-        <span className="dash-stat-label mt-0!">{label}</span>
-        <Icon className="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true" />
-      </div>
+    <div className="dash-stat-card p-4 sm:p-5 min-w-0">
+      <p className="dash-stat-label mt-0! mb-3">{label}</p>
       <div className="dash-stat-value">
-        {value.toFixed(1)}{suffix}
+        {value.toFixed(decimals)}{suffix}
       </div>
       {subValue && (
-        <p className="text-xs text-[var(--text-muted)] mt-1 font-mono">{subValue}</p>
+        <p className="terminal-text text-[11px] text-[var(--text-muted)] mt-2 truncate">{subValue}</p>
       )}
-      <div className="mt-4 h-1 bg-[var(--bg-tertiary)] rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${percentage}%`, backgroundColor: barColor }}
-        />
+      <div
+        className="dash-metric-track mt-4"
+        role="progressbar"
+        aria-label={label}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(percentage)}
+      >
+        <div className={`dash-metric-fill${level}`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
   );

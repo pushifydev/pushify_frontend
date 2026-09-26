@@ -1,16 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import {
-  Cpu,
-  HardDrive,
-  Network,
-  Container,
-  RefreshCw,
-  AlertCircle,
-  CheckCircle2,
-  AlertTriangle,
-} from 'lucide-react';
+import { useMemo, useState, type ReactNode } from 'react';
 import {
   useMetricsOverview,
   useMetricsTimeSeries,
@@ -20,6 +10,7 @@ import {
 import { MonitoringEmptyState } from '@/components/monitoring/MonitoringEmptyState';
 import { formatStorage } from '@/lib/formatters';
 import { SkeletonMonitoringGaugeCard, SkeletonMonitoringChartBlock } from '@/components/Skeleton';
+import { PageHeader, MetaLabel } from '@/components/dashboard/PageKit';
 import {
   GaugeCard,
   TimeRangeSelector,
@@ -33,7 +24,7 @@ import {
 // ============ Main Page ============
 
 export default function MonitoringPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { data: overview, isLoading, dataUpdatedAt } = useMetricsOverview();
   const { data: projectsList = [] } = useProjects();
   const [selectedHours, setSelectedHours] = useState(1);
@@ -62,16 +53,20 @@ export default function MonitoringPage() {
     ? new Date(dataUpdatedAt).toLocaleTimeString()
     : '';
 
+  const header = (badge?: ReactNode, meta?: ReactNode[]) => (
+    <PageHeader
+      title={t('monitoring', 'title')}
+      description={t('monitoring', 'description')}
+      badge={badge}
+      meta={meta}
+    />
+  );
+
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto space-y-6 animate-slide-in">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">{t('monitoring', 'title')}</h1>
-            <p className="text-[var(--text-secondary)] text-sm mt-1">{t('monitoring', 'description')}</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
+        {header()}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[1, 2, 3, 4].map((i) => (
             <SkeletonMonitoringGaugeCard key={i} />
           ))}
@@ -87,11 +82,8 @@ export default function MonitoringPage() {
   // No data state
   if (!overview || projects.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto space-y-6 animate-slide-in">
-        <div>
-          <h1 className="text-2xl font-bold">{t('monitoring', 'title')}</h1>
-          <p className="text-[var(--text-secondary)] text-sm mt-1">{t('monitoring', 'description')}</p>
-        </div>
+      <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
+        {header()}
         <MonitoringEmptyState projectCount={projectsList.length} />
       </div>
     );
@@ -102,60 +94,55 @@ export default function MonitoringPage() {
     agg && agg.avgCpuPercent > 90 ? 'unhealthy' :
     agg && agg.avgCpuPercent > 70 ? 'degraded' : 'healthy';
 
-  const healthConfig = {
-    healthy: { icon: CheckCircle2, color: 'var(--status-success)', bg: 'rgba(34, 197, 94, 0.1)' },
-    degraded: { icon: AlertTriangle, color: 'var(--status-warning)', bg: 'rgba(234, 179, 8, 0.1)' },
-    unhealthy: { icon: AlertCircle, color: 'var(--status-error)', bg: 'rgba(239, 68, 68, 0.1)' },
+  const healthBadge = {
+    healthy: 'badge-success',
+    degraded: 'badge-warning',
+    unhealthy: 'badge-error',
   }[healthStatus];
 
-  const HealthIcon = healthConfig.icon;
+  const selectedName =
+    projects.find((p) => p.projectId === timeSeriesProjectId)?.projectName ?? '';
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-slide-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">{t('monitoring', 'title')}</h1>
-          <p className="text-[var(--text-secondary)] text-sm mt-1">{t('monitoring', 'description')}</p>
-        </div>
-        <div className="flex items-center gap-3">
-          {/* System Health Badge */}
-          <div
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border"
-            style={{ backgroundColor: healthConfig.bg, borderColor: healthConfig.color + '30' }}
-          >
-            <HealthIcon className="w-4 h-4" style={{ color: healthConfig.color }} />
-            <span className="text-xs font-medium" style={{ color: healthConfig.color }}>
-              {t('monitoring', healthStatus)}
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
+      {header(
+        <span className={`badge shrink-0 ${healthBadge}`} role="status">
+          {t('monitoring', healthStatus)}
+        </span>,
+        [
+          <MetaLabel key="projects">
+            {overview.totalProjects} {t('monitoring', 'allProjects').toLowerCase()}
+          </MetaLabel>,
+          <MetaLabel key="running">
+            {overview.runningContainers} {t('monitoring', 'running').toLowerCase()}
+          </MetaLabel>,
+          lastUpdated ? (
+            <span key="updated" className="inline-flex items-center gap-1.5">
+              <span className="dash-status-dot is-success animate-pulse" aria-hidden />
+              <span className="terminal-text text-xs">
+                {locale === 'tr' ? 'Güncellendi' : 'Updated'} {lastUpdated}
+              </span>
             </span>
-          </div>
-          {/* Last Updated */}
-          <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-            <RefreshCw className="w-3 h-3 animate-spin" style={{ animationDuration: '3s' }} />
-            {lastUpdated}
-          </div>
-        </div>
-      </div>
+          ) : null,
+        ],
+      )}
 
-      {/* Gauge Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Aggregate stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <GaugeCard
           label={t('monitoring', 'avgCpu')}
           value={agg?.avgCpuPercent || 0}
           subValue={`${t('monitoring', 'totalCpu')}: ${agg?.totalCpuPercent.toFixed(1) || 0}%`}
-          icon={Cpu}
         />
         <GaugeCard
           label={t('monitoring', 'totalMemory')}
           value={agg?.avgMemoryPercent || 0}
           subValue={`${formatStorage(agg?.totalMemoryUsageMB || 0)} ${t('monitoring', 'memoryOf')} ${formatStorage(agg?.totalMemoryLimitMB || 0)}`}
-          icon={HardDrive}
         />
         <GaugeCard
           label={t('monitoring', 'networkIO')}
           value={agg?.totalNetworkRxMB || 0}
           subValue={`↓ ${formatStorage(agg?.totalNetworkRxMB || 0)} / ↑ ${formatStorage(agg?.totalNetworkTxMB || 0)}`}
-          icon={Network}
           thresholds={false}
           maxValue={Math.max((agg?.totalNetworkRxMB || 0) * 1.5, 100)}
           suffix=" MB"
@@ -164,40 +151,43 @@ export default function MonitoringPage() {
           label={t('monitoring', 'runningContainers')}
           value={overview?.runningContainers || 0}
           subValue={`${overview?.totalProjects || 0} ${t('monitoring', 'allProjects').toLowerCase()}`}
-          icon={Container}
           thresholds={false}
           maxValue={Math.max(overview?.totalProjects || 1, 1)}
           suffix=""
+          decimals={0}
         />
       </div>
 
-      {/* Project Filter + Time Range */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <select
-            value={selectedProjectId || ''}
-            onChange={(e) => setSelectedProjectId(e.target.value || null)}
-            className="input py-2 px-3 text-sm w-full sm:w-64"
-          >
-            <option value="">{projects[0]?.projectName || t('monitoring', 'allProjects')}</option>
-            {projects.map((p) => (
-              <option key={p.projectId} value={p.projectId}>
-                {p.projectName}
-              </option>
-            ))}
-          </select>
+      {/* Charts: project filter + range live in the card's toolbar */}
+      <section className="dash-card overflow-hidden min-w-0" aria-label={t('monitoring', 'overview')}>
+        <div className="dash-toolbar justify-between">
+          <label className="min-w-0 w-full sm:w-auto">
+            <span className="sr-only">{t('monitoring', 'project')}</span>
+            <select
+              value={selectedProjectId || ''}
+              onChange={(e) => setSelectedProjectId(e.target.value || null)}
+              className="select h-8 py-0! text-[13px] w-full sm:w-64"
+            >
+              <option value="">{projects[0]?.projectName || t('monitoring', 'allProjects')}</option>
+              {projects.map((p) => (
+                <option key={p.projectId} value={p.projectId}>
+                  {p.projectName}
+                </option>
+              ))}
+            </select>
+          </label>
+          <TimeRangeSelector selected={selectedHours} onChange={setSelectedHours} t={t} />
         </div>
-        <TimeRangeSelector selected={selectedHours} onChange={setSelectedHours} t={t} />
-      </div>
-
-      <ChartsSection
-        chartData={chartData}
-        chartMargin={chartMargin}
-        xAxisTicks={xAxisTicks}
-        xAxisAngled={xAxisAngled}
-        selectedHours={selectedHours}
-        t={t}
-      />
+        <ChartsSection
+          chartData={chartData}
+          chartMargin={chartMargin}
+          xAxisTicks={xAxisTicks}
+          xAxisAngled={xAxisAngled}
+          selectedHours={selectedHours}
+          projectName={selectedName}
+          t={t}
+        />
+      </section>
 
       <ProjectResourcesTable
         projects={projects}

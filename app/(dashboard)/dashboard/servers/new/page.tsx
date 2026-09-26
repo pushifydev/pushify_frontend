@@ -3,10 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import {
-  ArrowLeft, Server, Loader2, Cpu, HardDrive, MemoryStick,
-  Globe, Key, Lock, Eye, EyeOff, Info, CheckCircle,
-} from 'lucide-react';
+import { Server, Loader2, Eye, EyeOff } from 'lucide-react';
+import { PageHeader, Tabs, TabPanel } from '@/components/dashboard/PageKit';
+import { SettingsSection, SettingsField } from '@/components/dashboard/SettingsParts';
 import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages, useInfraBilling, useBillingInfo } from '@/hooks';
 import type { CreateServerInput } from '@/lib/api';
 import { toast } from 'sonner';
@@ -109,83 +108,57 @@ export default function NewServerPage() {
     }
   };
 
+  const limitText = serverUsage
+    ? (atServerLimit ? t('servers', 'serverLimitReached') : t('servers', 'planServersUsage'))
+        .replace('{used}', String(serverUsage.used))
+        .replace('{limit}', String(serverUsage.limit))
+        .replace('{plan}', billingInfo?.planName ?? '')
+    : '';
+  const formatMb = (mb: number) => (mb >= 1024 ? `${(mb / 1024).toFixed(0)} GB` : `${mb} MB`);
+
   return (
-    <div className="dash-page max-w-4xl space-y-6 animate-slide-in">
-      {/* Back + Header */}
-      <div>
-        <Link
-          href="/dashboard/servers"
-          className="inline-flex items-center gap-1.5 text-sm mb-4 transition-colors"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          {t('servers', 'title')}
-        </Link>
-        <h1
-          className="text-2xl font-bold tracking-tight"
-          style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}
-        >
-          {t('servers', 'createServer')}
-        </h1>
-      </div>
+    <div className="dash-page max-w-5xl min-w-0 space-y-6 pb-8 animate-slide-in">
+      <PageHeader
+        back={{ href: '/dashboard/servers', label: t('servers', 'title') }}
+        title={t('servers', 'createServer')}
+        meta={
+          serverUsage && !serverUsage.unlimited
+            ? [
+                <span key="quota" className="inline-flex items-center gap-1.5">
+                  <span className={`dash-status-dot ${atServerLimit ? 'is-warning' : ''}`} aria-hidden />
+                  {limitText}
+                </span>,
+              ]
+            : undefined
+        }
+      />
 
-      {/* Mode Tabs */}
-      <div
-        className="inline-flex rounded-lg p-1 gap-1"
-        style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-subtle)' }}
-      >
-        {[
-          { key: 'managed' as Mode, icon: Globe, label: t('servers', 'cloudProvider') },
-          { key: 'byos' as Mode, icon: Key, label: t('servers', 'existingServer') },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            type="button"
-            onClick={() => setMode(tab.key)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-all duration-200"
-            style={{
-              background: mode === tab.key ? 'var(--bg-secondary)' : 'transparent',
-              color: mode === tab.key ? 'var(--text-primary)' : 'var(--text-muted)',
-              boxShadow: mode === tab.key ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-            }}
-          >
-            <tab.icon className="w-4 h-4" />
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        label={t('servers', 'createServer')}
+        idPrefix="new-server"
+        active={mode}
+        onChange={setMode}
+        items={[
+          { id: 'managed', label: t('servers', 'cloudProvider') },
+          { id: 'byos', label: t('servers', 'existingServer') },
+        ]}
+      />
 
-      {serverUsage && !serverUsage.unlimited && (
-        <div
-          className="rounded-xl px-4 py-3 text-sm flex items-center justify-between gap-3"
-          style={{
-            background: atServerLimit ? 'var(--dash-warning-bg)' : 'var(--bg-tertiary)',
-            border: '1px solid var(--border-subtle)',
-            color: 'var(--text-primary)',
-          }}
-        >
-          <span className="flex items-center gap-2">
-            <Server className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
-            {(atServerLimit ? t('servers', 'serverLimitReached') : t('servers', 'planServersUsage'))
-              .replace('{used}', String(serverUsage.used))
-              .replace('{limit}', String(serverUsage.limit))
-              .replace('{plan}', billingInfo?.planName ?? '')}
-          </span>
-          {atServerLimit && (
-            <Link href="/dashboard/billing/plans" className="font-medium shrink-0" style={{ color: 'var(--accent-cyan)' }}>
-              {t('billing', 'comparePlans')}
-            </Link>
-          )}
+      <TabPanel idPrefix="new-server" active={mode}>
+      <div className="space-y-5">
+      {atServerLimit && (
+        <div className="dash-callout dash-callout-attention items-center justify-between gap-3 text-sm" role="status">
+          <span className="text-[var(--text-primary)]">{limitText}</span>
+          <Link href="/dashboard/billing/plans" className="btn btn-secondary btn-sm shrink-0">
+            {t('billing', 'comparePlans')}
+          </Link>
         </div>
       )}
 
       {mode === 'managed' && infraBilling && walletBalance < requiredCents && requiredCents > 0 && (
-        <div
-          className="rounded-xl px-4 py-3 text-sm flex items-center justify-between gap-3"
-          style={{ background: 'var(--dash-warning-bg)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
-        >
-          <span>{t('servers', 'infraWalletBanner')}</span>
-          <Link href="/dashboard/billing" className="font-medium shrink-0" style={{ color: 'var(--accent-cyan)' }}>
+        <div className="dash-callout dash-callout-attention items-center justify-between gap-3 text-sm" role="status">
+          <span className="text-[var(--text-primary)]">{t('servers', 'infraWalletBanner')}</span>
+          <Link href="/dashboard/billing" className="btn btn-secondary btn-sm shrink-0">
             {t('billing', 'infraTopUp')}
           </Link>
         </div>
@@ -193,40 +166,32 @@ export default function NewServerPage() {
 
       {mode === 'managed' && <ManagedCloudProviderBar />}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="dash-settings-stack">
         {mode === 'managed' ? (
-          /* ─── Cloud Provider Form ─── */
           <>
-            {/* Server Name */}
-            <div className="dash-panel">
-              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                {t('servers', 'serverName')}
-              </label>
-              <input
-                type="text"
-                value={managedData.name}
-                onChange={(e) => setManagedData({ ...managedData, name: e.target.value })}
-                placeholder={t('servers', 'serverNamePlaceholder')}
-                className="input w-full"
-                autoFocus
-              />
-            </div>
-
-            {/* Region & Image */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="dash-panel">
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                  {t('servers', 'region')}
-                </label>
+            <SettingsSection id="ns-server" title={t('servers', 'serverName')}>
+              <SettingsField label={t('servers', 'serverName')} htmlFor="ns-name">
+                <input
+                  id="ns-name"
+                  type="text"
+                  value={managedData.name}
+                  onChange={(e) => setManagedData({ ...managedData, name: e.target.value })}
+                  placeholder={t('servers', 'serverNamePlaceholder')}
+                  className="input w-full"
+                  autoFocus
+                />
+              </SettingsField>
+              <SettingsField label={t('servers', 'region')} htmlFor="ns-region">
                 {regionsLoading ? (
-                  <div className="input w-full flex items-center justify-center" style={{ color: 'var(--text-muted)' }}>
+                  <div className="input w-full flex items-center text-[var(--text-muted)]">
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 ) : (
                   <select
+                    id="ns-region"
                     value={managedData.region}
                     onChange={(e) => setManagedData({ ...managedData, region: e.target.value })}
-                    className="input w-full"
+                    className="select"
                   >
                     <option value="">{t('servers', 'selectRegion')}</option>
                     {regions.map((region) => (
@@ -234,21 +199,18 @@ export default function NewServerPage() {
                     ))}
                   </select>
                 )}
-              </div>
-
-              <div className="dash-panel">
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                  {t('servers', 'image')}
-                </label>
+              </SettingsField>
+              <SettingsField label={t('servers', 'image')} htmlFor="ns-image">
                 {imagesLoading ? (
-                  <div className="input w-full flex items-center justify-center" style={{ color: 'var(--text-muted)' }}>
+                  <div className="input w-full flex items-center text-[var(--text-muted)]">
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 ) : (
                   <select
+                    id="ns-image"
                     value={managedData.image}
                     onChange={(e) => setManagedData({ ...managedData, image: e.target.value })}
-                    className="input w-full"
+                    className="select"
                   >
                     <option value="">{t('servers', 'selectImage')}</option>
                     {images.map((image) => (
@@ -256,23 +218,19 @@ export default function NewServerPage() {
                     ))}
                   </select>
                 )}
-              </div>
-            </div>
+              </SettingsField>
+            </SettingsSection>
 
-            {/* Size Grid */}
-            <div>
-              <h3 className="text-sm font-medium mb-3" style={{ color: 'var(--text-primary)' }}>
-                {t('servers', 'size')}
-              </h3>
+            <section className="min-w-0" aria-labelledby="ns-size-title">
+              <h2 id="ns-size-title" className="dash-section-label mb-2.5">{t('servers', 'size')}</h2>
               {sizesLoading ? (
-                <div
-                  className="flex items-center justify-center h-48 rounded-xl"
-                  style={{ border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
-                >
-                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                <div className="dash-rows">
+                  <div className="dash-row flex items-center justify-center h-40 text-[var(--text-muted)]">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="dash-rows" role="radiogroup" aria-labelledby="ns-size-title">
                   {providerSizes.map((sizeOption) => {
                     const isSelected = managedData.size === sizeOption.size;
                     const disabled = !sizeOption.allowedByPlan;
@@ -281,59 +239,53 @@ export default function NewServerPage() {
                       <button
                         key={sizeOption.size}
                         type="button"
+                        role="radio"
+                        aria-checked={isSelected}
                         disabled={disabled}
                         onClick={() => !disabled && setManagedData({ ...managedData, size: sizeOption.size })}
-                        className="p-4 rounded-xl text-left transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        style={{
-                          background: 'var(--bg-secondary)',
-                          border: `1.5px solid ${isSelected ? 'var(--accent-cyan)' : 'var(--border-subtle)'}`,
-                          boxShadow: isSelected ? '0 0 0 3px var(--dash-accent-bg)' : 'none',
-                        }}
+                        className={`dash-row w-full flex items-center gap-3 text-left transition-colors disabled:cursor-not-allowed ${
+                          isSelected ? 'bg-[var(--hover-overlay-lg)]' : 'hover:bg-[var(--hover-overlay)]'
+                        }`}
                       >
-                        <div className="flex items-center justify-between mb-3">
-                          <span
-                            className="text-sm font-bold uppercase tracking-wider"
-                            style={{ color: isSelected ? 'var(--accent-cyan)' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}
-                          >
-                            {sizeOption.size}
+                        <span
+                          className={`w-3.5 h-3.5 rounded-full border shrink-0 flex items-center justify-center ${
+                            isSelected ? 'border-[var(--text-primary)]' : 'border-[var(--border-default)]'
+                          }`}
+                          aria-hidden
+                        >
+                          {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]" />}
+                        </span>
+                        <span className={`flex-1 min-w-0 ${disabled ? 'opacity-50' : ''}`}>
+                          <span className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
+                            <span className="terminal-text text-sm font-medium uppercase text-[var(--text-primary)] w-10">
+                              {sizeOption.size}
+                            </span>
+                            <span className="terminal-text text-xs text-[var(--text-muted)] tabular-nums">
+                              {sizeOption.specs.vcpus} vCPU · {formatMb(sizeOption.specs.memoryMb)} RAM · {sizeOption.specs.diskGb} GB SSD
+                            </span>
                           </span>
-                          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
-                            ${monthlyUsd}{t('billing', 'infraPerMonth')}
-                          </span>
-                        </div>
-                        {disabled && (
-                          <p className="text-xs mb-2" style={{ color: 'var(--dash-warning)' }}>
-                            {getSizeDisallowLabel(t, sizeOption)}
-                          </p>
-                        )}
-                        <div className="space-y-1.5">
-                          <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                            <Cpu className="w-3 h-3" /> {sizeOption.specs.vcpus} vCPU
-                          </div>
-                          <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                            <MemoryStick className="w-3 h-3" /> {sizeOption.specs.memoryMb >= 1024 ? `${(sizeOption.specs.memoryMb / 1024).toFixed(0)} GB` : `${sizeOption.specs.memoryMb} MB`} RAM
-                          </div>
-                          <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                            <HardDrive className="w-3 h-3" /> {sizeOption.specs.diskGb} GB SSD
-                          </div>
-                        </div>
+                          {disabled && (
+                            <span className="block text-xs mt-1 text-[var(--status-warning)]">
+                              {getSizeDisallowLabel(t, sizeOption)}
+                            </span>
+                          )}
+                        </span>
+                        <span className={`terminal-text text-xs tabular-nums shrink-0 ${isSelected ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
+                          ${monthlyUsd}{t('billing', 'infraPerMonth')}
+                        </span>
                       </button>
                     );
                   })}
                 </div>
               )}
-            </div>
+            </section>
           </>
         ) : (
-          /* ─── BYOS Form ─── */
           <>
-            {/* Name + IP */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="dash-panel">
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                  {t('servers', 'serverName')}
-                </label>
+            <SettingsSection id="ns-byos" title={t('servers', 'existingServer')}>
+              <SettingsField label={t('servers', 'serverName')} htmlFor="ns-byos-name">
                 <input
+                  id="ns-byos-name"
                   type="text"
                   value={byosData.name}
                   onChange={(e) => setByosData({ ...byosData, name: e.target.value })}
@@ -341,131 +293,104 @@ export default function NewServerPage() {
                   className="input w-full"
                   autoFocus
                 />
-              </div>
-
-              <div className="dash-panel">
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                  {t('servers', 'ipAddressLabel')}
-                </label>
+              </SettingsField>
+              <SettingsField
+                label={t('servers', 'ipAddressLabel')}
+                hint={t('servers', 'ipAddressHint')}
+                htmlFor="ns-byos-ip"
+              >
                 <input
+                  id="ns-byos-ip"
                   type="text"
                   value={byosData.ipv4}
                   onChange={(e) => setByosData({ ...byosData, ipv4: e.target.value })}
                   placeholder={t('servers', 'ipAddressPlaceholder')}
-                  className="input w-full"
-                  style={{ fontFamily: 'var(--font-mono)' }}
+                  className="input w-full terminal-text"
                 />
-                <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
-                  {t('servers', 'ipAddressHint')}
-                </p>
-              </div>
-            </div>
-
-            {/* Auth Method */}
-            <div
-              className="rounded-xl p-6"
-              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
-            >
-              <label className="block text-sm font-medium mb-3" style={{ color: 'var(--text-primary)' }}>
-                {t('servers', 'authMethod')}
-              </label>
-
-              {/* Auth selector */}
-              <div className="flex gap-2 mb-4">
-                {[
-                  { key: 'password' as AuthMethod, icon: Lock, label: t('servers', 'rootPassword') },
-                  { key: 'ssh_key' as AuthMethod, icon: Key, label: t('servers', 'sshKey') },
-                ].map((opt) => (
-                  <button
-                    key={opt.key}
-                    type="button"
-                    onClick={() => setAuthMethod(opt.key)}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all border ${
-                      authMethod === opt.key
-                        ? 'dash-accent-fill'
-                        : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-subtle)]'
-                    }`}
-                  >
-                    <opt.icon className="w-3.5 h-3.5" />
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-
+              </SettingsField>
+              <SettingsField label={t('servers', 'authMethod')}>
+                <div className="dash-segmented" role="group" aria-label={t('servers', 'authMethod')}>
+                  {[
+                    { key: 'password' as AuthMethod, label: t('servers', 'rootPassword') },
+                    { key: 'ssh_key' as AuthMethod, label: t('servers', 'sshKey') },
+                  ].map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => setAuthMethod(opt.key)}
+                      aria-pressed={authMethod === opt.key}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </SettingsField>
               {authMethod === 'password' ? (
-                <div>
+                <SettingsField
+                  label={t('servers', 'rootPassword')}
+                  hint={t('servers', 'rootPasswordHint')}
+                  htmlFor="ns-byos-password"
+                >
                   <div className="relative">
                     <input
+                      id="ns-byos-password"
                       type={showPassword ? 'text' : 'password'}
                       value={byosData.rootPassword}
                       onChange={(e) => setByosData({ ...byosData, rootPassword: e.target.value })}
                       placeholder={t('servers', 'rootPasswordPlaceholder')}
                       className="input w-full pr-10!"
+                      autoComplete="new-password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
-                      style={{ color: 'var(--text-muted)' }}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 dash-icon-action"
                     >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
                   </div>
-                  <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
-                    {t('servers', 'rootPasswordHint')}
-                  </p>
-                </div>
+                </SettingsField>
               ) : (
-                <div>
+                <SettingsField
+                  label={t('servers', 'sshKey')}
+                  hint={t('servers', 'sshKeyHint')}
+                  htmlFor="ns-byos-key"
+                >
                   <textarea
+                    id="ns-byos-key"
                     value={byosData.sshPrivateKey}
                     onChange={(e) => setByosData({ ...byosData, sshPrivateKey: e.target.value })}
                     placeholder={t('servers', 'sshKeyPlaceholder')}
-                    className="input w-full text-xs"
+                    className="input w-full terminal-text text-xs leading-relaxed resize-none"
                     rows={5}
-                    style={{ resize: 'none', fontFamily: 'var(--font-mono)', lineHeight: '1.6' }}
                   />
-                  <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
-                    {t('servers', 'sshKeyHint')}
-                  </p>
-                </div>
+                </SettingsField>
               )}
-            </div>
+            </SettingsSection>
 
-            {/* Info Box */}
-            <div
-              className="rounded-xl p-5 flex gap-4"
-              style={{ background: 'var(--dash-accent-bg)', border: '1px solid var(--dash-accent-border)' }}
-            >
-              <Info className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'var(--accent-cyan)' }} />
-              <div>
-                <p className="text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                  {t('servers', 'byosInfoTitle')}
-                </p>
-                <ul className="space-y-1.5">
-                  {[
-                    t('servers', 'byosStep1'),
-                    t('servers', 'byosStep2'),
-                    t('servers', 'byosStep3'),
-                    t('servers', 'byosStep4'),
-                  ].map((step, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                      <CheckCircle className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--accent-cyan)' }} />
-                      {step}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <SettingsSection id="ns-byos-info" title={t('servers', 'byosInfoTitle')} padded>
+              <ol className="space-y-2">
+                {[
+                  t('servers', 'byosStep1'),
+                  t('servers', 'byosStep2'),
+                  t('servers', 'byosStep3'),
+                  t('servers', 'byosStep4'),
+                ].map((step, i) => (
+                  <li key={i} className="flex items-baseline gap-3 text-[13px] text-[var(--text-secondary)]">
+                    <span className="terminal-text text-xs text-[var(--text-muted)] tabular-nums shrink-0">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </SettingsSection>
           </>
         )}
 
-        {/* Submit */}
-        <div
-          className="flex items-center justify-between rounded-xl p-5"
-          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
-        >
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-5 border-t border-[var(--border-subtle)]">
+          <p className="text-xs text-[var(--text-muted)]" aria-live="polite">
             {atServerLimit
               ? t('servers', 'serverLimitReached')
                   .replace('{used}', String(serverUsage?.used ?? 0))
@@ -475,14 +400,14 @@ export default function NewServerPage() {
                 ? t('servers', 'readyToCreate')
                 : t('servers', 'fillRequiredFields')}
           </p>
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard/servers" className="btn btn-secondary px-5">
+          <div className="flex items-center gap-2">
+            <Link href="/dashboard/servers" className="btn btn-secondary">
               {t('common', 'cancel')}
             </Link>
             <button
               type="submit"
               disabled={!isValid || createServer.isPending || atServerLimit}
-              className="btn btn-primary px-6"
+              className="btn btn-primary"
             >
               {createServer.isPending ? (
                 <>
@@ -499,6 +424,8 @@ export default function NewServerPage() {
           </div>
         </div>
       </form>
+      </div>
+      </TabPanel>
     </div>
   );
 }

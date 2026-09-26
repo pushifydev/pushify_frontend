@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft, AlertCircle, Loader2 } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { AlertCircle } from 'lucide-react';
 import {
   useDatabase,
   useDatabaseCredentials,
@@ -28,6 +27,7 @@ import {
 import { createDeployment, downloadDatabaseBackup, type DatabaseCredentials } from '@/lib/api';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { EmptyState } from '@/components/EmptyState';
 import {
   DatabaseHero,
   DatabaseStatsRow,
@@ -36,14 +36,33 @@ import {
   ConnectedProjectsPanel,
   BackupListPanel,
   DatabaseSidebar,
+  DatabaseSettingsPanel,
   NewCredentialsModal,
 } from '@/components/databases/DatabaseDetailSections';
+import { Tabs, TabPanel } from '@/components/dashboard/PageKit';
+
+type Tab = 'overview' | 'projects' | 'backups' | 'settings';
+const VALID_TABS: Tab[] = ['overview', 'projects', 'backups', 'settings'];
 
 export default function DatabaseDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const databaseId = params.id as string;
   const { t } = useTranslation();
+
+  const tabParam = searchParams.get('tab') as Tab | null;
+  const activeTab: Tab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'overview';
+  const setActiveTab = useCallback(
+    (tab: Tab) => {
+      const next = new URLSearchParams(searchParams.toString());
+      if (tab === 'overview') next.delete('tab');
+      else next.set('tab', tab);
+      const qs = next.toString();
+      router.push(`/dashboard/databases/${databaseId}${qs ? `?${qs}` : ''}`, { scroll: false });
+    },
+    [router, databaseId, searchParams]
+  );
 
   const [showSecrets, setShowSecrets] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -85,24 +104,25 @@ export default function DatabaseDetailPage() {
 
   if (isLoading) {
     return (
-      <div
-        className="max-w-5xl mx-auto flex items-center justify-center min-h-80"
-        role="status"
-        aria-live="polite"
-        aria-label={t('common', 'loading')}
-      >
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />
+      <div className="dash-page max-w-7xl" role="status" aria-live="polite" aria-label={t('common', 'loading')}>
+        <div className="space-y-6">
+          <div className="dash-skeleton h-4 w-40 rounded" />
+          <div className="dash-skeleton h-9 w-64 rounded" />
+          <div className="h-10 border-b border-[var(--border-subtle)]" />
+          <div className="dash-skeleton h-64 rounded-[14px]" />
+        </div>
       </div>
     );
   }
 
   if (!database) {
     return (
-      <div className="max-w-5xl mx-auto text-center py-16">
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{t('databases', 'notFound')}</p>
-        <Link href="/dashboard/databases" className="btn btn-secondary btn-sm mt-4 inline-flex">
-          {t('common', 'back')}
-        </Link>
+      <div className="dash-page max-w-7xl">
+        <EmptyState
+          label={t('databases', 'title')}
+          title={t('databases', 'notFound')}
+          action={{ label: t('common', 'back'), href: '/dashboard/databases' }}
+        />
       </div>
     );
   }
@@ -110,14 +130,7 @@ export default function DatabaseDetailPage() {
   const isRunning = database.status === 'running';
 
   return (
-    <div className="max-w-5xl mx-auto pb-10 animate-slide-in">
-      <Link
-        href="/dashboard/databases"
-        className="dash-section-label inline-flex items-center gap-1.5 mb-5 rounded-sm transition-colors hover:text-(--text-primary) focus-visible:text-(--text-primary)"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-        {t('databases', 'title')}
-      </Link>
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
 
       <DatabaseHero
         database={database}
@@ -160,7 +173,7 @@ export default function DatabaseDetailPage() {
 
       {database.statusMessage && (
         <div
-          className="dash-callout mb-6"
+          className="dash-callout"
           role="alert"
           style={{
             borderColor: 'color-mix(in srgb, var(--status-error) 30%, var(--border-subtle))',
@@ -174,40 +187,61 @@ export default function DatabaseDetailPage() {
         </div>
       )}
 
-      <DatabaseStatsRow database={database} t={t} />
+      <Tabs
+        label={database.name}
+        idPrefix="database-tab"
+        active={activeTab}
+        onChange={setActiveTab}
+        items={[
+          { id: 'overview', label: t('projectDetail', 'overview') },
+          { id: 'projects', label: t('databases', 'connectedProjects'), count: database.connections?.length ?? 0 },
+          { id: 'backups', label: t('databases', 'backups'), count: backups.length },
+          { id: 'settings', label: t('projectDetail', 'settings') },
+        ]}
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2 space-y-5 min-w-0">
-          <ConnectionPanel
-            database={database}
-            credentials={credentials}
-            showSecrets={showSecrets}
-            onToggleSecrets={() => setShowSecrets((v) => !v)}
-            copiedField={copiedField}
-            onCopy={handleCopy}
-            onResetPassword={() => setShowResetPasswordConfirm(true)}
-            canResetPassword={isRunning}
-            t={t}
-          />
+      <TabPanel idPrefix="database-tab" active={activeTab}>
+        {activeTab === 'overview' && (
+          <div className="space-y-6 min-w-0">
+            <DatabaseStatsRow database={database} t={t} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
+              <div className="lg:col-span-2 space-y-5 min-w-0">
+                <ConnectionPanel
+                  database={database}
+                  credentials={credentials}
+                  showSecrets={showSecrets}
+                  onToggleSecrets={() => setShowSecrets((v) => !v)}
+                  copiedField={copiedField}
+                  onCopy={handleCopy}
+                  onResetPassword={() => setShowResetPasswordConfirm(true)}
+                  canResetPassword={isRunning}
+                  t={t}
+                />
 
-          <NetworkAccessPanel
-            database={database}
-            pending={toggleExternalAccess.isPending}
-            onToggle={async () => {
-              try {
-                await toggleExternalAccess.mutateAsync(!database.externalAccess);
-                toast.success(
-                  database.externalAccess
-                    ? t('databases', 'externalAccessDisabled')
-                    : t('databases', 'externalAccessEnabled')
-                );
-              } catch (e) {
-                toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
-              }
-            }}
-            t={t}
-          />
+                <NetworkAccessPanel
+                  database={database}
+                  pending={toggleExternalAccess.isPending}
+                  onToggle={async () => {
+                    try {
+                      await toggleExternalAccess.mutateAsync(!database.externalAccess);
+                      toast.success(
+                        database.externalAccess
+                          ? t('databases', 'externalAccessDisabled')
+                          : t('databases', 'externalAccessEnabled')
+                      );
+                    } catch (e) {
+                      toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
+                    }
+                  }}
+                  t={t}
+                />
+              </div>
+              <DatabaseSidebar database={database} t={t} />
+            </div>
+          </div>
+        )}
 
+        {activeTab === 'projects' && (
           <ConnectedProjectsPanel
             database={database}
             projects={projects}
@@ -231,7 +265,9 @@ export default function DatabaseDetailPage() {
             }}
             t={t}
           />
+        )}
 
+        {activeTab === 'backups' && (
           <BackupListPanel
             backups={backups}
             loading={backupsLoading}
@@ -264,32 +300,34 @@ export default function DatabaseDetailPage() {
             onDelete={setDeleteBackupId}
             t={t}
           />
-        </div>
+        )}
 
-        <DatabaseSidebar
-          database={database}
-          backupPending={updateDatabase.isPending}
-          onToggleAutoBackup={async (enabled) => {
-            try {
-              await updateDatabase.mutateAsync({ backupEnabled: enabled });
-              toast.success(t('databases', 'updated'));
-            } catch (e) {
-              toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
-            }
-          }}
-          onChangeBackupInterval={async (hours) => {
-            try {
-              await updateDatabase.mutateAsync({ backupIntervalHours: hours });
-              toast.success(t('databases', 'updated'));
-            } catch (e) {
-              // The plan floor is refused here, with a message saying what to upgrade to
-              toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
-            }
-          }}
-          onDeleteClick={() => setShowDeleteConfirm(true)}
-          t={t}
-        />
-      </div>
+        {activeTab === 'settings' && (
+          <DatabaseSettingsPanel
+            database={database}
+            backupPending={updateDatabase.isPending}
+            onToggleAutoBackup={async (enabled) => {
+              try {
+                await updateDatabase.mutateAsync({ backupEnabled: enabled });
+                toast.success(t('databases', 'updated'));
+              } catch (e) {
+                toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
+              }
+            }}
+            onChangeBackupInterval={async (hours) => {
+              try {
+                await updateDatabase.mutateAsync({ backupIntervalHours: hours });
+                toast.success(t('databases', 'updated'));
+              } catch (e) {
+                // The plan floor is refused here, with a message saying what to upgrade to
+                toast.error(e instanceof Error ? e.message : t('errors', 'unknownError'));
+              }
+            }}
+            onDeleteClick={() => setShowDeleteConfirm(true)}
+            t={t}
+          />
+        )}
+      </TabPanel>
 
       <ConfirmDialog
         open={showDeleteConfirm}

@@ -33,15 +33,14 @@ export function DeleteServerModal({ isOpen, onClose, server, onSuccess }: Delete
           {t('servers', 'deleteConfirm')}
         </AlertBox>
 
-        <div
-          className="p-3 rounded-lg"
-          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
-        >
-          <p className="font-medium">{server.name}</p>
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+        <div className="dash-rows">
+          <div className="dash-row">
+          <p className="text-sm font-medium text-[var(--text-primary)]">{server.name}</p>
+          <p className="terminal-text text-xs mt-0.5 text-[var(--text-muted)]">
             {server.provider} • {server.region}
             {server.ipv4 && ` • ${server.ipv4}`}
           </p>
+          </div>
         </div>
       </div>
 
@@ -50,14 +49,14 @@ export function DeleteServerModal({ isOpen, onClose, server, onSuccess }: Delete
           {t('common', 'cancel')}
         </button>
         <button
+          type="button"
           onClick={handleDelete}
           disabled={deleteServer.isPending}
-          className="btn"
-          style={{ background: 'var(--status-error)', color: 'white' }}
+          className="btn btn-danger"
         >
           {deleteServer.isPending ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              <Loader2 className="w-4 h-4 animate-spin" />
               Deleting...
             </>
           ) : (

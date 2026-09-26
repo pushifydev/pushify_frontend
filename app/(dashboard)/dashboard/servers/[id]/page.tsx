@@ -1,26 +1,17 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useCallback, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  ArrowLeft,
-  Cpu,
-  MemoryStick,
-  HardDrive,
-  Activity,
-  MapPin,
   Play,
   Square,
   RotateCcw,
   Trash2,
   RefreshCw,
   Terminal,
-  AlertTriangle,
-  Check,
   Loader2,
-  Folder,
-  Database,
+  MoreHorizontal,
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import {
@@ -43,7 +34,8 @@ import {
 } from '@/components/servers/ServerHubSections';
 import { ServerHealthPanel } from '@/components/servers/ServerHealthPanel';
 import { ServerContainersPanel } from '@/components/servers/ServerContainersPanel';
-import { ProviderIcon } from '@/components/servers/ProviderIcon';
+import { PageHeader, MetaLabel, Tabs, TabPanel } from '@/components/dashboard/PageKit';
+import { EmptyState } from '@/components/EmptyState';
 import { DeleteServerModal } from '../components/DeleteServerModal';
 import {
   EditServerModal,
@@ -54,10 +46,7 @@ import {
   ServerSnapshotsPanel,
   ServerTimelinePanel,
 } from '../components/ServerDetailExtras';
-import {
-  ServerDetailSection,
-  StatTile,
-} from '../components/ServerDetailSection';
+import { StatTile } from '../components/ServerDetailSection';
 import { StatusBadge, SetupBanner } from '../components/ServerDetailBanners';
 import {
   ServerNetworkSection,
@@ -71,14 +60,39 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+type Tab = 'overview' | 'workloads' | 'network' | 'activity' | 'details';
+const VALID_TABS: Tab[] = ['overview', 'workloads', 'network', 'activity', 'details'];
+
+const copy = {
+  workloads: { en: 'Workloads', tr: 'İş yükleri' },
+  details: { en: 'Details', tr: 'Ayrıntılar' },
+  more: { en: 'More actions', tr: 'Diğer işlemler' },
+};
+
 export default function ServerDetailPage({ params }: PageProps) {
   const { id } = use(params);
   const router = useRouter();
-  const { t } = useTranslation();
+  const searchParams = useSearchParams();
+  const { t, locale } = useTranslation();
+  const l = (s: { en: string; tr: string }) => (locale === 'tr' ? s.tr : s.en);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showResizeModal, setShowResizeModal] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const tabParam = searchParams.get('tab') as Tab | null;
+  const activeTab: Tab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'overview';
+  const setActiveTab = useCallback(
+    (tab: Tab) => {
+      const next = new URLSearchParams(searchParams.toString());
+      if (tab === 'overview') next.delete('tab');
+      else next.set('tab', tab);
+      const qs = next.toString();
+      router.push(`/dashboard/servers/${id}${qs ? `?${qs}` : ''}`, { scroll: false });
+    },
+    [router, id, searchParams],
+  );
 
   const { data: server, isLoading, error } = useServer(id);
   useServerStatusEvents(id);
@@ -95,19 +109,26 @@ export default function ServerDetailPage({ params }: PageProps) {
 
   if (isLoading) {
     return (
-      <div className="max-w-5xl mx-auto flex items-center justify-center min-h-[320px]">
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--text-muted)' }} aria-label={t('common', 'loading')} />
+      <div className="dash-page max-w-7xl" aria-busy="true" aria-label={t('common', 'loading')}>
+        <div className="animate-pulse space-y-6">
+          <div className="h-4 w-40 bg-[var(--bg-secondary)] rounded" />
+          <div className="h-9 w-64 bg-[var(--bg-secondary)] rounded" />
+          <div className="h-4 max-w-md bg-[var(--bg-secondary)] rounded" />
+          <div className="h-10 border-b border-[var(--border-subtle)]" />
+          <div className="h-64 bg-[var(--bg-secondary)] rounded-[14px]" />
+        </div>
       </div>
     );
   }
 
   if (error || !server) {
     return (
-      <div className="max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[320px] gap-4">
-        <p style={{ color: 'var(--text-muted)' }}>{t('servers', 'notFound')}</p>
-        <Link href="/dashboard/servers" className="btn btn-secondary">
-          {t('common', 'back')}
-        </Link>
+      <div className="dash-page max-w-7xl">
+        <EmptyState
+          label={t('navigation', 'servers')}
+          title={t('servers', 'notFound')}
+          action={{ label: t('common', 'back'), href: '/dashboard/servers' }}
+        />
       </div>
     );
   }
@@ -136,151 +157,160 @@ export default function ServerDetailPage({ params }: PageProps) {
     server.status !== 'running' &&
     server.status !== 'rebooting';
 
+  const tabs: { id: Tab; label: string; count?: number }[] = [
+    { id: 'overview', label: t('servers', 'overview') },
+    {
+      id: 'workloads',
+      label: l(copy.workloads),
+      count: server.projectCount + server.databaseCount || undefined,
+    },
+    { id: 'network', label: t('servers', 'network') },
+    { id: 'activity', label: t('servers', 'timelineTitle') },
+    { id: 'details', label: l(copy.details) },
+  ];
+
+  const runMenu = (fn: () => void) => {
+    setMenuOpen(false);
+    fn();
+  };
+
   return (
-    <div className="dash-page max-w-5xl space-y-6 min-w-0 overflow-x-hidden pb-8 animate-slide-in">
-      {/* Back */}
-      <Link
-        href="/dashboard/servers"
-        className="dash-icon-row text-sm font-medium transition-opacity hover:opacity-80"
-        style={{ color: 'var(--text-secondary)' }}
-      >
-        <ArrowLeft className={ICON_SM} strokeWidth={2} />
-        {t('servers', 'detailBack')}
-      </Link>
-
-      {/* Header */}
-      <div className="dash-card p-4 sm:p-6">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="flex items-center gap-4 min-w-0 flex-1">
-            <ProviderIcon provider={server.provider} size="md" status={server.status} />
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <h1 className="text-xl font-medium tracking-tight truncate">{server.name}</h1>
-                <StatusBadge status={server.status} label={statusLabel} />
-                {server.isManaged && (
-                  <span className="badge badge-neutral">
-                    {t('servers', 'managedBadge')}
-                  </span>
-                )}
-              </div>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                <span className="capitalize">
-                {providerLabel}</span>
-                <span style={{ color: 'var(--text-muted)' }}> · </span>
-                <span className="font-mono text-xs">{server.region}</span>
-                {server.ipv4 && (
-                  <>
-                    <span style={{ color: 'var(--text-muted)' }}> · </span>
-                    <span className="font-mono text-xs">{server.ipv4}</span>
-                  </>
-                )}
-              </p>
-              {(server.projectCount > 0 || server.databaseCount > 0) && (
-                <p className="dash-mono-caption mt-2 flex flex-wrap items-center gap-3">
-                  {server.projectCount > 0 && (
-                    <a href="#server-hub-projects" className="dash-icon-row gap-1.5 transition-colors hover:text-[var(--text-primary)]">
-                      <Folder className="w-3.5 h-3.5" strokeWidth={2} />
-                      {t('servers', 'projectCount').replace('{count}', String(server.projectCount))}
-                    </a>
-                  )}
-                  {server.databaseCount > 0 && (
-                    <a href="#server-hub-databases" className="dash-icon-row gap-1.5 transition-colors hover:text-[var(--text-primary)]">
-                      <Database className="w-3.5 h-3.5" strokeWidth={2} />
-                      {t('servers', 'databaseCount').replace('{count}', String(server.databaseCount))}
-                    </a>
-                  )}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
+      <PageHeader
+        back={{ href: '/dashboard/servers', label: t('navigation', 'servers') }}
+        crumb={server.name}
+        title={server.name}
+        badge={
+          <>
+            <StatusBadge status={server.status} label={statusLabel} />
+            {server.isManaged && <span className="badge badge-neutral shrink-0">{t('servers', 'managedBadge')}</span>}
+          </>
+        }
+        meta={[
+          <MetaLabel key="provider">{providerLabel}</MetaLabel>,
+          <MetaLabel key="region">{server.region}</MetaLabel>,
+          server.ipv4 && (
+            <span key="ip" className="terminal-text text-xs text-[var(--text-secondary)]">
+              {server.ipv4}
+            </span>
+          ),
+          <span key="specs" className="terminal-text text-xs tabular-nums">
+            {server.vcpus} vCPU · {memoryLabel} · {server.diskGb} GB
+          </span>,
+          server.projectCount > 0 && (
+            <button
+              key="projects"
+              type="button"
+              onClick={() => setActiveTab('workloads')}
+              className="hover:text-[var(--text-primary)] transition-colors"
+            >
+              {t('servers', 'projectCount').replace('{count}', String(server.projectCount))}
+            </button>
+          ),
+          server.databaseCount > 0 && (
+            <button
+              key="dbs"
+              type="button"
+              onClick={() => setActiveTab('workloads')}
+              className="hover:text-[var(--text-primary)] transition-colors"
+            >
+              {t('servers', 'databaseCount').replace('{count}', String(server.databaseCount))}
+            </button>
+          ),
+        ]}
+        actions={
+          <>
+            <ServerDetailActions
+              server={server}
+              onEdit={() => setShowEditModal(true)}
+              onResize={() => setShowResizeModal(true)}
+            />
             {server.status === 'stopped' && (
               <button
                 type="button"
                 onClick={() => startServer.mutate(id)}
                 disabled={actionPending}
-                className="btn btn-primary dash-icon-row"
+                className="btn btn-primary justify-center flex-1 sm:flex-none"
               >
-                <Play className={ICON_SM} strokeWidth={2} />
+                <Play className={ICON_SM} />
                 {t('servers', 'start')}
               </button>
             )}
-
             {server.status === 'running' && (
-              <Link href={`/dashboard/servers/${id}/terminal`} className="btn btn-primary dash-icon-row">
-                <Terminal className={ICON_SM} strokeWidth={2} />
+              <Link
+                href={`/dashboard/servers/${id}/terminal`}
+                className="btn btn-primary justify-center flex-1 sm:flex-none"
+              >
+                <Terminal className={ICON_SM} />
                 {t('servers', 'openTerminal')}
               </Link>
             )}
-
-            <div
-              className="inline-flex items-center gap-0.5 rounded-full p-0.5"
-              style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-secondary)' }}
-            >
+            <div className="relative self-center">
               <button
                 type="button"
-                onClick={() => syncServer.mutate(id)}
-                disabled={actionPending}
-                className="dash-icon-btn p-2 rounded-full inline-flex items-center justify-center transition-colors hover:bg-[var(--hover-overlay-md)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] disabled:opacity-50"
-                title={t('servers', 'sync')}
-                aria-label={t('servers', 'sync')}
-                style={{ color: 'var(--text-secondary)' }}
+                onClick={() => setMenuOpen((o) => !o)}
+                aria-haspopup="menu"
+                aria-expanded={menuOpen}
+                aria-label={l(copy.more)}
+                title={l(copy.more)}
+                className="dash-icon-action !w-9 !h-9 border border-[var(--border-subtle)]"
               >
-                <RefreshCw className={`${ICON_SM} ${syncServer.isPending ? 'animate-spin' : ''}`} strokeWidth={2} />
+                {syncServer.isPending ? <RefreshCw className="w-4 h-4 animate-spin" /> : <MoreHorizontal className="w-4 h-4" />}
               </button>
-
-              {server.status === 'running' && (
+              {menuOpen && (
                 <>
-                  <span className="w-px h-4 self-center" style={{ background: 'var(--border-subtle)' }} />
-                  <button
-                    type="button"
-                    onClick={() => rebootServer.mutate(id)}
-                    disabled={actionPending}
-                    className="dash-icon-btn p-2 rounded-full inline-flex items-center justify-center transition-colors hover:bg-[var(--hover-overlay-md)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] disabled:opacity-50"
-                    title={t('servers', 'reboot')}
-                    aria-label={t('servers', 'reboot')}
-                    style={{ color: 'var(--text-secondary)' }}
-                  >
-                    <RotateCcw className={ICON_SM} strokeWidth={2} />
-                  </button>
-                  <span className="w-px h-4 self-center" style={{ background: 'var(--border-subtle)' }} />
-                  <button
-                    type="button"
-                    onClick={() => stopServer.mutate(id)}
-                    disabled={actionPending}
-                    className="dash-icon-btn p-2 rounded-full inline-flex items-center justify-center transition-colors hover:bg-[var(--hover-overlay-md)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)] disabled:opacity-50"
-                    title={t('servers', 'stop')}
-                    aria-label={t('servers', 'stop')}
-                    style={{ color: 'var(--text-secondary)' }}
-                  >
-                    <Square className={ICON_SM} strokeWidth={2} />
-                  </button>
+                  <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+                  <div className="dash-menu absolute right-0 top-full mt-1 w-48 z-20" role="menu">
+                    <button
+                      type="button"
+                      role="menuitem"
+                      disabled={actionPending}
+                      onClick={() => runMenu(() => syncServer.mutate(id))}
+                      className="dash-menu-item"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      {t('servers', 'sync')}
+                    </button>
+                    {server.status === 'running' && (
+                      <>
+                        <button
+                          type="button"
+                          role="menuitem"
+                          disabled={actionPending}
+                          onClick={() => runMenu(() => rebootServer.mutate(id))}
+                          className="dash-menu-item"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          {t('servers', 'reboot')}
+                        </button>
+                        <button
+                          type="button"
+                          role="menuitem"
+                          disabled={actionPending}
+                          onClick={() => runMenu(() => stopServer.mutate(id))}
+                          className="dash-menu-item"
+                        >
+                          <Square className="w-3.5 h-3.5" />
+                          {t('servers', 'stop')}
+                        </button>
+                      </>
+                    )}
+                    <div className="dash-menu-separator" />
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => runMenu(() => setShowDeleteModal(true))}
+                      className="dash-menu-item is-danger"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      {t('servers', 'deleteServer')}
+                    </button>
+                  </div>
                 </>
               )}
-
-              <span className="w-px h-4 self-center" style={{ background: 'var(--border-subtle)' }} />
-              <button
-                type="button"
-                onClick={() => setShowDeleteModal(true)}
-                className="dash-icon-btn p-2 rounded-full inline-flex items-center justify-center transition-colors hover:bg-[var(--hover-overlay-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--text-primary)]"
-                title={t('servers', 'deleteServer')}
-                aria-label={t('servers', 'deleteServer')}
-                style={{ color: 'var(--status-error)' }}
-              >
-                <Trash2 className={ICON_SM} strokeWidth={2} />
-              </button>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {server.infraBilling && <ServerInfraBillingCard server={server} />}
-
-      <ServerDetailActions
-        server={server}
-        onEdit={() => setShowEditModal(true)}
-        onResize={() => setShowResizeModal(true)}
+          </>
+        }
       />
 
       {server.statusMessage === 'resizing' && (
@@ -288,21 +318,9 @@ export default function ServerDetailPage({ params }: PageProps) {
           variant="info"
           title={t('servers', 'timelineResizing')}
           description={t('servers', 'resizeWarning')}
-          icon={<Loader2 className="w-5 h-5 shrink-0 animate-spin" style={{ color: 'var(--text-secondary)' }} strokeWidth={2} />}
+          icon={<Loader2 className="w-3.5 h-3.5 animate-spin" />}
         />
       )}
-
-      <ServerNextStepsCard server={server} />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-w-0">
-        <ServerProjectsSection serverId={id} />
-        <ServerDatabasesSection
-          server={server}
-          readyServers={
-            server.status === 'running' && server.setupStatus === 'completed' ? [server] : []
-          }
-        />
-      </div>
 
       {showStatusBanner && (
         <SetupBanner
@@ -313,13 +331,6 @@ export default function ServerDetailPage({ params }: PageProps) {
               ? `${statusMessageText} ${t('servers', 'statusInfraCreditsStoppedHint')}`
               : statusMessageText!
           }
-          icon={
-            infraCreditsStopped ? (
-              <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-warning)' }} strokeWidth={2} />
-            ) : (
-              <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-error)' }} strokeWidth={2} />
-            )
-          }
         />
       )}
 
@@ -328,7 +339,7 @@ export default function ServerDetailPage({ params }: PageProps) {
           variant="info"
           title={t('servers', 'setupBannerTitle')}
           description={t('servers', 'setupBannerDesc')}
-          icon={<Loader2 className="w-5 h-5 shrink-0 animate-spin" style={{ color: 'var(--text-secondary)' }} strokeWidth={2} />}
+          icon={<Loader2 className="w-3.5 h-3.5 animate-spin" />}
         />
       )}
 
@@ -337,27 +348,26 @@ export default function ServerDetailPage({ params }: PageProps) {
           variant="error"
           title={t('servers', 'setupFailedTitle')}
           description={statusMessageText || t('servers', 'setupFailed')}
-          icon={<AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--status-error)' }} strokeWidth={2} />}
         />
       )}
 
-      {server.status === 'running' && server.setupStatus === 'completed' && (
-        <SetupBanner
-          variant="success"
-          title={t('servers', 'setupReadyTitle')}
-          description={t('servers', 'setupReadyDesc')}
-          icon={<Check className="w-5 h-5 shrink-0" style={{ color: 'var(--status-success)' }} strokeWidth={2} />}
-        />
-      )}
+      <Tabs label={server.name} idPrefix="server-tab" items={tabs} active={activeTab} onChange={setActiveTab} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
-        <div className="lg:col-span-2 space-y-6 min-w-0">
-          <ServerDetailSection icon={Activity} title={t('servers', 'overview')}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <StatTile icon={Cpu} label={t('servers', 'vcpus')} value={String(server.vcpus)} />
-              <StatTile icon={MemoryStick} label={t('servers', 'memory')} value={memoryLabel} />
+      <TabPanel idPrefix="server-tab" active={activeTab}>
+        {activeTab === 'overview' && (
+          <div className="space-y-6 min-w-0">
+            {server.status === 'running' && server.setupStatus === 'completed' && (
+              <SetupBanner
+                variant="success"
+                title={t('servers', 'setupReadyTitle')}
+                description={t('servers', 'setupReadyDesc')}
+              />
+            )}
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+              <StatTile label={t('servers', 'vcpus')} value={String(server.vcpus)} />
+              <StatTile label={t('servers', 'memory')} value={memoryLabel} />
               <StatTile
-                icon={HardDrive}
                 label={t('servers', 'disk')}
                 value={
                   // The hourly check knows how full it actually is; the size alone does not
@@ -366,29 +376,62 @@ export default function ServerDetailPage({ params }: PageProps) {
                     : `${server.diskGb} GB`
                 }
               />
-              <StatTile icon={MapPin} label={t('servers', 'region')} value={server.region} />
+              <StatTile label={t('servers', 'region')} value={server.region} />
             </div>
-          </ServerDetailSection>
 
-          <ServerNetworkSection
-            server={server}
-            providerData={providerData}
-            copiedField={copiedField}
-            onCopy={copyToClipboard}
-          />
+            {server.infraBilling && <ServerInfraBillingCard server={server} />}
 
-        </div>
+            <ServerNextStepsCard server={server} />
 
-        <div className="space-y-6 min-w-0">
-          {server.ipv4 && <ServerSshPanel serverId={id} />}
-          <ServerFirewallPanel />
-          <ServerContainersPanel server={server} />
-          <ServerHealthPanel server={server} />
-          <ServerSnapshotsPanel server={server} />
-          <ServerTimelinePanel serverId={id} />
-          <ServerProviderPanels server={server} providerData={providerData} />
-        </div>
-      </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+              <ServerHealthPanel server={server} />
+              <ServerContainersPanel server={server} />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'workloads' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-w-0">
+            <ServerProjectsSection serverId={id} />
+            <ServerDatabasesSection
+              server={server}
+              readyServers={
+                server.status === 'running' && server.setupStatus === 'completed' ? [server] : []
+              }
+            />
+          </div>
+        )}
+
+        {activeTab === 'network' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
+            <div className="lg:col-span-2 space-y-6 min-w-0">
+              <ServerNetworkSection
+                server={server}
+                providerData={providerData}
+                copiedField={copiedField}
+                onCopy={copyToClipboard}
+              />
+              {server.ipv4 && <ServerSshPanel serverId={id} />}
+            </div>
+            <div className="min-w-0">
+              <ServerFirewallPanel />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'activity' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+            <ServerTimelinePanel serverId={id} />
+            <ServerSnapshotsPanel server={server} />
+          </div>
+        )}
+
+        {activeTab === 'details' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+            <ServerProviderPanels server={server} providerData={providerData} />
+          </div>
+        )}
+      </TabPanel>
 
       <DeleteServerModal
         isOpen={showDeleteModal}

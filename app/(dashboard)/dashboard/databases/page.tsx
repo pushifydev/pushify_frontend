@@ -2,19 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import {
-  Database,
-  Plus,
-  MoreVertical,
-  Trash2,
-  Copy,
-  Check,
-  Eye,
-  EyeOff,
-  Server,
-  Archive,
-  ArrowUpRight,
-} from 'lucide-react';
+import { Plus, MoreHorizontal, Trash2, Copy, Check, Eye, EyeOff, Server } from 'lucide-react';
 import {
   useTranslation,
   useDatabases,
@@ -22,13 +10,13 @@ import {
   useDatabaseCredentials,
   useServers,
 } from '@/hooks';
-import { DATABASE_STATUS_COLORS, DB_TYPE_COLORS, DB_TYPE_LABELS, STATUS_COLORS } from '@/lib/constants';
+import { DB_TYPE_LABELS } from '@/lib/constants';
 import { formatStorage, formatTimeAgo } from '@/lib/formatters';
 import { CreateDatabaseModal } from './components/CreateDatabaseModal';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
-import { SkeletonServerCard } from '@/components/Skeleton';
 import type { Database as DatabaseType, DatabaseStatus } from '@/lib/api';
 import { EmptyState } from '@/components/EmptyState';
+import { MetaLabel, PageHeader, RowList } from '@/components/dashboard/PageKit';
 
 export default function DatabasesPage() {
   const { t } = useTranslation();
@@ -61,59 +49,63 @@ export default function DatabasesPage() {
 
   const readyServers = servers.filter(s => s.status === 'running' && s.setupStatus === 'completed');
 
-  return (
-    <div className="dash-page max-w-5xl space-y-6 animate-slide-in">
+  const running = databases.filter((d) => d.status === 'running').length;
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">{t('databases', 'title')}</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-            {t('databases', 'description')}
-          </p>
-        </div>
-        <button
-          onClick={() => setCreateModalOpen(true)}
-          disabled={readyServers.length === 0}
-          className="btn btn-primary"
-        >
-          <Plus className="w-4 h-4" />
-          {t('databases', 'newDatabase')}
-        </button>
-      </div>
+  return (
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
+      <PageHeader
+        title={t('databases', 'title')}
+        description={t('databases', 'description')}
+        meta={
+          databases.length > 0
+            ? [
+                <MetaLabel key="count">
+                  {databases.length} {t('databases', 'title')}
+                </MetaLabel>,
+                <span key="running" className="inline-flex items-center gap-1.5">
+                  <span className="dash-status-dot is-success" aria-hidden />
+                  {running} {t('databases', 'running')}
+                </span>,
+              ]
+            : undefined
+        }
+        actions={
+          <button
+            type="button"
+            onClick={() => setCreateModalOpen(true)}
+            disabled={readyServers.length === 0}
+            className="btn btn-primary justify-center"
+          >
+            <Plus className="w-4 h-4" />
+            {t('databases', 'newDatabase')}
+          </button>
+        }
+      />
 
       {/* No servers warning */}
       {!isLoading && readyServers.length === 0 && (
-        <div
-          className="flex items-center justify-between gap-4 px-4 py-3 rounded-xl"
-          style={{
-            background: 'rgba(234,179,8,0.05)',
-            border: '1px solid rgba(234,179,8,0.2)',
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <Server className="w-4 h-4 shrink-0" style={{ color: STATUS_COLORS.warning }} />
-            <div>
-              <p className="text-sm font-medium" style={{ color: STATUS_COLORS.warning }}>
-                {t('databases', 'noServersWarning')}
-              </p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                {t('databases', 'noServersWarningDesc')}
-              </p>
-            </div>
+        <div className="dash-callout dash-callout-attention flex-col sm:flex-row sm:items-center" role="note">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium">{t('databases', 'noServersWarning')}</p>
+            <p className="text-[13px] mt-0.5 text-[var(--text-secondary)]">
+              {t('databases', 'noServersWarningDesc')}
+            </p>
           </div>
-          <Link href="/dashboard/servers" className="btn btn-primary shrink-0">
-            <Plus className="w-4 h-4" />
+          <Link href="/dashboard/servers" className="btn btn-secondary btn-sm shrink-0">
+            <Plus className="w-3.5 h-3.5" />
             {t('databases', 'addServer')}
           </Link>
         </div>
       )}
 
-      {/* Loading / empty / grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {[...Array(6)].map((_, i) => (
-            <SkeletonServerCard key={i} />
+        <div className="dash-rows" role="status" aria-label={t('common', 'loading')}>
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="dash-row flex items-center gap-3">
+              <div className="dash-skeleton w-1.5 h-1.5 rounded-full" />
+              <div className="dash-skeleton h-4 w-40 rounded" />
+              <div className="dash-skeleton h-3 w-24 rounded ml-auto" />
+            </div>
           ))}
         </div>
       ) : databases.length === 0 ? (
@@ -129,14 +121,11 @@ export default function DatabasesPage() {
           }}
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <RowList>
           {databases.map((db) => (
-            <DatabaseCard
+            <DatabaseRow
               key={db.id}
               database={db}
-              statusAccent={DATABASE_STATUS_COLORS}
-              dbColors={DB_TYPE_COLORS}
-              dbLabels={DB_TYPE_LABELS}
               actionMenu={actionMenu}
               setActionMenu={setActionMenu}
               showCredentials={showCredentials}
@@ -147,7 +136,7 @@ export default function DatabasesPage() {
               t={t}
             />
           ))}
-        </div>
+        </RowList>
       )}
 
       <CreateDatabaseModal isOpen={createModalOpen} onClose={() => setCreateModalOpen(false)} servers={readyServers} />
@@ -167,15 +156,19 @@ export default function DatabasesPage() {
   );
 }
 
-function DatabaseCard({
-  database, statusAccent, dbColors, dbLabels,
+function statusDot(status: DatabaseStatus) {
+  if (status === 'running') return 'is-success';
+  if (status === 'error') return 'is-error';
+  if (status === 'provisioning' || status === 'deleting') return 'is-warning animate-pulse';
+  return '';
+}
+
+function DatabaseRow({
+  database,
   actionMenu, setActionMenu, showCredentials, setShowCredentials,
   copiedField, copyToClipboard, onDelete, t,
 }: {
   database: DatabaseType;
-  statusAccent: Record<DatabaseStatus, string>;
-  dbColors: Record<string, string>;
-  dbLabels: Record<string, string>;
   actionMenu: string | null;
   setActionMenu: (id: string | null) => void;
   showCredentials: string | null;
@@ -185,138 +178,108 @@ function DatabaseCard({
   onDelete: (db: DatabaseType) => void;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
-  const accent = statusAccent[database.status];
-  const dbColor = dbColors[database.type] || '#8a8a9a';
-  const dbLabel = dbLabels[database.type] || database.type;
+  const dbLabel = DB_TYPE_LABELS[database.type] || database.type;
   const isShowingCreds = showCredentials === database.id;
+  const menuOpen = actionMenu === database.id;
 
   return (
-    <div className="dash-card p-5 transition-all hover:border-[var(--border-default)]">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <Link href={`/dashboard/databases/${database.id}`} className="flex items-center gap-3 min-w-0">
-          <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-            style={{ background: `${dbColor}14` }}
-          >
-            <Database className="w-4 h-4" style={{ color: dbColor }} />
-          </div>
-          <div className="min-w-0">
-            <h3 className="font-medium text-sm truncate">{database.name}</h3>
-            <p className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              {dbLabel} {database.version}
-            </p>
-          </div>
-        </Link>
-
-        <div className="relative shrink-0">
-          <button
-            onClick={() => setActionMenu(actionMenu === database.id ? null : database.id)}
-            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)')}
-            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
-          >
-            <MoreVertical className="w-4 h-4" />
-          </button>
-          {actionMenu === database.id && (
-            <div
-              className="absolute right-0 top-8 z-10 w-44 rounded-xl py-1 shadow-xl"
-              style={{ background: 'var(--bg-elevated)', border: '1px solid var(--glass-border-md)' }}
+    <div className="dash-row">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className={`dash-status-dot ${statusDot(database.status)}`} aria-hidden />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
+            <Link
+              href={`/dashboard/databases/${database.id}`}
+              className="text-sm font-medium truncate text-[var(--text-primary)] hover:underline underline-offset-4"
             >
-              <button
-                onClick={() => {
-                  setShowCredentials(isShowingCreds ? null : database.id);
-                  setActionMenu(null);
-                }}
-                className="w-full px-3 py-2 text-left text-sm flex items-center gap-2"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {isShowingCreds ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                {isShowingCreds ? t('databases', 'hideCredentials') : t('databases', 'showCredentials')}
-              </button>
-              <div className="my-1 mx-3" style={{ height: 1, background: 'var(--glass-divider-md)' }} />
-              <button
-                onClick={() => onDelete(database)}
-                className="w-full px-3 py-2 text-left text-sm flex items-center gap-2"
-                style={{ color: 'var(--status-error)' }}
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                {t('databases', 'delete')}
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Status + server */}
-      <div className="flex items-center gap-2 mb-4">
-        <span
-          className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium"
-          style={{ background: `${accent}15`, color: accent }}
-        >
-          <span
-            className={`w-1.5 h-1.5 rounded-full ${database.status === 'provisioning' ? 'animate-pulse' : ''}`}
-            style={{ background: accent }}
-          />
-          {database.status}
-        </span>
-        {database.server && (
-          <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}>
-            <Server className="w-3 h-3" />
-            {database.server.name}
-          </span>
-        )}
-      </div>
-
-      <div
-        className="flex items-center justify-between gap-2 mb-4 px-3 py-2 rounded-lg"
-        style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--glass-border)' }}
-      >
-        <div className="flex items-center gap-2 min-w-0">
-          <Archive className="w-3.5 h-3.5 shrink-0" style={{ color: STATUS_COLORS.purple }} />
-          <div className="min-w-0">
-            <p className="text-xs font-medium">
+              {database.name}
+            </Link>
+            <span className="font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.08em] text-[var(--text-secondary)] shrink-0">
+              {dbLabel} {database.version}
+            </span>
+            {database.status !== 'running' && (
+              <span className="text-xs text-[var(--text-muted)] shrink-0">
+                {t('databases', database.status as 'running')}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-xs text-[var(--text-muted)] min-w-0">
+            <span className="terminal-text truncate">{database.host}:{database.port}</span>
+            {database.server && (
+              <span className="inline-flex items-center gap-1 shrink-0">
+                <Server className="w-3 h-3" aria-hidden />
+                {database.server.name}
+              </span>
+            )}
+            <span className="terminal-text shrink-0 hidden sm:inline">
+              {formatStorage(database.usedStorageMb ?? 0)} / {formatStorage(database.storageMb ?? 0)}
+            </span>
+            <span className="shrink-0">
               {database.backupEnabled ? t('databases', 'listBackupOn') : t('databases', 'listBackupOff')}
-            </p>
-            <p className="text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
-              {t('databases', 'lastBackup')}:{' '}
+              {' · '}
               {database.lastBackupAt
                 ? formatTimeAgo(database.lastBackupAt, t)
                 : t('databases', 'neverBackedUp')}
-            </p>
+            </span>
           </div>
         </div>
-        <Link
-          href={`/dashboard/databases/${database.id}`}
-          className="flex items-center gap-0.5 text-xs shrink-0"
-          style={{ color: 'var(--accent-cyan)' }}
-        >
-          {t('databases', 'manageBackupsLink')}
-          <ArrowUpRight className="w-3 h-3" />
-        </Link>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <Link href={`/dashboard/databases/${database.id}`} className="btn btn-secondary btn-sm hidden sm:inline-flex">
+            {t('databases', 'manageBackupsLink')}
+          </Link>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setActionMenu(menuOpen ? null : database.id)}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              aria-label={database.name}
+              className="dash-icon-action"
+            >
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setActionMenu(null)} aria-hidden />
+                <div className="dash-menu absolute right-0 top-full mt-1 w-48 z-20" role="menu">
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setShowCredentials(isShowingCreds ? null : database.id);
+                      setActionMenu(null);
+                    }}
+                    className="dash-menu-item"
+                  >
+                    {isShowingCreds ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    {isShowingCreds ? t('databases', 'hideCredentials') : t('databases', 'showCredentials')}
+                  </button>
+                  <div className="dash-menu-separator" />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => onDelete(database)}
+                    className="dash-menu-item is-danger"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    {t('databases', 'delete')}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Credentials or info */}
-      {isShowingCreds ? (
-        <CredentialsView
-          database={database}
-          copiedField={copiedField}
-          copyToClipboard={copyToClipboard}
-          t={t}
-        />
-      ) : (
-        <div className="space-y-1.5">
-          {[
-            { label: t('databases', 'host'),     value: `${database.host}:${database.port}` },
-            { label: t('databases', 'database'), value: database.databaseName },
-            { label: t('databases', 'storage'),  value: `${formatStorage(database.usedStorageMb ?? 0)} / ${formatStorage(database.storageMb ?? 0)}` },
-          ].map(({ label, value }) => (
-            <div key={label} className="flex items-center justify-between text-xs">
-              <span style={{ color: 'var(--text-muted)' }}>{label}</span>
-              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{value}</span>
-            </div>
-          ))}
+      {isShowingCreds && (
+        <div className="mt-3 ml-[1.125rem] max-w-xl rounded-[10px] border border-[var(--border-subtle)] bg-[var(--bg-tertiary)] px-3 py-1">
+          <CredentialsView
+            database={database}
+            copiedField={copiedField}
+            copyToClipboard={copyToClipboard}
+            t={t}
+          />
         </div>
       )}
     </div>
@@ -333,7 +296,7 @@ function CredentialsView({
 }) {
   const { data: credentials } = useDatabaseCredentials(database.id);
   return (
-    <div className="space-y-1.5">
+    <div>
       <CredentialRow label={t('databases', 'host')}     value={credentials?.host || database.host || ''} port={credentials?.port || database.port} field="host" copiedField={copiedField} copyToClipboard={copyToClipboard} />
       <CredentialRow label={t('databases', 'username')} value={credentials?.username || database.username} field="username" copiedField={copiedField} copyToClipboard={copyToClipboard} />
       <CredentialRow label={t('databases', 'password')} value={credentials?.password || '••••••••'} field="password" copiedField={copiedField} copyToClipboard={copyToClipboard} isPassword />
@@ -351,26 +314,24 @@ function CredentialRow({
   copiedField: string | null; copyToClipboard: (v: string, f: string) => void; isPassword?: boolean;
 }) {
   const display = port ? `${value}:${port}` : value;
+  const copied = copiedField === field;
   return (
-    <div className="flex items-center justify-between gap-2 text-xs">
-      <span className="shrink-0" style={{ color: 'var(--text-muted)' }}>{label}</span>
-      <div className="flex items-center gap-1 min-w-0">
-        <span
-          className={`truncate ${isPassword ? 'blur-sm hover:blur-none transition-all' : ''}`}
-          style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}
-        >
-          {display}
-        </span>
+    <div className="dash-kv items-center!">
+      <span>{label}</span>
+      <span className="flex items-center justify-end gap-1 min-w-0">
+        <span className={`truncate ${isPassword ? 'blur-sm hover:blur-none transition-all' : ''}`}>{display}</span>
         <button
+          type="button"
           onClick={() => copyToClipboard(display, field)}
-          className="p-1 rounded shrink-0 transition-colors"
-          style={{ color: 'var(--text-muted)' }}
+          aria-label={`${label}`}
+          title={label}
+          className="dash-icon-action w-6! h-6!"
         >
-          {copiedField === field
+          {copied
             ? <Check className="w-3 h-3" style={{ color: 'var(--status-success)' }} />
             : <Copy className="w-3 h-3" />}
         </button>
-      </div>
+      </span>
     </div>
   );
 }

@@ -18,16 +18,14 @@ export function TimeRangeSelector({
   ];
 
   return (
-    <div className="flex items-center gap-1 bg-[var(--bg-tertiary)] rounded-lg p-1">
+    <div className="dash-segmented shrink-0" role="group" aria-label={t('monitoring', 'overview')}>
       {options.map((opt) => (
         <button
           key={opt.value}
+          type="button"
           onClick={() => onChange(opt.value)}
-          className={`px-3 py-1 text-xs font-mono font-medium rounded-md transition-colors ${
-            selected === opt.value
-              ? 'dash-accent-fill'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-          }`}
+          aria-pressed={selected === opt.value}
+          className="terminal-text text-xs!"
         >
           {opt.label}
         </button>

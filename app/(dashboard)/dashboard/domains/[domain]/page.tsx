@@ -1,21 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import {
-  ArrowLeft,
-  Check,
-  Copy,
-  Globe,
-  KeyRound,
-  Loader2,
-  Lock,
-  LockOpen,
-  Mail,
-  Plus,
-  Trash2,
-} from 'lucide-react';
+import { Check, Clock, Copy, KeyRound, Loader2, Lock, LockOpen, Plus, Trash2 } from 'lucide-react';
 import {
   useDomainDetails,
   useDomainDns,
@@ -27,95 +14,87 @@ import {
 } from '@/hooks';
 import type { DnsRecordType } from '@/lib/api';
 import { toast } from 'sonner';
+import { EmptyState } from '@/components/EmptyState';
+import { MetaLabel, PageHeader, TabPanel, Tabs } from '@/components/dashboard/PageKit';
+import { SettingsSection, SettingsSwitch } from '@/components/dashboard/SettingsParts';
 
 const DNS_TYPES: DnsRecordType[] = ['A', 'AAAA', 'CNAME', 'MX', 'TXT', 'SRV', 'NS'];
 type Tab = 'dns' | 'forwarding' | 'settings';
 
-const inputCls =
-  'h-9 px-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)]';
+const inputCls = 'input h-9! py-0! text-sm!';
+const selectCls = 'select h-9! py-0! text-sm!';
 
 export default function DomainDetailPage() {
   const params = useParams<{ domain: string }>();
   const domainName = decodeURIComponent(params.domain);
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   const { data: details, isLoading } = useDomainDetails(domainName);
   const active = details?.domain.status === 'active';
   const [tab, setTab] = useState<Tab>('dns');
 
-  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: 'dns', label: t('domainSales', 'tabDns'), icon: <Globe className="w-3.5 h-3.5" /> },
-    {
-      id: 'forwarding',
-      label: t('domainSales', 'tabForwarding'),
-      icon: <Mail className="w-3.5 h-3.5" />,
-    },
-    {
-      id: 'settings',
-      label: t('domainSales', 'tabSettings'),
-      icon: <KeyRound className="w-3.5 h-3.5" />,
-    },
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'dns', label: t('domainSales', 'tabDns') },
+    { id: 'forwarding', label: t('domainSales', 'tabForwarding') },
+    { id: 'settings', label: t('domainSales', 'tabSettings') },
   ];
 
+  const status = details?.domain.status;
+  const badge = details ? (
+    <span
+      className={`badge shrink-0 ${
+        status === 'active' ? 'badge-success' : status === 'transfer_pending' ? 'badge-warning' : 'badge-error'
+      }`}
+    >
+      {status === 'active'
+        ? (locale === 'tr' ? 'Aktif' : 'Active')
+        : status === 'transfer_pending'
+          ? t('domainSales', 'transferPendingChip')
+          : status === 'transfer_failed'
+            ? t('domainSales', 'transferFailedChip')
+            : t('domainSales', 'expired')}
+    </span>
+  ) : undefined;
+
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div>
-        <Link
-          href="/dashboard/domains"
-          className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] mb-3"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          {t('domainSales', 'backToDomains')}
-        </Link>
-        <h1 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-mono)' }}>
-          {domainName}
-        </h1>
-        {details && (
-          <p className="text-xs text-[var(--text-muted)] mt-1">
-            {details.domain.status === 'active'
-              ? `${t('domainSales', 'expires')}: ${new Date(details.domain.expiresAt).toLocaleDateString()}`
-              : details.domain.status === 'transfer_pending'
-                ? t('domainSales', 'transferPendingChip')
-                : details.domain.status === 'transfer_failed'
-                  ? t('domainSales', 'transferFailedChip')
-                  : t('domainSales', 'expired')}
-          </p>
-        )}
-      </div>
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
+      <PageHeader
+        back={{ href: '/dashboard/domains', label: t('domainSales', 'title') }}
+        title={<span className="terminal-text">{domainName}</span>}
+        crumb={domainName}
+        badge={badge}
+        meta={
+          details && status === 'active'
+            ? [
+                <span key="exp" className="inline-flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 shrink-0" aria-hidden />
+                  {t('domainSales', 'expires')} {new Date(details.domain.expiresAt).toLocaleDateString()}
+                </span>,
+                details.nameservers?.[0] ? <MetaLabel key="ns">{details.nameservers[0]}</MetaLabel> : null,
+              ]
+            : undefined
+        }
+      />
 
       {isLoading ? (
-        <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-          <Loader2 className="w-4 h-4 animate-spin" />
+        <div className="space-y-4" role="status" aria-label={t('common', 'loading')}>
+          <div className="h-10 border-b border-[var(--border-subtle)]" />
+          <div className="dash-skeleton h-48 rounded-[14px]" />
         </div>
       ) : !active ? (
-        <div className="p-6 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-sm text-[var(--text-secondary)]">
+        <div className="dash-callout text-sm text-[var(--text-secondary)]" role="note">
           {t('domainSales', 'transferNote')}
         </div>
       ) : (
         <>
-          <div className="flex gap-1 border-b border-[var(--border-subtle)]">
-            {tabs.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setTab(item.id)}
-                className="flex items-center gap-1.5 px-4 h-10 text-sm font-medium -mb-px border-b-2 transition-colors"
-                style={
-                  tab === item.id
-                    ? { borderColor: 'var(--accent-cyan)', color: 'var(--text-primary)' }
-                    : { borderColor: 'transparent', color: 'var(--text-muted)' }
-                }
-              >
-                {item.icon}
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          {tab === 'dns' && <DnsTab domainName={domainName} />}
-          {tab === 'forwarding' && <ForwardingTab domainName={domainName} />}
-          {tab === 'settings' && (
-            <SettingsTab domainName={domainName} locked={details?.locked ?? null} nameservers={details?.nameservers ?? []} />
-          )}
+          <Tabs items={tabs} active={tab} onChange={setTab} label={domainName} idPrefix="domain-tab" />
+          <TabPanel idPrefix="domain-tab" active={tab}>
+            {tab === 'dns' && <DnsTab domainName={domainName} />}
+            {tab === 'forwarding' && <ForwardingTab domainName={domainName} />}
+            {tab === 'settings' && (
+              <SettingsTab domainName={domainName} locked={details?.locked ?? null} nameservers={details?.nameservers ?? []} />
+            )}
+          </TabPanel>
         </>
       )}
     </div>
@@ -147,83 +126,74 @@ function DnsTab({ domainName }: { domainName: string }) {
   };
 
   return (
-    <div className="space-y-4">
-      <form
-        onSubmit={addRecord}
-        className="flex flex-wrap items-end gap-2 p-4 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]"
-      >
-        <label className="flex flex-col gap-1 text-[11px] text-[var(--text-muted)]">
-          {t('domainSales', 'dnsHost')}
-          <input value={host} onChange={(e) => setHost(e.target.value)} className={`${inputCls} w-28`} style={{ fontFamily: 'var(--font-mono)' }} />
+    <section className="dash-rows" aria-label={t('domainSales', 'tabDns')}>
+      <form onSubmit={addRecord} className="dash-toolbar items-end! gap-2! px-4! py-3!">
+        <label className="flex flex-col gap-1.5">
+          <span className="dash-section-label">{t('domainSales', 'dnsHost')}</span>
+          <input value={host} onChange={(e) => setHost(e.target.value)} className={`${inputCls} w-28 terminal-text`} />
         </label>
-        <label className="flex flex-col gap-1 text-[11px] text-[var(--text-muted)]">
-          {t('domainSales', 'dnsType')}
-          <select value={type} onChange={(e) => setType(e.target.value as DnsRecordType)} className={`${inputCls} w-24`}>
+        <label className="flex flex-col gap-1.5">
+          <span className="dash-section-label">{t('domainSales', 'dnsType')}</span>
+          <select value={type} onChange={(e) => setType(e.target.value as DnsRecordType)} className={`${selectCls} w-24`}>
             {DNS_TYPES.map((dt) => (
               <option key={dt} value={dt}>{dt}</option>
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-[11px] text-[var(--text-muted)] flex-1 min-w-40">
-          {t('domainSales', 'dnsValue')}
-          <input value={answer} onChange={(e) => setAnswer(e.target.value)} required className={`${inputCls} w-full`} style={{ fontFamily: 'var(--font-mono)' }} />
+        <label className="flex flex-col gap-1.5 flex-1 min-w-40">
+          <span className="dash-section-label">{t('domainSales', 'dnsValue')}</span>
+          <input value={answer} onChange={(e) => setAnswer(e.target.value)} required className={`${inputCls} w-full terminal-text`} />
         </label>
-        <label className="flex flex-col gap-1 text-[11px] text-[var(--text-muted)]">
-          {t('domainSales', 'dnsTtl')}
-          <input value={ttl} onChange={(e) => setTtl(e.target.value)} className={`${inputCls} w-20`} />
+        <label className="flex flex-col gap-1.5">
+          <span className="dash-section-label">{t('domainSales', 'dnsTtl')}</span>
+          <input value={ttl} onChange={(e) => setTtl(e.target.value)} className={`${inputCls} w-20 terminal-text`} />
         </label>
         {needsPriority && (
-          <label className="flex flex-col gap-1 text-[11px] text-[var(--text-muted)]">
-            {t('domainSales', 'dnsPriority')}
-            <input value={priority} onChange={(e) => setPriority(e.target.value)} className={`${inputCls} w-20`} />
+          <label className="flex flex-col gap-1.5">
+            <span className="dash-section-label">{t('domainSales', 'dnsPriority')}</span>
+            <input value={priority} onChange={(e) => setPriority(e.target.value)} className={`${inputCls} w-20 terminal-text`} />
           </label>
         )}
-        <button type="submit" disabled={create.isPending || !answer} className="btn btn-primary h-9 text-xs disabled:opacity-50">
+        <button type="submit" disabled={create.isPending || !answer} className="btn btn-primary btn-sm h-9!">
           {create.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
           {t('domainSales', 'dnsAdd')}
         </button>
       </form>
 
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
-      ) : records.length === 0 ? (
-        <p className="text-sm text-[var(--text-muted)]">{t('domainSales', 'dnsEmpty')}</p>
-      ) : (
-        <div className="rounded-lg border border-[var(--border-subtle)] overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-[11px] text-[var(--text-muted)] bg-[var(--bg-secondary)]">
-                <th className="px-3 py-2 font-medium">{t('domainSales', 'dnsHost')}</th>
-                <th className="px-3 py-2 font-medium">{t('domainSales', 'dnsType')}</th>
-                <th className="px-3 py-2 font-medium">{t('domainSales', 'dnsValue')}</th>
-                <th className="px-3 py-2 font-medium">{t('domainSales', 'dnsTtl')}</th>
-                <th className="px-3 py-2" />
-              </tr>
-            </thead>
-            <tbody>
-              {records.map((r) => (
-                <tr key={r.id} className="border-t border-[var(--border-subtle)]">
-                  <td className="px-3 py-2" style={{ fontFamily: 'var(--font-mono)' }}>{r.host || '@'}</td>
-                  <td className="px-3 py-2 text-xs">{r.type}{r.priority !== undefined ? ` (${r.priority})` : ''}</td>
-                  <td className="px-3 py-2 max-w-70 truncate" style={{ fontFamily: 'var(--font-mono)' }} title={r.answer}>{r.answer}</td>
-                  <td className="px-3 py-2 text-xs text-[var(--text-muted)]">{r.ttl ?? 300}</td>
-                  <td className="px-3 py-2 text-right">
-                    <button
-                      onClick={() => remove.mutate(r.id)}
-                      disabled={remove.isPending}
-                      className="btn btn-ghost h-7 w-7 p-0 text-[var(--text-muted)] hover:text-red-400"
-                      aria-label="delete"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="dash-row flex justify-center py-8!" role="status" aria-label={t('common', 'loading')}>
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" aria-hidden />
         </div>
+      ) : records.length === 0 ? (
+        <EmptyState variant="bare" title={t('domainSales', 'dnsEmpty')} />
+      ) : (
+        records.map((r) => (
+          <div key={r.id} className="dash-row flex items-center gap-3 min-w-0">
+            <span className="badge badge-neutral terminal-text shrink-0 w-14 justify-center">{r.type}</span>
+            <span className="terminal-text text-sm text-[var(--text-primary)] w-28 sm:w-40 truncate shrink-0">
+              {r.host || '@'}
+            </span>
+            <span className="terminal-text text-[13px] text-[var(--text-secondary)] flex-1 min-w-0 truncate" title={r.answer}>
+              {r.priority !== undefined && <span className="text-[var(--text-muted)]">{r.priority} </span>}
+              {r.answer}
+            </span>
+            <span className="terminal-text text-xs text-[var(--text-muted)] shrink-0 hidden sm:inline">
+              {t('domainSales', 'dnsTtl')} {r.ttl ?? 300}
+            </span>
+            <button
+              type="button"
+              onClick={() => remove.mutate(r.id)}
+              disabled={remove.isPending}
+              className="dash-icon-action hover:text-[var(--status-error)]!"
+              aria-label={`${t('common', 'delete')} ${r.type} ${r.host || '@'}`}
+              title={t('common', 'delete')}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ))
       )}
-    </div>
+    </section>
   );
 }
 
@@ -242,44 +212,63 @@ function ForwardingTab({ domainName }: { domainName: string }) {
   };
 
   return (
-    <div className="space-y-4">
-      <p className="text-sm text-[var(--text-secondary)]">{t('domainSales', 'fwdDesc')}</p>
-      <form onSubmit={submit} className="flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-1">
-          <input value={emailBox} onChange={(e) => setEmailBox(e.target.value)} placeholder={t('domainSales', 'fwdAliasPh')} required className={`${inputCls} w-36`} style={{ fontFamily: 'var(--font-mono)' }} />
-          <span className="text-sm text-[var(--text-muted)]" style={{ fontFamily: 'var(--font-mono)' }}>@{domainName}</span>
-        </div>
-        <span className="text-[var(--text-muted)]">→</span>
-        <input value={emailTo} onChange={(e) => setEmailTo(e.target.value)} placeholder={t('domainSales', 'fwdDestPh')} type="email" required className={`${inputCls} w-60`} style={{ fontFamily: 'var(--font-mono)' }} />
-        <button type="submit" disabled={add.isPending} className="btn btn-primary h-9 text-xs disabled:opacity-50">
-          {add.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
-          {t('domainSales', 'fwdAdd')}
-        </button>
-      </form>
+    <div className="space-y-3 min-w-0">
+      <p className="text-[13px] text-[var(--text-secondary)]">{t('domainSales', 'fwdDesc')}</p>
+      <section className="dash-rows" aria-label={t('domainSales', 'tabForwarding')}>
+        <form onSubmit={submit} className="dash-toolbar gap-2! px-4! py-3!">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <input
+              value={emailBox}
+              onChange={(e) => setEmailBox(e.target.value)}
+              placeholder={t('domainSales', 'fwdAliasPh')}
+              aria-label={t('domainSales', 'fwdAliasPh')}
+              required
+              className={`${inputCls} w-36 terminal-text`}
+            />
+            <span className="terminal-text text-[13px] text-[var(--text-muted)] truncate">@{domainName}</span>
+          </div>
+          <span className="text-[var(--text-muted)]" aria-hidden>→</span>
+          <input
+            value={emailTo}
+            onChange={(e) => setEmailTo(e.target.value)}
+            placeholder={t('domainSales', 'fwdDestPh')}
+            aria-label={t('domainSales', 'fwdDestPh')}
+            type="email"
+            required
+            className={`${inputCls} w-60 max-w-full terminal-text`}
+          />
+          <button type="submit" disabled={add.isPending} className="btn btn-primary btn-sm h-9!">
+            {add.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+            {t('domainSales', 'fwdAdd')}
+          </button>
+        </form>
 
-      {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
-      ) : forwardings.length === 0 ? (
-        <p className="text-sm text-[var(--text-muted)]">{t('domainSales', 'fwdEmpty')}</p>
-      ) : (
-        <div className="space-y-2">
-          {forwardings.map((f) => (
-            <div key={f.emailBox} className="flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm" style={{ fontFamily: 'var(--font-mono)' }}>
-              <span>{f.emailBox}@{domainName}</span>
-              <span className="text-[var(--text-muted)]">→</span>
-              <span className="truncate">{f.emailTo}</span>
+        {isLoading ? (
+          <div className="dash-row flex justify-center py-8!" role="status" aria-label={t('common', 'loading')}>
+            <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" aria-hidden />
+          </div>
+        ) : forwardings.length === 0 ? (
+          <EmptyState variant="bare" title={t('domainSales', 'fwdEmpty')} />
+        ) : (
+          forwardings.map((f) => (
+            <div key={f.emailBox} className="dash-row flex items-center gap-3 min-w-0 terminal-text text-[13px]">
+              <span className="text-[var(--text-primary)] truncate">{f.emailBox}@{domainName}</span>
+              <span className="text-[var(--text-muted)] shrink-0" aria-hidden>→</span>
+              <span className="text-[var(--text-secondary)] truncate flex-1 min-w-0">{f.emailTo}</span>
               <button
+                type="button"
                 onClick={() => remove.mutate(f.emailBox)}
                 disabled={remove.isPending}
-                className="ml-auto btn btn-ghost h-7 w-7 p-0 text-[var(--text-muted)] hover:text-red-400"
-                aria-label="delete"
+                className="dash-icon-action hover:text-[var(--status-error)]!"
+                aria-label={`${t('common', 'delete')} ${f.emailBox}@${domainName}`}
+                title={t('common', 'delete')}
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </section>
     </div>
   );
 }
@@ -318,67 +307,79 @@ function SettingsTab({
   };
 
   return (
-    <div className="space-y-4">
-      {/* Transfer lock */}
-      <div className="p-5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-start gap-4">
-        {locked ? <Lock className="w-4 h-4 mt-0.5 text-emerald-500" /> : <LockOpen className="w-4 h-4 mt-0.5 text-amber-500" />}
-        <div className="flex-1">
-          <h3 className="text-sm font-semibold">{t('domainSales', 'lockTitle')}</h3>
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t('domainSales', 'lockDesc')}</p>
-        </div>
-        <label className="flex items-center gap-2 text-xs cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={locked ?? false}
-            disabled={lock.isPending || locked === null}
-            onChange={(e) => lock.mutate(e.target.checked)}
-            className="accent-[var(--accent-cyan)]"
-          />
-        </label>
-      </div>
+    <div className="dash-settings-stack max-w-4xl">
+      <SettingsSection
+        id="domain-lock"
+        title={t('domainSales', 'lockTitle')}
+        description={t('domainSales', 'lockDesc')}
+        action={
+          <>
+            {locked !== null && (
+              <span className={`badge ${locked ? 'badge-success' : 'badge-warning'}`}>
+                {locked ? <Lock className="w-3 h-3" aria-hidden /> : <LockOpen className="w-3 h-3" aria-hidden />}
+              </span>
+            )}
+            <SettingsSwitch
+              checked={locked ?? false}
+              disabled={lock.isPending || locked === null}
+              onChange={(next) => lock.mutate(next)}
+              label={t('domainSales', 'lockTitle')}
+            />
+          </>
+        }
+      />
 
-      {/* Nameservers */}
-      <div className="p-5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-        <h3 className="text-sm font-semibold">{t('domainSales', 'nsTitle')}</h3>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5 mb-3">{t('domainSales', 'nsDesc')}</p>
+      <SettingsSection
+        id="domain-ns"
+        title={t('domainSales', 'nsTitle')}
+        description={t('domainSales', 'nsDesc')}
+        padded
+        footer={
+          <button type="button" onClick={saveNs} disabled={nsMutation.isPending} className="btn btn-primary btn-sm ml-auto">
+            {nsMutation.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            {t('domainSales', 'nsSave')}
+          </button>
+        }
+      >
         <textarea
           value={nsText}
           onChange={(e) => setNsText(e.target.value)}
           rows={3}
-          className="w-full p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[var(--accent-cyan)]"
-          style={{ fontFamily: 'var(--font-mono)' }}
+          aria-label={t('domainSales', 'nsTitle')}
+          className="input terminal-text max-w-xl"
           placeholder={'ns1.example.com\nns2.example.com'}
         />
-        <div className="flex justify-end mt-2">
-          <button onClick={saveNs} disabled={nsMutation.isPending} className="btn btn-primary h-9 text-xs disabled:opacity-50">
-            {nsMutation.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-            {t('domainSales', 'nsSave')}
-          </button>
-        </div>
-      </div>
+      </SettingsSection>
 
-      {/* Transfer out */}
-      <div className="p-5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
-        <h3 className="text-sm font-semibold">{t('domainSales', 'authTitle')}</h3>
-        <p className="text-xs text-[var(--text-secondary)] mt-0.5 mb-3">{t('domainSales', 'authDesc')}</p>
+      <SettingsSection
+        id="domain-auth"
+        title={t('domainSales', 'authTitle')}
+        description={t('domainSales', 'authDesc')}
+        padded
+      >
         {revealedCode ? (
-          <div className="flex items-center gap-2">
-            <code className="px-3 py-2 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] text-sm" style={{ fontFamily: 'var(--font-mono)' }}>
+          <div className="flex items-center gap-2 min-w-0">
+            <code className="terminal-text text-sm px-3 py-2 rounded-[10px] bg-[var(--bg-tertiary)] border border-[var(--border-subtle)] truncate">
               {revealedCode}
             </code>
-            <button onClick={copyCode} className="btn btn-ghost h-9 text-xs">
-              {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+            <button
+              type="button"
+              onClick={copyCode}
+              className="btn btn-secondary btn-sm"
+              aria-label={t('domainSales', 'copied')}
+            >
+              {copiedCode ? <Check className="w-3.5 h-3.5 text-[var(--status-success)]" /> : <Copy className="w-3.5 h-3.5" />}
               {copiedCode ? t('domainSales', 'copied') : ''}
             </button>
           </div>
         ) : (
-          <button onClick={reveal} disabled={authCode.isPending} className="btn btn-ghost h-9 text-xs disabled:opacity-50" style={{ border: '1px solid var(--border-subtle)' }}>
+          <button type="button" onClick={reveal} disabled={authCode.isPending} className="btn btn-secondary btn-sm">
             {authCode.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <KeyRound className="w-3.5 h-3.5" />}
             {t('domainSales', 'authShow')}
           </button>
         )}
-        <p className="text-[11px] text-amber-500 mt-2">{t('domainSales', 'authWarn')}</p>
-      </div>
+        <p className="text-xs text-[var(--status-warning)] mt-3">{t('domainSales', 'authWarn')}</p>
+      </SettingsSection>
     </div>
   );
 }

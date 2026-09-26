@@ -1,21 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
-  LayoutGrid,
-  List,
-  GitBranch,
   Plus,
   Search,
-  Globe,
-  MoreVertical,
+  MoreHorizontal,
   ExternalLink,
   Trash2,
   Settings,
   Play,
   Pause,
-  Clock,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -26,9 +21,9 @@ import {
 } from '@/hooks';
 import { updateProjectStatus } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
-import { PROJECT_STATUS_COLORS } from '@/lib/constants';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
-import { SkeletonProjectCard } from '@/components/Skeleton';
+import { Skeleton } from '@/components/Skeleton';
+import { PageHeader, MetaLabel } from '@/components/dashboard/PageKit';
 import type { Project } from '@/lib/api';
 import { EmptyState } from '@/components/EmptyState';
 
@@ -63,257 +58,169 @@ export default function ProjectsPage() {
     setDeleteTarget(null);
   };
 
-  // Cards for a handful of projects, a dense table once there are many — remembered per browser.
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('projects:view');
-      if (saved === 'table' || saved === 'cards') setViewMode(saved);
-    } catch {}
-  }, []);
-  const changeView = (mode: 'cards' | 'table') => {
-    setViewMode(mode);
-    try { localStorage.setItem('projects:view', mode); } catch {}
-  };
-
   const filteredProjects = projects.filter((project) => {
     const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || project.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
-
-
-  const renderTable = () => (
-    <div className="dash-panel p-0 overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm min-w-[640px]">
-          <thead>
-            <tr className="text-[11px] uppercase tracking-[0.06em]" style={{ color: 'var(--text-muted)' }}>
-              <th className="text-left font-medium px-4 py-2.5">{t('projects', 'title')}</th>
-              <th className="text-left font-medium px-3 py-2.5">{t('projects', 'status')}</th>
-              <th className="text-left font-medium px-3 py-2.5 hidden md:table-cell">Framework</th>
-              <th className="text-left font-medium px-3 py-2.5 hidden lg:table-cell">URL</th>
-              <th className="text-right font-medium px-3 py-2.5 whitespace-nowrap">{t('projects', 'updated')}</th>
-              <th className="px-3 py-2.5" aria-label="actions" />
-            </tr>
-          </thead>
-          <tbody className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {filteredProjects.map((project) => {
-              const accent = PROJECT_STATUS_COLORS[project.status] ?? 'var(--text-muted)';
-              return (
-                <tr key={project.id} className="group hover:bg-[var(--hover-overlay)] transition-colors" style={{ borderColor: 'var(--border-subtle)' }}>
-                  <td className="px-4 py-2.5 min-w-0">
-                    <Link href={`/dashboard/projects/${project.id}`} className="font-medium hover:underline underline-offset-4 truncate block max-w-[260px]" style={{ color: 'var(--text-primary)' }}>
-                      {project.name}
-                    </Link>
-                  </td>
-                  <td className="px-3 py-2.5 whitespace-nowrap">
-                    <span className="inline-flex items-center gap-1.5 text-xs capitalize" style={{ color: 'var(--text-secondary)' }}>
-                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: accent }} />
-                      {project.status}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5 hidden md:table-cell">
-                    {project.framework ? (
-                      <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--bg-tertiary)', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{project.framework}</span>
-                    ) : (
-                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5 hidden lg:table-cell min-w-0">
-                    {project.productionUrl ? (
-                      <a href={project.productionUrl} target="_blank" rel="noopener noreferrer" className="text-xs truncate block max-w-[260px] hover:underline underline-offset-4" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                        {project.productionUrl.replace('https://', '')}
-                      </a>
-                    ) : (
-                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>—</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2.5 text-right text-xs whitespace-nowrap tabular-nums" style={{ color: 'var(--text-muted)' }}>
-                    {formatTimeAgo(project.updatedAt, t)}
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex items-center justify-end gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity">
-                      {project.productionUrl && (
-                        <a href={project.productionUrl} target="_blank" rel="noopener noreferrer" className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} title={t('projects', 'visitSite')}>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-                      <Link href={`/dashboard/projects/${project.id}?tab=settings`} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} title={t('common', 'settings')}>
-                        <Settings className="w-3.5 h-3.5" />
-                      </Link>
-                      {project.status === 'active' ? (
-                        <button type="button" onClick={() => handleStatusChange(project.id, 'paused')} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} title={t('projects', 'pause')}>
-                          <Pause className="w-3.5 h-3.5" />
-                        </button>
-                      ) : (
-                        <button type="button" onClick={() => handleStatusChange(project.id, 'active')} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--hover-overlay-md)]" style={{ color: 'var(--text-muted)' }} title={t('projects', 'resume')}>
-                          <Play className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                      <button type="button" onClick={() => handleDeleteClick(project)} className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--status-error)]/10" style={{ color: 'var(--text-muted)' }} title={t('common', 'delete')}>
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+  const activeCount = projects.filter((p) => p.status === 'active').length;
+  const pausedCount = projects.filter((p) => p.status === 'paused').length;
 
   return (
-    <div className="dash-page max-w-5xl space-y-6 animate-slide-in">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
+      <PageHeader
+        title={t('projects', 'title')}
+        description={t('projects', 'subtitle')}
+        meta={
+          isLoading
+            ? []
+            : [
+                <MetaLabel key="n">
+                  {projects.length} {t('navigation', 'projects')}
+                </MetaLabel>,
+                activeCount > 0 && (
+                  <span key="a" className="inline-flex items-center gap-1.5">
+                    <span className="dash-status-dot is-success" aria-hidden />
+                    {activeCount} {t('projects', 'active').toLowerCase()}
+                  </span>
+                ),
+                pausedCount > 0 && (
+                  <span key="p" className="inline-flex items-center gap-1.5">
+                    <span className="dash-status-dot is-warning" aria-hidden />
+                    {pausedCount} {t('projects', 'paused').toLowerCase()}
+                  </span>
+                ),
+              ]
+        }
+        actions={
+          <Link href="/dashboard/projects/new" className="btn btn-primary justify-center flex-1 sm:flex-none">
+            <Plus className="w-4 h-4" />
+            {t('projects', 'newProject')}
+          </Link>
+        }
+      />
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">{t('projects', 'title')}</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-            {t('projects', 'subtitle')}
-          </p>
-        </div>
-        <Link href="/dashboard/projects/new" className="btn btn-primary shrink-0">
-          <Plus className="w-4 h-4" />
-          {t('projects', 'newProject')}
-        </Link>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5"
-            style={{ color: 'var(--text-muted)' }}
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('projects', 'searchPlaceholder')}
-            className="input pl-9!"
-          />
-        </div>
-
-        <div className="flex gap-1.5">
-          {(['all', 'active', 'paused'] as const).map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilterStatus(s)}
-              className="px-3 py-2 rounded-lg text-sm font-medium transition-all capitalize"
-              style={{
-                background: filterStatus === s ? 'var(--dash-accent-bg)' : 'var(--bg-secondary)',
-                color: filterStatus === s ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                border: filterStatus === s ? '1px solid var(--dash-accent-border-strong)' : '1px solid var(--glass-border)',
-              }}
-            >
-              {s === 'all' ? t('projects', 'allStatus') : t('projects', s)}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex gap-1 shrink-0 rounded-lg p-0.5" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}>
-          {([['cards', LayoutGrid, t('projects', 'viewCards')], ['table', List, t('projects', 'viewTable')]] as const).map(([mode, Icon, label]) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => changeView(mode)}
-              className="w-8 h-8 rounded-md flex items-center justify-center transition-colors"
-              style={{
-                background: viewMode === mode ? 'var(--dash-accent-bg)' : 'transparent',
-                color: viewMode === mode ? 'var(--accent-cyan)' : 'var(--text-muted)',
-              }}
-              title={label}
-              aria-pressed={viewMode === mode}
-            >
-              <Icon className="w-4 h-4" />
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Content */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {[...Array(6)].map((_, i) => (
-            <SkeletonProjectCard key={i} />
+        <div className="dash-rows">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="dash-row flex items-center gap-3">
+              <Skeleton className="w-1.5 h-1.5 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-[40%] max-w-[220px]" />
+                <Skeleton className="h-3 w-32" />
+              </div>
+            </div>
           ))}
         </div>
-      ) : filteredProjects.length === 0 ? (
+      ) : projects.length === 0 ? (
         <EmptyState
           label={t('navigation', 'projects')}
-          title={searchQuery || filterStatus !== 'all' ? t('projects', 'noProjectsFound') : t('projects', 'noProjectsYet')}
-          description={searchQuery || filterStatus !== 'all' ? t('projects', 'adjustCriteria') : t('projects', 'createProjectDesc')}
-          action={
-            !searchQuery && filterStatus === 'all'
-              ? { label: t('projects', 'createProject'), href: '/dashboard/projects/new', icon: <Plus className="w-4 h-4" /> }
-              : undefined
-          }
+          title={t('projects', 'noProjectsYet')}
+          description={t('projects', 'createProjectDesc')}
+          action={{ label: t('projects', 'createProject'), href: '/dashboard/projects/new', icon: <Plus className="w-4 h-4" /> }}
         />
-      ) : viewMode === 'table' ? (
-        renderTable()
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {filteredProjects.map((project) => {
-            const accent = PROJECT_STATUS_COLORS[project.status] ?? 'var(--text-muted)';
-            return (
-              <div
-                key={project.id}
-                className="relative dash-panel p-5 group transition-colors hover:border-[var(--border-default)]"
-              >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-3">
-                  <Link href={`/dashboard/projects/${project.id}`} className="flex items-center gap-3 min-w-0">
-                    <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-subtle)' }}
-                    >
-                      <GitBranch className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
-                    </div>
-                    <div className="min-w-0">
-                      <h3
-                        className="font-medium truncate text-sm group-hover:text-[var(--accent-cyan)] transition-colors"
-                        style={{ color: 'var(--text-primary)' }}
+        <div className="dash-rows !overflow-visible">
+          <div className="dash-toolbar rounded-t-[14px]">
+            <div className="relative flex-1 min-w-[12rem]">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none"
+                aria-hidden
+              />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('projects', 'searchPlaceholder')}
+                aria-label={t('projects', 'searchPlaceholder')}
+                className="input h-9 !py-0 pl-9!"
+              />
+            </div>
+            <div className="dash-segmented" role="group" aria-label={t('projects', 'status')}>
+              {(['all', 'active', 'paused'] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setFilterStatus(s)}
+                  aria-pressed={filterStatus === s}
+                >
+                  {s === 'all' ? t('projects', 'allStatus') : t('projects', s)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {filteredProjects.length === 0 ? (
+            <EmptyState
+              variant="bare"
+              title={t('projects', 'noProjectsFound')}
+              description={t('projects', 'adjustCriteria')}
+            />
+          ) : (
+            <ul aria-label={t('projects', 'title')}>
+              {filteredProjects.map((project) => (
+                <li
+                  key={project.id}
+                  className="dash-row group flex items-center gap-3 border-t border-[var(--border-subtle)] first:border-t-0 last:rounded-b-[14px] hover:bg-[var(--hover-overlay)] transition-colors"
+                >
+                  <span
+                    className={`dash-status-dot ${project.status === 'active' ? 'is-success' : project.status === 'paused' ? 'is-warning' : ''}`}
+                    title={project.status}
+                    aria-hidden
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Link
+                        href={`/dashboard/projects/${project.id}`}
+                        className="text-sm font-medium text-[var(--text-primary)] truncate hover:underline underline-offset-2"
                       >
                         {project.name}
-                      </h3>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span
-                          className="w-1.5 h-1.5 rounded-full shrink-0"
-                          style={{ background: accent }}
-                        />
-                        <span className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>
-                          {project.status}
-                        </span>
-                      </div>
+                      </Link>
+                      {project.status !== 'active' && (
+                        <span className="badge badge-warning shrink-0">{project.status}</span>
+                      )}
                     </div>
-                  </Link>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-xs text-[var(--text-muted)] min-w-0">
+                      {project.framework && <MetaLabel>{project.framework}</MetaLabel>}
+                      {project.productionUrl && (
+                        <a
+                          href={project.productionUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="terminal-text truncate max-w-full sm:max-w-[18rem] hover:text-[var(--text-primary)] hover:underline underline-offset-2"
+                        >
+                          {project.productionUrl.replace('https://', '')}
+                        </a>
+                      )}
+                      {project.description && (
+                        <span className="hidden lg:inline truncate max-w-[20rem]">{project.description}</span>
+                      )}
+                    </div>
+                  </div>
+                  <span className="hidden sm:inline text-xs text-[var(--text-muted)] tabular-nums shrink-0">
+                    {formatTimeAgo(project.updatedAt, t)}
+                  </span>
 
-                  {/* Dropdown */}
                   <div className="relative shrink-0">
                     <button
                       type="button"
                       onClick={() => setOpenDropdown(openDropdown === project.id ? null : project.id)}
                       aria-haspopup="menu"
                       aria-expanded={openDropdown === project.id}
+                      aria-label={`${project.name} — ${t('common', 'settings')}`}
                       className="dash-icon-action"
                     >
-                      <MoreVertical className="w-4 h-4" />
+                      <MoreHorizontal className="w-4 h-4" />
                     </button>
 
                     {openDropdown === project.id && (
                       <>
                         <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)} />
-                        <div
-                          className="dash-menu absolute right-0 top-full mt-1 w-48 z-20"
-                          role="menu"
-                        >
+                        <div className="dash-menu absolute right-0 top-full mt-1 w-48 z-20" role="menu">
                           <Link
-                            href={`/dashboard/projects/${project.id}`}
+                            href={`/dashboard/projects/${project.id}?tab=settings`}
                             className="dash-menu-item"
+                            role="menuitem"
                           >
                             <Settings className="w-3.5 h-3.5" />
                             {t('common', 'settings')}
@@ -324,6 +231,7 @@ export default function ProjectsPage() {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="dash-menu-item"
+                              role="menuitem"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
                               {t('projects', 'visitSite')}
@@ -332,6 +240,8 @@ export default function ProjectsPage() {
                           <div className="dash-menu-separator" />
                           {project.status === 'active' ? (
                             <button
+                              type="button"
+                              role="menuitem"
                               onClick={() => handleStatusChange(project.id, 'paused')}
                               className="dash-menu-item"
                             >
@@ -340,6 +250,8 @@ export default function ProjectsPage() {
                             </button>
                           ) : (
                             <button
+                              type="button"
+                              role="menuitem"
                               onClick={() => handleStatusChange(project.id, 'active')}
                               className="dash-menu-item"
                             >
@@ -348,6 +260,8 @@ export default function ProjectsPage() {
                             </button>
                           )}
                           <button
+                            type="button"
+                            role="menuitem"
                             onClick={() => handleDeleteClick(project)}
                             className="dash-menu-item is-danger"
                           >
@@ -358,57 +272,10 @@ export default function ProjectsPage() {
                       </>
                     )}
                   </div>
-                </div>
-
-                {/* Description */}
-                {project.description && (
-                  <p
-                    className="text-xs mb-3 line-clamp-2 leading-relaxed"
-                    style={{ color: 'var(--text-muted)' }}
-                  >
-                    {project.description}
-                  </p>
-                )}
-
-                {/* Meta */}
-                <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-                  {project.framework && (
-                    <span
-                      className="px-2 py-0.5 rounded"
-                      style={{ background: 'var(--bg-tertiary)', fontFamily: 'var(--font-mono)' }}
-                    >
-                      {project.framework}
-                    </span>
-                  )}
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {formatTimeAgo(project.updatedAt, t)}
-                  </span>
-                </div>
-
-                {/* Production URL */}
-                {project.productionUrl && (
-                  <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }}>
-                    <a
-                      href={project.productionUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-xs transition-colors"
-                      style={{ color: 'var(--text-muted)' }}
-                      onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--accent-cyan)')}
-                      onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
-                    >
-                      <Globe className="w-3 h-3 shrink-0" />
-                      <span className="truncate" style={{ fontFamily: 'var(--font-mono)' }}>
-                        {project.productionUrl.replace('https://', '')}
-                      </span>
-                      <ExternalLink className="w-3 h-3 ml-auto shrink-0" />
-                    </a>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

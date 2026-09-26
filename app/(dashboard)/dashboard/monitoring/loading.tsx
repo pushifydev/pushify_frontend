@@ -6,14 +6,13 @@ import {
 
 export default function MonitoringLoading() {
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-slide-in">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in">
       <SkeletonPageHeader />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[...Array(4)].map((_, i) => (
           <SkeletonMonitoringGaugeCard key={i} />
         ))}
       </div>
-      <SkeletonMonitoringChartBlock />
       <SkeletonMonitoringChartBlock />
     </div>
   );

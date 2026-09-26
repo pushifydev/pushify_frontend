@@ -5,8 +5,6 @@ import Link from 'next/link';
 import {
   Pencil,
   ArrowUpCircle,
-  Shield,
-  Key,
   Download,
   Copy,
   Check,
@@ -14,11 +12,10 @@ import {
   Trash2,
   RotateCcw,
   Loader2,
-  History,
-  AlertCircle,
-  ExternalLink,
 } from 'lucide-react';
 import { Modal, ModalActions } from '@/components/Modal';
+import { RowList } from '@/components/dashboard/PageKit';
+import { SettingsField, SettingsSwitch } from '@/components/dashboard/SettingsParts';
 import { useTranslation } from '@/hooks/useTranslation';
 import { formatMessage } from '@/lib/i18n/format-message';
 import {
@@ -70,25 +67,28 @@ export function EditServerModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={t('servers', 'editServerTitle')} maxWidth="md">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1.5">{t('servers', 'serverName')}</label>
-          <input
-            className="input w-full"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1.5">{t('servers', 'serverDescription')}</label>
-          <textarea
-            className="input w-full resize-none"
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+    <Modal isOpen={isOpen} onClose={onClose} title={t('servers', 'editServerTitle')} maxWidth="lg">
+      <form onSubmit={handleSubmit}>
+        {/* Label-left rows, with a narrower label column than full-page settings. */}
+        <div className="-mt-4 md:[&_.dash-field]:!grid-cols-[8.5rem_minmax(0,1fr)] md:[&_.dash-field]:!gap-4">
+          <SettingsField label={t('servers', 'serverName')} htmlFor="edit-server-name">
+            <input
+              id="edit-server-name"
+              className="input w-full"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </SettingsField>
+          <SettingsField label={t('servers', 'serverDescription')} htmlFor="edit-server-description">
+            <textarea
+              id="edit-server-description"
+              className="input w-full resize-none"
+              rows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </SettingsField>
         </div>
         <ModalActions>
           <button type="button" className="btn btn-secondary" onClick={onClose}>
@@ -133,42 +133,60 @@ export function ResizeServerModal({
       maxWidth="lg"
     >
       {isLoading ? (
-        <div className="flex justify-center py-10">
-          <Loader2 className="w-8 h-8 animate-spin text-[var(--accent-cyan)]" />
+        <div className="dash-rows">
+          <div className="dash-row flex justify-center py-8">
+            <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
+          </div>
         </div>
       ) : options.length === 0 ? (
         <p className="text-sm text-[var(--text-muted)]">{t('servers', 'resizeNoOptions')}</p>
       ) : (
-        <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
-          {options.map((opt) => (
-            <button
-              key={opt.size}
-              type="button"
-              onClick={() => setSelected(opt.size)}
-              className="w-full text-left p-3 rounded-lg border transition-all"
-              style={{
-                borderColor:
-                  selected === opt.size ? 'var(--accent-cyan)' : 'var(--border-subtle)',
-                background:
-                  selected === opt.size ? 'var(--dash-accent-bg-md)' : 'var(--bg-tertiary)',
-              }}
-            >
-              <div className="flex justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold uppercase">{opt.size}</p>
-                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
+        <div
+          className="dash-rows max-h-[50vh] !overflow-y-auto"
+          role="radiogroup"
+          aria-label={t('servers', 'resizeTitle')}
+        >
+          {options.map((opt) => {
+            const isSelected = selected === opt.size;
+            return (
+              <button
+                key={opt.size}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() => setSelected(opt.size)}
+                className={`dash-row w-full flex items-center gap-3 text-left transition-colors ${
+                  isSelected ? 'bg-[var(--hover-overlay-lg)]' : 'hover:bg-[var(--hover-overlay)]'
+                }`}
+              >
+                <span
+                  className={`w-3.5 h-3.5 rounded-full border shrink-0 flex items-center justify-center ${
+                    isSelected ? 'border-[var(--text-primary)]' : 'border-[var(--border-default)]'
+                  }`}
+                  aria-hidden
+                >
+                  {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]" />}
+                </span>
+                <span className="flex-1 min-w-0 flex flex-wrap items-center gap-x-3 gap-y-0.5">
+                  <span className="terminal-text text-sm font-medium uppercase text-[var(--text-primary)] w-10">
+                    {opt.size}
+                  </span>
+                  <span className="terminal-text text-xs text-[var(--text-muted)] tabular-nums">
                     {opt.specs.vcpus} vCPU · {memoryLabel(opt.specs.memoryMb)} · {opt.specs.diskGb} GB
-                  </p>
-                </div>
-                <p className="text-sm font-medium shrink-0">
+                  </span>
+                </span>
+                <span className={`terminal-text text-xs tabular-nums shrink-0 ${isSelected ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
                   {formatUsd(opt.specs.customerPriceMonthlyCents)}/{t('servers', 'perMonthShort')}
-                </p>
-              </div>
-            </button>
-          ))}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
-      <p className="text-xs text-[var(--text-muted)] mt-4">{t('servers', 'resizeWarning')}</p>
+      <p className="text-xs text-[var(--text-muted)] mt-3 flex items-center gap-2">
+        <span className="dash-status-dot is-warning" aria-hidden />
+        {t('servers', 'resizeWarning')}
+      </p>
       <ModalActions>
         <button type="button" className="btn btn-secondary" onClick={onClose}>
           {t('common', 'cancel')}
@@ -194,9 +212,11 @@ export function ServerSshPanel({ serverId }: { serverId: string }) {
 
   if (isLoading) {
     return (
-      <div className="dash-panel p-4 flex justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-cyan)]" />
-      </div>
+      <RowList label={t('servers', 'sshPanelTitle')}>
+        <div className="dash-row flex justify-center">
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
+        </div>
+      </RowList>
     );
   }
 
@@ -226,43 +246,39 @@ export function ServerSshPanel({ serverId }: { serverId: string }) {
   };
 
   return (
-    <div className="dash-panel p-4 sm:p-5">
-      <div className="dash-panel-title mb-3">
-        <Key className="w-4 h-4 text-[var(--text-secondary)]" />
-        {t('servers', 'sshPanelTitle')}
-      </div>
-      <div className="space-y-3 text-sm">
-        <div>
-          <p className="text-xs text-[var(--text-muted)] mb-1">{t('servers', 'sshConnectCommand')}</p>
-          <div className="flex gap-2">
-            <code className="flex-1 text-xs font-mono p-2 rounded-lg bg-[var(--bg-tertiary)] break-all">
-              {connect}
-            </code>
-            <button type="button" onClick={copyConnect} className="dash-icon-btn p-2 shrink-0">
-              {copied ? <Check className={ICON_SM} /> : <Copy className={ICON_SM} />}
-            </button>
-          </div>
+    <RowList label={t('servers', 'sshPanelTitle')}>
+      <div className="dash-row">
+        <p className="text-xs text-[var(--text-muted)] mb-1.5">{t('servers', 'sshConnectCommand')}</p>
+        <div className="flex items-start gap-2">
+          <code className="flex-1 min-w-0 terminal-text text-xs leading-relaxed text-[var(--text-primary)] break-all">
+            {connect}
+          </code>
+          <button
+            type="button"
+            onClick={copyConnect}
+            className="dash-icon-action"
+            aria-label={t('servers', 'sshConnectCommand')}
+            title={t('servers', 'sshConnectCommand')}
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-[var(--status-success)]" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
         </div>
-        {sshInfo.hasPrivateKey && (
-          <>
-            <button
-              type="button"
-              onClick={handleDownload}
-              disabled={downloadKey.isPending}
-              className="btn btn-secondary w-full dash-icon-row text-sm"
-            >
-              {downloadKey.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Download className={ICON_SM} />
-              )}
-              {t('servers', 'sshDownloadKey')}
-            </button>
-            <p className="text-xs text-[var(--text-muted)]">{t('servers', 'sshKeyChmodHint')}</p>
-          </>
-        )}
       </div>
-    </div>
+      {sshInfo.hasPrivateKey && (
+        <div className="dash-row flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={downloadKey.isPending}
+            className="btn btn-secondary btn-sm self-start"
+          >
+            {downloadKey.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+            {t('servers', 'sshDownloadKey')}
+          </button>
+          <p className="text-xs text-[var(--text-muted)]">{t('servers', 'sshKeyChmodHint')}</p>
+        </div>
+      )}
+    </RowList>
   );
 }
 
@@ -275,30 +291,17 @@ export function ServerFirewallPanel() {
   ];
 
   return (
-    <div className="dash-panel p-4 sm:p-5">
-      <div className="dash-panel-title mb-3">
-        <Shield className="w-4 h-4 text-[var(--text-secondary)]" />
-        {t('servers', 'firewallTitle')}
-      </div>
-      <p className="text-xs text-[var(--text-muted)] mb-3">{t('servers', 'firewallDesc')}</p>
-      <ul className="space-y-2">
-        {ports.map((p) => (
-          <li
-            key={p.port}
-            className="flex items-start gap-2 text-sm text-[var(--text-secondary)] rounded-lg px-2 py-1.5 bg-[var(--bg-tertiary)]"
-          >
-            <span className="font-mono text-xs font-semibold text-[var(--accent-cyan)] shrink-0">
-              TCP {p.port}
-            </span>
-            <span>{t('servers', p.labelKey)}</span>
-          </li>
-        ))}
-      </ul>
-      <p className="text-xs text-[var(--text-muted)] mt-3 flex items-start gap-1.5">
-        <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-        {t('servers', 'firewallHetznerHint')}
-      </p>
-    </div>
+    <RowList label={t('servers', 'firewallTitle')}>
+      <div className="dash-row text-[13px] text-[var(--text-secondary)]">{t('servers', 'firewallDesc')}</div>
+      {ports.map((p) => (
+        <div key={p.port} className="dash-row flex items-center gap-3 text-[13px]">
+          <span className="dash-status-dot is-success" aria-hidden />
+          <span className="terminal-text text-xs text-[var(--text-primary)] w-16 shrink-0">TCP {p.port}</span>
+          <span className="text-[var(--text-secondary)] min-w-0">{t('servers', p.labelKey)}</span>
+        </div>
+      ))}
+      <div className="dash-row text-xs text-[var(--text-muted)]">{t('servers', 'firewallHetznerHint')}</div>
+    </RowList>
   );
 }
 
@@ -318,64 +321,56 @@ export function ServerSnapshotsPanel({ server }: { server: Server }) {
   if (!enabled) return null;
 
   return (
-    <div className="dash-panel p-4 sm:p-5">
-      <div className="dash-panel-header !mb-3">
-        <div className="dash-panel-title">
-          <Camera className="w-4 h-4 text-[var(--text-secondary)]" />
-          {t('servers', 'snapshotsTitle')}
-        </div>
-        {server.status === 'running' && (
-          <button
-            type="button"
-            onClick={() => createSnapshot.mutate({ serverId: server.id })}
-            disabled={createSnapshot.isPending}
-            className="dash-link text-sm"
-          >
-            {createSnapshot.isPending ? (
-              <Loader2 className="w-3 h-3 animate-spin inline" />
-            ) : (
-              t('servers', 'snapshotCreate')
+    <>
+      <RowList
+        label={t('servers', 'snapshotsTitle')}
+        action={
+          server.status === 'running' ? (
+            <button
+              type="button"
+              onClick={() => createSnapshot.mutate({ serverId: server.id })}
+              disabled={createSnapshot.isPending}
+              className="btn btn-secondary btn-sm"
+            >
+              {createSnapshot.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5" />}
+              {t('servers', 'snapshotCreate')}
+            </button>
+          ) : undefined
+        }
+      >
+        <div className="dash-row text-[13px] text-[var(--text-secondary)]">{t('servers', 'snapshotsDesc')}</div>
+        <div className="dash-row flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-[var(--text-primary)]">{t('servers', 'autoSnapshotTitle')}</p>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">{t('servers', 'autoSnapshotDesc')}</p>
+            {server.lastAutoSnapshotAt && (
+              <p className="text-xs text-[var(--text-muted)] mt-1">
+                {formatMessage(t('servers', 'autoSnapshotLastRun'), {
+                  date: formatShortDate(server.lastAutoSnapshotAt),
+                })}
+              </p>
             )}
-          </button>
-        )}
-      </div>
-      <p className="text-xs text-[var(--text-muted)] mb-3">{t('servers', 'snapshotsDesc')}</p>
-      <label className="flex items-start gap-3 rounded-lg border border-[var(--border-subtle)] px-3 py-2.5 mb-3 cursor-pointer">
-        <input
-          type="checkbox"
-          className="mt-0.5"
-          checked={server.autoSnapshotEnabled}
-          disabled={updateServer.isPending || server.status !== 'running'}
-          onChange={(e) => {
-            updateServer.mutate({
-              serverId: server.id,
-              input: { autoSnapshotEnabled: e.target.checked },
-            });
-          }}
-        />
-        <span className="min-w-0">
-          <span className="text-sm font-medium block">{t('servers', 'autoSnapshotTitle')}</span>
-          <span className="text-xs text-[var(--text-muted)] block mt-0.5">
-            {t('servers', 'autoSnapshotDesc')}
-          </span>
-          {server.lastAutoSnapshotAt && (
-            <span className="text-xs text-[var(--text-muted)] block mt-1">
-              {formatMessage(t('servers', 'autoSnapshotLastRun'), {
-                date: formatShortDate(server.lastAutoSnapshotAt),
-              })}
-            </span>
-          )}
-        </span>
-      </label>
-      {isLoading ? (
-        <div className="flex justify-center py-6">
-          <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-cyan)]" />
+          </div>
+          <SettingsSwitch
+            checked={server.autoSnapshotEnabled}
+            disabled={updateServer.isPending || server.status !== 'running'}
+            label={t('servers', 'autoSnapshotTitle')}
+            onChange={(next) =>
+              updateServer.mutate({
+                serverId: server.id,
+                input: { autoSnapshotEnabled: next },
+              })
+            }
+          />
         </div>
-      ) : snapshots.length === 0 ? (
-        <p className="text-sm text-[var(--text-muted)]">{t('servers', 'snapshotsEmpty')}</p>
-      ) : (
-        <ul className="space-y-2">
-          {snapshots.map((snap) => {
+        {isLoading ? (
+          <div className="dash-row flex justify-center">
+            <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
+          </div>
+        ) : snapshots.length === 0 ? (
+          <div className="dash-row text-[13px] text-[var(--text-muted)]">{t('servers', 'snapshotsEmpty')}</div>
+        ) : (
+          snapshots.map((snap) => {
             const isCreating = snap.status === 'creating';
             const isAvailable =
               snap.status === 'available' || snap.status === 'ACTIVE' || snap.status === 'active';
@@ -399,24 +394,17 @@ export function ServerSnapshotsPanel({ server }: { server: Server }) {
             );
 
             return (
-              <li
-                key={snap.id}
-                className="flex items-center justify-between gap-2 rounded-lg border border-[var(--border-subtle)] px-3 py-2"
-              >
+              <div key={snap.id} className="dash-row flex items-center gap-3">
+                <span
+                  className={`dash-status-dot ${isCreating ? 'is-warning animate-pulse' : isAvailable ? 'is-success' : ''}`}
+                  aria-hidden
+                />
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium truncate flex items-center gap-2">
-                    {isCreating && (
-                      <Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin text-[var(--accent-cyan)]" />
-                    )}
-                    {snap.name}
-                  </p>
-                  <p className="text-xs text-[var(--text-muted)]">{metaParts.join(' · ')}</p>
+                  <p className="text-sm font-medium text-[var(--text-primary)] truncate">{snap.name}</p>
+                  <p className="terminal-text text-xs text-[var(--text-muted)] mt-0.5">{metaParts.join(' · ')}</p>
                   {isCreating && snap.progress != null && snap.progress > 0 && (
-                    <div className="mt-1.5 h-1 rounded-full bg-[var(--bg-tertiary)] overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-[var(--accent-cyan)] transition-all duration-500"
-                        style={{ width: `${Math.min(100, snap.progress)}%` }}
-                      />
+                    <div className="dash-metric-track mt-1.5">
+                      <div className="dash-metric-fill" style={{ width: `${Math.min(100, snap.progress)}%` }} />
                     </div>
                   )}
                 </div>
@@ -426,27 +414,29 @@ export function ServerSnapshotsPanel({ server }: { server: Server }) {
                       type="button"
                       onClick={() => setRestoreTarget({ id: snap.id, name: snap.name })}
                       disabled={!canRestore}
-                      className="p-1.5 text-[var(--accent-cyan)] hover:opacity-80 disabled:opacity-40"
+                      className="dash-icon-action disabled:opacity-40"
                       title={t('servers', 'snapshotRestore')}
+                      aria-label={`${t('servers', 'snapshotRestore')}: ${snap.name}`}
                     >
-                      <RotateCcw className="w-4 h-4" />
+                      <RotateCcw className="w-3.5 h-3.5" />
                     </button>
                   )}
                   <button
                     type="button"
                     onClick={() => deleteSnapshot.mutate({ serverId: server.id, snapshotId: snap.id })}
                     disabled={deleteSnapshot.isPending}
-                    className="p-1.5 text-[var(--status-error)] hover:opacity-80"
+                    className="dash-icon-action hover:!text-[var(--status-error)]"
                     title={t('common', 'delete')}
+                    aria-label={`${t('common', 'delete')}: ${snap.name}`}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              </li>
+              </div>
             );
-          })}
-        </ul>
-      )}
+          })
+        )}
+      </RowList>
 
       <Modal
         isOpen={!!restoreTarget}
@@ -485,7 +475,7 @@ export function ServerSnapshotsPanel({ server }: { server: Server }) {
           </button>
         </ModalActions>
       </Modal>
-    </div>
+    </>
   );
 }
 
@@ -496,57 +486,60 @@ const TIMELINE_TYPE_KEYS: Record<string, 'timelineCreated' | 'timelineSynced' | 
   infra_stopped: 'timelineInfraStopped',
 };
 
+function deploymentDot(status: string): string {
+  if (status === 'running' || status === 'ready' || status === 'active') return 'is-success';
+  if (status === 'failed' || status === 'cancelled') return 'is-error';
+  if (status === 'building' || status === 'deploying' || status === 'queued' || status === 'pending') return 'is-warning';
+  return '';
+}
+
 export function ServerTimelinePanel({ serverId }: { serverId: string }) {
   const { t } = useTranslation();
   const { data, isLoading } = useServerTimeline(serverId);
 
   return (
-    <div className="dash-panel p-4 sm:p-5">
-      <div className="dash-panel-title mb-3">
-        <History className="w-4 h-4 text-[var(--text-secondary)]" />
-        {t('servers', 'timelineTitle')}
-      </div>
+    <RowList label={t('servers', 'timelineTitle')}>
       {isLoading ? (
-        <div className="flex justify-center py-6">
-          <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-cyan)]" />
+        <div className="dash-row flex justify-center">
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--text-muted)]" />
         </div>
+      ) : !data?.lifecycle?.length && !data?.deployments?.length ? (
+        <div className="dash-row text-[13px] text-[var(--text-muted)]">{t('servers', 'timelineEmpty')}</div>
       ) : (
-        <ul className="space-y-3">
+        <>
           {(data?.lifecycle ?? []).map((ev, i) => {
             const key = TIMELINE_TYPE_KEYS[ev.type];
             return (
-              <li key={`lc-${i}`} className="text-sm flex justify-between gap-2">
-                <span className="text-[var(--text-secondary)]">
+              <div key={`lc-${i}`} className="dash-row flex items-center gap-3 text-[13px]">
+                <span className="dash-status-dot" aria-hidden />
+                <span className="flex-1 min-w-0 text-[var(--text-secondary)]">
                   {key ? t('servers', key) : ev.type}
                 </span>
-                <span className="text-xs text-[var(--text-muted)] shrink-0">
+                <span className="terminal-text text-xs text-[var(--text-muted)] shrink-0">
                   {formatShortDate(ev.at)}
                 </span>
-              </li>
+              </div>
             );
           })}
           {(data?.deployments ?? []).map((d) => (
-            <li key={d.id} className="text-sm">
-              <Link
-                href={`/dashboard/projects/${d.projectId}`}
-                className="flex items-center justify-between gap-2 hover:opacity-80 group"
-              >
-                <span className="min-w-0 truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">
-                  {d.projectName} · {d.status}
-                </span>
-                <span className="flex items-center gap-1 text-xs text-[var(--text-muted)] shrink-0">
-                  {formatShortDate(d.createdAt)}
-                  <ExternalLink className="w-3 h-3" />
-                </span>
-              </Link>
-            </li>
+            <Link
+              key={d.id}
+              href={`/dashboard/projects/${d.projectId}`}
+              className="dash-row group flex items-center gap-3 text-[13px] hover:bg-[var(--hover-overlay)] transition-colors"
+            >
+              <span className={`dash-status-dot ${deploymentDot(d.status)}`} aria-hidden />
+              <span className="flex-1 min-w-0 truncate text-[var(--text-primary)] group-hover:underline underline-offset-2">
+                {d.projectName}
+              </span>
+              <span className="dash-section-label shrink-0">{d.status}</span>
+              <span className="terminal-text text-xs text-[var(--text-muted)] shrink-0">
+                {formatShortDate(d.createdAt)}
+              </span>
+            </Link>
           ))}
-          {!data?.lifecycle?.length && !data?.deployments?.length && (
-            <p className="text-sm text-[var(--text-muted)]">{t('servers', 'timelineEmpty')}</p>
-          )}
-        </ul>
+        </>
       )}
-    </div>
+    </RowList>
   );
 }
 
@@ -563,17 +556,17 @@ export function ServerDetailActions({
   const canResize = server.isManaged && server.provider === 'hetzner';
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <button type="button" onClick={onEdit} className="btn btn-secondary dash-icon-row text-sm">
+    <>
+      <button type="button" onClick={onEdit} className="btn btn-secondary justify-center flex-1 sm:flex-none">
         <Pencil className={ICON_SM} />
         {t('servers', 'editServer')}
       </button>
       {canResize && (
-        <button type="button" onClick={onResize} className="btn btn-secondary dash-icon-row text-sm">
+        <button type="button" onClick={onResize} className="btn btn-secondary justify-center flex-1 sm:flex-none">
           <ArrowUpCircle className={ICON_SM} />
           {t('servers', 'resizeButton')}
         </button>
       )}
-    </div>
+    </>
   );
 }

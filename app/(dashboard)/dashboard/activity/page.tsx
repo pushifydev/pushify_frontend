@@ -2,29 +2,14 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
-import {
-  Activity,
-  GitBranch,
-  Rocket,
-  Settings,
-  Key,
-  Globe,
-  Users,
-  Bell,
-  Heart,
-  ChevronLeft,
-  ChevronRight,
-  RefreshCw,
-  User,
-  Download,
-} from 'lucide-react';
+import { GitBranch, ChevronLeft, ChevronRight, RefreshCw, User, Download } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { formatTimeAgo, formatShortDate } from '@/lib/formatters';
-import { activityService, type ActivityLogsResponse } from '@/lib/api/services/activity.service';
+import { activityService } from '@/lib/api/services/activity.service';
 import type { ActivityLog, ActivityAction } from '@/lib/api/types';
-import { STATUS_COLORS } from '@/lib/constants';
 import { SkeletonActivityRow } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
+import { PageHeader, MetaLabel } from '@/components/dashboard/PageKit';
 
 const ACTION_CATEGORIES = {
   project:      ['project.created', 'project.updated', 'project.deleted', 'project.paused', 'project.resumed'],
@@ -38,25 +23,8 @@ const ACTION_CATEGORIES = {
   healthcheck:  ['healthcheck.enabled', 'healthcheck.disabled', 'healthcheck.updated'],
 };
 
-const getActionIcon = (action: string) => {
-  if (action.startsWith('project.'))     return <GitBranch className="w-3.5 h-3.5" />;
-  if (action.startsWith('deployment.'))  return <Rocket    className="w-3.5 h-3.5" />;
-  if (action.startsWith('envvar.'))      return <Settings  className="w-3.5 h-3.5" />;
-  if (action.startsWith('domain.'))      return <Globe     className="w-3.5 h-3.5" />;
-  if (action.startsWith('apikey.'))      return <Key       className="w-3.5 h-3.5" />;
-  if (action.startsWith('member.'))      return <Users     className="w-3.5 h-3.5" />;
-  if (action.startsWith('notification.')) return <Bell     className="w-3.5 h-3.5" />;
-  if (action.startsWith('healthcheck.')) return <Heart     className="w-3.5 h-3.5" />;
-  if (action.startsWith('settings.') || action.startsWith('webhook.')) return <Settings className="w-3.5 h-3.5" />;
-  return <Activity className="w-3.5 h-3.5" />;
-};
-
-// Colour marks what went wrong; everything else in the log is ordinary work and stays grey.
-const getActionAccent = (action: string): string =>
-  action.includes('failed') ? STATUS_COLORS.error : STATUS_COLORS.cyan;
-
 export default function ActivityPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [logs, setLogs]                       = useState<ActivityLog[]>([]);
   const [total, setTotal]                     = useState(0);
   const [isLoading, setIsLoading]             = useState(true);
@@ -114,83 +82,64 @@ export default function ActivityPage() {
 
   const categories = useMemo(
     () => [
-      { key: null as string | null, label: t('activityLog', 'filterAll'), icon: <Activity className="w-3.5 h-3.5" /> },
-      { key: 'project' as const, label: t('activityLog', 'filterProjects'), icon: <GitBranch className="w-3.5 h-3.5" /> },
-      { key: 'deployment' as const, label: t('activityLog', 'filterDeployments'), icon: <Rocket className="w-3.5 h-3.5" /> },
-      { key: 'envvar' as const, label: t('activityLog', 'filterEnvVars'), icon: <Settings className="w-3.5 h-3.5" /> },
-      { key: 'domain' as const, label: t('activityLog', 'filterDomains'), icon: <Globe className="w-3.5 h-3.5" /> },
-      { key: 'apikey' as const, label: t('activityLog', 'filterApiKeys'), icon: <Key className="w-3.5 h-3.5" /> },
+      { key: null as string | null, label: t('activityLog', 'filterAll') },
+      { key: 'project' as const, label: t('activityLog', 'filterProjects') },
+      { key: 'deployment' as const, label: t('activityLog', 'filterDeployments') },
+      { key: 'envvar' as const, label: t('activityLog', 'filterEnvVars') },
+      { key: 'domain' as const, label: t('activityLog', 'filterDomains') },
+      { key: 'apikey' as const, label: t('activityLog', 'filterApiKeys') },
     ],
     [t],
   );
 
+  const filterLabel = categories.find((c) => c.key === selectedCategory)?.label ?? '';
+
   return (
-    <div className="dash-page max-w-5xl space-y-6 animate-slide-in">
-
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">{t('navigation', 'activity')}</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-            {t('activityLog', 'subtitle')}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <button onClick={downloadCsv} disabled={isExporting} className="btn btn-ghost">
-            <Download className="w-4 h-4" />
-            {isExporting ? t('common', 'loading') : t('activityLog', 'exportCsv')}
-          </button>
-          <button
-            onClick={fetchLogs}
-            disabled={isLoading}
-            className="btn btn-primary"
-          >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-            {t('common', 'refresh')}
-          </button>
-        </div>
-      </div>
-
-      {/* Filter pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-        {categories.map((cat) => {
-          const active = selectedCategory === cat.key;
-          return (
-            <button
-              key={cat.key ?? 'all'}
-              onClick={() => { setSelectedCategory(cat.key); setPage(1); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all"
-              style={{
-                background: active ? 'var(--dash-accent-bg)'            : 'var(--bg-secondary)',
-                color:      active ? 'var(--accent-cyan)'              : 'var(--text-secondary)',
-                border:     active ? '1px solid var(--dash-accent-border-strong)' : '1px solid var(--glass-border)',
-              }}
-            >
-              {cat.icon}
-              {cat.label}
+    <div className="dash-page max-w-5xl min-w-0 space-y-6 pb-10 animate-slide-in">
+      <PageHeader
+        title={t('navigation', 'activity')}
+        description={t('activityLog', 'subtitle')}
+        meta={[
+          !isLoading ? <MetaLabel key="total">{total} {locale === 'tr' ? 'kayıt' : total === 1 ? 'event' : 'events'}</MetaLabel> : null,
+          selectedCategory ? <MetaLabel key="filter">{filterLabel}</MetaLabel> : null,
+        ]}
+        actions={
+          <>
+            <button type="button" onClick={downloadCsv} disabled={isExporting} className="btn btn-secondary justify-center">
+              <Download className="w-4 h-4" />
+              {isExporting ? t('common', 'loading') : t('activityLog', 'exportCsv')}
             </button>
-          );
-        })}
-      </div>
+            <button type="button" onClick={fetchLogs} disabled={isLoading} className="btn btn-primary justify-center">
+              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+              {t('common', 'refresh')}
+            </button>
+          </>
+        }
+      />
 
-      {/* Log list */}
-      <div
-        className="rounded-xl overflow-hidden"
-        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
-      >
-        {isLoading ? (
-          <div>
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  borderTop: i === 0 ? 'none' : '1px solid var(--glass-divider)',
-                }}
+      <section className="dash-rows" aria-busy={isLoading}>
+        {/* Category filter */}
+        <div className="dash-toolbar overflow-x-auto flex-nowrap">
+          <div className="dash-segmented" role="group" aria-label={locale === 'tr' ? 'Kategori' : 'Category'}>
+            {categories.map((cat) => (
+              <button
+                key={cat.key ?? 'all'}
+                type="button"
+                aria-pressed={selectedCategory === cat.key}
+                onClick={() => { setSelectedCategory(cat.key); setPage(1); }}
               >
-                <SkeletonActivityRow />
-              </div>
+                {cat.label}
+              </button>
             ))}
           </div>
+        </div>
+
+        {isLoading ? (
+          [...Array(6)].map((_, i) => (
+            <div key={i} className={i === 0 ? '' : 'border-t border-[var(--border-subtle)]'}>
+              <SkeletonActivityRow />
+            </div>
+          ))
         ) : logs.length === 0 ? (
           <EmptyState
             variant="bare"
@@ -199,120 +148,93 @@ export default function ActivityPage() {
             description={t('activityLog', 'emptyDescription')}
           />
         ) : (
-          <div>
+          <ol className="min-w-0">
             {logs.map((log, idx) => {
-              const accent = getActionAccent(log.action);
+              const failed = log.action.includes('failed');
               return (
-                <div
+                <li
                   key={log.id}
-                  className="flex items-start gap-4 px-5 py-3.5 transition-colors"
-                  style={{ borderTop: idx === 0 ? 'none' : '1px solid var(--glass-divider)' }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = 'var(--hover-overlay)')}
-                  onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = 'transparent')}
+                  className={`dash-row flex items-start gap-3 hover:bg-[var(--hover-overlay)] transition-colors ${
+                    idx === 0 ? '' : 'border-t border-[var(--border-subtle)]'
+                  }`}
                 >
-                  {/* Icon */}
-                  <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-                    style={{ background: `${accent}15`, color: accent }}
-                  >
-                    {getActionIcon(log.action)}
-                  </div>
+                  <span className={`dash-status-dot mt-[7px] ${failed ? 'is-error' : ''}`} aria-hidden />
 
-                  {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{log.description}</p>
-                    <div className="flex items-center gap-3 mt-1">
+                    <p className="text-sm text-[var(--text-primary)] break-words">{log.description}</p>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-[var(--text-muted)]">
+                      <span className="terminal-text text-[11px] text-[var(--text-secondary)]">{log.action}</span>
                       {log.user && (
-                        <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <span className="inline-flex items-center gap-1.5 min-w-0">
                           {log.user.avatarUrl ? (
-                            <img src={log.user.avatarUrl} alt={log.user.name || log.user.email} className="w-3.5 h-3.5 rounded-full" />
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={log.user.avatarUrl} alt="" className="w-3.5 h-3.5 rounded-full" />
                           ) : (
-                            <User className="w-3 h-3" />
+                            <User className="w-3 h-3" aria-hidden />
                           )}
-                          {log.user.name || log.user.email}
+                          <span className="truncate">{log.user.name || log.user.email}</span>
                         </span>
                       )}
                       {log.project && (
                         <Link
                           href={`/dashboard/projects/${log.project.id}`}
-                          className="flex items-center gap-1 text-xs transition-colors"
-                          style={{ color: 'var(--text-muted)' }}
-                          onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--accent-cyan)')}
-                          onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
+                          className="inline-flex items-center gap-1 hover:text-[var(--text-primary)] transition-colors"
                         >
-                          <GitBranch className="w-3 h-3" />
+                          <GitBranch className="w-3 h-3" aria-hidden />
                           {log.project.name}
                         </Link>
                       )}
                     </div>
                   </div>
 
-                  {/* Time + action */}
-                  <div className="text-right shrink-0">
-                    <p
-                      className="text-xs mb-1"
-                      style={{ color: 'var(--text-muted)' }}
-                      title={formatShortDate(log.createdAt)}
-                    >
-                      {formatTimeAgo(log.createdAt, t)}
-                    </p>
-                    <span
-                      className="text-xs px-1.5 py-0.5 rounded"
-                      style={{
-                        background: 'var(--bg-tertiary)',
-                        color: 'var(--text-muted)',
-                        fontFamily: 'var(--font-mono)',
-                      }}
-                    >
-                      {log.action}
-                    </span>
-                  </div>
-                </div>
+                  <time
+                    dateTime={log.createdAt}
+                    title={formatShortDate(log.createdAt)}
+                    className="terminal-text text-[11px] text-[var(--text-muted)] shrink-0 tabular-nums mt-0.5"
+                  >
+                    {formatTimeAgo(log.createdAt, t)}
+                  </time>
+                </li>
               );
             })}
-          </div>
+          </ol>
         )}
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div
-            className="flex flex-col sm:flex-row items-center justify-between gap-2 px-5 py-3"
-            style={{ borderTop: '1px solid var(--glass-border)' }}
-          >
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-4 sm:px-5 py-2.5 border-t border-[var(--border-subtle)]">
+            <p className="terminal-text text-[11px] text-[var(--text-muted)]">
               {t('activityLog', 'paginationShowing')
                 .replace('{start}', String((page - 1) * limit + 1))
                 .replace('{end}', String(Math.min(page * limit, total)))
                 .replace('{total}', String(total))}
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-                style={{ color: 'var(--text-muted)', background: 'var(--bg-tertiary)' }}
-                onMouseEnter={e => !page || page > 1 ? (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)' : null}
-                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
+                aria-label={locale === 'tr' ? 'Önceki sayfa' : 'Previous page'}
+                className="dash-icon-action disabled:opacity-40 disabled:pointer-events-none"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="text-xs px-3" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+              <span className="terminal-text text-xs px-2 text-[var(--text-secondary)] tabular-nums">
                 {page} / {totalPages}
               </span>
               <button
+                type="button"
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-                style={{ color: 'var(--text-muted)', background: 'var(--bg-tertiary)' }}
-                onMouseEnter={e => page < totalPages ? (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)' : null}
-                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--text-muted)')}
+                aria-label={locale === 'tr' ? 'Sonraki sayfa' : 'Next page'}
+                className="dash-icon-action disabled:opacity-40 disabled:pointer-events-none"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

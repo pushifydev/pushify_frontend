@@ -106,13 +106,13 @@ export function TwoFactorDisableModal({
       </div>
 
       <ModalActions>
-        <button onClick={handleClose} className="btn btn-secondary">
+        <button onClick={handleClose} className="btn btn-ghost">
           {t('common', 'cancel')}
         </button>
         <button
           onClick={handleSubmit}
           disabled={!canSubmit || isPending}
-          className="btn bg-red-500 hover:bg-red-600 text-white"
+          className="btn btn-danger"
         >
           {isPending ? t('security', 'disabling') : t('security', 'confirmDisable')}
         </button>

@@ -1,8 +1,8 @@
 'use client';
 
-import { Box, FolderCode, Terminal } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { FRAMEWORKS } from '@/lib/frameworks';
+import { SettingsSection, SettingsField, SettingsSwitch } from '@/components/dashboard/SettingsParts';
 import type { EnvVariable } from './types';
 
 interface ReviewStepProps {
@@ -37,112 +37,85 @@ export function ReviewStep({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold mb-2">{t('newProject', 'reviewDeploy')}</h2>
-        <p className="text-[var(--text-secondary)]">{t('newProject', 'reviewDeployDesc')}</p>
-      </div>
-
-      {/* Project Summary */}
-      <div className="space-y-4">
-        <div className="p-5 rounded-xl bg-[var(--bg-tertiary)]">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-purple)] flex items-center justify-center">
-              <Box className="w-7 h-7 text-[var(--bg-primary)]" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold">{projectName}</h3>
-              <p className="text-[var(--text-muted)]">{description || t('newProject', 'noDescription')}</p>
-            </div>
+    <div className="dash-settings-stack">
+      <SettingsSection
+        id="np-review"
+        title={t('newProject', 'reviewDeploy')}
+        description={t('newProject', 'reviewDeployDesc')}
+        padded
+      >
+        <p className="text-base font-medium text-[var(--text-primary)] break-words">{projectName}</p>
+        <p className="text-[13px] text-[var(--text-muted)] mt-0.5">
+          {description || t('newProject', 'noDescription')}
+        </p>
+        <div className="mt-3">
+          <div className="dash-kv">
+            <span>{t('newProject', 'framework')}</span>
+            <span>{FRAMEWORKS.find((f) => f.id === selectedFramework)?.name || '-'}</span>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-[var(--text-muted)]">{t('newProject', 'framework')}:</span>
-              <span className="ml-2 font-medium">
-                {FRAMEWORKS.find(f => f.id === selectedFramework)?.name || '-'}
-              </span>
-            </div>
-            <div>
-              <span className="text-[var(--text-muted)]">{t('newProject', 'branch')}:</span>
-              <span className="ml-2 font-medium terminal-text">{gitBranch || 'main'}</span>
-            </div>
-            {repositoryUrl && (
-              <div className="col-span-2">
-                <span className="text-[var(--text-muted)]">{t('newProject', 'repository')}:</span>
-                <span className="ml-2 font-medium terminal-text text-[var(--accent-cyan)]">{repositoryUrl}</span>
-              </div>
-            )}
+          <div className="dash-kv">
+            <span>{t('newProject', 'branch')}</span>
+            <span>{gitBranch || 'main'}</span>
           </div>
+          {repositoryUrl && (
+            <div className="dash-kv">
+              <span>{t('newProject', 'repository')}</span>
+              <span>{repositoryUrl}</span>
+            </div>
+          )}
         </div>
+      </SettingsSection>
 
-        {/* Build Configuration */}
-        <div className="p-5 rounded-xl border border-[var(--border-subtle)]">
-          <h4 className="font-semibold mb-3 flex items-center gap-2">
-            <FolderCode className="w-4 h-4 text-[var(--accent-cyan)]" />
-            {t('newProject', 'buildConfig')}
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <div>
-              <span className="text-[var(--text-muted)]">{t('newProject', 'rootDirectory')}:</span>
-              <span className="ml-2 terminal-text">{rootDirectory}</span>
-            </div>
-            <div>
-              <span className="text-[var(--text-muted)]">{t('newProject', 'installCommand')}:</span>
-              <span className="ml-2 terminal-text">{installCommand || '-'}</span>
-            </div>
-            <div>
-              <span className="text-[var(--text-muted)]">{t('newProject', 'buildCommand')}:</span>
-              <span className="ml-2 terminal-text">{buildCommand || '-'}</span>
-            </div>
-            <div>
-              <span className="text-[var(--text-muted)]">{t('newProject', 'outputDirectory')}:</span>
-              <span className="ml-2 terminal-text">{outputDirectory || '-'}</span>
-            </div>
-          </div>
+      <SettingsSection id="np-review-build" title={t('newProject', 'buildConfig')} padded>
+        <div className="dash-kv">
+          <span>{t('newProject', 'rootDirectory')}</span>
+          <span>{rootDirectory}</span>
         </div>
-
-        {/* Environment Variables */}
-        {envVariables.length > 0 && (
-          <div className="p-5 rounded-xl border border-[var(--border-subtle)]">
-            <h4 className="font-semibold mb-3 flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-[var(--accent-purple)]" />
-              {t('newProject', 'envVariables')} ({envVariables.length})
-            </h4>
-            <div className="space-y-2">
-              {envVariables.map((env) => (
-                <div key={env.id} className="flex items-center gap-2 text-sm">
-                  <span className="terminal-text text-[var(--accent-cyan)]">{env.key}</span>
-                  <span className="text-[var(--text-muted)]">=</span>
-                  <span className="terminal-text">
-                    {env.isSecret ? '••••••••' : env.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Auto Deploy Toggle */}
-        <div className="p-5 rounded-xl border border-[var(--border-subtle)]">
-          <label className="flex items-center justify-between cursor-pointer">
-            <div>
-              <h4 className="font-semibold">{t('newProject', 'autoDeploy')}</h4>
-              <p className="text-sm text-[var(--text-muted)]">{t('newProject', 'autoDeployDesc')}</p>
-            </div>
-            <button
-              onClick={() => setAutoDeploy(!autoDeploy)}
-              className={`relative w-12 h-6 rounded-full transition-colors ${
-                autoDeploy ? 'bg-[var(--accent-cyan)]' : 'bg-[var(--bg-tertiary)]'
-              }`}
-            >
-              <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                autoDeploy ? 'translate-x-7' : 'translate-x-1'
-              }`} />
-            </button>
-          </label>
+        <div className="dash-kv">
+          <span>{t('newProject', 'installCommand')}</span>
+          <span>{installCommand || '-'}</span>
         </div>
-      </div>
+        <div className="dash-kv">
+          <span>{t('newProject', 'buildCommand')}</span>
+          <span>{buildCommand || '-'}</span>
+        </div>
+        <div className="dash-kv">
+          <span>{t('newProject', 'outputDirectory')}</span>
+          <span>{outputDirectory || '-'}</span>
+        </div>
+      </SettingsSection>
+
+      {envVariables.length > 0 && (
+        <SettingsSection
+          id="np-review-env"
+          title={
+            <>
+              {t('newProject', 'envVariables')}
+              <span className="ml-2 opacity-60 tabular-nums">{envVariables.length}</span>
+            </>
+          }
+          padded
+        >
+          {envVariables.map((env) => (
+            <div key={env.id} className="dash-kv">
+              <span className="terminal-text text-xs">{env.key}</span>
+              <span>{env.isSecret ? '••••••••' : env.value}</span>
+            </div>
+          ))}
+        </SettingsSection>
+      )}
+
+      <SettingsSection id="np-review-auto" title={t('newProject', 'autoDeploy')}>
+        <SettingsField label={t('newProject', 'autoDeploy')} hint={t('newProject', 'autoDeployDesc')}>
+          <div className="md:pt-1.5">
+            <SettingsSwitch
+              checked={autoDeploy}
+              onChange={setAutoDeploy}
+              label={t('newProject', 'autoDeploy')}
+            />
+          </div>
+        </SettingsField>
+      </SettingsSection>
     </div>
   );
 }

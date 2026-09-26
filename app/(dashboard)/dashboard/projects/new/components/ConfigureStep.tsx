@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Loader2, Server } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { SettingsSection, SettingsField } from '@/components/dashboard/SettingsParts';
 import { useTranslation } from '@/hooks';
 import { FRAMEWORKS } from '@/lib/frameworks';
 import type { Server as ServerType } from '@/lib/api';
@@ -57,162 +58,130 @@ export function ConfigureStep({
 }: ConfigureStepProps) {
   const { t } = useTranslation();
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold mb-2">{t('newProject', 'configureProject')}</h2>
-        <p className="text-[var(--text-secondary)]">{t('newProject', 'configureProjectDesc')}</p>
-      </div>
+  const buildFields: {
+    id: string;
+    label: string;
+    value: string;
+    set: (v: string) => void;
+    placeholder: string;
+  }[] = [
+    { id: 'np-root', label: t('newProject', 'rootDirectory'), value: rootDirectory, set: setRootDirectory, placeholder: './' },
+    { id: 'np-install', label: t('newProject', 'installCommand'), value: installCommand, set: setInstallCommand, placeholder: 'npm install' },
+    { id: 'np-build', label: t('newProject', 'buildCommand'), value: buildCommand, set: setBuildCommand, placeholder: 'npm run build' },
+    { id: 'np-output', label: t('newProject', 'outputDirectory'), value: outputDirectory, set: setOutputDirectory, placeholder: 'dist' },
+    { id: 'np-start', label: t('newProject', 'startCommand'), value: startCommand, set: setStartCommand, placeholder: 'npm start' },
+  ];
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium mb-2">{t('newProject', 'projectName')} *</label>
+  return (
+    <div className="dash-settings-stack">
+      <SettingsSection
+        id="np-project"
+        title={t('newProject', 'configureProject')}
+        description={t('newProject', 'configureProjectDesc')}
+      >
+        <SettingsField
+          label={<>{t('newProject', 'projectName')} *</>}
+          hint={t('newProject', 'projectNameHint')}
+          htmlFor="np-name"
+        >
           <input
+            id="np-name"
             type="text"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
             placeholder="my-awesome-project"
-            className="input"
+            className="input terminal-text"
+            required
           />
-          <p className="text-xs text-[var(--text-muted)] mt-1">{t('newProject', 'projectNameHint')}</p>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">{t('newProject', 'description')}</label>
+        </SettingsField>
+        <SettingsField label={t('newProject', 'description')} htmlFor="np-description">
           <input
+            id="np-description"
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t('newProject', 'descriptionPlaceholder')}
             className="input"
           />
-        </div>
-      </div>
+        </SettingsField>
+      </SettingsSection>
 
-      {/* Framework Selection */}
-      <div>
-        <label className="block text-sm font-medium mb-3">{t('newProject', 'framework')} *</label>
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+      <SettingsSection id="np-framework" title={<>{t('newProject', 'framework')} *</>} padded>
+        <div
+          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2"
+          role="radiogroup"
+          aria-label={t('newProject', 'framework')}
+        >
           {FRAMEWORKS.map((fw) => (
             <button
               key={fw.id}
+              type="button"
+              role="radio"
+              aria-checked={selectedFramework === fw.id}
               onClick={() => setSelectedFramework(fw.id)}
-              className={`p-3 rounded-xl border text-center transition-all duration-200 ${
-                selectedFramework === fw.id
-                  ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5'
-                  : 'border-[var(--border-subtle)] hover:border-[var(--border-default)]'
-              }`}
+              className="dash-option !flex-col !items-center !gap-1.5 !p-3 text-center"
             >
-              <span className="text-2xl mb-1 block">{fw.icon}</span>
-              <span className="text-xs font-medium">{fw.name}</span>
+              <span className="text-xl leading-none" aria-hidden>{fw.icon}</span>
+              <span className="text-xs font-medium text-[var(--text-primary)]">{fw.name}</span>
             </button>
           ))}
         </div>
-      </div>
+      </SettingsSection>
 
-      {/* Build Settings */}
-      <div className="pt-4 border-t border-[var(--border-subtle)]">
-        <h3 className="text-lg font-semibold mb-4">{t('newProject', 'buildSettings')}</h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('newProject', 'rootDirectory')}</label>
+      <SettingsSection id="np-build" title={t('newProject', 'buildSettings')}>
+        {buildFields.map((f) => (
+          <SettingsField key={f.id} label={f.label} htmlFor={f.id}>
             <input
+              id={f.id}
               type="text"
-              value={rootDirectory}
-              onChange={(e) => setRootDirectory(e.target.value)}
-              placeholder="./"
+              value={f.value}
+              onChange={(e) => f.set(e.target.value)}
+              placeholder={f.placeholder}
               className="input terminal-text"
             />
-          </div>
+          </SettingsField>
+        ))}
+        <SettingsField label={t('newProject', 'port')} htmlFor="np-port">
+          <input
+            id="np-port"
+            type="number"
+            value={port || ''}
+            onChange={(e) => setPort(e.target.value ? parseInt(e.target.value) : undefined)}
+            placeholder="3000"
+            className="input terminal-text max-w-[10rem]"
+          />
+        </SettingsField>
+      </SettingsSection>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('newProject', 'installCommand')}</label>
-            <input
-              type="text"
-              value={installCommand}
-              onChange={(e) => setInstallCommand(e.target.value)}
-              placeholder="npm install"
-              className="input terminal-text"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('newProject', 'buildCommand')}</label>
-            <input
-              type="text"
-              value={buildCommand}
-              onChange={(e) => setBuildCommand(e.target.value)}
-              placeholder="npm run build"
-              className="input terminal-text"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('newProject', 'outputDirectory')}</label>
-            <input
-              type="text"
-              value={outputDirectory}
-              onChange={(e) => setOutputDirectory(e.target.value)}
-              placeholder="dist"
-              className="input terminal-text"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('newProject', 'startCommand')}</label>
-            <input
-              type="text"
-              value={startCommand}
-              onChange={(e) => setStartCommand(e.target.value)}
-              placeholder="npm start"
-              className="input terminal-text"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('newProject', 'port')}</label>
-            <input
-              type="number"
-              value={port || ''}
-              onChange={(e) => setPort(e.target.value ? parseInt(e.target.value) : undefined)}
-              placeholder="3000"
-              className="input terminal-text"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Deployment Server Selection */}
-      <div className="pt-4 border-t border-[var(--border-subtle)]">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Server className="w-5 h-5 text-[var(--accent-cyan)]" />
-          {t('newProject', 'deploymentServer')}
-        </h3>
-        <p className="text-sm text-[var(--text-secondary)] mb-4">
-          {t('newProject', 'deploymentServerDesc')}
-        </p>
-
+      <SettingsSection
+        id="np-server"
+        title={t('newProject', 'deploymentServer')}
+        description={t('newProject', 'deploymentServerDesc')}
+        padded={isLoadingServers || availableServers.length === 0}
+      >
         {isLoadingServers ? (
-          <div className="flex items-center gap-2 text-[var(--text-muted)]">
+          <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
             <Loader2 className="w-4 h-4 animate-spin" />
             {t('newProject', 'loadingServers')}
           </div>
         ) : availableServers.length === 0 ? (
-          <div className="p-4 rounded-lg bg-[var(--bg-tertiary)]">
-            <p className="text-sm text-[var(--text-muted)]">
-              {t('newProject', 'noServersAvailable')}
-            </p>
-            <Link href="/dashboard/servers" className="text-sm text-[var(--accent-cyan)] hover:underline">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <p className="text-sm text-[var(--text-secondary)]">{t('newProject', 'noServersAvailable')}</p>
+            <Link href="/dashboard/servers" className="btn btn-secondary btn-sm shrink-0 self-start sm:self-auto">
               {t('newProject', 'createServerLink')}
             </Link>
           </div>
         ) : (
-          <div>
+          <SettingsField
+            label={t('newProject', 'deploymentServer')}
+            hint={t('newProject', 'serverSelectionHint')}
+            htmlFor="np-server-select"
+          >
             <select
+              id="np-server-select"
               value={selectedServerId || ''}
               onChange={(e) => setSelectedServerId(e.target.value || undefined)}
-              className="input w-full max-w-md"
+              className="select"
             >
               <option value="">{t('newProject', 'noServerSelected')}</option>
               {availableServers.map((server) => (
@@ -221,12 +190,9 @@ export function ConfigureStep({
                 </option>
               ))}
             </select>
-            <p className="text-xs text-[var(--text-muted)] mt-1">
-              {t('newProject', 'serverSelectionHint')}
-            </p>
-          </div>
+          </SettingsField>
         )}
-      </div>
+      </SettingsSection>
     </div>
   );
 }

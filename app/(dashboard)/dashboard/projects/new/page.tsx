@@ -2,17 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import {
   ArrowLeft,
   ArrowRight,
-  ChevronRight,
-  GitBranch,
   Loader2,
   Rocket,
-  Settings,
-  Terminal,
 } from 'lucide-react';
+import { PageHeader, MetaLabel } from '@/components/dashboard/PageKit';
 import {
   useCreateProject,
   useTranslation,
@@ -98,11 +94,11 @@ export default function NewProjectPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const steps: { id: Step; label: string; icon: React.ReactNode }[] = [
-    { id: 'source', label: t('newProject', 'importSource'), icon: <GitBranch className="w-4 h-4" /> },
-    { id: 'configure', label: t('newProject', 'configure'), icon: <Settings className="w-4 h-4" /> },
-    { id: 'environment', label: t('newProject', 'envVars'), icon: <Terminal className="w-4 h-4" /> },
-    { id: 'review', label: t('newProject', 'review'), icon: <Rocket className="w-4 h-4" /> },
+  const steps: { id: Step; label: string }[] = [
+    { id: 'source', label: t('newProject', 'importSource') },
+    { id: 'configure', label: t('newProject', 'configure') },
+    { id: 'environment', label: t('newProject', 'envVars') },
+    { id: 'review', label: t('newProject', 'review') },
   ];
 
   const stepOrder: Step[] = ['source', 'configure', 'environment', 'review'];
@@ -283,27 +279,18 @@ export default function NewProjectPage() {
 
   return (
     <>
-    <div className="max-w-4xl mx-auto animate-slide-in">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-8">
-        <Link
-          href="/dashboard/projects"
-          className="flex items-center gap-1 hover:text-[var(--text-secondary)] transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {t('projects', 'title')}
-        </Link>
-        <ChevronRight className="w-4 h-4" />
-        <span className="text-[var(--text-primary)]">{t('newProject', 'title')}</span>
-      </div>
+    <div className="dash-page max-w-5xl min-w-0 space-y-6 pb-8 animate-slide-in">
+      <PageHeader
+        back={{ href: '/dashboard/projects', label: t('projects', 'title') }}
+        title={t('newProject', 'title')}
+        description={t('newProject', 'subtitle')}
+        meta={[
+          <MetaLabel key="step">
+            {currentStepIndex + 1}/{steps.length} · {steps[currentStepIndex]?.label}
+          </MetaLabel>,
+        ]}
+      />
 
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">{t('newProject', 'title')}</h1>
-        <p className="text-[var(--text-secondary)]">{t('newProject', 'subtitle')}</p>
-      </div>
-
-      {/* Progress Steps */}
       <ProgressSteps
         steps={steps}
         currentStep={currentStep}
@@ -311,8 +298,7 @@ export default function NewProjectPage() {
         setCurrentStep={setCurrentStep}
       />
 
-      {/* Step Content */}
-      <div className="p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)]">
+      <div className="min-w-0">
         {/* Step 1: Import Source */}
         {currentStep === 'source' && (
           <ImportSourceStep
@@ -436,8 +422,9 @@ export default function NewProjectPage() {
         )}
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between mt-8 pt-6 border-t border-[var(--border-subtle)]">
+        <div className="flex items-center justify-between gap-3 mt-6 pt-5 border-t border-[var(--border-subtle)]">
           <button
+            type="button"
             onClick={goPrev}
             disabled={currentStepIndex === 0}
             className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
@@ -448,6 +435,7 @@ export default function NewProjectPage() {
 
           {currentStep !== 'review' ? (
             <button
+              type="button"
               onClick={goNext}
               disabled={!canProceed()}
               className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
@@ -457,6 +445,7 @@ export default function NewProjectPage() {
             </button>
           ) : (
             <button
+              type="button"
               onClick={handleSubmit}
               disabled={isCreating || !canProceed()}
               className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
