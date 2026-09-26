@@ -44,7 +44,7 @@ export default function TemplateDetailPage() {
   }
 
   return (
-    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-clip">
       <PageHeader
         back={{ href: '/dashboard/marketplace', label: t('marketplace', 'title') }}
         title={template.name}

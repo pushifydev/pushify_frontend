@@ -212,7 +212,7 @@ export default function ProjectDetailPage() {
   const liveUrl = project.productionUrl || (pushifyDomain ? `https://${pushifyDomain}` : null);
 
   return (
-    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-hidden">
+    <div className="dash-page max-w-7xl min-w-0 space-y-6 pb-8 animate-slide-in overflow-x-clip">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] text-[var(--text-muted)] min-w-0">
         <Link
