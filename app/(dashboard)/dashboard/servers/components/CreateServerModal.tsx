@@ -29,6 +29,11 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
 
   const { data: regions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
   const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner', formData.region);
+
+  // Sizes are priced and stocked per region: the effective choice is one the region offers.
+  const effectiveSize = providerSizes.some((s) => s.size === formData.size)
+    ? formData.size
+    : (providerSizes.find((s) => s.allowedByPlan) ?? providerSizes[0])?.size ?? formData.size;
   const { data: images = [], isLoading: imagesLoading } = useProviderImages('hetzner');
 
   // Auto-select first region
@@ -60,7 +65,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
           sshPrivateKey: byosData.sshPrivateKey || undefined,
         });
       } else {
-        await createServer.mutateAsync(formData);
+        await createServer.mutateAsync({ ...formData, size: effectiveSize });
       }
       resetAndClose();
     } catch (error) {
@@ -80,7 +85,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
 
   const isValid = mode === 'byos'
     ? byosData.name.trim() && byosData.ipv4.trim()
-    : formData.name.trim() && formData.region && formData.size && formData.image;
+    : formData.name.trim() && formData.region && effectiveSize && formData.image;
 
   return createPortal(
     // dash-app: the portal renders outside the dashboard layout.
@@ -244,7 +249,7 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                     aria-label={t('servers', 'region')}
                     options={[
                       { value: '', label: t('servers', 'selectRegion') },
-                      ...regions.map((region) => ({ value: region.id, label: region.name })),
+                      ...regions.map((region) => ({ value: region.id, label: region.name, disabled: region.available === false })),
                     ]}
                   />
                 )}
@@ -296,14 +301,14 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                       disabled={disabled}
                       onClick={() => !disabled && setFormData({ ...formData, size: sizeOption.size })}
                       className={`p-5 rounded-xl border text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                        formData.size === sizeOption.size
+                        effectiveSize === sizeOption.size
                           ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 ring-1 ring-[var(--accent-cyan)]/30'
                           : 'border-[var(--border-subtle)] hover:border-[var(--border-default)] hover:bg-[var(--bg-tertiary)]/50'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-lg font-bold uppercase tracking-wide">{sizeOption.size}</span>
-                        <span className={`text-sm font-semibold ${formData.size === sizeOption.size ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-secondary)]'}`}>
+                        <span className={`text-sm font-semibold ${effectiveSize === sizeOption.size ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-secondary)]'}`}>
                           ${monthlyUsd}/mo
                         </span>
                       </div>

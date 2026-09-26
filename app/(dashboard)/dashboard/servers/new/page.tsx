@@ -64,7 +64,12 @@ export default function NewServerPage() {
     }
   }, [images, managedData.image]);
 
-  const selectedSize = providerSizes.find((s) => s.size === managedData.size);
+  // Sizes are priced and stocked per region. If the chosen size isn't offered in the current
+  // region, the effective choice is the cheapest one the plan allows — never a size that can't exist.
+  const effectiveSize = providerSizes.some((s) => s.size === managedData.size)
+    ? managedData.size
+    : (providerSizes.find((s) => s.allowedByPlan) ?? providerSizes[0])?.size ?? managedData.size;
+  const selectedSize = providerSizes.find((s) => s.size === effectiveSize);
   const walletBalance = infraBilling?.wallet.balanceCents ?? 0;
   const requiredCents = selectedSize?.specs.customerPriceMonthlyCents ?? 0;
   const hasEnoughCredits = walletBalance >= requiredCents || requiredCents === 0;
@@ -73,7 +78,7 @@ export default function NewServerPage() {
     ? byosData.name.trim() && byosData.ipv4.trim() && (authMethod === 'ssh_key' ? byosData.sshPrivateKey.trim() : byosData.rootPassword.trim())
     : managedData.name.trim() &&
       managedData.region &&
-      managedData.size &&
+      effectiveSize &&
       managedData.image &&
       (selectedSize?.allowedByPlan ?? false) &&
       hasEnoughCredits;
@@ -98,7 +103,7 @@ export default function NewServerPage() {
           name: managedData.name,
           provider: 'hetzner',
           region: managedData.region,
-          size: managedData.size as any,
+          size: effectiveSize as any,
           image: managedData.image,
         });
       }
@@ -195,7 +200,7 @@ export default function NewServerPage() {
                     className="w-full"
                     options={[
                       { value: '', label: t('servers', 'selectRegion') },
-                      ...regions.map((region) => ({ value: region.id, label: region.name })),
+                      ...regions.map((region) => ({ value: region.id, label: region.name, disabled: region.available === false })),
                     ]}
                   />
                 )}
@@ -231,7 +236,7 @@ export default function NewServerPage() {
               ) : (
                 <div className="dash-rows" role="radiogroup" aria-labelledby="ns-size-title">
                   {providerSizes.map((sizeOption) => {
-                    const isSelected = managedData.size === sizeOption.size;
+                    const isSelected = effectiveSize === sizeOption.size;
                     const disabled = !sizeOption.allowedByPlan;
                     const monthlyUsd = (sizeOption.specs.customerPriceMonthlyCents / 100).toFixed(2);
                     return (
