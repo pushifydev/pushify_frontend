@@ -6,6 +6,7 @@ import { SettingsSection, SettingsField } from '@/components/dashboard/SettingsP
 import { useTranslation } from '@/hooks';
 import { FRAMEWORKS } from '@/lib/frameworks';
 import type { Server as ServerType } from '@/lib/api';
+import { Select } from '@/components/ui/select';
 
 interface ConfigureStepProps {
   projectName: string;
@@ -177,19 +178,19 @@ export function ConfigureStep({
             hint={t('newProject', 'serverSelectionHint')}
             htmlFor="np-server-select"
           >
-            <select
+            <Select
               id="np-server-select"
               value={selectedServerId || ''}
-              onChange={(e) => setSelectedServerId(e.target.value || undefined)}
-              className="select"
-            >
-              <option value="">{t('newProject', 'noServerSelected')}</option>
-              {availableServers.map((server) => (
-                <option key={server.id} value={server.id}>
-                  {server.name} ({server.ipv4})
-                </option>
-              ))}
-            </select>
+              onValueChange={(v) => setSelectedServerId(v || undefined)}
+              className="w-full"
+              options={[
+                { value: '', label: t('newProject', 'noServerSelected') },
+                ...availableServers.map((server) => ({
+                  value: server.id,
+                  label: `${server.name} (${server.ipv4 ?? ''})`,
+                })),
+              ]}
+            />
           </SettingsField>
         )}
       </SettingsSection>

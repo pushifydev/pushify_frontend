@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Modal, ModalActions } from './Modal';
 import { Checkbox } from '@/components/Checkbox';
 import { useTranslation } from '@/hooks';
+import { Select } from '@/components/ui/select';
 
 interface CreateApiKeyModalProps {
   isOpen: boolean;
@@ -85,17 +86,19 @@ export function CreateApiKeyModal({
         <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
           {t('apiKeys', 'expiresAt')}
         </label>
-        <select
+        <Select
           value={expiresIn}
-          onChange={(e) => setExpiresIn(e.target.value)}
-          className="input w-full"
-        >
-          <option value="never">{t('apiKeys', 'noExpiration')}</option>
-          <option value="30">30 days</option>
-          <option value="60">60 days</option>
-          <option value="90">90 days</option>
-          <option value="365">1 year</option>
-        </select>
+          onValueChange={setExpiresIn}
+          className="w-full"
+          aria-label={t('apiKeys', 'expiresAt')}
+          options={[
+            { value: 'never', label: t('apiKeys', 'noExpiration') },
+            { value: '30', label: '30 days' },
+            { value: '60', label: '60 days' },
+            { value: '90', label: '90 days' },
+            { value: '365', label: '1 year' },
+          ]}
+        />
       </div>
 
       {/* Scopes */}

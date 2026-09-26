@@ -5,6 +5,7 @@ import { Copy, FileText, Info, Key, Trash2, Pencil, Check } from 'lucide-react';
 import { useEnvVars, useTranslation } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
 import type { Environment } from '@/lib/api';
+import { Select } from '@/components/ui/select';
 
 const ENVIRONMENTS: Environment[] = ['production', 'staging', 'development', 'preview'];
 
@@ -185,29 +186,25 @@ export function EnvironmentTab({
               <label className="dash-section-label block mb-2">
                 {t('projectDetail', 'sourceEnvironment')}
               </label>
-              <select
+              <Select
                 value={cloneSource}
-                onChange={(e) => setCloneSource(e.target.value as Environment)}
-                className="input w-full"
-              >
-                {ENVIRONMENTS.map((env) => (
-                  <option key={env} value={env}>{env}</option>
-                ))}
-              </select>
+                onValueChange={(v) => setCloneSource(v as Environment)}
+                className="w-full"
+                aria-label={t('projectDetail', 'sourceEnvironment')}
+                options={ENVIRONMENTS.map((env) => ({ value: env, label: env }))}
+              />
             </div>
             <div className="flex-1">
               <label className="dash-section-label block mb-2">
                 {t('projectDetail', 'targetEnvironment')}
               </label>
-              <select
+              <Select
                 value={cloneTarget}
-                onChange={(e) => setCloneTarget(e.target.value as Environment)}
-                className="input w-full"
-              >
-                {ENVIRONMENTS.map((env) => (
-                  <option key={env} value={env}>{env}</option>
-                ))}
-              </select>
+                onValueChange={(v) => setCloneTarget(v as Environment)}
+                className="w-full"
+                aria-label={t('projectDetail', 'targetEnvironment')}
+                options={ENVIRONMENTS.map((env) => ({ value: env, label: env }))}
+              />
             </div>
           </div>
           <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">

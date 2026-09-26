@@ -5,6 +5,7 @@ import { KeyRound, Loader2, Plus, Trash2 } from 'lucide-react';
 import type { StudioColumn, StudioEngine, StudioIndex } from '@/lib/api';
 import { formatBytes } from '@/lib/formatters';
 import { iconButtonClass, type T } from './_shared';
+import { Select } from '@/components/ui/select';
 
 interface IndexSectionProps {
   engine: StudioEngine;
@@ -169,18 +170,13 @@ export function IndexSection({
               className="input text-sm flex-1"
               style={{ ...mono, minWidth: 180 }}
             />
-            <select
+            <Select
               value={method}
-              onChange={(e) => setMethod(e.target.value)}
-              className="input text-sm"
-              style={{ ...mono, minWidth: 110 }}
-            >
-              {METHODS[engine].map((candidate) => (
-                <option key={candidate} value={candidate}>
-                  {candidate}
-                </option>
-              ))}
-            </select>
+              onValueChange={setMethod}
+              className="min-w-[110px]"
+              mono
+              options={METHODS[engine].map((candidate) => ({ value: candidate, label: candidate }))}
+            />
             <label
               className="flex items-center gap-1.5 text-xs cursor-pointer px-1"
               style={{ color: 'var(--text-muted)' }}

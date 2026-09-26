@@ -22,6 +22,7 @@ import { formatShortDate } from '@/lib/formatters';
 import type { OrganizationMember, MemberRole, StudioAccess } from '@/lib/api';
 import { Skeleton, SkeletonPageHeader, SkeletonTeamPanel } from '@/components/Skeleton';
 import { PageHeader, MetaLabel, RowList } from '@/components/dashboard/PageKit';
+import { Select } from '@/components/ui/select';
 
 export default function TeamPage() {
   const { t } = useTranslation();
@@ -150,27 +151,24 @@ export default function TeamPage() {
               <div className="flex flex-wrap items-center gap-2 shrink-0 pl-11 lg:pl-0">
                 {/* Data-browser access (member/viewer only — owner/admin always have write) */}
                 {scoped && (
-                  <label className="inline-flex items-center">
-                    <span className="sr-only">{t('team', 'studioAccessTitle')}</span>
-                    <select
+                  <span className="inline-flex items-center">
+                    <Select
+                      size="sm"
                       value={member.studioAccess ?? 'none'}
-                      onChange={(e) =>
-                        updateStudioAccess.mutate({
-                          userId: member.userId,
-                          access: e.target.value as StudioAccess,
-                        })
+                      onValueChange={(v) =>
+                        updateStudioAccess.mutate({ userId: member.userId, access: v as StudioAccess })
                       }
                       disabled={!canManage || updateStudioAccess.isPending}
-                      className="select text-[12.5px]"
                       title={t('team', 'studioAccessTitle')}
-                      // Inline: the shared .select rule is unlayered and would win over utilities.
-                      style={{ minWidth: 118, height: '1.875rem', paddingTop: 0, paddingBottom: 0, paddingLeft: 12, borderRadius: 999, lineHeight: 1 }}
-                    >
-                      <option value="none">{t('team', 'studioAccessNone')}</option>
-                      <option value="read">{t('team', 'studioAccessRead')}</option>
-                      <option value="write">{t('team', 'studioAccessWrite')}</option>
-                    </select>
-                  </label>
+                      aria-label={t('team', 'studioAccessTitle')}
+                      className="min-w-[118px]"
+                      options={[
+                        { value: 'none', label: t('team', 'studioAccessNone') },
+                        { value: 'read', label: t('team', 'studioAccessRead') },
+                        { value: 'write', label: t('team', 'studioAccessWrite') },
+                      ]}
+                    />
+                  </span>
                 )}
 
                 {/* Project access (member/viewer only — owner/admin always see everything) */}

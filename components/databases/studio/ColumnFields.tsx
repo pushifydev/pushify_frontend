@@ -2,6 +2,7 @@
 
 import type { StudioColumnDefinition, StudioTypeInfo } from '@/lib/api';
 import type { T } from './_shared';
+import { Select } from '@/components/ui/select';
 
 export type DraftColumn = StudioColumnDefinition;
 
@@ -72,18 +73,13 @@ export function ColumnFields({
           style={{ ...mono, minWidth: 140 }}
         />
 
-        <select
+        <Select
           value={column.type}
-          onChange={(e) => onChange({ type: e.target.value })}
-          className="input text-sm"
-          style={{ ...mono, minWidth: 150 }}
-        >
-          {types.map((type) => (
-            <option key={type.name} value={type.name}>
-              {type.name}
-            </option>
-          ))}
-        </select>
+          onValueChange={(v) => onChange({ type: v })}
+          className="min-w-[150px]"
+          mono
+          options={types.map((type) => ({ value: type.name, label: type.name }))}
+        />
 
         {info?.hasLength && (
           <input

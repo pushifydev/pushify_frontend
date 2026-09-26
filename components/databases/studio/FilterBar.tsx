@@ -6,6 +6,7 @@ import type { StudioColumn, StudioFilter, StudioFilterOperator } from '@/lib/api
 import type { TranslationKeys } from '@/lib/i18n';
 import type { T } from './_shared';
 import { useTranslation } from '@/hooks';
+import { Select } from '@/components/ui/select';
 
 type DatabasesKey = keyof TranslationKeys['databases'];
 
@@ -56,33 +57,24 @@ export function FilterBar({ columns, filters, onChange, t }: FilterBarProps) {
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
-        <select
+        <Select
+          size="sm"
           value={activeColumn}
-          onChange={(e) => setColumn(e.target.value)}
-          className="select w-auto! py-1.5! text-[13px]! font-mono"
-          style={{ minWidth: 140 }}
+          onValueChange={setColumn}
+          className="min-w-[140px]"
+          mono
           aria-label={copy.column}
-        >
-          {columns.map((c) => (
-            <option key={c.name} value={c.name}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+          options={columns.map((c) => ({ value: c.name, label: c.name }))}
+        />
 
-        <select
+        <Select
+          size="sm"
           value={operator}
-          onChange={(e) => setOperator(e.target.value as StudioFilterOperator)}
-          className="select w-auto! py-1.5! text-[13px]!"
-          style={{ minWidth: 130 }}
+          onValueChange={(v) => setOperator(v as StudioFilterOperator)}
+          className="min-w-[130px]"
           aria-label={copy.operator}
-        >
-          {OPERATORS.map((op) => (
-            <option key={op} value={op}>
-              {t('databases', OPERATOR_KEYS[op])}
-            </option>
-          ))}
-        </select>
+          options={OPERATORS.map((op) => ({ value: op, label: t('databases', OPERATOR_KEYS[op]) }))}
+        />
 
         {needsValue && (
           <input

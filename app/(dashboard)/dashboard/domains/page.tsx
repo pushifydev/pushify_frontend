@@ -25,6 +25,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { ListSkeleton } from '@/components/Skeletons';
 import { MetaLabel, PageHeader, RowList } from '@/components/dashboard/PageKit';
 import { SettingsSwitch } from '@/components/dashboard/SettingsParts';
+import { Select } from '@/components/ui/select';
 
 const TERM_OPTIONS = [1, 2, 3, 5];
 
@@ -483,19 +484,16 @@ export default function DomainsPage() {
             <label htmlFor="domain-attach" className="dash-section-label block mb-1.5">
               {t('domainSales', 'confirmAttach')}
             </label>
-            <select
+            <Select
               id="domain-attach"
               value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
-              className="select mb-4"
-            >
-              <option value="">{t('domainSales', 'confirmNoProject')}</option>
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              onValueChange={setSelectedProject}
+              className="w-full mb-4"
+              options={[
+                { value: '', label: t('domainSales', 'confirmNoProject') },
+                ...projects.map((p) => ({ value: p.id, label: p.name })),
+              ]}
+            />
 
             <div className="dash-kv mb-1">
               <span>

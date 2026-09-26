@@ -20,6 +20,7 @@ import {
   pickXAxisTickLabels,
   type MetricsChartPoint,
 } from './components';
+import { Select } from '@/components/ui/select';
 
 // ============ Main Page ============
 
@@ -161,21 +162,17 @@ export default function MonitoringPage() {
       {/* Charts: project filter + range live in the card's toolbar */}
       <section className="dash-card overflow-hidden min-w-0" aria-label={t('monitoring', 'overview')}>
         <div className="dash-toolbar justify-between">
-          <label className="min-w-0 w-full sm:w-auto">
-            <span className="sr-only">{t('monitoring', 'project')}</span>
-            <select
-              value={selectedProjectId || ''}
-              onChange={(e) => setSelectedProjectId(e.target.value || null)}
-              className="select h-8 py-0! text-[13px] w-full sm:w-64"
-            >
-              <option value="">{projects[0]?.projectName || t('monitoring', 'allProjects')}</option>
-              {projects.map((p) => (
-                <option key={p.projectId} value={p.projectId}>
-                  {p.projectName}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Select
+            size="sm"
+            value={selectedProjectId || ''}
+            onValueChange={(v) => setSelectedProjectId(v || null)}
+            className="min-w-0 w-full sm:w-64"
+            aria-label={t('monitoring', 'project')}
+            options={[
+              { value: '', label: projects[0]?.projectName || t('monitoring', 'allProjects') },
+              ...projects.map((p) => ({ value: p.projectId, label: p.projectName })),
+            ]}
+          />
           <TimeRangeSelector selected={selectedHours} onChange={setSelectedHours} t={t} />
         </div>
         <ChartsSection

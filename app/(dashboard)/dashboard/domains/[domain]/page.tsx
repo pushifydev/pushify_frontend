@@ -17,12 +17,12 @@ import { toast } from 'sonner';
 import { EmptyState } from '@/components/EmptyState';
 import { MetaLabel, PageHeader, TabPanel, Tabs } from '@/components/dashboard/PageKit';
 import { SettingsSection, SettingsSwitch } from '@/components/dashboard/SettingsParts';
+import { Select } from '@/components/ui/select';
 
 const DNS_TYPES: DnsRecordType[] = ['A', 'AAAA', 'CNAME', 'MX', 'TXT', 'SRV', 'NS'];
 type Tab = 'dns' | 'forwarding' | 'settings';
 
 const inputCls = 'input h-9! py-0! text-sm!';
-const selectCls = 'select h-9! py-0! text-sm!';
 
 export default function DomainDetailPage() {
   const params = useParams<{ domain: string }>();
@@ -132,14 +132,17 @@ function DnsTab({ domainName }: { domainName: string }) {
           <span className="dash-section-label">{t('domainSales', 'dnsHost')}</span>
           <input value={host} onChange={(e) => setHost(e.target.value)} className={`${inputCls} w-28 terminal-text`} />
         </label>
-        <label className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5">
           <span className="dash-section-label">{t('domainSales', 'dnsType')}</span>
-          <select value={type} onChange={(e) => setType(e.target.value as DnsRecordType)} className={`${selectCls} w-24`}>
-            {DNS_TYPES.map((dt) => (
-              <option key={dt} value={dt}>{dt}</option>
-            ))}
-          </select>
-        </label>
+          <Select
+            value={type}
+            onValueChange={(v) => setType(v as DnsRecordType)}
+            className="w-24 h-9"
+            mono
+            aria-label={t('domainSales', 'dnsType')}
+            options={DNS_TYPES.map((dt) => ({ value: dt, label: dt }))}
+          />
+        </div>
         <label className="flex flex-col gap-1.5 flex-1 min-w-40">
           <span className="dash-section-label">{t('domainSales', 'dnsValue')}</span>
           <input value={answer} onChange={(e) => setAnswer(e.target.value)} required className={`${inputCls} w-full terminal-text`} />

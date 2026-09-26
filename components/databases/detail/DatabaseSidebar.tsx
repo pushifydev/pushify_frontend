@@ -7,6 +7,7 @@ import { DB_TYPE_LABELS } from '@/lib/constants';
 import { SettingsField, SettingsSection, SettingsSwitch } from '@/components/dashboard/SettingsParts';
 import { MetaRow } from './MetaRow';
 import { type T } from './_shared';
+import { Select } from '@/components/ui/select';
 
 /** Overview side column: quiet key/value facts, as the project info card. */
 export function DatabaseSidebar({ database, t }: { database: Database; t: T }) {
@@ -80,19 +81,17 @@ export function DatabaseSettingsPanel({
               t('databases', `loss_${interval}` as 'loss_24')
             )}
           >
-            <select
+            <Select
               id="db-backup-interval"
               value={String(interval)}
-              onChange={(e) => onChangeBackupInterval(Number(e.target.value))}
+              onValueChange={(v) => onChangeBackupInterval(Number(v))}
               disabled={backupPending}
-              className="select w-44!"
-            >
-              {[1, 6, 12, 24, 48, 168].map((hours) => (
-                <option key={hours} value={hours}>
-                  {t('databases', `interval_${hours}` as 'interval_24')}
-                </option>
-              ))}
-            </select>
+              className="w-44"
+              options={[1, 6, 12, 24, 48, 168].map((hours) => ({
+                value: String(hours),
+                label: t('databases', `interval_${hours}` as 'interval_24'),
+              }))}
+            />
           </SettingsField>
         )}
       </SettingsSection>

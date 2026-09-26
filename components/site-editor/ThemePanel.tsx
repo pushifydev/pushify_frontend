@@ -1,6 +1,7 @@
 'use client';
 
 import type { SiteTheme, SiteFontFamily, SiteBorderRadius, SiteMaxWidth } from '@/lib/api';
+import { Select } from '@/components/ui/select';
 
 interface ThemePanelProps {
   theme: SiteTheme;
@@ -43,44 +44,50 @@ export function ThemePanel({ theme, onChange, t }: ThemePanelProps) {
         <ColorField label={t('surfaceColor')} value={theme.surfaceColor} onChange={(v) => onChange({ surfaceColor: v })} />
         <ColorField label={t('textColor')} value={theme.textColor} onChange={(v) => onChange({ textColor: v })} />
       </div>
-      <label className="block space-y-1 text-sm">
+      <div className="block space-y-1 text-sm">
         <span className="text-[var(--text-secondary)]">{t('fontFamily')}</span>
-        <select
-          className="select w-full"
+        <Select
+          className="w-full"
           value={theme.fontFamily}
-          onChange={(e) => onChange({ fontFamily: e.target.value as SiteFontFamily })}
-        >
-          <option value="system">{t('fontSystem')}</option>
-          <option value="rounded">{t('fontRounded')}</option>
-          <option value="serif">{t('fontSerif')}</option>
-          <option value="mono">{t('fontMono')}</option>
-        </select>
-      </label>
-      <label className="block space-y-1 text-sm">
+          onValueChange={(v) => onChange({ fontFamily: v as SiteFontFamily })}
+          aria-label={t('fontFamily')}
+          options={[
+            { value: 'system', label: t('fontSystem') },
+            { value: 'rounded', label: t('fontRounded') },
+            { value: 'serif', label: t('fontSerif') },
+            { value: 'mono', label: t('fontMono') },
+          ]}
+        />
+      </div>
+      <div className="block space-y-1 text-sm">
         <span className="text-[var(--text-secondary)]">{t('borderRadius')}</span>
-        <select
-          className="select w-full"
+        <Select
+          className="w-full"
           value={theme.borderRadius}
-          onChange={(e) => onChange({ borderRadius: e.target.value as SiteBorderRadius })}
-        >
-          <option value="none">{t('radiusNone')}</option>
-          <option value="sm">{t('radiusSm')}</option>
-          <option value="md">{t('radiusMd')}</option>
-          <option value="lg">{t('radiusLg')}</option>
-        </select>
-      </label>
-      <label className="block space-y-1 text-sm">
+          onValueChange={(v) => onChange({ borderRadius: v as SiteBorderRadius })}
+          aria-label={t('borderRadius')}
+          options={[
+            { value: 'none', label: t('radiusNone') },
+            { value: 'sm', label: t('radiusSm') },
+            { value: 'md', label: t('radiusMd') },
+            { value: 'lg', label: t('radiusLg') },
+          ]}
+        />
+      </div>
+      <div className="block space-y-1 text-sm">
         <span className="text-[var(--text-secondary)]">{t('maxWidth')}</span>
-        <select
-          className="select w-full"
+        <Select
+          className="w-full"
           value={theme.maxWidth}
-          onChange={(e) => onChange({ maxWidth: e.target.value as SiteMaxWidth })}
-        >
-          <option value="narrow">{t('widthNarrow')}</option>
-          <option value="default">{t('widthDefault')}</option>
-          <option value="wide">{t('widthWide')}</option>
-        </select>
-      </label>
+          onValueChange={(v) => onChange({ maxWidth: v as SiteMaxWidth })}
+          aria-label={t('maxWidth')}
+          options={[
+            { value: 'narrow', label: t('widthNarrow') },
+            { value: 'default', label: t('widthDefault') },
+            { value: 'wide', label: t('widthWide') },
+          ]}
+        />
+      </div>
     </div>
   );
 }

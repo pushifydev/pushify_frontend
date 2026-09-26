@@ -12,6 +12,7 @@ import {
   type ProjectLogLine,
   type ProjectLogSearchParams,
 } from '@/lib/api';
+import { Select } from '@/components/ui/select';
 
 type Mode = 'live' | 'history';
 
@@ -31,6 +32,7 @@ export function LogsTab({
   projectId: string;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
+  const { locale } = useTranslation();
   const [mode, setMode] = useState<Mode>('live');
   const [filter, setFilter] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
@@ -233,40 +235,40 @@ export function LogsTab({
                   className="input w-full !py-1.5 !pl-8 text-[13px] terminal-text"
                 />
               </div>
-              <select
-                value={rangeHours}
-                onChange={(e) => setRangeHours(Number(e.target.value))}
-                className="input sm:w-36 !py-1.5 text-[13px]"
-              >
-                {RANGES.map((range) => (
-                  <option key={range.key} value={range.hours}>
-                    {t('logs', range.key)}
-                  </option>
-                ))}
-              </select>
+              <Select
+                size="sm"
+                value={String(rangeHours)}
+                onValueChange={(v) => setRangeHours(Number(v))}
+                className="sm:w-36"
+                aria-label={locale === 'tr' ? 'Zaman aralığı' : 'Time range'}
+                options={RANGES.map((range) => ({ value: String(range.hours), label: t('logs', range.key) }))}
+              />
               {containers.length > 1 && (
-                <select
+                <Select
+                  size="sm"
                   value={container}
-                  onChange={(e) => setContainer(e.target.value)}
-                  className="input sm:w-44 !py-1.5 text-[13px] terminal-text"
-                >
-                  <option value="">{t('logs', 'allContainers')}</option>
-                  {containers.map((name) => (
-                    <option key={name} value={name}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
+                  onValueChange={setContainer}
+                  className="sm:w-44"
+                  aria-label={locale === 'tr' ? 'Konteyner' : 'Container'}
+                  mono
+                  options={[
+                    { value: '', label: t('logs', 'allContainers') },
+                    ...containers.map((name) => ({ value: name, label: name })),
+                  ]}
+                />
               )}
-              <select
+              <Select
+                size="sm"
                 value={logType}
-                onChange={(e) => setLogType(e.target.value as typeof logType)}
-                className="input sm:w-32 !py-1.5 text-[13px]"
-              >
-                <option value="all">{t('logs', 'allTypes')}</option>
-                <option value="stdout">stdout</option>
-                <option value="stderr">stderr</option>
-              </select>
+                onValueChange={(v) => setLogType(v as typeof logType)}
+                className="sm:w-32"
+                aria-label={locale === 'tr' ? 'Log türü' : 'Log type'}
+                options={[
+                  { value: 'all', label: t('logs', 'allTypes') },
+                  { value: 'stdout', label: 'stdout' },
+                  { value: 'stderr', label: 'stderr' },
+                ]}
+              />
               <button type="button" onClick={runSearch} disabled={searching} className="btn btn-primary btn-sm !h-auto">
                 <Search className="w-4 h-4" />
                 {searching ? t('logs', 'searching') : t('logs', 'search')}

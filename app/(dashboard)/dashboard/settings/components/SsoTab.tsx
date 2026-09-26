@@ -11,6 +11,7 @@ import {
 } from '@/lib/api';
 import { SettingsField, SettingsSection, SettingsSwitch } from '@/components/dashboard/SettingsParts';
 import { Modal, ModalActions, AlertBox } from './Modal';
+import { Select } from '@/components/ui/select';
 
 /**
  * The organization's identity provider (OpenID Connect). Owners only, because a connection
@@ -203,15 +204,16 @@ export function SsoTab() {
             </SettingsField>
 
             <SettingsField label={t('sso', 'defaultRole')} hint={t('sso', 'defaultRoleHint')} htmlFor="sso-default-role">
-              <select
+              <Select
                 id="sso-default-role"
                 value={defaultRole}
-                onChange={(e) => setDefaultRole(e.target.value)}
-                className="select"
-              >
-                <option value="member">{t('sso', 'roleMember')}</option>
-                <option value="admin">{t('sso', 'roleAdmin')}</option>
-              </select>
+                onValueChange={setDefaultRole}
+                className="w-full"
+                options={[
+                  { value: 'member', label: t('sso', 'roleMember') },
+                  { value: 'admin', label: t('sso', 'roleAdmin') },
+                ]}
+              />
             </SettingsField>
 
             <SettingsField label={t('sso', 'enforce')} hint={t('sso', 'enforceHint')} htmlFor="sso-enforce">

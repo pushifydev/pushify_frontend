@@ -6,6 +6,7 @@ import { X, Server, Loader2, Cpu, HardDrive, MemoryStick, Globe, Key } from 'luc
 import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages } from '@/hooks';
 import type { ServerSize, CreateServerInput } from '@/lib/api';
 import { ManagedCloudProviderBar } from '@/components/servers/ManagedCloudProviderBar';
+import { Select } from '@/components/ui/select';
 
 interface CreateServerModalProps {
   isOpen: boolean;
@@ -236,18 +237,16 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 ) : (
-                  <select
+                  <Select
                     value={formData.region}
-                    onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                    className="input w-full h-12"
-                  >
-                    <option value="">{t('servers', 'selectRegion')}</option>
-                    {regions.map((region) => (
-                      <option key={region.id} value={region.id}>
-                        {region.name}
-                      </option>
-                    ))}
-                  </select>
+                    onValueChange={(v) => setFormData({ ...formData, region: v })}
+                    className="w-full"
+                    aria-label={t('servers', 'region')}
+                    options={[
+                      { value: '', label: t('servers', 'selectRegion') },
+                      ...regions.map((region) => ({ value: region.id, label: region.name })),
+                    ]}
+                  />
                 )}
               </div>
 
@@ -261,18 +260,16 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 ) : (
-                  <select
+                  <Select
                     value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    className="input w-full h-12"
-                  >
-                    <option value="">{t('servers', 'selectImage')}</option>
-                    {images.map((image) => (
-                      <option key={image.id} value={image.id}>
-                        {image.name}
-                      </option>
-                    ))}
-                  </select>
+                    onValueChange={(v) => setFormData({ ...formData, image: v })}
+                    className="w-full"
+                    aria-label={t('servers', 'image')}
+                    options={[
+                      { value: '', label: t('servers', 'selectImage') },
+                      ...images.map((image) => ({ value: image.id, label: image.name })),
+                    ]}
+                  />
                 )}
               </div>
             </div>

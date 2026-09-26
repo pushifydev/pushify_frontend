@@ -44,6 +44,7 @@ import { ImageUploadField } from './ImageUploadField';
 import { DesignGallery } from './DesignGallery';
 import { PagesPanel } from './PagesPanel';
 import { ToolbarToggle, SectionHeading, Field } from './parts';
+import { Select } from '@/components/ui/select';
 
 type Section = 'pages' | 'blocks' | 'design' | 'seo' | 'cms' | 'settings';
 
@@ -499,14 +500,20 @@ export function SiteEditorView({ projectId, projectName }: SiteEditorViewProps) 
               <div className="space-y-3 pt-1 border-t border-[var(--border-subtle)]">
                 <SectionHeading icon={RefreshCw} title={t('siteEditor', 'headlessTitle')} />
                 <p className="text-xs text-[var(--text-secondary)]">{t('siteEditor', 'headlessDesc')}</p>
-                <label className="block space-y-1">
+                <div className="block space-y-1">
                   <span className="text-xs text-[var(--text-secondary)]">{t('siteEditor', 'cmsMode')}</span>
-                  <select className="select w-full" value={cmsMode} onChange={(e) => setCmsMode(e.target.value as CmsMode)}>
-                    <option value="builtin">{t('siteEditor', 'modeBuiltin')}</option>
-                    <option value="strapi">{t('siteEditor', 'modeStrapi')}</option>
-                    <option value="directus">{t('siteEditor', 'modeDirectus')}</option>
-                  </select>
-                </label>
+                  <Select
+                    className="w-full"
+                    value={cmsMode}
+                    onValueChange={(v) => setCmsMode(v as CmsMode)}
+                    aria-label={t('siteEditor', 'cmsMode')}
+                    options={[
+                      { value: 'builtin', label: t('siteEditor', 'modeBuiltin') },
+                      { value: 'strapi', label: t('siteEditor', 'modeStrapi') },
+                      { value: 'directus', label: t('siteEditor', 'modeDirectus') },
+                    ]}
+                  />
+                </div>
                 {cmsMode !== 'builtin' && (
                   <>
                     <Field label={t('siteEditor', 'apiUrl')} value={cmsApiUrl} onChange={setCmsApiUrl} />
