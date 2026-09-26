@@ -346,27 +346,31 @@ html.light .card-hover:hover {
 .btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
 
 /* ─── Inputs ─────────────────────────────────── */
-.input {
-  width: 100%;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 14px;
-  padding-right: 14px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-subtle);
-  border-radius: 10px;
-  color: var(--text-primary);
-  font-family: var(--font-display);
-  font-size: 14px;
-  transition: all var(--transition-fast);
+/* Layered so that a width/size utility on an input (w-44, flex-1, text-center…) actually applies;
+   unlayered, `width: 100%` silently beat them and squeezed the controls beside the input. */
+@layer components {
+  .input {
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 14px;
+    transition: all var(--transition-fast);
+  }
+  .input:hover { border-color: var(--border-default); }
+  .input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px var(--hover-overlay-lg);
+  }
+  .input::placeholder { color: var(--text-muted); }
 }
-.input:hover { border-color: var(--border-default); }
-.input:focus {
-  outline: none;
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 0 3px var(--hover-overlay-lg);
-}
-.input::placeholder { color: var(--text-muted); }
 
 /* ─── Badges ─────────────────────────────────── */
 .badge {

@@ -226,7 +226,7 @@ function ForwardingTab({ domainName }: { domainName: string }) {
               placeholder={t('domainSales', 'fwdAliasPh')}
               aria-label={t('domainSales', 'fwdAliasPh')}
               required
-              className={`${inputCls} w-36 terminal-text`}
+              className={`${inputCls} w-44 terminal-text`}
             />
             <span className="terminal-text text-[13px] text-[var(--text-muted)] truncate">@{domainName}</span>
           </div>
