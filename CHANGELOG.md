@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.72] - 2026-09-27
+
+### Changed
+- **Unpaid invoices say so and can be paid in one click.** The billing page's invoice list shows statuses in the reader's language ("Unpaid" instead of Stripe's `open`), and an unpaid invoice gets a "Pay" button that opens Stripe's payment page — paying it lifts the past-due block.
+
 ## [0.2.0-beta.71] - 2026-09-26
 
 ### Fixed

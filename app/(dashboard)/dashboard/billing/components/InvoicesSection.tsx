@@ -24,6 +24,14 @@ function statusBadge(status: string | null): string {
   }
 }
 
+const STATUS_LABEL = {
+  paid: 'invoiceStatusPaid',
+  open: 'invoiceStatusOpen',
+  void: 'invoiceStatusVoid',
+  uncollectible: 'invoiceStatusUncollectible',
+  draft: 'invoiceStatusDraft',
+} as const;
+
 export function InvoicesSection({ id }: { id?: string }) {
   const { t, locale } = useTranslation();
   const { data: invoices = [], isLoading } = useInvoices();
@@ -49,13 +57,22 @@ export function InvoicesSection({ id }: { id?: string }) {
                   day: 'numeric',
                 })}
               </span>
-              <span className={`badge ${statusBadge(inv.status)}`}>{inv.status ?? '—'}</span>
+              <span className={`badge ${statusBadge(inv.status)}`}>
+                {inv.status && inv.status in STATUS_LABEL
+                  ? t('billing', STATUS_LABEL[inv.status as keyof typeof STATUS_LABEL])
+                  : (inv.status ?? '—')}
+              </span>
             </div>
             <span className="terminal-text text-[13px] font-medium text-[var(--text-primary)] tabular-nums shrink-0">
               {formatAmount(inv.amountPaidCents || inv.amountDueCents, inv.currency)}
             </span>
             <span className="flex items-center gap-1 shrink-0">
-              {inv.hostedInvoiceUrl && (
+              {inv.hostedInvoiceUrl && inv.status === 'open' ? (
+                // An unpaid invoice is money owed: paying it on Stripe's page lifts the past-due block.
+                <a href={inv.hostedInvoiceUrl} className="btn btn-primary btn-sm">
+                  {t('billing', 'invoicePay')}
+                </a>
+              ) : inv.hostedInvoiceUrl ? (
                 <a
                   href={inv.hostedInvoiceUrl}
                   target="_blank"
@@ -65,7 +82,7 @@ export function InvoicesSection({ id }: { id?: string }) {
                   <ArrowUpRight className="w-3.5 h-3.5" />
                   {t('billing', 'invoiceView')}
                 </a>
-              )}
+              ) : null}
               {inv.invoicePdf && (
                 <a href={inv.invoicePdf} className="btn btn-ghost btn-sm">
                   <FileText className="w-3.5 h-3.5" />

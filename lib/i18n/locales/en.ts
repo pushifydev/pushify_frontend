@@ -1698,6 +1698,12 @@ export interface TranslationKeys {
     invoicesTitle: string;
     invoicesDesc: string;
     invoiceView: string;
+    invoicePay: string;
+    invoiceStatusPaid: string;
+    invoiceStatusOpen: string;
+    invoiceStatusVoid: string;
+    invoiceStatusUncollectible: string;
+    invoiceStatusDraft: string;
     title: string;
     description: string;
     currentPlan: string;
@@ -4800,6 +4806,12 @@ export const en: TranslationKeys = {
     invoicesTitle: 'Invoices',
     invoicesDesc: 'Your Stripe invoice history — view or download as PDF.',
     invoiceView: 'View',
+    invoicePay: 'Pay',
+    invoiceStatusPaid: 'Paid',
+    invoiceStatusOpen: 'Unpaid',
+    invoiceStatusVoid: 'Voided',
+    invoiceStatusUncollectible: 'Uncollectible',
+    invoiceStatusDraft: 'Draft',
     title: 'Billing & Usage',
     description: 'View your current plan, usage statistics, and manage billing settings.',
     currentPlan: 'Current Plan',
