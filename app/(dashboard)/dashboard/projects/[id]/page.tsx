@@ -27,6 +27,7 @@ import {
   WorkersTab,
   LogsTab,
   SettingsTab,
+  UploadVersionSection,
 } from './components';
 import {
   useProject,
@@ -398,6 +399,11 @@ export default function ProjectDetailPage() {
             onRollback={(id) => rollbackDeployment.mutate(id)}
             t={t}
           />
+        )}
+        {activeTab === 'deployments' && projectSettings.staticSource === 'upload' && (
+          <div className="mb-6">
+            <UploadVersionSection projectId={project.id} />
+          </div>
         )}
         {activeTab === 'deployments' && (
           <DeploymentsTab

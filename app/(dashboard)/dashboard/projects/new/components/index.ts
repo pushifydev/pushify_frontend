@@ -6,3 +6,4 @@ export { ConfigureStep } from './ConfigureStep';
 export { EnvironmentStep } from './EnvironmentStep';
 export { ReviewStep } from './ReviewStep';
 export { WebhookSecretModal } from './WebhookSecretModal';
+export { UploadSiteStep } from './UploadSiteStep';

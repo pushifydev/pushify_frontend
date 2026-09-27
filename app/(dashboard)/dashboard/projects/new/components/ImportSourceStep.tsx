@@ -10,7 +10,7 @@ import {
   Unlink,
   EyeOff,
   AlertCircle,
-  Sparkles, Lock } from 'lucide-react';
+  Sparkles, Lock, FolderUp } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { SettingsSection } from '@/components/dashboard/SettingsParts';
 import { FRAMEWORKS } from '@/lib/frameworks';
@@ -209,6 +209,21 @@ export function ImportSourceStep({
             <span className="text-xs leading-relaxed text-[var(--text-muted)]">{src.desc}</span>
           </button>
         ))}
+        {/* No repository at all: a folder or zip becomes a site. Full width so the four Git-based
+            sources keep their even row. */}
+        <button
+          type="button"
+          role="radio"
+          aria-checked={sourceType === 'upload'}
+          onClick={() => setSourceType('upload')}
+          className="dash-option text-left col-span-full !items-center gap-3"
+        >
+          <FolderUp className="w-4 h-4 shrink-0 text-[var(--text-secondary)]" />
+          <span className="min-w-0">
+            <span className="block text-sm font-medium text-[var(--text-primary)]">{t('siteUpload', 'sourceTitle')}</span>
+            <span className="block text-xs leading-relaxed text-[var(--text-muted)]">{t('siteUpload', 'sourceDesc')}</span>
+          </span>
+        </button>
       </div>
 
       {/* Git URL Input */}

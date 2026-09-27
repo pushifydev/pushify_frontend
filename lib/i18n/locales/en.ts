@@ -1676,6 +1676,29 @@ export interface TranslationKeys {
     loginOrRegisterToJoin: string;
     redirectingToDashboard: string;
   };
+  siteUpload: {
+    sourceTitle: string;
+    sourceDesc: string;
+    dropTitle: string;
+    dropHint: string;
+    chooseFolder: string;
+    chooseZip: string;
+    filesSummary: string;
+    noIndex: string;
+    tooLarge: string;
+    tooMany: string;
+    change: string;
+    siteName: string;
+    hostOn: string;
+    hostShared: string;
+    hostHint: string;
+    publish: string;
+    uploading: string;
+    published: string;
+    newVersion: string;
+    newVersionDesc: string;
+    versionPublished: string;
+  };
   billing: {
     cancelSubscriptionLink: string;
     cancelScheduled: string;
@@ -4783,6 +4806,29 @@ export const en: TranslationKeys = {
       'This invitation was sent to {invited} but you are logged in as {current}.',
     loginOrRegisterToJoin: 'Log in or create an account to join {org}',
     redirectingToDashboard: 'Redirecting to dashboard…',
+  },
+  siteUpload: {
+    sourceTitle: 'Upload files',
+    sourceDesc: 'Drop a folder or a .zip of HTML, CSS and JS. No Git needed.',
+    dropTitle: 'Drop your site folder or a .zip here',
+    dropHint: 'index.html at the top level · up to 2,000 files and 50 MB',
+    chooseFolder: 'Choose folder',
+    chooseZip: 'Choose .zip',
+    filesSummary: '{count} files · {size}',
+    noIndex: 'There is no index.html at the top level, so the site would have no home page.',
+    tooLarge: 'This is over 50 MB, the most a site can be.',
+    tooMany: 'This is over 2,000 files, the most a site can have.',
+    change: 'Change',
+    siteName: 'Site name',
+    hostOn: 'Hosted on',
+    hostShared: 'Pushify (a *.pushify.dev address)',
+    hostHint: 'On your own server the site is reached by its IP until you add a domain.',
+    publish: 'Publish site',
+    uploading: 'Uploading… {percent}%',
+    published: 'Uploaded. Your site is being published.',
+    newVersion: 'Upload new version',
+    newVersionDesc: 'The new files replace the live site in one go. The last five versions stay available for rollback.',
+    versionPublished: 'New version uploaded. It will be live in a moment.',
   },
   billing: {
     cancelSubscriptionLink: 'Cancel subscription',
