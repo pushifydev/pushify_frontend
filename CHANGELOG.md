@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.74] - 2026-09-27
+
+### Fixed
+- **"Pay" on an invoice of a subscription that had already ended.** Stripe leaves the last invoice open when it cancels a subscription after failed retries; paying it bought nothing. The button now shows only for invoices the backend marks `payable` (backend beta.70); the others keep "View".
+
 ## [0.2.0-beta.73] - 2026-09-27
 
 ### Fixed

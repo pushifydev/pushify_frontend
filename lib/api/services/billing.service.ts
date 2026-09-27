@@ -356,6 +356,8 @@ export interface Invoice {
   status: string | null;
   hostedInvoiceUrl: string | null;
   invoicePdf: string | null;
+  /** Open and worth paying: false for an invoice left behind by a subscription that has ended. */
+  payable?: boolean;
 }
 
 export const getInvoices = async (): Promise<ApiResponse<Invoice[]>> => {
