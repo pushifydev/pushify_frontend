@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.73] - 2026-09-27
+
+### Fixed
+- **A paid invoice still showed "Pay" until a reload.** The app turns off refetching on window focus globally, so after paying on Stripe's page in another tab the billing page kept the old invoice list, status and past-due banner. Billing info, subscription status and invoices now refetch whenever the tab regains focus.
+
 ## [0.2.0-beta.72] - 2026-09-27
 
 ### Changed

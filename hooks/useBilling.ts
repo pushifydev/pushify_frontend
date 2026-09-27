@@ -21,6 +21,13 @@ import {
   getInvoices,
 } from '@/lib/api';
 
+/**
+ * Payments happen on Stripe's pages, usually in another tab: coming back must show the new
+ * state (invoice paid, past-due lifted), so billing reads refetch on focus even though the app
+ * turns that off globally.
+ */
+const FRESH_ON_RETURN = { refetchOnWindowFocus: 'always' as const, staleTime: 0 };
+
 // Query Keys
 export const billingKeys = {
   all: ['billing'] as const,
@@ -41,6 +48,7 @@ export function useBillingInfo() {
       if (result.error) throw new Error(result.error.message);
       return result.data!;
     },
+    ...FRESH_ON_RETURN,
   });
 }
 
@@ -68,6 +76,7 @@ export function useSubscriptionStatus() {
       if (result.error) throw new Error(result.error.message);
       return result.data!;
     },
+    ...FRESH_ON_RETURN,
   });
 }
 
@@ -218,6 +227,6 @@ export function useInvoices() {
       if (result.error) throw new Error(result.error.message);
       return result.data ?? [];
     },
-    staleTime: 60_000,
+    ...FRESH_ON_RETURN,
   });
 }
