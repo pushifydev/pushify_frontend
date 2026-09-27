@@ -67,7 +67,7 @@ export function InvoicesSection({ id }: { id?: string }) {
               {formatAmount(inv.amountPaidCents || inv.amountDueCents, inv.currency)}
             </span>
             <span className="flex items-center gap-1 shrink-0">
-              {inv.hostedInvoiceUrl && inv.status === 'open' ? (
+              {inv.hostedInvoiceUrl && inv.status === 'open' && inv.payable !== false ? (
                 // An unpaid invoice is money owed: paying it on Stripe's page lifts the past-due block.
                 <a href={inv.hostedInvoiceUrl} className="btn btn-primary btn-sm">
                   {t('billing', 'invoicePay')}
