@@ -13,3 +13,4 @@ export { HealthCheckSection } from './HealthCheckSection';
 export { PreviewDeploymentsSection } from './PreviewDeploymentsSection';
 export { MetricsSection } from './MetricsSection';
 export { WorkersTab } from './WorkersTab';
+export { UploadVersionSection } from './UploadVersionSection';

@@ -28,6 +28,7 @@ import {
   WebhookSecretModal,
   type Step,
   type EnvVariable,
+  UploadSiteStep,
 } from './components';
 import { useImportSource } from './hooks';
 
@@ -72,6 +73,8 @@ export default function NewProjectPage() {
 
   // Import source (git/github/gitlab/template) state + logic
   const importSource = useImportSource({ projectName, setProjectName });
+  // Uploading files is a single step of its own; the source picker stays on screen above it.
+  const isUpload = importSource.sourceType === 'upload';
   const {
     sourceType,
     repositoryUrl,
@@ -284,19 +287,25 @@ export default function NewProjectPage() {
         back={{ href: '/dashboard/projects', label: t('projects', 'title') }}
         title={t('newProject', 'title')}
         description={t('newProject', 'subtitle')}
-        meta={[
-          <MetaLabel key="step">
-            {currentStepIndex + 1}/{steps.length} · {steps[currentStepIndex]?.label}
-          </MetaLabel>,
-        ]}
+        meta={
+          isUpload
+            ? []
+            : [
+                <MetaLabel key="step">
+                  {currentStepIndex + 1}/{steps.length} · {steps[currentStepIndex]?.label}
+                </MetaLabel>,
+              ]
+        }
       />
 
-      <ProgressSteps
-        steps={steps}
-        currentStep={currentStep}
-        currentStepIndex={currentStepIndex}
-        setCurrentStep={setCurrentStep}
-      />
+      {!isUpload && (
+        <ProgressSteps
+          steps={steps}
+          currentStep={currentStep}
+          currentStepIndex={currentStepIndex}
+          setCurrentStep={setCurrentStep}
+        />
+      )}
 
       <div className="min-w-0">
         {/* Step 1: Import Source */}
@@ -365,6 +374,13 @@ export default function NewProjectPage() {
           />
         )}
 
+        {/* Upload: one step of its own — no build, no environment variables */}
+        {isUpload && (
+          <div className="mt-6">
+            <UploadSiteStep availableServers={availableServers} initialServerId={selectedServerId} />
+          </div>
+        )}
+
         {/* Step 2: Configure */}
         {currentStep === 'configure' && (
           <ConfigureStep
@@ -422,7 +438,7 @@ export default function NewProjectPage() {
         )}
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between gap-3 mt-6 pt-5 border-t border-[var(--border-subtle)]">
+        <div className={`${isUpload ? 'hidden' : 'flex'} items-center justify-between gap-3 mt-6 pt-5 border-t border-[var(--border-subtle)]`}>
           <button
             type="button"
             onClick={goPrev}

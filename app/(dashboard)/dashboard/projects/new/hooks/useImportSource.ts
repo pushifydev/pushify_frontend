@@ -34,7 +34,7 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
   const { t } = useTranslation();
 
   // Form state
-  const [sourceType, setSourceType] = useState<'git' | 'github' | 'gitlab' | 'template'>('git');
+  const [sourceType, setSourceType] = useState<'git' | 'github' | 'gitlab' | 'template' | 'upload'>('git');
   const [repositoryUrl, setRepositoryUrl] = useState('');
   const [gitBranch, setGitBranch] = useState('main');
 

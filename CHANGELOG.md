@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.75] - 2026-09-27
+
+### Added
+- **Publish a website by uploading its files** (backend beta.72). New project → "Upload files": drop a site folder or a `.zip` (or pick one), name it, choose where it runs — Pushify's shared hosting with a `*.pushify.dev` address, or one of your servers — and publish. No Git, no build settings. The drop area walks dropped folders, leaves out hidden files and OS junk, and says before uploading when there is no top-level `index.html` or the site is over 2,000 files / 50 MB; the button shows upload progress. Projects made this way get an "Upload new version" area on their Deployments tab; each upload is a deployment with logs, and rollback returns to an earlier upload. Components: `components/sites/SiteDropzone.tsx`, `lib/site-upload.ts`, `lib/api/services/static-sites.service.ts`.
+
 ## [0.2.0-beta.74] - 2026-09-27
 
 ### Fixed
