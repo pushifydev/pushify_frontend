@@ -3,6 +3,9 @@ const AUTH_REDIRECT_KEY = 'auth_post_login_redirect';
 /** Auth pages must never be a post-login destination (redirect loops). */
 const AUTH_PAGES = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email'];
 
+/** Dummy origin used only to resolve candidate paths; never navigated to. */
+const REDIRECT_BASE_ORIGIN = 'https://x.invalid';
+
 /**
  * Central open-redirect guard: only same-origin relative paths survive.
  * Rejects absolute URLs, protocol-relative (`//evil.com`), backslash tricks,
@@ -12,11 +15,25 @@ const AUTH_PAGES = ['/login', '/register', '/forgot-password', '/reset-password'
 export function sanitizeRedirectPath(raw: string | null | undefined): string | null {
   if (!raw) return null;
   const path = raw.trim();
+  // The WHATWG URL parser silently strips tab/CR/LF, so `/\t/evil.com` would
+  // become `//evil.com`. Reject any control character outright.
+  if (/[\u0000-\u001F\u007F]/.test(path)) return null;
   if (!path.startsWith('/') || path.startsWith('//') || path.startsWith('/\\')) return null;
   if (path.includes('://') || path.includes('\\')) return null;
-  const base = path.split(/[?#]/)[0];
-  if (AUTH_PAGES.some((p) => base === p || base.startsWith(`${p}/`))) return null;
-  return path;
+
+  // Defense in depth: resolve exactly like the browser would and require
+  // the result to stay on the same origin.
+  let url: URL;
+  try {
+    url = new URL(path, `${REDIRECT_BASE_ORIGIN}/`);
+  } catch {
+    return null;
+  }
+  if (url.origin !== REDIRECT_BASE_ORIGIN) return null;
+
+  const pathname = url.pathname;
+  if (AUTH_PAGES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return null;
+  return `${pathname}${url.search}${url.hash}`;
 }
 
 /** `/login` or `/register` URL that carries the destination along. */
