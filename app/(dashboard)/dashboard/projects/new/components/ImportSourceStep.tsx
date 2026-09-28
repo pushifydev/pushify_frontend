@@ -14,6 +14,7 @@ import {
 import { useTranslation } from '@/hooks';
 import { SettingsSection } from '@/components/dashboard/SettingsParts';
 import { FRAMEWORKS } from '@/lib/frameworks';
+import { FUNNEL_EVENTS, trackEvent } from '@/lib/analytics';
 import type { useImportSource } from '../hooks/useImportSource';
 import { Select } from '@/components/ui/select';
 
@@ -147,6 +148,16 @@ export function ImportSourceStep({
   setProjectName,
 }: ImportSourceStepProps) {
   const { t } = useTranslation();
+
+  // Funnel: starting a git-provider connection is tracked as its own sub-step.
+  const startGithubConnect = () => {
+    trackEvent(FUNNEL_EVENTS.githubConnectStarted, { method: 'oauth' });
+    githubConnect.mutate();
+  };
+  const startGithubAppInstall = () => {
+    trackEvent(FUNNEL_EVENTS.githubConnectStarted, { method: 'app' });
+    githubAppInstall.mutate();
+  };
 
   const sources: {
     id: typeof sourceType;
@@ -310,7 +321,7 @@ export function ImportSourceStep({
                       <a href={manageUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm">
                         {t('newProject', 'githubAppManage')}
                       </a>
-                      <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost btn-sm">
+                      <button type="button" onClick={startGithubAppInstall} disabled={githubAppInstall.isPending} className="btn btn-ghost btn-sm">
                         {t('newProject', 'githubAppAddAccount')}
                       </button>
                       {githubStatus?.connected ? (
@@ -318,7 +329,7 @@ export function ImportSourceStep({
                           {t('newProject', 'githubAppUseOAuth')}
                         </button>
                       ) : (
-                        <button type="button" onClick={() => githubConnect.mutate()} disabled={githubConnect.isPending} className="btn btn-ghost btn-sm">
+                        <button type="button" onClick={startGithubConnect} disabled={githubConnect.isPending} className="btn btn-ghost btn-sm">
                           {t('newProject', 'githubOrConnectAccount')}
                         </button>
                       )}
@@ -401,7 +412,7 @@ export function ImportSourceStep({
                   <>
                     <button
                       type="button"
-                      onClick={() => githubAppInstall.mutate()}
+                      onClick={startGithubAppInstall}
                       disabled={githubAppInstall.isPending}
                       className="btn btn-primary"
                     >
@@ -425,7 +436,7 @@ export function ImportSourceStep({
 
                 <button
                   type="button"
-                  onClick={() => githubConnect.mutate()}
+                  onClick={startGithubConnect}
                   disabled={githubConnect.isPending}
                   className={appInstallations?.configured ? 'btn btn-ghost text-sm mt-1' : 'btn btn-primary'}
                 >
@@ -487,7 +498,7 @@ export function ImportSourceStep({
                 >
                   <span className="flex-1">{t('newProject', 'githubOauthPublicOnly')}</span>
                   <div className="flex items-center gap-2 shrink-0">
-                    <button type="button" onClick={() => githubConnect.mutate()} disabled={githubConnect.isPending} className="btn btn-primary btn-sm">
+                    <button type="button" onClick={startGithubConnect} disabled={githubConnect.isPending} className="btn btn-primary btn-sm">
                       {githubConnect.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                       {t('newProject', 'githubReconnect')}
                     </button>
@@ -496,7 +507,7 @@ export function ImportSourceStep({
                         {t('newProject', 'githubAppUsePicker')}
                       </button>
                     ) : appInstallations?.configured ? (
-                      <button type="button" onClick={() => githubAppInstall.mutate()} disabled={githubAppInstall.isPending} className="btn btn-ghost btn-sm">
+                      <button type="button" onClick={startGithubAppInstall} disabled={githubAppInstall.isPending} className="btn btn-ghost btn-sm">
                         {t('newProject', 'githubAppInstall')}
                       </button>
                     ) : null}

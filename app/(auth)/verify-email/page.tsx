@@ -7,9 +7,10 @@ import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { verifyEmail, sendVerificationEmail } from '@/lib/api';
 import { AuthMobileBrand, AuthPageHeader } from '@/components/auth';
+import { FUNNEL_EVENTS, trackEvent } from '@/lib/analytics';
 
 function VerifyEmailContent() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'no-token'>('loading');
   const [message, setMessage] = useState('');
@@ -68,9 +69,21 @@ function VerifyEmailContent() {
             title={t('auth', 'emailVerifiedTitle')}
             description={message || t('auth', 'emailVerifiedDesc')}
           />
-          <Link href="/dashboard" className="lp-cta h-12 px-8 inline-flex">
-            {t('auth', 'goToDashboard')}
-          </Link>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            {locale === 'tr' ? 'Repo bağla → Sunucu seç → Deploy' : 'Connect repo → Choose server → Deploy'}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/dashboard/projects/new"
+              onClick={() => trackEvent(FUNNEL_EVENTS.connectRepoCtaClicked, { from: 'verify_email' })}
+              className="lp-cta h-12 w-full sm:w-auto px-8 inline-flex"
+            >
+              {locale === 'tr' ? 'Repo’nu bağla' : 'Connect your repo'}
+            </Link>
+            <Link href="/dashboard" className="lp-cta-ghost h-12 w-full sm:w-auto px-6 text-sm">
+              {t('auth', 'goToDashboard')}
+            </Link>
+          </div>
         </div>
       )}
 

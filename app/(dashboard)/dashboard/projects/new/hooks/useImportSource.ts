@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   useTranslation,
   useGitHubStatus,
@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from '@/lib/api';
 import type { GitHubRepo, GitLabRepo } from '@/lib/api';
 import type { GitHubAppRepository } from '@/lib/api/services/github.service';
+import { FUNNEL_EVENTS, trackEvent } from '@/lib/analytics';
 import { readGitHubRepoSource, rememberGitHubRepoSource } from '@/lib/github-return';
 
 interface UseImportSourceArgs {
@@ -67,6 +68,17 @@ export function useImportSource({ projectName, setProjectName }: UseImportSource
   const installations = appInstallations?.installations ?? [];
   const hasAppInstallation = installations.length > 0;
   const useAppPicker = hasAppInstallation && !preferOAuthPicker;
+
+  // Funnel: report once per wizard visit that GitHub is usable (OAuth account or App install).
+  const githubConnectedTracked = useRef(false);
+  const githubReady = !!githubStatus?.connected || hasAppInstallation;
+  useEffect(() => {
+    if (!githubReady || githubConnectedTracked.current) return;
+    githubConnectedTracked.current = true;
+    trackEvent(FUNNEL_EVENTS.githubConnected, {
+      method: hasAppInstallation ? 'app' : 'oauth',
+    });
+  }, [githubReady, hasAppInstallation]);
 
   useEffect(() => {
     if (selectedAppInstallationId !== null) return;
