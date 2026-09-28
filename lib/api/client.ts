@@ -32,6 +32,34 @@ export const clearTokens = (): void => {
   localStorage.removeItem('refreshToken');
 };
 
+// ============ Session Expiry Listeners ============
+
+type AuthFailureListener = () => void;
+
+const authFailureListeners = new Set<AuthFailureListener>();
+
+/**
+ * Register a callback fired when the session can no longer be recovered
+ * (refresh failed, or a 401 arrived for an authenticated request with no
+ * refresh token). Returns an unsubscribe function.
+ */
+export const onAuthFailure = (listener: AuthFailureListener): (() => void) => {
+  authFailureListeners.add(listener);
+  return () => {
+    authFailureListeners.delete(listener);
+  };
+};
+
+const notifyAuthFailure = (): void => {
+  authFailureListeners.forEach((listener) => {
+    try {
+      listener();
+    } catch {
+      // A misbehaving listener must not break the request pipeline
+    }
+  });
+};
+
 // ============ Axios Instance ============
 
 export const api = axios.create({
@@ -67,7 +95,12 @@ const refreshAccessToken = async (): Promise<boolean> => {
   }
 
   const refreshToken = getRefreshToken();
-  if (!refreshToken) return false;
+  if (!refreshToken) {
+    // Stale access token with nothing to refresh it with: session is gone
+    clearTokens();
+    notifyAuthFailure();
+    return false;
+  }
 
   refreshPromise = (async () => {
     try {
@@ -80,6 +113,7 @@ const refreshAccessToken = async (): Promise<boolean> => {
       return true;
     } catch {
       clearTokens();
+      notifyAuthFailure();
       return false;
     } finally {
       refreshPromise = null;
