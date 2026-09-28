@@ -6,6 +6,7 @@ import {
   getCurrentUser,
   getAccessToken,
   clearTokens,
+  onAuthFailure,
   type User,
   type Organization,
 } from '@/lib/api';
@@ -184,3 +185,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   clearTwoFactor: () => set({ requiresTwoFactor: false, twoFactorToken: null }),
 }));
+
+// When the API client gives up on the session (refresh failed / no refresh
+// token), drop the in-memory auth state so DashboardShell redirects to login.
+onAuthFailure(() => {
+  const { isAuthenticated, user, organization } = useAuthStore.getState();
+  if (!isAuthenticated && !user && !organization) return;
+  useAuthStore.setState({
+    user: null,
+    organization: null,
+    isAuthenticated: false,
+    isLoading: false,
+  });
+});

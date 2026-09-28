@@ -1,5 +1,5 @@
 // Axios Instance & Token Management
-export { api, getAccessToken, getRefreshToken, setTokens, clearTokens, API_BASE_URL } from './client';
+export { api, getAccessToken, getRefreshToken, setTokens, clearTokens, onAuthFailure, API_BASE_URL } from './client';
 export { DOCS_API_BASE_URL, PRODUCTION_API_BASE_URL } from './public-url';
 
 export { getApiErrorMessage } from './get-error-message';
