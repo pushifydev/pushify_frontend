@@ -19,6 +19,7 @@ import { createDeployment, getApiErrorMessage } from '@/lib/api';
 import { buildGitWebhookUrl } from '@/lib/build-webhook-url';
 import type { CreateProjectInput } from '@/lib/api';
 import { FRAMEWORKS } from '@/lib/frameworks';
+import { FUNNEL_EVENTS, trackEvent } from '@/lib/analytics';
 import {
   ProgressSteps,
   ImportSourceStep,
@@ -65,6 +66,17 @@ export default function NewProjectPage() {
   const availableServers = servers.filter(
     (s) => s.status === 'running' && s.setupStatus === 'completed'
   );
+
+  // Funnel: which server the user picks (managed Hetzner vs. their own) is its own sub-step.
+  const selectServer = (id: string | undefined) => {
+    setSelectedServerId(id);
+    if (!id) return;
+    const server = servers.find((s) => s.id === id);
+    trackEvent(FUNNEL_EVENTS.serverSelected, {
+      server_kind: server?.provider === 'self_hosted' ? 'byos' : 'managed',
+      provider: server?.provider,
+    });
+  };
 
   useEffect(() => {
     const fromQuery = searchParams.get('serverId');
@@ -157,6 +169,9 @@ export default function NewProjectPage() {
 
   const goNext = () => {
     const nextIndex = currentStepIndex + 1;
+    if (currentStep === 'source' && sourceType !== 'template') {
+      trackEvent(FUNNEL_EVENTS.repoSelected, { source: sourceType });
+    }
     if (nextIndex < stepOrder.length) {
       setCurrentStep(stepOrder[nextIndex]);
     }
@@ -195,6 +210,10 @@ export default function NewProjectPage() {
 
   const handleSubmit = async () => {
     setIsCreating(true);
+    trackEvent(FUNNEL_EVENTS.projectSubmitted, {
+      source: sourceType,
+      has_server: !!selectedServerId,
+    });
 
     try {
       const input: CreateProjectInput = {
@@ -405,7 +424,7 @@ export default function NewProjectPage() {
             isLoadingServers={isLoadingServers}
             availableServers={availableServers}
             selectedServerId={selectedServerId}
-            setSelectedServerId={setSelectedServerId}
+            setSelectedServerId={selectServer}
           />
         )}
 

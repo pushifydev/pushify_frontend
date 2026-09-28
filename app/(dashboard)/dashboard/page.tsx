@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowUpRight, ChevronRight, Rocket, Server } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowUpRight, ChevronRight, Github, Rocket, Server } from 'lucide-react';
+import { FUNNEL_EVENTS, trackEvent } from '@/lib/analytics';
 import { useProjects, useServers, useTranslation, useMetricsOverview } from '@/hooks';
 import { OnboardingChecklist } from '@/components/dashboard/OnboardingChecklist';
 import { DashboardAttentionZone } from '@/components/dashboard/DashboardAttentionZone';
@@ -36,10 +38,21 @@ function projectDot(status: string): string {
 
 const copy = {
   newServer: { en: 'New server', tr: 'Yeni sunucu' },
+  firstProjectFlow: {
+    en: 'Connect repo → Choose server → Deploy',
+    tr: 'Repo bağla → Sunucu seç → Deploy',
+  },
+  connectRepoTitle: { en: 'Deploy your first app', tr: 'İlk uygulamanı yayına al' },
+  connectRepoHint: {
+    en: 'Connect a GitHub repo, then pick where it runs: a managed Hetzner server, or bring your own server (BYOS).',
+    tr: 'Bir GitHub reposu bağla, sonra nerede çalışacağını seç: yönetilen bir Hetzner sunucusu ya da kendi sunucun (BYOS).',
+  },
+  connectRepoCta: { en: 'Connect your repo', tr: 'Repo’nu bağla' },
 };
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
+  const router = useRouter();
   const { data: projects = [], isLoading: projectsLoading } = useProjects();
   const { data: servers = [], isLoading: serversLoading } = useServers();
   const { data: metricsOverview, isLoading: metricsLoading } = useMetricsOverview();
@@ -196,12 +209,16 @@ export default function DashboardPage() {
             <section className="min-w-0">
               <h2 className="dash-section-label mb-2.5">{t('dashboard', 'yourProjects')}</h2>
               <EmptyState
-                title={t('dashboard', 'noProjectsYet')}
-                description={t('dashboard', 'createFirstProject')}
+                label={l(copy.firstProjectFlow)}
+                title={l(copy.connectRepoTitle)}
+                description={l(copy.connectRepoHint)}
                 action={{
-                  label: t('projects', 'createProject'),
-                  href: '/dashboard/projects/new',
-                  icon: <Rocket className="w-4 h-4" />,
+                  label: l(copy.connectRepoCta),
+                  onClick: () => {
+                    trackEvent(FUNNEL_EVENTS.connectRepoCtaClicked, { from: 'dashboard_empty' });
+                    router.push('/dashboard/projects/new');
+                  },
+                  icon: <Github className="w-4 h-4" />,
                 }}
               />
             </section>
