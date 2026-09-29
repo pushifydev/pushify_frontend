@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.85] - 2026-09-29
+
+### Fixed
+- **Health checks on the Free plan.** Plan tables said Free has no health checks, while every plan gets automatic uptime checks and down/recovery emails. The row is now "Custom health checks" (own endpoint, expected status and interval, Hobby and up), with a note under the comparison table.
+- **Data retention.** The pricing FAQ now says data is kept for at least 30 days after a plan lapses, matching the refund policy.
+
 ## [0.2.0-beta.84] - 2026-09-29
 
 ### Fixed

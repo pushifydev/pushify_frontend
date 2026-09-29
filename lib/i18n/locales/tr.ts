@@ -379,7 +379,7 @@ export const tr: TranslationKeys = {
     activityLogs: 'Aktivite Günlükleri',
     activityLogsDesc: 'Her işlemin tam denetim izi. Kim, neyi, ne zaman ve neden deploy etti, bilin.',
     healthChecks: 'Sağlık Kontrolleri',
-    healthChecksDesc: 'Yapılandırılabilir aralıklarla otomatik endpoint izleme ve arıza anında uyarılar.',
+    healthChecksDesc: 'Kendi endpoint\'iniz, beklenen durum kodu ve aralık. Her plan temel erişilebilirlik kontrolleri ve kesinti/düzelme e-postaları alır.',
     previewDeployments: 'Önizleme Dağıtımları',
     previewDeploymentsDesc: 'Her pull request kendi önizleme URL\'sini alır. Değişiklikleri üretime geçmeden önce inceleyin.',
     environmentVariables: 'Ortam Değişkenleri',
@@ -674,7 +674,7 @@ export const tr: TranslationKeys = {
       'Stripe ödemeyi yeniden dener. Organizasyonunuz gecikmiş (past due) işaretlenir: ödeme yöntemini Faturalandırma\'da güncelleyene kadar yeni proje, sunucu, veritabanı veya dağıtım oluşturamazsınız. Faturalandırma e-postasına günde en fazla bir hatırlatma gider. Yeniden deneme süresinde mevcut kaynaklar çalışmaya devam edebilir.',
     faq9Q: 'Platform aboneliğimi iptal edersem ne olur?',
     faq9A:
-      'Fatura dönemi sonunda plan Ücretsiz olur. Yönetilen Hetzner sunucuları kapatılır, aktif projeler duraklatılır ve yeni dağıtımlar engellenir. Verileriniz saklanır; yeniden abone olup manuel devam edebilirsiniz. Cüzdandaki altyapı kredileri kullanılana kadar kalır; otomatik iade yapılmaz.',
+      'Fatura dönemi sonunda plan Ücretsiz olur. Yönetilen Hetzner sunucuları kapatılır, aktif projeler duraklatılır ve yeni dağıtımlar engellenir. Verileriniz en az 30 gün saklanır; yeniden abone olup manuel devam edebilirsiniz. Cüzdandaki altyapı kredileri kullanılana kadar kalır; otomatik iade yapılmaz.',
     editorialHeroLabel: 'Hero',
     editorialLedeLabel: 'Giriş',
     howItWorksH1Before: 'Önce ',
@@ -1808,7 +1808,7 @@ export const tr: TranslationKeys = {
     used: 'kullanıldı',
     // Features
     previewDeployments: 'Önizleme Dağıtımları',
-    healthChecks: 'Sağlık Kontrolleri',
+    healthChecks: 'Özel sağlık kontrolleri',
     prioritySupport: 'Öncelikli Destek',
     included: 'Dahil',
     notIncluded: 'Dahil değil',

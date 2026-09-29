@@ -71,6 +71,8 @@ const copy = {
     ],
     compareEyebrow: 'Side by side',
     compareTitle: 'Every limit, per plan.',
+    compareNote:
+      'Custom health checks: your own endpoint, expected status and interval. Every plan gets basic uptime checks and down/recovery emails.',
     feature: 'Feature',
     enterpriseLine: 'Unlimited servers, projects and deploys, with terms that fit your organization.',
     yes: 'Included',
@@ -122,6 +124,8 @@ const copy = {
     ],
     compareEyebrow: 'Yan yana',
     compareTitle: 'Plan plan tüm limitler.',
+    compareNote:
+      'Özel sağlık kontrolleri: kendi endpoint\'iniz, beklenen durum kodu ve aralık. Her plan temel erişilebilirlik kontrolleri ve kesinti/düzelme e-postaları alır.',
     feature: 'Özellik',
     enterpriseLine: 'Sınırsız sunucu, proje ve deploy; kurumunuza uygun koşullarla.',
     yes: 'Dahil',
@@ -372,6 +376,9 @@ export function PricingPlans({ initialPlans }: { initialPlans?: AvailablePlans }
               </tbody>
             </table>
           </div>
+          <p className="mt-4 text-[0.9rem]" style={{ color: 'var(--hp-muted)' }}>
+            {c.compareNote}
+          </p>
         </MSection>
       )}
     </>
