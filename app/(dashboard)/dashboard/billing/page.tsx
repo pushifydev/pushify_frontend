@@ -55,14 +55,16 @@ export default function BillingPage() {
   const { data: currentOrganization } = useOrganization();
   const organization = currentOrganization ?? storeOrganization;
   const { data: billingInfo, isLoading } = useBillingInfo();
+  // Invoices, the wallet and the subscription are for owners and admins (the API refuses others).
+  const isBillingAdmin = currentOrganization?.role === 'owner' || currentOrganization?.role === 'admin';
   // A cancelled-at-period-end subscription can be resumed until the period ends.
-  const { data: subscription } = useSubscriptionStatus();
+  const { data: subscription } = useSubscriptionStatus(isBillingAdmin);
   const resumeSubscription = useResumeSubscription();
   const cancelScheduledChange = useCancelScheduledChange();
   const updateBillingEmail = useUpdateBillingEmail();
   // Same queries the wallet / invoice sections use (shared cache): only index sections that render.
-  const { data: infraData } = useInfraBilling();
-  const { data: invoices = [] } = useInvoices();
+  const { data: infraData } = useInfraBilling(isBillingAdmin);
+  const { data: invoices = [] } = useInvoices(isBillingAdmin);
   const payOutstanding = usePayOutstanding();
   const updatePaymentMethod = useUpdatePaymentMethod();
 
@@ -485,11 +487,11 @@ export default function BillingPage() {
             </SettingsField>
           </SettingsSection>
 
-          <InfraWalletSection id="billing-wallet" />
+          {isBillingAdmin && <InfraWalletSection id="billing-wallet" />}
 
           {billingInfo && <UsageLimitsSection id="billing-usage" usage={billingInfo.usage} />}
 
-          <InvoicesSection id="billing-invoices" />
+          {isBillingAdmin && <InvoicesSection id="billing-invoices" />}
         </div>
       </div>
 
