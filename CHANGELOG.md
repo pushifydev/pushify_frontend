@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.87] - 2026-09-29
+
+### Added
+- **Largest managed server per plan on `/pricing`.** Derived from the same live rows as the price table, so it always equals what each plan can create (Falkenstein, 2026-09-29: Hobby 2 vCPU / 4 GB, Pro 2 vCPU / 4 GB, Business 8 vCPU / 16 GB; Enterprise on request).
+
 ## [0.2.0-beta.86] - 2026-09-29
 
 ### Changed
