@@ -14,6 +14,7 @@ import {
   requestAccountDeletion,
   requestOrganizationDeletion,
   restoreOrganization,
+  isConfirmationSent,
   type DeletionScheduled,
 } from '@/lib/api';
 import { SettingsSection } from '@/components/dashboard/SettingsParts';
@@ -65,6 +66,10 @@ const copy = {
     manualTitle: 'These servers could not be reached. Run this as root on each to remove Pushify’s SSH key:',
     close: 'Close',
     signOut: 'Sign out',
+    emailConfirmNote: 'Your account has no password or two-factor code, so we will email you a link to confirm. The deletion starts when you click it.',
+    checkEmailTitle: 'Check your email',
+    checkEmailBody: 'We sent a confirmation link to your email address. The deletion starts when you click it. The link works once, for one hour.',
+    sendLink: 'Email me the link',
   },
   tr: {
     orgTitle: 'Organizasyonu sil',
@@ -104,6 +109,10 @@ const copy = {
     manualTitle: 'Bu sunuculara ulaşılamadı. Pushify’ın SSH anahtarını kaldırmak için her birinde root olarak çalıştırın:',
     close: 'Kapat',
     signOut: 'Çıkış yap',
+    emailConfirmNote: 'Hesabınızda şifre ya da iki adımlı doğrulama olmadığı için onay bağlantısını e-postanıza göndereceğiz. Silme, bağlantıya tıkladığınızda başlar.',
+    checkEmailTitle: 'E-postanızı kontrol edin',
+    checkEmailBody: 'E-posta adresinize bir onay bağlantısı gönderdik. Silme, bağlantıya tıkladığınızda başlar. Bağlantı 1 saat geçerli ve bir kez kullanılabilir.',
+    sendLink: 'Bağlantıyı gönder',
   },
 };
 
@@ -145,6 +154,19 @@ function ScheduledResult({ result, c, locale, onClose, closeLabel }: { result: D
   );
 }
 
+function CheckEmail({ c, onClose }: { c: Copy; onClose: () => void }) {
+  return (
+    <Modal isOpen onClose={onClose} title={c.checkEmailTitle}>
+      <p className="text-sm text-[var(--text-secondary)]">{c.checkEmailBody}</p>
+      <ModalActions>
+        <button type="button" onClick={onClose} className="btn btn-primary">
+          {c.close}
+        </button>
+      </ModalActions>
+    </Modal>
+  );
+}
+
 function CredentialFields({
   c,
   hasPassword,
@@ -164,6 +186,7 @@ function CredentialFields({
 }) {
   return (
     <>
+      {!hasPassword && !twoFactor && <p className="text-sm text-[var(--text-secondary)]">{c.emailConfirmNote}</p>}
       {hasPassword && (
         <label className="block space-y-1.5">
           <span className="text-sm font-medium text-[var(--text-primary)]">{c.password}</span>
@@ -205,6 +228,7 @@ function DeleteOrganizationModal({ c, locale, onClose }: { c: Copy; locale: stri
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<DeletionScheduled | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
 
   const hasPassword = user?.hasPassword ?? true;
   const twoFactor = !!twoFactorStatus?.enabled;
@@ -216,6 +240,7 @@ function DeleteOrganizationModal({ c, locale, onClose }: { c: Copy; locale: stri
     const r = await requestOrganizationDeletion({ confirmName: confirm.trim(), password: password || undefined, twoFactorCode: code || undefined });
     setPending(false);
     if (r.error) return setError(r.error.message);
+    if (isConfirmationSent(r.data!)) return setEmailSent(true);
     setResult(r.data!);
   };
 
@@ -223,6 +248,8 @@ function DeleteOrganizationModal({ c, locale, onClose }: { c: Copy; locale: stri
     queryClient.invalidateQueries({ queryKey: organizationKeys.all });
     onClose();
   };
+
+  if (emailSent) return <CheckEmail c={c} onClose={onClose} />;
 
   if (result) {
     return (
@@ -293,6 +320,8 @@ function DeleteOrganizationModal({ c, locale, onClose }: { c: Copy; locale: stri
               <Loader2 className="w-4 h-4 animate-spin" />
               {c.deleting}
             </>
+          ) : !hasPassword && !twoFactor ? (
+            c.sendLink
           ) : (
             c.delete
           )}
@@ -312,6 +341,7 @@ function DeleteAccountModal({ c, locale, onClose }: { c: Copy; locale: string; o
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<DeletionScheduled | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
 
   const email = user?.email ?? '';
   const hasPassword = user?.hasPassword ?? true;
@@ -324,6 +354,7 @@ function DeleteAccountModal({ c, locale, onClose }: { c: Copy; locale: string; o
     const r = await requestAccountDeletion({ confirmEmail: confirm.trim(), password: password || undefined, twoFactorCode: code || undefined });
     setPending(false);
     if (r.error) return setError(r.error.message);
+    if (isConfirmationSent(r.data!)) return setEmailSent(true);
     setResult(r.data!);
   };
 
@@ -332,6 +363,8 @@ function DeleteAccountModal({ c, locale, onClose }: { c: Copy; locale: string; o
     await logout().catch(() => undefined);
     router.replace('/login');
   };
+
+  if (emailSent) return <CheckEmail c={c} onClose={onClose} />;
 
   if (result) {
     return (
@@ -365,6 +398,8 @@ function DeleteAccountModal({ c, locale, onClose }: { c: Copy; locale: string; o
               <Loader2 className="w-4 h-4 animate-spin" />
               {c.deleting}
             </>
+          ) : !hasPassword && !twoFactor ? (
+            c.sendLink
           ) : (
             c.delete
           )}
