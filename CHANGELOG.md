@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.94] - 2026-09-29
+
+### Fixed
+- **`/.well-known/security.txt` returned 404 in production.** It is now served by a route (with a rewrite from the RFC 9116 path) instead of a file in `public/.well-known`.
+
 ## [0.2.0-beta.93] - 2026-09-29
 
 ### Changed

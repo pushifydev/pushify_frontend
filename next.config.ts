@@ -60,6 +60,11 @@ const nextConfig: NextConfig = {
   },
   // Guessable URLs that used to 404. Only renamed pages are permanent; the docs targets are
   // temporary because those paths will get real pages when the product docs are split out.
+  // RFC 9116 location for security.txt; the content is a route (app/security.txt/route.ts) because
+  // public/.well-known/security.txt answered 404 in production.
+  async rewrites() {
+    return [{ source: '/.well-known/security.txt', destination: '/security.txt' }];
+  },
   async redirects() {
     return [
       { source: '/marketplace', destination: '/apps', permanent: true },
