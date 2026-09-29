@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.83] - 2026-09-29
+
+### Added
+- **Managed server prices on `/pricing`.** A table lists each managed tier with vCPU, RAM, disk, price per hour, approximate price per month and the cheapest plan that allows it, rendered on the server from the new public price endpoint (backend beta.75). If prices cannot be loaded, the section says they are shown in the dashboard before a server is created.
+
 ## [0.2.0-beta.82] - 2026-09-29
 
 ### Fixed
