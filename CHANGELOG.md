@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.89] - 2026-09-29
+
+### Added
+- **X account linked.** The footer links to [@pushifydev](https://x.com/pushifydev), and the Organization structured data lists it.
+
 ## [0.2.0-beta.88] - 2026-09-29
 
 ### Fixed
