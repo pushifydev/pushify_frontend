@@ -262,7 +262,6 @@ export const resumeSubscription = async (): Promise<ApiResponse<void>> => {
 export interface InfraWalletSummary {
   balanceCents: number;
   balanceUsd: string;
-  marginPercent: number;
   estimatedMonthlyBurnCents: number;
   runningManagedServers: number;
   topUpAmountsCents: readonly number[];

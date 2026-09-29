@@ -96,11 +96,8 @@ export interface ServerSizeOption {
     vcpus: number;
     memoryMb: number;
     diskGb: number;
-    providerCostMonthlyCents: number;
-    providerCostHourlyCents: number;
     customerPriceMonthlyCents: number;
     customerPriceHourlyCents: number;
-    marginPercent: number;
     /** @deprecated use customerPriceMonthlyCents — kept for backward compat */
     priceMonthly?: number;
   };
@@ -116,8 +113,6 @@ export interface ProviderServerType {
   cores: number;
   memory: number; // in GB
   disk: number; // in GB
-  priceMonthly: number;
-  priceHourly: number;
   cpuType: 'shared' | 'dedicated';
   architecture: 'x86' | 'arm';
   availableLocations: string[];
