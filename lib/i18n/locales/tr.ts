@@ -336,6 +336,7 @@ export const tr: TranslationKeys = {
     heroMetaDeploymentsLiveShort: 'CANLI',
     socialGithub: 'GitHub',
     socialEmail: 'E-posta',
+    socialX: 'X (Twitter)',
     // Frameworks section
     universalCompatibility: 'Evrensel Uyumluluk',
     worksWithEvery: 'Her framework ile',

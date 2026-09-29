@@ -200,6 +200,7 @@ export default async function RootLayout({
                   },
                   sameAs: [
                     'https://github.com/pushifydev',
+                    'https://x.com/pushifydev',
                     'https://www.npmjs.com/package/pushify-cli',
                   ],
                   contactPoint: {
