@@ -7,7 +7,8 @@ import { useTranslation } from '@/hooks';
 
 /* Checked against pushify_backend/src/lib/pushify-config.ts: the schema is strict, a file that
    fails validation is logged and ignored (the deploy goes on), and cron / volumes / workers are
-   upserted by name on production deploys — never deleted. */
+   upserted by name on production deploys — never deleted. Limits come from
+   pushify_backend/src/lib/project-limits.ts (10 cron, 10–600 s, 5 volumes, 5 workers). */
 
 const EXAMPLE = `# pushify.yaml — at the root of your repository
 framework: nextjs
@@ -47,15 +48,15 @@ const copy = {
       { title: 'Where it lives', body: 'pushify.yaml or pushify.yml, in the project’s root directory or the repo root.' },
       { title: 'Every field is optional', body: 'Leave one out and the dashboard value applies. Secrets stay in the dashboard.' },
       { title: 'Invalid files are skipped', body: 'An unknown key or bad value logs a warning; the deploy continues without the file.' },
-      { title: 'Added, never removed', body: 'Production deploys create or update cron, volumes and workers by name. Nothing is deleted.' },
+      { title: 'Added, never removed', body: 'Production deploys create or update cron, volumes and workers by name. Nothing is deleted; new ones past the limit are skipped.' },
     ],
     fieldsEyebrow: 'Fields',
     fieldsTitle: 'Every key the file accepts',
     groups: {
       top: { title: 'Build and run', intro: 'Top-level keys. Commands must fit on one line.' },
-      cron: { title: 'Scheduled commands', intro: 'Up to 20, each run inside your app container.' },
-      volumes: { title: 'Persistent volumes', intro: 'Up to 10 named volumes that survive deploys, restarts and rollbacks.' },
-      workers: { title: 'Background workers', intro: 'Up to 5 processes started from the same image after each successful deploy.' },
+      cron: { title: 'Scheduled commands', intro: 'Up to 10 per project, counting those added in the dashboard. Each runs inside your app container.' },
+      volumes: { title: 'Persistent volumes', intro: 'Up to 5 per project, counting those added in the dashboard. They survive deploys, restarts and rollbacks.' },
+      workers: { title: 'Background workers', intro: 'Up to 5 per project, counting those added in the dashboard. Started from the same image after each successful deploy.' },
     },
     fields: [
       { key: 'framework', type: 'string', desc: 'Skip auto-detection and pin a build strategy: nextjs, react, vue, nuxt, svelte, astro, remix, nodejs, python, django, go, laravel, rails, static… An unknown value falls back to auto-detection. A Dockerfile in the repo still wins.' },
@@ -70,7 +71,7 @@ const copy = {
       { key: 'schedule', type: 'string · required', desc: '5-field cron expression ("*/15 * * * *"). Validated at deploy.' },
       { key: 'command', type: 'string · required', desc: 'Shell command run via docker exec in the running container.' },
       { key: 'timezone', type: 'string', desc: 'IANA zone for the schedule (default UTC), e.g. Europe/Berlin.' },
-      { key: 'timeoutSeconds', type: 'number', desc: '5–3600. The run is killed past this. New jobs default to 120.' },
+      { key: 'timeoutSeconds', type: 'number', desc: '10–600. The run is killed past this. New jobs default to 120.' },
     ],
     volumes: [
       { key: 'name', type: 'string · required', desc: 'Lowercase letters, digits and dashes, starting with a letter or digit; max 31 chars. Unique within the project.' },
@@ -99,15 +100,15 @@ const copy = {
       { title: 'Nerede durur', body: 'pushify.yaml ya da pushify.yml; projenin kök dizininde ya da repo kökünde.' },
       { title: 'Her alan isteğe bağlı', body: 'Yazmadığınız alan için panel değeri geçerlidir. Gizli değerler panelde kalır.' },
       { title: 'Geçersiz dosya atlanır', body: 'Bilinmeyen anahtar ya da hatalı değer uyarı olarak loglanır; deploy dosyasız devam eder.' },
-      { title: 'Eklenir, silinmez', body: 'Production deploy’ları cron, volume ve worker’ları ada göre oluşturur ya da günceller. Hiçbiri silinmez.' },
+      { title: 'Eklenir, silinmez', body: 'Production deploy’ları cron, volume ve worker’ları ada göre oluşturur ya da günceller. Hiçbiri silinmez; limiti aşan yeniler atlanır.' },
     ],
     fieldsEyebrow: 'Alanlar',
     fieldsTitle: 'Dosyanın kabul ettiği tüm anahtarlar',
     groups: {
       top: { title: 'Build ve çalıştırma', intro: 'Üst düzey anahtarlar. Komutlar tek satır olmalı.' },
-      cron: { title: 'Zamanlanmış komutlar', intro: 'En fazla 20; her biri uygulama container’ında çalışır.' },
-      volumes: { title: 'Kalıcı volume’lar', intro: 'Deploy, yeniden başlatma ve geri almalardan sağ çıkan en fazla 10 volume.' },
-      workers: { title: 'Arka plan worker’ları', intro: 'Her başarılı deploy’dan sonra aynı imajdan başlatılan en fazla 5 süreç.' },
+      cron: { title: 'Zamanlanmış komutlar', intro: 'Proje başına en fazla 10, panelden eklenenler dahil. Her biri uygulama container’ında çalışır.' },
+      volumes: { title: 'Kalıcı volume’lar', intro: 'Proje başına en fazla 5, panelden eklenenler dahil. Deploy, yeniden başlatma ve geri almalardan sağ çıkar.' },
+      workers: { title: 'Arka plan worker’ları', intro: 'Proje başına en fazla 5, panelden eklenenler dahil. Her başarılı deploy’dan sonra aynı imajdan başlatılır.' },
     },
     fields: [
       { key: 'framework', type: 'string', desc: 'Otomatik algılamayı atlayıp build stratejisini sabitler: nextjs, react, vue, nuxt, svelte, astro, remix, nodejs, python, django, go, laravel, rails, static… Bilinmeyen bir değerde otomatik algılamaya dönülür. Repoda Dockerfile varsa yine o kazanır.' },
@@ -122,7 +123,7 @@ const copy = {
       { key: 'schedule', type: 'string · zorunlu', desc: '5 alanlı cron ifadesi ("*/15 * * * *"). Deploy’da doğrulanır.' },
       { key: 'command', type: 'string · zorunlu', desc: 'Çalışan container’da docker exec ile koşturulan kabuk komutu.' },
       { key: 'timezone', type: 'string', desc: 'Zamanlama için IANA bölgesi (varsayılan UTC), ör. Europe/Istanbul.' },
-      { key: 'timeoutSeconds', type: 'number', desc: '5–3600. Süre aşılınca çalışma sonlandırılır. Yeni görevlerde varsayılan 120.' },
+      { key: 'timeoutSeconds', type: 'number', desc: '10–600. Süre aşılınca çalışma sonlandırılır. Yeni görevlerde varsayılan 120.' },
     ],
     volumes: [
       { key: 'name', type: 'string · zorunlu', desc: 'Küçük harf, rakam ve tire; harf ya da rakamla başlar, en fazla 31 karakter. Proje içinde benzersiz.' },

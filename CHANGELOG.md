@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.104] - 2026-09-30
+
+### Fixed
+- **/pushify-yaml shows the real limits.** The page said 20 cron jobs, 5–3600 s timeouts and 10 volumes; the backend (beta.96) now uses one set for the file and the dashboard: 10 cron jobs per project (timeout 10–600 s), 5 volumes, 5 workers, counting what was added in the dashboard. The docs (Projects) say the same limits apply to pushify.yaml.
+
 ## [0.2.0-beta.103] - 2026-09-30
 
 ### Added
