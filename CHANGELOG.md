@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.88] - 2026-09-29
+
+### Fixed
+- **Heroku comparison.** The last "one flat monthly price" line now matches the rest of the site: a fixed monthly plan for the platform, and managed servers at a fixed hourly rate from prepaid credits (EN and TR).
+
 ## [0.2.0-beta.87] - 2026-09-29
 
 ### Added
