@@ -2936,7 +2936,7 @@ export const tr: TranslationKeys = {
       "Git-push akışını sunucu sahipliğinden vazgeçmeden istiyorsan evet: Pushify 26 framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişiyle yayınlar. Heroku'nun yönetilen eklenti ekosistemini kaybedersin; sabit fiyat ve root erişimi kazanırsın.",
     faq2Q: 'Pushify, Heroku\'dan gerçekten ne kadar ucuz?',
     faq2A:
-      "Veritabanlı, sürekli açık küçük bir Heroku uygulaması yaklaşık $12/ay'dan başlar (Basic dyno $7 + Essential-0 Postgres $5). Aynı iş yükü tek bir giriş seviyesi VPS'e sığar: üzerine Pushify'ı ücretsiz self-host et ya da sabit aylık fiyatlı yönetilen sunucu kullan — aynı makinede birkaç uygulamaya daha yer kalır.",
+      "Veritabanlı, sürekli açık küçük bir Heroku uygulaması yaklaşık $12/ay'dan başlar (Basic dyno $7 + Essential-0 Postgres $5). Aynı iş yükü tek bir giriş seviyesi VPS'e sığar: üzerine Pushify'ı ücretsiz self-host et ya da yönetilen sunucu kullan: planın sabit aylık bir ücrettir, sunucu ise ön ödemeli krediden sabit saatlik ücretle düşer — aynı makinede birkaç uygulamaya daha yer kalır.",
     faq3Q: 'Heroku\'daki uygulamamı Pushify\'a taşıyabilir miyim?',
     faq3A:
       "Çoğu Heroku uygulaması git'teki standart Node/Python/Ruby/PHP projesidir — repoyu bağla, Pushify framework'ü algılayıp Docker'da derler. Sadece Procfile'a dayanan kurulumlar küçük bir start-komutu ayarı isteyebilir; eklentiler Pushify veritabanlarına veya market uygulamalarına karşılık gelir (Postgres, Redis…).",
@@ -2990,7 +2990,7 @@ export const tr: TranslationKeys = {
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Özet',
     tldrBody:
-      "Railway uygulamalarını kendi bulutunda çalıştırır ve kullandığını ölçer: Hobby planı $5/ay ($5 kullanım dahil), Pro çalışma alanı başına $20/ay ve koltuk sınırsız, CPU/RAM tükettikçe üstüne faturalanır. Self-host seçeneği ve kendi sunucunu bağlama imkânı yoktur. Pushify bu modeli tersine çevirir: platform senin kontrolündeki altyapıya deploy eder — ücretsiz self-host et, herhangi bir VPS getir ya da sabit aylık fiyatlı yönetilen Hetzner sunucuları kullan — fatura bir sayaç değil, bir sunucu fiyatıdır. Sıfır operasyonlu şık bir bulut istiyorsan ve ölçülen faturalandırma iş yüküne uyuyorsa Railway gerçekten iyi. Sahiplik ve öngörülebilir fatura istiyorsan, o Pushify.",
+      "Railway uygulamalarını kendi bulutunda çalıştırır ve kullandığını ölçer: Hobby planı $5/ay ($5 kullanım dahil), Pro çalışma alanı başına $20/ay ve koltuk sınırsız, CPU/RAM tükettikçe üstüne faturalanır. Self-host seçeneği ve kendi sunucunu bağlama imkânı yoktur. Pushify bu modeli tersine çevirir: platform senin kontrolündeki altyapıya deploy eder — ücretsiz self-host et, herhangi bir VPS getir ya da ön ödemeli krediden sabit saatlik ücretle faturalanan yönetilen Hetzner sunucuları kullan — fatura bir sayaç değil, bir sunucu fiyatıdır. Sıfır operasyonlu şık bir bulut istiyorsan ve ölçülen faturalandırma iş yüküne uyuyorsa Railway gerçekten iyi. Sahiplik ve öngörülebilir fatura istiyorsan, o Pushify.",
     choosePushifyTitle: 'Şu durumda Pushify seç…',
     choosePushify1: "Trafikle değişmeyen bir fatura istiyorsun: sunucu başına tek sabit fiyat.",
     choosePushify2: "Uygulamaların ve verin root erişimli kendi sunucularında olsun istiyorsun.",
@@ -3021,7 +3021,7 @@ export const tr: TranslationKeys = {
       "Railway'in git-push akışını sevip kendi sunucularında istiyorsan, evet: Pushify 26 framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişlerle deploy eder. Railway'in yönetilen çok bölgeli bulutunu kaybedersin; sabit fiyat ve root erişimi kazanırsın.",
     faq2Q: 'Fiyatlar gerçekte nasıl karşılaştırılır?',
     faq2A:
-      "Railway ölçer: $5/ay Hobby'ye $5 kullanım dahildir, sonrası CPU ve bellek tükettikçe faturalanır, Pro çalışma alanı başına $20/ay, koltuk sınırsız. Pushify'da sayaç yok — ücretsiz self-host et ya da tek sabit aylık fiyatlı yönetilen sunucuda birkaç uygulama ve veritabanını aynı makineye sığdır.",
+      "Railway ölçer: $5/ay Hobby'ye $5 kullanım dahildir, sonrası CPU ve bellek tükettikçe faturalanır, Pro çalışma alanı başına $20/ay, koltuk sınırsız. Pushify'da sayaç yok — ücretsiz self-host et ya da sabit aylık bir plan artı ön ödemeli krediden sabit saatlik ücretle yönetilen bir sunucu için öde ve birkaç uygulama ve veritabanını aynı makineye sığdır.",
     faq3Q: 'Railway\'deki uygulamamı Pushify\'a taşıyabilir miyim?',
     faq3A:
       "Çoğu Railway uygulaması standart bir git reposudur — repoyu bağla, Pushify framework'ü algılayıp Docker'da derler. Railway veritabanları Pushify yönetilen veritabanlarına, volume'lar kalıcı disklere, cron zamanlamaları yerleşik cron görevlerine karşılık gelir.",
@@ -3040,7 +3040,7 @@ export const tr: TranslationKeys = {
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Özet',
     tldrBody:
-      "Render servislerini kendi bulutunda sabit fiyatlarla barındırır: statik siteler ücretsizdir, web servisleri yaklaşık $7/ay'dan başlar ve her uygulama, worker ve veritabanı ayrı bir fatura kalemidir. Nisan 2026'dan beri çalışma alanlarına 5 GB (Hobby) ya da 25 GB (Pro) bant genişliği dahil, sonrası GB başına $0,15; takım çalışma alanları sabit $25/ay Pro ücreti öder. Ücretsiz web servisleri boşta kalınca uykuya geçer, gecikmeyle uyanır. Self-host ya da kendi sunucunu getirme seçeneği yoktur. Pushify senin kontrolündeki altyapıya deploy eder — ücretsiz self-host et, VPS getir ya da sabit fiyatlı yönetilen Hetzner sunucuları kullan — ve bir sunucu, kaldırabildiği kadar uygulamayı tek fiyata çalıştırır. Sıfır sunucu sorumluluğu ve öngörülebilir fiyat istiyorsan Render iyi bir seçim. Aynı öngörülebilirliğin yanına sahiplik de istiyorsan, o Pushify.",
+      "Render servislerini kendi bulutunda sabit fiyatlarla barındırır: statik siteler ücretsizdir, web servisleri yaklaşık $7/ay'dan başlar ve her uygulama, worker ve veritabanı ayrı bir fatura kalemidir. Nisan 2026'dan beri çalışma alanlarına 5 GB (Hobby) ya da 25 GB (Pro) bant genişliği dahil, sonrası GB başına $0,15; takım çalışma alanları sabit $25/ay Pro ücreti öder. Ücretsiz web servisleri boşta kalınca uykuya geçer, gecikmeyle uyanır. Self-host ya da kendi sunucunu getirme seçeneği yoktur. Pushify senin kontrolündeki altyapıya deploy eder — ücretsiz self-host et, VPS getir ya da sabit saatlik ücretli yönetilen Hetzner sunucuları kullan — ve bir sunucu, kaldırabildiği kadar uygulamayı tek fiyata çalıştırır. Sıfır sunucu sorumluluğu ve öngörülebilir fiyat istiyorsan Render iyi bir seçim. Aynı öngörülebilirliğin yanına sahiplik de istiyorsan, o Pushify.",
     choosePushifyTitle: 'Şu durumda Pushify seç…',
     choosePushify1: "Birkaç servis çalıştırıyorsun: Pushify'da tek sabit fiyatlı sunucu hepsini barındırır.",
     choosePushify2: "Uygulamaların ve verin root erişimli kendi sunucularında olsun istiyorsun.",
@@ -3073,7 +3073,7 @@ export const tr: TranslationKeys = {
       "Render'ın sadeliğini sevip sunucu sahipliği ve sunucu başına fiyat istiyorsan, evet: Pushify 26 framework'ü otomatik algılar, Docker'da derler ve kesintisiz blue-green geçişlerle deploy eder. Yönetilen otomatik ölçeklemeyi kaybedersin; root erişimi ve sabit bir fatura kazanırsın.",
     faq2Q: 'Fiyatlar gerçekte nasıl karşılaştırılır?',
     faq2A:
-      "Render'da veritabanlı, sürekli açık küçük bir uygulama genellikle her biri yaklaşık $7/ay'dan başlayan iki fatura kalemidir; buna Pro takım çalışma alanı için sabit $25/ay ve dahil bandın üstünde GB başına $0,15 eklenir. Pushify'da aynı iş yükü tek bir giriş seviyesi VPS'e sığar — ücretsiz self-host et ya da sabit fiyatlı yönetilen sunucu kullan — aynı makinede birkaç uygulamaya daha yer kalır.",
+      "Render'da veritabanlı, sürekli açık küçük bir uygulama genellikle her biri yaklaşık $7/ay'dan başlayan iki fatura kalemidir; buna Pro takım çalışma alanı için sabit $25/ay ve dahil bandın üstünde GB başına $0,15 eklenir. Pushify'da aynı iş yükü tek bir giriş seviyesi VPS'e sığar — ücretsiz self-host et ya da sabit saatlik ücretli yönetilen bir sunucu kullan — aynı makinede birkaç uygulamaya daha yer kalır.",
     faq3Q: 'Render\'daki uygulamamı Pushify\'a taşıyabilir miyim?',
     faq3A:
       "Çoğu Render uygulaması standart bir git reposudur — repoyu bağla, Pushify framework'ü algılayıp Docker'da derler. Render veritabanları Pushify yönetilen veritabanlarına, cron görevleri yerleşik cron'a, kalıcı diskler kalıcı volume'lara karşılık gelir.",
@@ -3125,7 +3125,7 @@ export const tr: TranslationKeys = {
     renderBest: 'Heroku sadeliğini modern bir panel ve servis başına öngörülebilir fiyatla isteyen ekipler.',
     pushifyTitle: 'Pushify nerede duruyor',
     pushifyBody:
-      "Pushify, Coolify veya CapRover gibi MIT lisanslı ve ücretsiz self-host edilebilir — ama aynı zamanda senin için sabit aylık fiyatla Hetzner sunucusu açabilen yönetilen bir bulut olarak da çalışır, ya da getirdiğin herhangi bir VPS'e deploy eder. Yedekli yönetilen veritabanları, 24 uygulamalık market, PR önizlemeleri, cron ve kalıcı disklerin yanında diğerlerinde olmayan birkaç şey ekler: scale-to-zero, AI asistan, kodsuz site kurucu ve yerleşik alan adı satın alma. Yukarıdaki her araçtan daha genç — topluluğu daha küçük ve bazı entegrasyonlar (örneğin GitHub App) hâlâ olgunlaşıyor.",
+      "Pushify, Coolify veya CapRover gibi MIT lisanslı ve ücretsiz self-host edilebilir — ama aynı zamanda senin için ön ödemeli krediden sabit saatlik ücretle faturalanan Hetzner sunucusu açabilen yönetilen bir bulut olarak da çalışır, ya da getirdiğin herhangi bir VPS'e deploy eder. Yedekli yönetilen veritabanları, 24 uygulamalık market, PR önizlemeleri, cron ve kalıcı disklerin yanında diğerlerinde olmayan birkaç şey ekler: scale-to-zero, AI asistan, kodsuz site kurucu ve yerleşik alan adı satın alma. Yukarıdaki her araçtan daha genç — topluluğu daha küçük ve bazı entegrasyonlar (örneğin GitHub App) hâlâ olgunlaşıyor.",
     pushifyBest:
       'Deploy, veritabanı, alan adı ve siteyi tek araçta isteyen — self-host veya yönetilen — ve daha genç bir ekosistemi kabul eden geliştiriciler.',
     howToChooseTitle: 'Gerçekte nasıl seçmeli',
