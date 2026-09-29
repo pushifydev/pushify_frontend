@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.91] - 2026-09-29
+
+### Added
+- **Monthly included server credit on `/pricing` and in the wallet.** Plan cards state the credit (Hobby $9, Pro $18, Business $45 every month); Hobby shows "A 2 vCPU / 4 GB server, included" while the live price list confirms it fits. The wallet shows this month's remaining credit and reset date, and server charges covered by the credit say so. Needs backend beta.79.
+
 ## [0.2.0-beta.90] - 2026-09-29
 
 ### Fixed

@@ -78,6 +78,8 @@ export interface PlanLimits {
 export interface PlanInfo {
   name: string;
   price: number;
+  /** Managed-server credit included every month (USD cents); 0 on Free and Enterprise. */
+  includedInfraCreditCents?: number;
   limits: PlanLimits;
 }
 
@@ -262,6 +264,10 @@ export const resumeSubscription = async (): Promise<ApiResponse<void>> => {
 export interface InfraWalletSummary {
   balanceCents: number;
   balanceUsd: string;
+  /** This period's remaining included server credit, the plan's monthly amount, period end. */
+  includedCreditCents?: number;
+  includedCreditMonthlyCents?: number;
+  includedCreditPeriodEnd?: string | null;
   estimatedMonthlyBurnCents: number;
   runningManagedServers: number;
   topUpAmountsCents: readonly number[];
@@ -277,6 +283,8 @@ export interface InfraWalletTransaction {
   description: string | null;
   serverId: string | null;
   createdAt: string;
+  /** Server charges partly or fully paid from included credit carry `chargeCents` and `fromIncludedCents`. */
+  metadata?: { chargeCents?: number; fromIncludedCents?: number } & Record<string, unknown>;
 }
 
 export interface InfraBillingData {

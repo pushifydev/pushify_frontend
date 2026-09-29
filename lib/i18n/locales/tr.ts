@@ -414,7 +414,7 @@ export const tr: TranslationKeys = {
     custom: 'Özel',
     contactForPricing: 'Fiyat için bize ulaşın',
     pricingBottomNote:
-      'Tüm platform planları SSL, CI/CD ve izlemeyi içerir. Yönetilen Hetzner sunucuları plan fiyatına dahil değildir — çalıştığı sürece saatlik olarak ön ödemeli altyapı kredilerinden düşülür.',
+      'Tüm platform planları SSL, CI/CD ve izlemeyi içerir. Ücretli planlar aylık yönetilen sunucu kredisi içerir; bunun ötesinde yönetilen Hetzner sunucuları çalıştığı sürece saatlik olarak ön ödemeli altyapı kredilerinden düşülür.',
     billingHowItWorksBadge: 'Faturalandırma',
     billingHowItWorksTitle: 'Faturalandırma nasıl çalışır?',
     billingHowItWorksSubtitle:
@@ -1848,7 +1848,7 @@ export const tr: TranslationKeys = {
     plansFooterLead:
       'Platform planları SSL, GitHub ve dağıtım içerir. Yönetilen sunucular için ayrı ön ödemeli altyapı kredileri kullanılır.',
     plansPricingNote:
-      'Abonelik = platform limitleri (proje, dağıtım, ekip). Yönetilen Hetzner sunucuları aylık plana dahil değildir; saatlik olarak altyapı cüzdanından (sağlayıcı + marj) tahsil edilir.',
+      'Abonelik = platform limitleri (proje, dağıtım, ekip) artı altyapı cüzdanınızdan önce kullanılan aylık yönetilen sunucu kredisi. Kredinin ötesindeki yönetilen Hetzner sunucuları saatlik olarak cüzdandan tahsil edilir.',
     plansFooterNeedCustom: 'Özel limitler mi gerekiyor?',
     plansContactUs: 'Bize ulaşın',
     planMostPopular: 'Önerilen',
@@ -1864,6 +1864,11 @@ export const tr: TranslationKeys = {
     infraWalletDesc:
       'Yönetilen bulut sunucuları (Hetzner) platform planından ayrı faturalandırılır. Sunucular çalışırken ön ödemeli krediler kullanılır.',
     infraBalance: 'Kullanılabilir bakiye',
+    infraIncludedCredit: 'Bu ayın dahil kredisi',
+    infraFromIncludedCredit: '{amount} dahil krediden',
+    infraIncludedCreditValue: '{total} kredinin {left} kadarı kaldı',
+    infraIncludedCreditResets: 'Bakiyenizden önce kullanılır, yalnızca yönetilen sunucular için. {date} tarihinde yenilenir; kullanılmayan kredi devretmez.',
+    infraIncludedCreditHint: 'Bakiyenizden önce kullanılır, yalnızca yönetilen sunucular için. Her ay yenilenir; kullanılmayan kredi devretmez.',
     infraMarginNote: 'Gösterilen fiyatlar yönetilen sunucu kullanımı için geçerlidir.',
     infraEstimatedBurn: 'Tahmini aylık tüketim (çalışan sunucular)',
     infraRunningServers: '{count} çalışan yönetilen sunucu',

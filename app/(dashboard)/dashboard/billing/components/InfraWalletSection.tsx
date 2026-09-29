@@ -13,7 +13,7 @@ function formatUsd(cents: number): string {
 }
 
 export function InfraWalletSection({ id }: { id?: string }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { data, isLoading } = useInfraBilling();
   const topUp = useInfraTopUp();
 
@@ -67,6 +67,29 @@ export function InfraWalletSection({ id }: { id?: string }) {
         <p className="dash-stat-value md:pt-1">{wallet.balanceUsd}</p>
       </SettingsField>
 
+      {(wallet.includedCreditMonthlyCents ?? 0) > 0 && (
+        <SettingsField
+          label={t('billing', 'infraIncludedCredit')}
+          hint={
+            wallet.includedCreditPeriodEnd
+              ? formatMessage(t('billing', 'infraIncludedCreditResets'), {
+                  date: new Date(wallet.includedCreditPeriodEnd).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', {
+                    day: 'numeric',
+                    month: 'short',
+                  }),
+                })
+              : t('billing', 'infraIncludedCreditHint')
+          }
+        >
+          <p className="terminal-text text-[13px] text-[var(--text-primary)] tabular-nums md:pt-2">
+            {formatMessage(t('billing', 'infraIncludedCreditValue'), {
+              left: formatUsd(wallet.includedCreditCents ?? 0),
+              total: formatUsd(wallet.includedCreditMonthlyCents ?? 0),
+            })}
+          </p>
+        </SettingsField>
+      )}
+
       <SettingsField
         label={t('billing', 'infraEstimatedBurn')}
         hint={t('billing', 'infraRunningServers').replace('{count}', String(wallet.runningManagedServers))}
@@ -114,18 +137,30 @@ export function InfraWalletSection({ id }: { id?: string }) {
         <div className="border-t border-[var(--border-subtle)] py-4">
           <h4 className="dash-section-label mb-1">{t('billing', 'infraTransactions')}</h4>
           <ul className="max-h-52 overflow-y-auto pr-1">
-            {transactions.map((tx: InfraWalletTransaction) => (
-              <li key={tx.id} className="dash-kv">
-                <span className="truncate text-[var(--text-secondary)]!">{tx.description || tx.type}</span>
-                <span
-                  className="tabular-nums shrink-0"
-                  style={tx.amountCents >= 0 ? { color: 'var(--status-success)' } : undefined}
-                >
-                  {tx.amountCents >= 0 ? '+' : '−'}
-                  {formatUsd(Math.abs(tx.amountCents))}
-                </span>
-              </li>
-            ))}
+            {transactions.map((tx: InfraWalletTransaction) => {
+              // A server charge paid (partly) from included credit: the ledger amount is only the
+              // wallet part, so show the whole charge and how much the credit covered.
+              const fromIncluded = tx.metadata?.fromIncludedCents ?? 0;
+              const charge = fromIncluded > 0 ? (tx.metadata?.chargeCents ?? fromIncluded - tx.amountCents) : null;
+              const credit = charge === null && tx.amountCents >= 0;
+              return (
+                <li key={tx.id} className="dash-kv">
+                  <span className="truncate text-[var(--text-secondary)]!">
+                    {tx.description || tx.type}
+                    {fromIncluded > 0 && (
+                      <span className="text-[var(--text-muted)]">
+                        {' · '}
+                        {formatMessage(t('billing', 'infraFromIncludedCredit'), { amount: formatUsd(fromIncluded) })}
+                      </span>
+                    )}
+                  </span>
+                  <span className="tabular-nums shrink-0" style={credit ? { color: 'var(--status-success)' } : undefined}>
+                    {credit ? '+' : '−'}
+                    {formatUsd(charge ?? Math.abs(tx.amountCents))}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
