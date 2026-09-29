@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.103] - 2026-09-30
+
+### Added
+- **Docs: verifying webhooks** (Monitoring & alerts): what `X-Pushify-Signature` is, and a Node.js (Express) example that checks it against the raw body in constant time. Matches backend 0.2.0-beta.95, which now signs the exact body it sends.
+
 ## [0.2.0-beta.102] - 2026-09-30
 
 ### Changed

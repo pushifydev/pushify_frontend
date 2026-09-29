@@ -25,6 +25,36 @@ Members with deployment alerts turned on also get emails when:
 - CPU stays at or above 90% for 15 minutes;
 - a server's disk is 85% full (and again at 95%).
 
+## Verifying webhooks
+
+Give a webhook channel a **secret** and every request carries an `X-Pushify-Signature` header: `sha256=` followed by the hex HMAC-SHA256 of the raw request body, keyed with that secret. The body is JSON: `{ "event", "timestamp", "data" }`.
+
+Verify it against the body exactly as received — before parsing it — and compare in constant time. In Node.js (Express):
+
+```js
+import crypto from 'node:crypto';
+import express from 'express';
+
+const app = express();
+const SECRET = process.env.PUSHIFY_WEBHOOK_SECRET;
+
+// express.raw keeps the body as the exact bytes Pushify signed.
+app.post('/pushify', express.raw({ type: 'application/json' }), (req, res) => {
+  const header = req.get('X-Pushify-Signature') ?? '';
+  const expected = 'sha256=' + crypto.createHmac('sha256', SECRET).update(req.body).digest('hex');
+  const valid =
+    header.length === expected.length &&
+    crypto.timingSafeEqual(Buffer.from(header), Buffer.from(expected));
+  if (!valid) return res.status(401).end();
+
+  const { event, timestamp, data } = JSON.parse(req.body.toString('utf8'));
+  // …handle the event
+  res.status(204).end();
+});
+```
+
+Signing the parsed and re-serialised JSON instead of the raw body will not match.
+
 ## Logs
 
 The project's **Logs** tab shows build output and the app's output. How long app logs are kept depends on your plan: 3 days on Free, 7 on Hobby, 14 on Pro, 30 on Business. **Download** exports up to 50,000 lines as a text file.
