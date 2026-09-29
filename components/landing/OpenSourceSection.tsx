@@ -35,7 +35,7 @@ const copy = {
     principlesEyebrow: 'What that means',
     principlesTitle: 'Nothing held back.',
     principles: [
-      { icon: Scale, title: 'MIT licensed', body: 'Use, change and ship it, commercially too. Keep the licence notice.' },
+      { icon: Scale, title: 'MIT licensed', body: 'Use, change and ship it, commercially too. Keep the license notice.' },
       { icon: Server, title: 'Self-hostable', body: 'Dashboard, API and worker on your server. No pushify.dev account.' },
       { icon: PackageOpen, title: 'No vendor lock-in', body: 'Your apps are plain Docker containers. Leaving means taking them with you.' },
       { icon: GitPullRequest, title: 'Open to contributions', body: 'Pull requests welcome. Each repository’s CONTRIBUTING.md covers setup.' },

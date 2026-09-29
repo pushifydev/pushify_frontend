@@ -20,7 +20,7 @@ const copy = {
     moreEyebrow: 'Not listed',
     moreTitle: 'Bring any app with a Dockerfile.',
     moreLead: 'A Dockerfile or docker-compose file in a Git repository deploys as a regular project.',
-    start: 'Get started free',
+    start: 'Start free',
     docs: 'Read the docs',
   },
   tr: {
@@ -33,7 +33,7 @@ const copy = {
     moreEyebrow: 'Listede yok mu',
     moreTitle: 'Dockerfile’ı olan her uygulamayı getirin.',
     moreLead: 'Git deposunda Dockerfile ya da docker-compose dosyası olan her şey normal bir proje olarak deploy edilir.',
-    start: 'Ücretsiz başlayın',
+    start: 'Ücretsiz başla',
     docs: 'Dokümantasyonu okuyun',
   },
 } as const;

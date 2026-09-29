@@ -319,7 +319,7 @@ export const tr: TranslationKeys = {
     openSourcePlatform: 'Geliştiriciler için açık kaynak PaaS',
     heroTitleLead: 'Kendi sunucularınıza',
     heroTitleEm: 'operasyon yükü olmadan dağıtın',
-    getStartedFree: 'Ücretsiz başlayın',
+    getStartedFree: 'Ücretsiz başla',
     openDashboard: 'Panele git',
     viewOnGithub: 'GitHub\'da Görüntüle',
     edgeLocations: 'Her VPS · Her bölge',
@@ -504,7 +504,7 @@ export const tr: TranslationKeys = {
     launch: 'hazır mısınız',
     ctaDescription: 'Açık kaynak, self-host edilebilir ve ücretsiz başlayın.',
     deployInSeconds: 'Kendi sunucularınızda saniyeler içinde dağıtın.',
-    startDeployingFree: 'Ücretsiz Dağıtıma Başla',
+    startDeployingFree: 'Ücretsiz başla',
     starOnGithub: 'GitHub\'da Yıldızla',
     githubStatStar: 'Yıldız',
     githubStatFork: 'Fork',
@@ -612,7 +612,7 @@ export const tr: TranslationKeys = {
     siteBuilderFeat3Desc: 'Şık bir şablonla başlayın ve tüm görünümünüzü tek tıkla değiştirin.',
     siteBuilderFeat4Title: 'Her yere yayınla',
     siteBuilderFeat4Desc: 'Kendi sunucunuza özel domain ile — ya da sade bir portta yayınlayın. Domain gerekmez.',
-    siteBuilderCTA: 'Ücretsiz oluşturmaya başla',
+    siteBuilderCTA: 'Ücretsiz başla',
     siteBuilderMockToolbar: 'acme.site — editör',
     siteBuilderMockPublish: 'Yayınla',
     // Security
@@ -2754,7 +2754,7 @@ export const tr: TranslationKeys = {
     eyebrow: 'Karşılaştırma',
     h1: 'Pushify vs Coolify',
     subtitle: "Kendi sunucularında uygulama deploy etmenin iki açık kaynak yolu — hangisi nerede uyar.",
-    ctaPrimary: 'Pushify ile başla',
+    ctaPrimary: 'Ücretsiz başla',
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Kısa özet',
     tldrBody:
@@ -2805,7 +2805,7 @@ export const tr: TranslationKeys = {
     eyebrow: 'Karşılaştırma',
     h1: 'Pushify vs Vercel',
     subtitle: "Vercel'in akıcı iş akışı, kendi sunucularında — ikisi nasıl karşılaştırılır.",
-    ctaPrimary: 'Pushify ile başla',
+    ctaPrimary: 'Ücretsiz başla',
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Kısa özet',
     tldrBody:
@@ -2856,7 +2856,7 @@ export const tr: TranslationKeys = {
     h1: 'Kendi sunucunda barındırılan, kodsuz bir web sitesi kurucusu.',
     subtitle:
       'Bir tasarım seç, her bloğu doğrudan sayfa üzerinde düzenle, istediğin kadar sayfa ekle ve kendi sunucuna yayınla — özel domainde ya da sade bir portta. Kod yok, üçüncü taraf barındırma yok.',
-    ctaPrimary: 'Ücretsiz oluşturmaya başla',
+    ctaPrimary: 'Ücretsiz başla',
     ctaSecondary: 'Fiyatları gör',
     howTitle: 'Fikirden canlı siteye dört adımda',
     step1Title: 'Bir tasarım seç',
@@ -2895,7 +2895,7 @@ export const tr: TranslationKeys = {
       'Evet. İhtiyacın olan kadar sayfa ekle — Ana Sayfa, Hakkında, Fiyatlandırma, İletişim ve daha fazlası — hepsi kurucunun senkron tuttuğu ortak bir menüyü paylaşır.',
     ctaTitle: 'Siteni bugün yayınla',
     ctaBody: 'Görsel olarak kur, kendi sunucuna yayınla ve tam kontrolü elinde tut.',
-    ctaButton: 'Ücretsiz oluşturmaya başla',
+    ctaButton: 'Ücretsiz başla',
   },
   vsHeroku: {
     eyebrow: 'Dürüst karşılaştırma',

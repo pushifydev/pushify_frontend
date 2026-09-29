@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.80] - 2026-09-29
+
+### Changed
+- **One signup label.** "Get started free", "Start building free", "Start with Pushify" and similar variants are now "Start free" (Turkish: "Ücretsiz başla"); pricing plan buttons are unchanged.
+- **`llms.txt` accuracy.** Removed the unmeasured "under 60 seconds" claim and "data never touches third-party infrastructure"; framework count is 26 everywhere; all plans listed.
+- Blog example app corrected (Grafana is not in the catalog), en-US spelling, neutral example timezone in the `pushify.yaml` reference.
+
 ## [0.2.0-beta.79] - 2026-09-29
 
 ### Fixed

@@ -20,7 +20,7 @@ port: 3000
 cron:
   - name: nightly-report
     schedule: "0 3 * * *"
-    timezone: Europe/Istanbul
+    timezone: Europe/Berlin
     command: node scripts/report.js
     timeoutSeconds: 600
 
@@ -69,7 +69,7 @@ const copy = {
       { key: 'name', type: 'string · required', desc: 'Unique within the project. Shown in the Cron tab and run history.' },
       { key: 'schedule', type: 'string · required', desc: '5-field cron expression ("*/15 * * * *"). Validated at deploy.' },
       { key: 'command', type: 'string · required', desc: 'Shell command run via docker exec in the running container.' },
-      { key: 'timezone', type: 'string', desc: 'IANA zone for the schedule (default UTC), e.g. Europe/Istanbul.' },
+      { key: 'timezone', type: 'string', desc: 'IANA zone for the schedule (default UTC), e.g. Europe/Berlin.' },
       { key: 'timeoutSeconds', type: 'number', desc: '5–3600. The run is killed past this. New jobs default to 120.' },
     ],
     volumes: [

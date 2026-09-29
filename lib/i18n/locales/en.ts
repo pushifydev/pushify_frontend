@@ -3425,7 +3425,7 @@ export const en: TranslationKeys = {
     openSourcePlatform: 'Open-source PaaS for developers',
     heroTitleLead: 'Deploy to your own servers',
     heroTitleEm: 'without the ops work',
-    getStartedFree: 'Get started free',
+    getStartedFree: 'Start free',
     openDashboard: 'Open dashboard',
     viewOnGithub: 'View on GitHub',
     edgeLocations: 'Any VPS · Any region',
@@ -3610,7 +3610,7 @@ export const en: TranslationKeys = {
     launch: 'launch',
     ctaDescription: 'Open-source, self-hostable, and free to get started.',
     deployInSeconds: 'Deploy in seconds on your own servers.',
-    startDeployingFree: 'Start Deploying Free',
+    startDeployingFree: 'Start free',
     starOnGithub: 'Star on GitHub',
     githubStatStar: 'Star',
     githubStatFork: 'Fork',
@@ -3718,7 +3718,7 @@ export const en: TranslationKeys = {
     siteBuilderFeat3Desc: 'Start from a polished template and swap your entire look in a single click.',
     siteBuilderFeat4Title: 'Publish anywhere',
     siteBuilderFeat4Desc: 'Ship to your own server on a custom domain — or a plain port. No domain needed.',
-    siteBuilderCTA: 'Start building free',
+    siteBuilderCTA: 'Start free',
     siteBuilderMockToolbar: 'acme.site — editor',
     siteBuilderMockPublish: 'Publish',
     // Security
@@ -5858,7 +5858,7 @@ export const en: TranslationKeys = {
     eyebrow: 'Comparison',
     h1: 'Pushify vs Coolify',
     subtitle: "Two open-source ways to deploy apps on servers you own — where each one fits.",
-    ctaPrimary: 'Start with Pushify',
+    ctaPrimary: 'Start free',
     ctaSecondary: 'See pricing',
     tldrTitle: 'The short version',
     tldrBody:
@@ -5903,13 +5903,13 @@ export const en: TranslationKeys = {
       'In most cases, yes — both deploy standard Docker workloads from a Git repo. Point Pushify at the same repository and server, set your environment variables, and deploy. There is no automated importer yet.',
     ctaTitle: 'Deploy on your own terms',
     ctaBody: 'Start free on your own server, or let Pushify manage the infrastructure for you.',
-    ctaButton: 'Get started free',
+    ctaButton: 'Start free',
   },
   vsVercel: {
     eyebrow: 'Comparison',
     h1: 'Pushify vs Vercel',
     subtitle: "Vercel's polished workflow, on servers you own — how the two compare.",
-    ctaPrimary: 'Start with Pushify',
+    ctaPrimary: 'Start free',
     ctaSecondary: 'See pricing',
     tldrTitle: 'The short version',
     tldrBody:
@@ -5953,14 +5953,14 @@ export const en: TranslationKeys = {
       'Yes. Connect your repository and Pushify auto-detects Next.js, builds it, and deploys with automatic SSL and zero-downtime cutover — on your own server.',
     ctaTitle: 'Own your stack',
     ctaBody: 'Get Vercel-style deploys on infrastructure you control — open source and free to self-host.',
-    ctaButton: 'Get started free',
+    ctaButton: 'Start free',
   },
   sitesPage: {
     eyebrow: 'Site Builder',
     h1: 'A no-code website builder, hosted on your own server.',
     subtitle:
       'Pick a design, edit every block right on the page, add as many pages as you need, and publish to your own server — on a custom domain or a plain port. No code, no third-party hosting.',
-    ctaPrimary: 'Start building free',
+    ctaPrimary: 'Start free',
     ctaSecondary: 'See pricing',
     howTitle: 'From idea to live site in four steps',
     step1Title: 'Pick a design',
@@ -5977,7 +5977,7 @@ export const en: TranslationKeys = {
       'One click publishes the whole multi-page site to your own server — on your domain, or a plain port with no domain required.',
     feat1Title: 'Ready-made designs',
     feat1Desc:
-      'Every template is mobile-responsive and on-brand out of the box. Change colours, fonts, and content without touching CSS — and switch designs whenever you want.',
+      'Every template is mobile-responsive and on-brand out of the box. Change colors, fonts, and content without touching CSS — and switch designs whenever you want.',
     feat2Title: 'Real multi-page sites',
     feat2Desc:
       'Not just a single landing page. Build a full site with a shared nav, add and rename pages freely, and the builder keeps the links in sync for you.',
@@ -5999,13 +5999,13 @@ export const en: TranslationKeys = {
       'Yes. Add as many pages as you need — Home, About, Pricing, Contact, and more — all sharing a navigation bar the builder keeps in sync.',
     ctaTitle: 'Launch your site today',
     ctaBody: 'Build it visually, publish it to your own server, and keep full control.',
-    ctaButton: 'Start building free',
+    ctaButton: 'Start free',
   },
   vsHeroku: {
     eyebrow: 'Honest comparison',
     h1: 'Pushify vs Heroku',
     subtitle: "Heroku's git-push workflow on servers you own, with flat server pricing.",
-    ctaPrimary: 'Get started free',
+    ctaPrimary: 'Start free',
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
@@ -6049,7 +6049,7 @@ export const en: TranslationKeys = {
       'Yes — pull-request preview deployments, cron jobs, persistent volumes, health checks and live log streaming are built in.',
     ctaTitle: 'Own your next deploy',
     ctaBody: 'Ship with the workflow Heroku made famous — on servers that answer to you.',
-    ctaButton: 'Get started free',
+    ctaButton: 'Start free',
   },
   workers: {
     title: 'Workers',
@@ -6090,7 +6090,7 @@ export const en: TranslationKeys = {
     eyebrow: 'Honest comparison',
     h1: 'Pushify vs Railway',
     subtitle: "Railway meters usage on its cloud. Pushify runs on your servers at flat prices.",
-    ctaPrimary: 'Get started free',
+    ctaPrimary: 'Start free',
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
@@ -6134,13 +6134,13 @@ export const en: TranslationKeys = {
       'Yes — pull-request preview deployments with GitHub/GitLab comments, cron jobs, persistent volumes, health checks and live log streaming are built in.',
     ctaTitle: 'A bill you can predict',
     ctaBody: 'Keep the git-push workflow — swap the meter for a flat-priced server you own.',
-    ctaButton: 'Get started free',
+    ctaButton: 'Start free',
   },
   vsRender: {
     eyebrow: 'Honest comparison',
     h1: 'Pushify vs Render',
     subtitle: "Render prices per service. Pushify prices per server — on servers you own.",
-    ctaPrimary: 'Get started free',
+    ctaPrimary: 'Start free',
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
@@ -6186,7 +6186,7 @@ export const en: TranslationKeys = {
       'Yes — pull-request preview deployments, cron jobs, persistent volumes, health checks and live log streaming are built in.',
     ctaTitle: 'Predictable pricing, on your servers',
     ctaBody: 'Keep the simplicity — add ownership, root access and per-server economics.',
-    ctaButton: 'Get started free',
+    ctaButton: 'Start free',
   },
   alternatives: {
     eyebrow: 'The landscape, honestly',
@@ -6243,7 +6243,7 @@ export const en: TranslationKeys = {
       'This page reflects publicly available information and may go out of date. It intentionally contains no invented benchmarks, star counts or testimonials.',
     ctaTitle: 'Try the newcomer',
     ctaBody: 'Self-host Pushify with one command, or start free on the managed cloud.',
-    ctaButton: 'Get started free',
+    ctaButton: 'Start free',
   },
   domainSales: {
     title: 'Domains',
