@@ -32,6 +32,16 @@ export interface DeletionScheduled {
   organizations?: string[];
 }
 
+/** Accounts with neither a password nor 2FA confirm from their inbox first. */
+export interface DeletionConfirmationSent {
+  confirmationSent: true;
+}
+
+export type DeletionRequestResult = DeletionScheduled | DeletionConfirmationSent;
+
+export const isConfirmationSent = (r: DeletionRequestResult): r is DeletionConfirmationSent =>
+  'confirmationSent' in r && r.confirmationSent === true;
+
 export interface DeletionCredentials {
   password?: string;
   twoFactorCode?: string;
@@ -55,9 +65,9 @@ export const getOrganizationDeletionPreview = async (): Promise<ApiResponse<Orga
 
 export const requestOrganizationDeletion = async (
   input: DeletionCredentials & { confirmName: string },
-): Promise<ApiResponse<DeletionScheduled>> => {
+): Promise<ApiResponse<DeletionRequestResult>> => {
   try {
-    const res = await api.post<{ data: DeletionScheduled }>('/organizations/deletion', input);
+    const res = await api.post<{ data: DeletionRequestResult }>('/organizations/deletion', input);
     return { data: res.data.data };
   } catch (error) {
     return handleError(error);
@@ -75,9 +85,9 @@ export const restoreOrganization = async (): Promise<ApiResponse<{ restored: boo
 
 export const requestAccountDeletion = async (
   input: DeletionCredentials & { confirmEmail: string },
-): Promise<ApiResponse<DeletionScheduled>> => {
+): Promise<ApiResponse<DeletionRequestResult>> => {
   try {
-    const res = await api.post<{ data: DeletionScheduled }>('/auth/me/deletion', input);
+    const res = await api.post<{ data: DeletionRequestResult }>('/auth/me/deletion', input);
     return { data: res.data.data };
   } catch (error) {
     return handleError(error);
@@ -88,6 +98,18 @@ export const requestAccountDeletion = async (
 export const restoreAccount = async (restoreToken: string): Promise<ApiResponse<{ restored: boolean }>> => {
   try {
     const res = await api.post<{ data: { restored: boolean } }>('/auth/deletion/restore', { restoreToken });
+    return { data: res.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+/** The emailed link (public): starts the deletion it confirms. */
+export const confirmDeletion = async (
+  token: string,
+): Promise<ApiResponse<DeletionScheduled & { kind: 'organization' | 'account' }>> => {
+  try {
+    const res = await api.post<{ data: DeletionScheduled & { kind: 'organization' | 'account' } }>('/auth/deletion/confirm', { token });
     return { data: res.data.data };
   } catch (error) {
     return handleError(error);
