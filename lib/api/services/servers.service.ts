@@ -222,10 +222,17 @@ export const createServer = async (input: CreateServerInput): Promise<ApiRespons
   }
 };
 
-export const deleteServer = async (serverId: string): Promise<ApiResponse<void>> => {
+/** Returned for connected (self-hosted) servers; `null` for servers Pushify created. */
+export interface ServerKeyRemoval {
+  keyRemoved: boolean;
+  manualCommand: string | null;
+  uninstallScriptUrl: string;
+}
+
+export const deleteServer = async (serverId: string): Promise<ApiResponse<ServerKeyRemoval | null>> => {
   try {
-    await api.delete(`/servers/${serverId}`);
-    return { data: undefined };
+    const response = await api.delete<{ data?: ServerKeyRemoval | null }>(`/servers/${serverId}`);
+    return { data: response.data?.data ?? null };
   } catch (error) {
     return handleError(error);
   }

@@ -1564,6 +1564,18 @@ html.dark .lp-page .lp-preview {
   text-decoration-color: var(--hp-ink);
 }
 
+.lp-page .legal-content pre {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--hp-line-strong);
+  border-radius: 10px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--hp-ink);
+}
+
 /* Dashboard — billing plans (minimal compare) */
 .dash-app .dash-plans-scroll {
   display: flex;
