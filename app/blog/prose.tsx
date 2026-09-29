@@ -40,9 +40,9 @@ function renderInline(text: string): ReactNode[] {
   });
 }
 
-export function BlogProse({ blocks }: { blocks: BlogBlock[] }) {
+export function BlogProse({ blocks, className = 'blog-prose' }: { blocks: BlogBlock[]; className?: string }) {
   return (
-    <div className="blog-prose" lang="en">
+    <div className={className} lang="en">
       {blocks.map((block, idx) => {
         switch (block.type) {
           case 'h2':
@@ -83,6 +83,31 @@ export function BlogProse({ blocks }: { blocks: BlogBlock[] }) {
             );
           case 'quote':
             return <blockquote key={idx}>{renderInline(block.text)}</blockquote>;
+          case 'table':
+            return (
+              <div key={idx} className="prose-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      {block.header.map((h, j) => (
+                        <th key={j} scope="col">
+                          {renderInline(h)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {block.rows.map((row, r) => (
+                      <tr key={r}>
+                        {row.map((cell, j) => (
+                          <td key={j}>{renderInline(cell)}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
           case 'hr':
             return <hr key={idx} />;
         }
