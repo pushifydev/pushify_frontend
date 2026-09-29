@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.101] - 2026-09-30
+
+### Added
+- **Product documentation at /docs.** It has 13 pages: Getting started, Servers, Projects & builds, Environment variables, Domains & HTTPS, Databases & backups, Preview deployments, Scaling & sleep, Monitoring & alerts, Teams & SSO, Billing & credits, CLI and Self-hosting.
+  - Pages are written in `content/docs/*.md` and rendered on the server.
+  - Each page has a sidebar, an "on this page" list and previous/next links.
+  - Every page was checked against the code on 2026-09-30.
+- Markdown tables in the blog and docs.
+
+### Changed
+- **The API reference moved to /docs/api.**
+  - Old `/docs#<section>` links forward there.
+  - `/docs/quickstart`, `/docs/deploy` and `/docs/preview` redirect to their new pages.
+  - The temporary redirects that sent `/docs/servers`, `/docs/cli` and others to anchors or to npm are gone.
+- API reference fixes: `isSecret` defaults to false, not true; the scope list adds `projects:delete` and `metrics:read`.
+
 ## [0.2.0-beta.100] - 2026-09-30
 
 ### Added

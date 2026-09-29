@@ -58,27 +58,21 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: pkg.version,
   },
-  // Guessable URLs that used to 404. Only renamed pages are permanent; the docs targets are
-  // temporary because those paths will get real pages when the product docs are split out.
   // RFC 9116 location for security.txt; the content is a route (app/security.txt/route.ts) because
   // public/.well-known/security.txt answered 404 in production.
   async rewrites() {
     return [{ source: '/.well-known/security.txt', destination: '/security.txt' }];
   },
+  // Guessable URLs that used to 404, and docs paths that now have a page under another name.
   async redirects() {
     return [
       { source: '/marketplace', destination: '/apps', permanent: true },
       { source: '/signup', destination: '/register', permanent: true },
       { source: '/cli', destination: 'https://www.npmjs.com/package/pushify-cli', permanent: false },
-      { source: '/docs/cli', destination: 'https://www.npmjs.com/package/pushify-cli', permanent: false },
       { source: '/guides', destination: '/guides/deploy-nextjs', permanent: false },
-      { source: '/docs/getting-started', destination: '/docs#intro-quick-start', permanent: false },
-      { source: '/docs/quickstart', destination: '/docs#intro-quick-start', permanent: false },
-      { source: '/docs/self-hosting', destination: '/open-source', permanent: false },
-      { source: '/docs/servers', destination: '/docs#servers', permanent: false },
-      { source: '/docs/databases', destination: '/docs#databases', permanent: false },
-      { source: '/docs/deploy', destination: '/docs#deployments', permanent: false },
-      { source: '/docs/api', destination: '/docs', permanent: false },
+      { source: '/docs/quickstart', destination: '/docs/getting-started', permanent: true },
+      { source: '/docs/deploy', destination: '/docs/projects', permanent: true },
+      { source: '/docs/preview', destination: '/docs/previews', permanent: true },
     ];
   },
   async headers() {

@@ -30,13 +30,14 @@ export type BlogBlock =
   | { type: 'ol'; items: string[] }
   | { type: 'pre'; lang: string; code: string }
   | { type: 'quote'; text: string }
+  | { type: 'table'; header: string[]; rows: string[][] }
   | { type: 'hr' };
 
 export interface BlogPost extends BlogPostMeta {
   blocks: BlogBlock[];
 }
 
-function slugifyHeading(text: string): string {
+export function slugifyHeading(text: string): string {
   return text
     .toLowerCase()
     .replace(/`/g, '')
@@ -45,7 +46,7 @@ function slugifyHeading(text: string): string {
     .replace(/\s+/g, '-');
 }
 
-function parseFrontmatter(raw: string): { meta: Record<string, string>; body: string } {
+export function parseFrontmatter(raw: string): { meta: Record<string, string>; body: string } {
   const meta: Record<string, string> = {};
   if (!raw.startsWith('---')) return { meta, body: raw };
   const end = raw.indexOf('\n---', 3);
@@ -62,7 +63,8 @@ function parseFrontmatter(raw: string): { meta: Record<string, string>; body: st
   return { meta, body: raw.slice(end + 4) };
 }
 
-function parseBlocks(body: string): BlogBlock[] {
+/** The markdown subset shared by the blog and the docs. */
+export function parseBlocks(body: string): BlogBlock[] {
   const blocks: BlogBlock[] = [];
   const lines = body.split('\n');
   let i = 0;
@@ -138,13 +140,32 @@ function parseBlocks(body: string): BlogBlock[] {
       continue;
     }
 
+    // Pipe table: a header row, a |---| separator, then body rows.
+    if (line.trim().startsWith('|') && i + 1 < lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[i + 1])) {
+      const cells = (row: string) =>
+        row
+          .trim()
+          .replace(/^\||\|$/g, '')
+          .split('|')
+          .map((c) => c.trim());
+      const header = cells(line);
+      i += 2;
+      const rows: string[][] = [];
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
+        rows.push(cells(lines[i]));
+        i++;
+      }
+      blocks.push({ type: 'table', header, rows });
+      continue;
+    }
+
     // Paragraph: consume consecutive plain lines.
     const para: string[] = [line.trim()];
     i++;
     while (
       i < lines.length &&
       lines[i].trim() &&
-      !/^(## |### |> |[-*] |\d+\. |```)/.test(lines[i]) &&
+      !/^(## |### |> |[-*] |\d+\. |```|\|)/.test(lines[i]) &&
       !/^(-{3,}|\*{3,})$/.test(lines[i].trim())
     ) {
       para.push(lines[i].trim());

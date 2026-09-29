@@ -123,11 +123,13 @@ export const docsTr: DocsContent = {
       'Bazı uç noktalar API anahtarı yerine giriş yapılmış panel oturumu (JWT) gerektirir — örneğin GET /servers/:id/ssh-key ve POST /servers/:id/terminal. API anahtarları bu uç noktalarda 403 döner.',
     scopes: [
       { scope: 'projects:read', desc: 'Projeleri listele ve görüntüle' },
-      { scope: 'projects:write', desc: 'Proje oluştur, güncelle, sil' },
+      { scope: 'projects:write', desc: 'Proje oluştur ve güncelle' },
+      { scope: 'projects:delete', desc: 'Projeleri sil' },
       { scope: 'deployments:read', desc: 'Dağıtımları ve günlükleri görüntüle' },
       { scope: 'deployments:write', desc: 'Dağıtım tetikle, yeniden dağıt, geri al' },
       { scope: 'deployments:cancel', desc: 'Bekleyen veya çalışan dağıtımları iptal et' },
       { scope: 'logs:read', desc: 'Dağıtım derleme ve çalışma zamanı günlüklerini oku' },
+      { scope: 'metrics:read', desc: 'CPU, bellek ve ağ metriklerini oku' },
       { scope: 'envvars:read', desc: 'Ortam değişkenlerini görüntüle' },
       { scope: 'envvars:write', desc: 'Ortam değişkenlerini yönet' },
       { scope: 'servers:read', desc: 'Sunucuları görüntüle' },
@@ -231,7 +233,7 @@ export const docsTr: DocsContent = {
         params: {
           key: 'Değişken adı (örn. DATABASE_URL)',
           value: 'Değişken değeri',
-          isSecret: 'Gizli olarak işaretle (varsayılan: true)',
+          isSecret: 'Gizli olarak işaretle (varsayılan: false)',
           environment: 'Hedef ortam: production veya preview (isteğe bağlı, varsayılan: production)',
         },
         responseMsg: 'Ortam değişkeni oluşturuldu',

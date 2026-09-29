@@ -315,3 +315,32 @@
   border: 0;
   border-top: 1px solid var(--hp-line);
 }
+
+.blog-prose .prose-table-wrap {
+  margin: 1.5rem 0 2rem;
+  overflow-x: auto;
+  border: 1px solid var(--hp-line-strong);
+  border-radius: 12px;
+}
+
+.blog-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.blog-prose th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--hp-ink);
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--hp-line-strong);
+  white-space: nowrap;
+}
+
+.blog-prose td {
+  padding: 0.625rem 0.875rem;
+  border-top: 1px solid var(--hp-line);
+  vertical-align: top;
+}

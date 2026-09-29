@@ -123,11 +123,13 @@ export const docsEn: DocsContent = {
       'Some routes require a logged-in dashboard session (JWT), not an API key — for example GET /servers/:id/ssh-key and POST /servers/:id/terminal. API keys return 403 on these endpoints.',
     scopes: [
       { scope: 'projects:read', desc: 'List and view projects' },
-      { scope: 'projects:write', desc: 'Create, update, delete projects' },
+      { scope: 'projects:write', desc: 'Create and update projects' },
+      { scope: 'projects:delete', desc: 'Delete projects' },
       { scope: 'deployments:read', desc: 'View deployments and logs' },
       { scope: 'deployments:write', desc: 'Trigger, redeploy, rollback deploys' },
       { scope: 'deployments:cancel', desc: 'Cancel pending or running deployments' },
       { scope: 'logs:read', desc: 'Read deployment build and deploy logs' },
+      { scope: 'metrics:read', desc: 'Read CPU, memory and network metrics' },
       { scope: 'envvars:read', desc: 'View environment variables' },
       { scope: 'envvars:write', desc: 'Manage environment variables' },
       { scope: 'servers:read', desc: 'View servers' },
@@ -231,7 +233,7 @@ export const docsEn: DocsContent = {
         params: {
           key: 'Variable name (e.g. DATABASE_URL)',
           value: 'Variable value',
-          isSecret: 'Mark as secret (default: true)',
+          isSecret: 'Mark as secret (default: false)',
           environment: 'Target environment: production or preview (optional, default: production)',
         },
         responseMsg: 'Environment variable created',
