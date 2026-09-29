@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.92] - 2026-09-29
+
+### Changed
+- **Refund policy 3.4, included server credit.** A refund within the 14-day guarantee is reduced by the included server credit already used (never by more than the plan's credit for that month); unused included credit is removed. EN and TR.
+
 ## [0.2.0-beta.91] - 2026-09-29
 
 ### Added
