@@ -46,7 +46,7 @@ From the **Deployments** tab you can redeploy, cancel, or roll back to an earlie
 - **Scheduled tasks:** up to 10 cron jobs per project, each with a timeout between 10 and 600 seconds.
 - **Volumes:** up to 5 persistent directories per project.
 
-These do not apply to Compose projects, which define their own services.
+The same limits apply to pushify.yaml, and they count what was added in the dashboard. These do not apply to Compose projects, which define their own services.
 
 ## pushify.yaml
 
