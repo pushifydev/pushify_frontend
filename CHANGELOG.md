@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.78] - 2026-09-29
+
+### Added
+- **`/security`, `/contact` and `/.well-known/security.txt`.** The security page covers how to report a vulnerability (72h acknowledgement), what is and is not certified, account and secret protection, exactly what Pushify does on a server you connect (including the `ufw` reset and nginx config) and that removing a server does not yet remove Pushify's SSH key. The contact page lists support, sales, bug reports and the company address. Both are linked from the footer.
+
 ## [0.2.0-beta.77] - 2026-09-29
 
 ### Fixed
