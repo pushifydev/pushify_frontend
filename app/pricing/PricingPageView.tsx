@@ -5,6 +5,7 @@ import { HomeCost, HomeFaq } from '@/components/landing/home';
 import { useTranslation } from '@/hooks';
 import type { AvailablePlans } from '@/lib/api';
 import { PricingPlans } from './PricingPlans';
+import { ManagedServerPrices, type ManagedServerPricesData } from './ManagedServerPrices';
 
 const copy = {
   en: {
@@ -19,7 +20,13 @@ const copy = {
   },
 };
 
-export function PricingPageView({ initialPlans }: { initialPlans?: AvailablePlans }) {
+export function PricingPageView({
+  initialPlans,
+  serverPrices,
+}: {
+  initialPlans?: AvailablePlans;
+  serverPrices?: ManagedServerPricesData;
+}) {
   const { locale } = useTranslation();
   const c = copy[locale === 'tr' ? 'tr' : 'en'];
 
@@ -27,6 +34,7 @@ export function PricingPageView({ initialPlans }: { initialPlans?: AvailablePlan
     <MarketingShell noPad>
       <MarketingPageHero label={c.label} title={c.title} description={c.lead} />
       <PricingPlans initialPlans={initialPlans} />
+      <ManagedServerPrices prices={serverPrices} />
       {/* The same estimate as the homepage, and the billing questions people ask before paying. */}
       <HomeCost />
       <HomeFaq />
