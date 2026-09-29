@@ -42,7 +42,7 @@
 
 ## Comparison Guides
 
-- [Pushify vs Coolify](https://pushify.dev/vs/coolify): Two open-source self-hosted PaaS platforms compared — managed cloud provisioning, team billing, site builder, marketplace, and pricing
+- [Pushify vs Coolify](https://pushify.dev/vs/coolify): Two open-source self-hosted PaaS platforms compared — hosted control plane, managed servers, site builder, marketplace, and pricing
 - [Pushify vs Vercel](https://pushify.dev/vs/vercel): A self-hosted, own-your-infrastructure alternative to Vercel — features and total cost compared
 
 Pushify is comparable to Vercel, Railway, Render, Heroku, and Coolify, with the

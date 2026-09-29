@@ -9,14 +9,14 @@ import { useTranslation } from '@/hooks';
 /**
  * Locale-neutral facts (licenses, prices) live here; verify against public pricing
  * pages when updating. Editorial copy comes from the `alternatives` i18n namespace.
- * Last verified: July 2026.
+ * Last verified: September 29, 2026.
  */
 const MATRIX = {
   selfHosted: [
     { name: 'Pushify', license: 'MIT', selfHost: true, cloud: true, from: '$0 self-host', model: 'Flat monthly per server' },
     { name: 'Coolify', license: 'Apache-2.0', selfHost: true, cloud: true, from: '$0 self-host · cloud from $5/mo', model: 'Flat' },
-    { name: 'Dokploy', license: 'Source-available', selfHost: true, cloud: true, from: '$0 self-host · cloud ~$4.50/server/mo', model: 'Flat per server' },
-    { name: 'CapRover', license: 'MIT', selfHost: true, cloud: false, from: '$0 — no paid tier', model: '—' },
+    { name: 'Dokploy', license: 'Apache-2.0 (open-core)', selfHost: true, cloud: true, from: '$0 self-host · cloud ~$4.50/server/mo', model: 'Flat per server' },
+    { name: 'CapRover', license: 'Apache-2.0', selfHost: true, cloud: false, from: '$0 — no paid tier', model: '—' },
     { name: 'Dokku', license: 'MIT (core)', selfHost: true, cloud: false, from: '$0 · Pro is a paid add-on', model: 'One-time (Pro)' },
   ],
   managed: [

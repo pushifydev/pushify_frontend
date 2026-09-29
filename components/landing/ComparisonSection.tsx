@@ -12,7 +12,7 @@ export function ComparisonSection() {
   const rows: { label: string; pushify: Cell; vercel: Cell; coolify: Cell }[] = [
     { label: t('homepage', 'rowSelfHost'), pushify: true, vercel: false, coolify: true },
     { label: t('homepage', 'rowOpenSource'), pushify: true, vercel: false, coolify: true },
-    { label: t('homepage', 'rowMarketplace'), pushify: true, vercel: false, coolify: false },
+    { label: t('homepage', 'rowMarketplace'), pushify: true, vercel: false, coolify: true },
     { label: t('homepage', 'rowDatabaseMgmt'), pushify: true, vercel: true, coolify: true },
     { label: t('homepage', 'rowOwnServers'), pushify: true, vercel: false, coolify: true },
     { label: t('homepage', 'rowAIAssistant'), pushify: true, vercel: false, coolify: false },
