@@ -310,6 +310,7 @@ export {
   sendCancellationFeedback,
   type CancellationReason,
   resumeSubscription,
+  cancelScheduledChange,
   getInfraBilling,
   createInfraTopUpSession,
   confirmInfraTopUp,

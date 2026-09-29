@@ -155,6 +155,7 @@ export {
   useUpdatePaymentMethod,
   useCancelSubscription,
   useResumeSubscription,
+  useCancelScheduledChange,
   useInfraBilling,
   useInfraTopUp,
   useInvoices,

@@ -145,6 +145,8 @@ export interface SubscriptionStatus {
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
   hasPaymentMethod: boolean;
+  /** A change waiting for the end of the period (downgrade or cycle switch), if any. */
+  pendingChange?: { plan: PlanType; billingInterval: 'month' | 'year' | null; effectiveAt: string | null } | null;
 }
 
 // ============ Stripe API Functions ============
@@ -162,6 +164,8 @@ export const createCheckoutSession = async (
 
 export type PlanChangeResult =
   | { status: 'changed'; plan: PlanType }
+  /** Not an upgrade: the current plan runs to the period end, then this one starts. */
+  | { status: 'scheduled'; plan: PlanType; effectiveAt: string }
   | { status: 'payment_required'; payUrl: string }
   | { status: 'checkout_required' };
 
@@ -245,6 +249,16 @@ export const cancelSubscription = async (): Promise<ApiResponse<void>> => {
   try {
     await api.post('/billing/cancel');
     return { data: undefined };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+/** Drop a plan change that is waiting for the end of the period. */
+export const cancelScheduledChange = async (): Promise<ApiResponse<{ released: boolean }>> => {
+  try {
+    const response = await api.post<{ data: { released: boolean } }>('/billing/cancel-scheduled-change');
+    return { data: response.data.data };
   } catch (error) {
     return handleError(error);
   }

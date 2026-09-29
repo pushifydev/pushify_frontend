@@ -9,6 +9,7 @@ import {
   useBillingInfo,
   useUpdateBillingEmail,
   useSubscriptionStatus,
+  useCancelScheduledChange,
   useResumeSubscription,
   useOrganization,
   useInvoices,
@@ -57,6 +58,7 @@ export default function BillingPage() {
   // A cancelled-at-period-end subscription can be resumed until the period ends.
   const { data: subscription } = useSubscriptionStatus();
   const resumeSubscription = useResumeSubscription();
+  const cancelScheduledChange = useCancelScheduledChange();
   const updateBillingEmail = useUpdateBillingEmail();
   // Same queries the wallet / invoice sections use (shared cache): only index sections that render.
   const { data: infraData } = useInfraBilling();
@@ -159,6 +161,10 @@ export default function BillingPage() {
   const periodEndLabel = subscription?.currentPeriodEnd
     ? new Date(subscription.currentPeriodEnd).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })
     : '';
+  const pendingChange = isPaid && !cancelScheduled ? subscription?.pendingChange ?? null : null;
+  const pendingChangeLabel = pendingChange?.effectiveAt
+    ? new Date(pendingChange.effectiveAt).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+    : periodEndLabel;
   const statusOk = billingInfo?.billingStatus === 'active';
   const statusLabel = statusOk
     ? t('billing', 'billingStatusActive')
@@ -348,6 +354,25 @@ export default function BillingPage() {
                         className="btn btn-secondary btn-sm"
                       >
                         {t('billing', 'resumeSubscription')}
+                      </button>
+                    </span>
+                  ) : pendingChange ? (
+                    <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-secondary)]">
+                      {formatMessage(t('billing', 'pendingChangeNote'), {
+                        plan: pendingChange.plan.charAt(0).toUpperCase() + pendingChange.plan.slice(1),
+                        date: pendingChangeLabel,
+                      })}
+                      <button
+                        type="button"
+                        disabled={cancelScheduledChange.isPending}
+                        onClick={() =>
+                          cancelScheduledChange.mutate(undefined, {
+                            onSuccess: () => toast.success(t('billing', 'pendingChangeCancelled')),
+                          })
+                        }
+                        className="btn btn-secondary btn-sm"
+                      >
+                        {t('billing', 'keepCurrentPlan')}
                       </button>
                     </span>
                   ) : isPaid ? (
