@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.84] - 2026-09-29
+
+### Fixed
+- **Structured data.** The price range in the homepage JSON-LD said $0–$13; it is now $0–$99 with one offer per listed plan (Free, Hobby, Pro, Business). `inLanguage` is `en` only, since Turkish is served on the same URLs by browser language and crawlers only see English.
+
 ## [0.2.0-beta.83] - 2026-09-29
 
 ### Added
