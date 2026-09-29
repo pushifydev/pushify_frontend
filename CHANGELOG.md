@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.86] - 2026-09-29
+
+### Changed
+- **API types match backend beta.76.** Server size options, the infra wallet summary and provider server types no longer declare provider cost, margin or provider list prices, which the API stopped sending. No visible change; nothing in the dashboard displayed them.
+
 ## [0.2.0-beta.85] - 2026-09-29
 
 ### Fixed
