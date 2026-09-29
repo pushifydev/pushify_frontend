@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.93] - 2026-09-29
+
+### Changed
+- **Downgrades are scheduled for the end of the billing period.** Choosing a lower plan (or another billing cycle on the same plan) keeps the current plan and its included credit until the period ends; the confirmation says so, and the billing page shows "Changes to {plan} on {date}" with a "Keep current plan" button. Upgrades still apply immediately. Needs backend beta.82.
+
 ## [0.2.0-beta.92] - 2026-09-29
 
 ### Changed
