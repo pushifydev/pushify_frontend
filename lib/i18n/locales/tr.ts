@@ -304,6 +304,7 @@ export const tr: TranslationKeys = {
     privacy: 'Gizlilik Sözleşmesi',
     terms: 'Mesafeli Satış Sözleşmesi',
     refund: 'Teslimat ve İade Şartları',
+    security: 'Güvenlik',
     cookies: 'Çerez Politikası',
   },
   landing: {

@@ -304,6 +304,7 @@ export interface TranslationKeys {
     privacy: string;
     terms: string;
     refund: string;
+    security: string;
     cookies: string;
   };
   landing: {
@@ -3409,6 +3410,7 @@ export const en: TranslationKeys = {
     privacy: 'Privacy Policy',
     terms: 'Terms of Service',
     refund: 'Refund Policy',
+    security: 'Security',
     cookies: 'Cookie Policy',
   },
   landing: {

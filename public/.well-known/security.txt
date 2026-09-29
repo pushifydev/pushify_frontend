@@ -1,0 +1,6 @@
+Contact: mailto:support@pushify.dev
+Contact: https://github.com/pushifydev/pushify_backend/security/advisories/new
+Expires: 2027-09-29T00:00:00.000Z
+Preferred-Languages: en, tr
+Canonical: https://pushify.dev/.well-known/security.txt
+Policy: https://pushify.dev/security
