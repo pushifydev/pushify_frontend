@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.102] - 2026-09-30
+
+### Changed
+- **/docs/teams shows who can do what** for every role, matching the role checks in backend 0.2.0-beta.93. It also says that API keys act with their creator's role and stop when that person leaves.
+- **Billing page:** the wallet, the invoices and the subscription status are shown to owners and admins only. The API now refuses these to everyone else.
+
 ## [0.2.0-beta.101] - 2026-09-30
 
 ### Added

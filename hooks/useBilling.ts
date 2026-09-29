@@ -69,8 +69,10 @@ export function useAvailablePlans(initialData?: AvailablePlans) {
 
 // ============ Mutations ============
 
-export function useSubscriptionStatus() {
+/** `enabled`: owners and admins only — the API refuses everyone else. */
+export function useSubscriptionStatus(enabled = true) {
   return useQuery({
+    enabled,
     queryKey: billingKeys.subscription(),
     queryFn: async () => {
       const result = await getSubscriptionStatus();
@@ -208,8 +210,10 @@ export function useResumeSubscription() {
   });
 }
 
-export function useInfraBilling() {
+/** `enabled`: owners and admins only — the API refuses everyone else. */
+export function useInfraBilling(enabled = true) {
   return useQuery({
+    enabled,
     queryKey: billingKeys.infra(),
     queryFn: async () => {
       const result = await getInfraBilling();
@@ -232,8 +236,10 @@ export function useInfraTopUp() {
   });
 }
 
-export function useInvoices() {
+/** `enabled`: owners and admins only — the API refuses everyone else. */
+export function useInvoices(enabled = true) {
   return useQuery({
+    enabled,
     queryKey: billingKeys.invoices(),
     queryFn: async () => {
       const result = await getInvoices();

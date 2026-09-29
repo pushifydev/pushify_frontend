@@ -6,14 +6,26 @@ updated: 2026-09-30
 
 ## Roles
 
-| Role | Can |
-|---|---|
-| Owner | Everything, including billing, single sign-on and deleting the organization. There is one owner. |
-| Admin | Billing, members and invitations, servers and databases, and everything members can do |
-| Member | Create and change projects, domains and environment variables, and deploy |
-| Viewer | See projects and their status |
+| What | Owner | Admin | Member | Viewer |
+|---|:-:|:-:|:-:|:-:|
+| See projects, deployments, domains, server status, metrics and logs | ✓ | ✓ | ✓ | ✓ |
+| See environment variable names | ✓ | ✓ | ✓ | ✓ |
+| See environment variable values (secrets stay masked) | ✓ | ✓ | ✓ | — |
+| Create projects and change their settings | ✓ | ✓ | ✓ | — |
+| Deploy, roll back, cancel and promote | ✓ | ✓ | ✓ | — |
+| Manage environment variables, domains, workers, volumes, scheduled tasks, notifications and health checks | ✓ | ✓ | ✓ | — |
+| Delete projects | ✓ | ✓ | — | — |
+| Add, resize, start, stop and delete servers; snapshots | ✓ | ✓ | — | — |
+| Server SSH key, web terminal and container shell | ✓ | ✓ | — | — |
+| Create and delete databases; connection details; take, download and restore backups | ✓ | ✓ | — | — |
+| Browse database data | ✓ | ✓ | if granted | if granted |
+| Buy and transfer domains, edit their DNS, get transfer codes | ✓ | ✓ | — | — |
+| Invite and remove people, set project and data access | ✓ | ✓ | — | — |
+| Activity log | ✓ | ✓ | — | — |
+| Change the plan, top up the balance, see invoices | ✓ | ✓ | — | — |
+| Billing email, single sign-on, delete the organization | ✓ | — | — | — |
 
-The owner's role cannot be changed.
+There is one owner, and the owner's role cannot be changed. Logs are visible to every role; secrets in build and app output are masked.
 
 ## Invitations
 
@@ -33,8 +45,8 @@ Sign in through your identity provider over OIDC — Okta, Microsoft Entra ID, G
 
 ## API keys
 
-Create keys in **Settings → API keys** for scripts and CI. A key starts with `pk_live_`, can expire, and can be limited to scopes:
+Create keys in **Settings → API keys** for scripts and CI. A key acts with the role of the person who created it, and stops working when they leave the organization. It starts with `pk_live_`, can expire, and can be limited to scopes:
 
 `projects:read`, `projects:write`, `projects:delete`, `deployments:read`, `deployments:write`, `deployments:cancel`, `envvars:read`, `envvars:write`, `domains:read`, `domains:write`, `servers:read`, `servers:write`, `databases:read`, `databases:write`, `logs:read`, `metrics:read`.
 
-Requests with a key are limited per minute by plan: 60 on Free, 120 on Hobby, 300 on Pro, 600 on Business. The [API reference](/docs/api) has the endpoints.
+Keys are managed from the dashboard only: a key cannot create keys, and cannot manage people, single sign-on or registry credentials. Requests with a key are limited per minute by plan: 60 on Free, 120 on Hobby, 300 on Pro, 600 on Business. The [API reference](/docs/api) has the endpoints.
