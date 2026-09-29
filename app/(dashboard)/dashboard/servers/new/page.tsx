@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { usableRegions, defaultRegion } from '@/lib/servers/regions';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Server, Loader2, Eye, EyeOff } from 'lucide-react';
@@ -41,7 +42,8 @@ export default function NewServerPage() {
     rootPassword: '',
   });
 
-  const { data: regions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
+  const { data: allRegions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
+  const regions = useMemo(() => usableRegions(allRegions), [allRegions]);
   const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner', managedData.region);
   const { data: infraBilling } = useInfraBilling();
   const { data: billingInfo } = useBillingInfo();
@@ -52,8 +54,9 @@ export default function NewServerPage() {
   const atServerLimit = !!serverUsage && !serverUsage.unlimited && serverUsage.used >= serverUsage.limit;
 
   useEffect(() => {
-    if (regions.length > 0 && !managedData.region) {
-      setManagedData((prev) => ({ ...prev, region: regions[0].id }));
+    const initial = defaultRegion(regions);
+    if (initial && !managedData.region) {
+      setManagedData((prev) => ({ ...prev, region: initial.id }));
     }
   }, [regions, managedData.region]);
 
