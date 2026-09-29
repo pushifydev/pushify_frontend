@@ -337,6 +337,7 @@ export interface TranslationKeys {
     /** Footer social icon labels */
     socialGithub: string;
     socialEmail: string;
+    socialX: string;
     // Frameworks section
     universalCompatibility: string;
     worksWithEvery: string;
@@ -3442,6 +3443,7 @@ export const en: TranslationKeys = {
     heroMetaDeploymentsLiveShort: 'LIVE',
     socialGithub: 'GitHub',
     socialEmail: 'Email',
+    socialX: 'X (Twitter)',
     // Frameworks section
     universalCompatibility: 'Universal Compatibility',
     worksWithEvery: 'Works with',
