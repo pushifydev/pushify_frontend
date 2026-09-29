@@ -671,3 +671,16 @@ export {
   type AdminActivityItem,
   type AdminAuthEventItem,
 } from './services/admin.service';
+
+// Organization and account deletion
+export {
+  getOrganizationDeletionPreview,
+  requestOrganizationDeletion,
+  restoreOrganization,
+  requestAccountDeletion,
+  restoreAccount,
+  type OrganizationDeletionPreview,
+  type DeletionScheduled,
+  type DeletionServerOutcome,
+  type DeletionCredentials,
+} from './services/deletion.service';

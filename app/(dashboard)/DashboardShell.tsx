@@ -9,6 +9,7 @@ import { Sidebar } from '@/components/sidebar';
 import { Header } from '@/components/header';
 import { WebSocketProvider } from '@/providers/WebSocketProvider';
 import { EmailVerificationBanner } from '@/components/EmailVerificationBanner';
+import { OrganizationDeletionBanner } from '@/components/OrganizationDeletionBanner';
 import { CommandPalette } from '@/components/CommandPalette';
 import { KeyboardShortcuts } from '@/components/KeyboardShortcuts';
 import { AiAssistantSheet } from '@/components/AiAssistantSheet';
@@ -56,6 +57,7 @@ export function DashboardShell({
         <div className={`transition-all duration-300 ${collapsed ? 'md:pl-17' : 'md:pl-60'}`}>
           <Header />
           {user && user.emailVerified === false && <EmailVerificationBanner />}
+          {user && <OrganizationDeletionBanner />}
           <main className="dash-main min-w-0">
             {children}
           </main>

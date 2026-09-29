@@ -4,13 +4,13 @@ import { useEffect, useState, type MouseEvent } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useTranslation } from '@/hooks';
 import { PageHeader } from '@/components/dashboard/PageKit';
-import { ProfileTab, AppearanceTab, SessionsTab, NotificationsTab, SecurityTab, ApiKeysTab, RegistriesTab, SsoTab } from './components';
+import { ProfileTab, AppearanceTab, SessionsTab, NotificationsTab, SecurityTab, ApiKeysTab, RegistriesTab, SsoTab, DeletionTab } from './components';
 
-type SettingsTab = 'profile' | 'appearance' | 'sessions' | 'notifications' | 'security' | 'api-keys' | 'registries' | 'sso';
+type SettingsTab = 'profile' | 'appearance' | 'sessions' | 'notifications' | 'security' | 'api-keys' | 'registries' | 'sso' | 'deletion';
 
 interface TabDef {
   id: SettingsTab;
-  labelKey: 'profile' | 'appearance' | 'sessions' | 'notificationPrefs' | 'security' | 'apiKeys' | 'registries' | 'sso';
+  labelKey: 'profile' | 'appearance' | 'sessions' | 'notificationPrefs' | 'security' | 'apiKeys' | 'registries' | 'sso' | 'deletion';
 }
 
 // Grouped like the content actually splits: identity/preferences vs. who-can-get-in
@@ -21,6 +21,7 @@ const tabGroups: { groupKey: 'settingsGroupAccount' | 'settingsGroupAccess'; tab
       { id: 'profile', labelKey: 'profile' },
       { id: 'appearance', labelKey: 'appearance' },
       { id: 'notifications', labelKey: 'notificationPrefs' },
+      { id: 'deletion', labelKey: 'deletion' },
     ],
   },
   {
@@ -118,6 +119,7 @@ export default function SettingsPage() {
           {activeTab === 'notifications' && <NotificationsTab />}
           {activeTab === 'security' && <SecurityTab />}
           {activeTab === 'api-keys' && <ApiKeysTab />}
+          {activeTab === 'deletion' && <DeletionTab />}
           {activeTab === 'registries' && <RegistriesTab />}
           {activeTab === 'sso' && <SsoTab />}
         </section>

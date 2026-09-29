@@ -16,3 +16,4 @@ export { RegenerateBackupCodesModal } from './RegenerateBackupCodesModal';
 export { CreateApiKeyModal } from './CreateApiKeyModal';
 export { ApiKeySecretModal } from './ApiKeySecretModal';
 export { RevokeApiKeyModal } from './RevokeApiKeyModal';
+export { DeletionTab } from './DeletionTab';

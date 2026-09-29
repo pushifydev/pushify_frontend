@@ -15,7 +15,14 @@ import {
   AuthMobileBrand,
   AuthDivider,
   AuthPageHeader,
+  PendingAccountRestore,
 } from '@/components/auth';
+import {
+  pendingDeletionFromHash,
+  readPendingDeletion,
+  rememberPendingDeletion,
+  type PendingDeletion,
+} from '@/lib/pending-deletion';
 import { buildAuthPath, consumeAuthRedirect, saveAuthRedirect, sanitizeRedirectPath } from '@/lib/auth-redirect';
 
 function LoginPageContent() {
@@ -34,6 +41,8 @@ function LoginPageContent() {
     clearError,
     requiresTwoFactor,
     clearTwoFactor,
+    pendingDeletion,
+    clearPendingDeletion,
   } = useAuthStore();
   const { t } = useTranslation();
 
@@ -43,6 +52,19 @@ function LoginPageContent() {
   const [sso, setSso] = useState<{ available: boolean; enforced: boolean }>({ available: false, enforced: false });
   const [showPassword, setShowPassword] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState('');
+  // An account scheduled for deletion: sign-in was refused with a restore token (from this form,
+  // an OAuth callback, or an SSO redirect's fragment).
+  const [pendingFromUrl, setPendingFromUrl] = useState<PendingDeletion | null>(null);
+  const pending = pendingDeletion ?? pendingFromUrl;
+
+  useEffect(() => {
+    const fromHash = pendingDeletionFromHash(window.location.hash);
+    if (fromHash) {
+      rememberPendingDeletion(fromHash);
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    }
+    if (fromHash || searchParams.get('pendingDeletion')) setPendingFromUrl(fromHash ?? readPendingDeletion());
+  }, [searchParams]);
 
   useEffect(() => {
     const redirect = searchParams.get('redirect');
@@ -114,6 +136,22 @@ function LoginPageContent() {
     clearError();
     setTwoFactorCode('');
   };
+
+  if (pending) {
+    return (
+      <PendingAccountRestore
+        pending={pending}
+        onDone={() => {
+          setPendingFromUrl(null);
+          clearPendingDeletion();
+          clearTwoFactor();
+          clearError();
+          setTwoFactorCode('');
+          if (searchParams.get('pendingDeletion')) router.replace('/login');
+        }}
+      />
+    );
+  }
 
   if (requiresTwoFactor) {
     return (

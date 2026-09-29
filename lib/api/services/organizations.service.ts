@@ -21,6 +21,8 @@ export interface OrganizationDetails {
   plan: string;
   billingEmail: string | null;
   role: MemberRole;
+  /** Set while the organization waits to be deleted: read-only until then, restorable by the owner */
+  deletionScheduledFor?: string | null;
   createdAt: string;
   updatedAt: string;
 }

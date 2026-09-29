@@ -11,6 +11,7 @@ import {
   type Organization,
 } from '@/lib/api';
 import { verifyLogin2fa as apiVerifyLogin2fa } from '@/lib/api/services/auth.service';
+import { pendingDeletionFromError, rememberPendingDeletion, type PendingDeletion } from '@/lib/pending-deletion';
 
 interface AuthState {
   user: User | null;
@@ -21,6 +22,8 @@ interface AuthState {
   // 2FA state
   requiresTwoFactor: boolean;
   twoFactorToken: string | null;
+  /** Sign-in refused because the account is scheduled for deletion; carries the restore token */
+  pendingDeletion: PendingDeletion | null;
   login: (email: string, password: string) => Promise<boolean | 'requires_2fa'>;
   verifyLogin2fa: (code: string) => Promise<boolean>;
   register: (email: string, password: string, name: string) => Promise<boolean>;
@@ -29,6 +32,14 @@ interface AuthState {
   setOrganization: (organization: Organization) => void;
   clearError: () => void;
   clearTwoFactor: () => void;
+  clearPendingDeletion: () => void;
+}
+
+/** Remember a refused sign-in's restore token; returns the store patch for it. */
+function pendingPatch(error: { code?: string; details?: unknown; message: string }) {
+  const pending = pendingDeletionFromError(error);
+  if (pending) rememberPendingDeletion(pending);
+  return { pendingDeletion: pending };
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -39,6 +50,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   error: null,
   requiresTwoFactor: false,
   twoFactorToken: null,
+  pendingDeletion: null,
 
   login: async (email, password) => {
     set({ isLoading: true, error: null, requiresTwoFactor: false, twoFactorToken: null });
@@ -46,7 +58,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const result = await apiLogin({ email, password });
 
     if (result.error) {
-      set({ isLoading: false, error: result.error.message });
+      set({ isLoading: false, error: result.error.message, ...pendingPatch(result.error) });
       return false;
     }
 
@@ -90,7 +102,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const result = await apiVerifyLogin2fa(twoFactorToken, code);
 
     if (result.error) {
-      set({ isLoading: false, error: result.error.message });
+      set({ isLoading: false, error: result.error.message, ...pendingPatch(result.error) });
       return false;
     }
 
@@ -182,6 +194,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setOrganization: (organization) => set({ organization }),
 
   clearError: () => set({ error: null }),
+  clearPendingDeletion: () => set({ pendingDeletion: null }),
 
   clearTwoFactor: () => set({ requiresTwoFactor: false, twoFactorToken: null }),
 }));
