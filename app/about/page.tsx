@@ -35,7 +35,7 @@ const content = {
     values: [
       { title: 'Open source', desc: 'The API, dashboard and CLI are MIT-licensed. Self-host it for free.' },
       { title: 'Your data stays yours', desc: 'Apps and databases run on your servers. Leaving means taking them with you.' },
-      { title: 'Published prices', desc: 'Plans, limits and hourly server rates are all on the pricing page.' },
+      { title: 'Published prices', desc: "Plans and limits are on the pricing page; a managed server's price is shown in the dashboard before you create it." },
     ],
   },
   tr: {
@@ -66,7 +66,7 @@ const content = {
     values: [
       { title: 'Açık kaynak', desc: 'API, panel ve CLI MIT lisanslı. Kendiniz ücretsiz çalıştırabilirsiniz.' },
       { title: 'Veriniz sizde kalır', desc: 'Uygulamalar ve veritabanları sizin sunucularınızda. Ayrılırken yanınızda götürürsünüz.' },
-      { title: 'Açık fiyatlar', desc: 'Planlar, limitler ve saatlik sunucu ücretleri fiyatlandırma sayfasında.' },
+      { title: 'Açık fiyatlar', desc: 'Planlar ve limitler fiyatlandırma sayfasında; yönetilen bir sunucunun fiyatı, oluşturmadan önce panelde gösterilir.' },
     ],
   },
 };

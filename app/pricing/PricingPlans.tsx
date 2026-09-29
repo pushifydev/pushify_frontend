@@ -72,7 +72,7 @@ const copy = {
     compareEyebrow: 'Side by side',
     compareTitle: 'Every limit, per plan.',
     feature: 'Feature',
-    enterpriseLine: 'Unlimited servers, projects and deploys, with terms that fit your organisation.',
+    enterpriseLine: 'Unlimited servers, projects and deploys, with terms that fit your organization.',
     yes: 'Included',
     no: 'Not included',
   },

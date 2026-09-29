@@ -41,7 +41,7 @@ Third, the products in this space that we respect — the ones with real communi
 
 ## The hosted version
 
-If you don't want to run the control plane yourself, the hosted version at [pushify.dev](https://pushify.dev) is the same code with the ops handled for you. The free tier lets you **connect one of your own servers** — so you can deploy real apps without paying anything. Paid plans start at $15/month and add managed Hetzner servers at flat monthly prices, more projects, and previews.
+If you don't want to run the control plane yourself, the hosted version at [pushify.dev](https://pushify.dev) is the same code with the ops handled for you. The free tier lets you **connect one of your own servers** — so you can deploy real apps without paying anything. Paid plans start at $15/month and add managed Hetzner servers billed hourly from prepaid credits, more projects, and previews.
 
 ## What's next
 

@@ -51,12 +51,12 @@ It's a smaller job than it sounds, especially with unattended-upgrades turned on
 
 ## Managed Hetzner servers
 
-A managed server is provisioned through Pushify, so you don't rent it yourself. Managed Hetzner servers come with the paid plans, which start at $15/month. They're offered at flat monthly prices, and the paid plans also add more projects and preview deployments.
+A managed server is provisioned through Pushify, so you don't rent it yourself. Managed Hetzner servers come with the paid plans, which start at $15/month. Each server has a fixed hourly rate paid from prepaid credits, and the dashboard shows the monthly estimate before you create it, and the paid plans also add more projects and preview deployments.
 
 ### Why people choose managed
 
 - **No provider setup.** You don't have to open a cloud account, create a server, and wire it up before your first deploy.
-- **Predictable cost.** The server has a flat monthly price, so you know what it costs before you start.
+- **Predictable cost.** The server has a fixed hourly rate, so you know what a full month costs before you start.
 - **Fewer steps to the first deploy.** Provisioning is done for you, so the path from new account to live app is shorter.
 
 ### What you give up
@@ -72,7 +72,7 @@ It's easy to mix up two different choices. Where your server comes from is one. 
 Some rules of thumb that hold up in practice:
 
 1. **You already have a VPS.** Start with BYOS. It's free on the hosted version, and Pushify installs Docker, Nginx, and Certbot for you if they're missing, so you'll find out quickly whether the workflow suits you.
-2. **You're starting from scratch and don't want to manage a cloud account.** Go managed. Less setup and a flat monthly price are what it's for.
+2. **You're starting from scratch and don't want to manage a cloud account.** Go managed. Less setup and a known price are what it's for.
 3. **You have a compliance or data-location requirement.** Go BYOS, with the provider and region your requirement specifies.
 4. **You want to try Pushify without committing to anything.** Go BYOS on the free tier. The deploy pipeline you'll see is the same one managed servers use.
 
@@ -86,6 +86,6 @@ Most people don't need to go that far. But it does mean the ownership BYOS gives
 
 - The deploy pipeline, the zero-downtime cutover, and the SSH-only, agentless model are the same on both.
 - BYOS gives you provider choice, full access, and a free starting point. Pushify handles the Docker, Nginx, and Certbot setup, and the rest of the machine is your responsibility.
-- Managed gives you a server without a provider account to set up, at a flat monthly price on the paid plans.
+- Managed gives you a server without a provider account to set up, at a fixed hourly rate on the paid plans.
 
 Pick the option that matches the servers you have today. If something about either path feels rough, [open an issue](https://github.com/pushifydev/pushify_backend/issues). We're a small team, so that feedback shapes the roadmap quickly.

@@ -6040,7 +6040,7 @@ export const en: TranslationKeys = {
       'If you want the git-push workflow without giving up server ownership, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Heroku\'s managed add-on ecosystem; you gain flat pricing and root access.',
     faq2Q: 'How much cheaper is Pushify than Heroku, really?',
     faq2A:
-      'A small always-on Heroku app with a database starts around $12/mo (Basic dyno $7 + Essential-0 Postgres $5). The same workload fits on one entry-level VPS: self-host Pushify on it for free, or use a managed server at a flat monthly price — with room for several more apps on the same box.',
+      'A small always-on Heroku app with a database starts around $12/mo (Basic dyno $7 + Essential-0 Postgres $5). The same workload fits on one entry-level VPS: self-host Pushify on it for free, or use a managed server: your plan is a fixed monthly fee, and the server draws from prepaid credits at a fixed hourly rate — with room for several more apps on the same box.',
     faq3Q: 'Can I migrate an app from Heroku to Pushify?',
     faq3A:
       'Most Heroku apps are standard Node/Python/Ruby/PHP projects in git — connect the repo and Pushify detects the framework and builds it in Docker. Procfile-only setups may need a small start-command tweak, and add-ons map to Pushify databases or marketplace apps (Postgres, Redis, and more).',
@@ -6094,7 +6094,7 @@ export const en: TranslationKeys = {
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
-      "Railway runs your apps on its own cloud and meters what you use: the Hobby plan is $5/mo (including $5 of usage), Pro is $20/mo per workspace with unlimited seats, and CPU/RAM are billed on top as you consume them. There is no self-host option and no way to bring your own server. Pushify flips that model: the platform deploys to infrastructure you control — self-host it for free, bring any VPS, or use managed Hetzner servers at flat monthly prices — so the bill is a server price, not a meter. If you want a beautiful zero-ops cloud and metered billing suits your workload, Railway is genuinely good. If you want ownership and a bill you can predict, that's Pushify.",
+      "Railway runs your apps on its own cloud and meters what you use: the Hobby plan is $5/mo (including $5 of usage), Pro is $20/mo per workspace with unlimited seats, and CPU/RAM are billed on top as you consume them. There is no self-host option and no way to bring your own server. Pushify flips that model: the platform deploys to infrastructure you control — self-host it for free, bring any VPS, or use managed Hetzner servers billed at a fixed hourly rate from prepaid credits — so the bill is a server price, not a meter. If you want a beautiful zero-ops cloud and metered billing suits your workload, Railway is genuinely good. If you want ownership and a bill you can predict, that's Pushify.",
     choosePushifyTitle: 'Choose Pushify if…',
     choosePushify1: "You want a bill that doesn't move with traffic: one flat price per server.",
     choosePushify2: "You want apps and data on servers you own, with root access.",
@@ -6125,7 +6125,7 @@ export const en: TranslationKeys = {
       'If you like Railway’s git-push workflow but want it on servers you own, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose Railway’s managed multi-region cloud; you gain flat pricing and root access.',
     faq2Q: 'How does pricing actually compare?',
     faq2A:
-      'Railway is metered: $5/mo Hobby includes $5 of usage, then CPU and memory bill as you consume them; Pro is $20/mo per workspace with unlimited seats. Pushify has no metering — self-host for free, or run a managed server at one flat monthly price and fit several apps and databases on the same box.',
+      'Railway is metered: $5/mo Hobby includes $5 of usage, then CPU and memory bill as you consume them; Pro is $20/mo per workspace with unlimited seats. Pushify has no metering — self-host for free, or pay a fixed monthly plan plus a managed server at a fixed hourly rate from prepaid credits, and fit several apps and databases on the same box.',
     faq3Q: 'Can I migrate an app from Railway to Pushify?',
     faq3A:
       'Most Railway apps are standard git repos — connect the repo and Pushify detects the framework and builds it in Docker. Railway databases map to Pushify managed databases, volumes to persistent volumes, and cron schedules to built-in cron jobs.',
@@ -6144,7 +6144,7 @@ export const en: TranslationKeys = {
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
-      "Render hosts your services on its own cloud at fixed instance prices: static sites are free, web services start around $7/mo, and every app, worker and database is its own line item. Since April 2026, workspaces include 5 GB (Hobby) or 25 GB (Pro) of bandwidth and bill $0.15/GB beyond that; team workspaces pay a flat $25/mo Pro fee. Free web services spin down when idle and wake with a delay. There is no self-host or bring-your-own-server option. Pushify deploys to infrastructure you control — self-host for free, bring any VPS, or use flat-priced managed Hetzner servers — and one server runs as many apps as it can handle for one price. If you want zero server responsibility with predictable pricing, Render is a fine choice. If you want that predictability plus ownership, that's Pushify.",
+      "Render hosts your services on its own cloud at fixed instance prices: static sites are free, web services start around $7/mo, and every app, worker and database is its own line item. Since April 2026, workspaces include 5 GB (Hobby) or 25 GB (Pro) of bandwidth and bill $0.15/GB beyond that; team workspaces pay a flat $25/mo Pro fee. Free web services spin down when idle and wake with a delay. There is no self-host or bring-your-own-server option. Pushify deploys to infrastructure you control — self-host for free, bring any VPS, or use managed Hetzner servers at a fixed hourly rate — and one server runs as many apps as it can handle for one price. If you want zero server responsibility with predictable pricing, Render is a fine choice. If you want that predictability plus ownership, that's Pushify.",
     choosePushifyTitle: 'Choose Pushify if…',
     choosePushify1: "You run several services: on Pushify one flat-priced server hosts them all.",
     choosePushify2: "You want apps and data on servers you own, with root access.",
@@ -6177,7 +6177,7 @@ export const en: TranslationKeys = {
       'If you like Render’s simplicity but want server ownership and per-server pricing, yes: Pushify auto-detects 26 frameworks, builds in Docker and deploys with zero-downtime blue-green switches. You lose managed autoscaling; you gain root access and a flat bill.',
     faq2Q: 'How does pricing actually compare?',
     faq2A:
-      'On Render a small always-on app with a database is typically two line items starting around $7/mo each, plus a flat $25/mo for a Pro team workspace and $0.15/GB beyond the included bandwidth. On Pushify the same workload fits on one entry-level VPS — self-host for free, or use a flat-priced managed server — with room for several more apps on the same box.',
+      'On Render a small always-on app with a database is typically two line items starting around $7/mo each, plus a flat $25/mo for a Pro team workspace and $0.15/GB beyond the included bandwidth. On Pushify the same workload fits on one entry-level VPS — self-host for free, or use a managed server at a fixed hourly rate — with room for several more apps on the same box.',
     faq3Q: 'Can I migrate an app from Render to Pushify?',
     faq3A:
       'Most Render apps are standard git repos — connect the repo and Pushify detects the framework and builds it in Docker. Render databases map to Pushify managed databases, cron jobs to built-in cron, and persistent disks to persistent volumes.',
@@ -6229,7 +6229,7 @@ export const en: TranslationKeys = {
     renderBest: 'Teams that want Heroku-style simplicity with a modern dashboard and predictable per-service prices.',
     pushifyTitle: 'Where Pushify fits',
     pushifyBody:
-      'Pushify is MIT-licensed and self-hostable free of charge, like Coolify or CapRover — but it also runs as a managed cloud that can provision Hetzner servers for you at flat monthly prices, or deploy to any VPS you bring. Alongside managed databases with backups, a 24-app marketplace, PR previews, cron and volumes, it adds a few things the others lack: scale-to-zero, an AI assistant, a no-code site builder and built-in domain purchasing. It is younger than every tool above — the community is smaller, and some integrations (for example a GitHub App) are still maturing.',
+      'Pushify is MIT-licensed and self-hostable free of charge, like Coolify or CapRover — but it also runs as a managed cloud that can provision Hetzner servers for you, billed at a fixed hourly rate from prepaid credits, or deploy to any VPS you bring. Alongside managed databases with backups, a 24-app marketplace, PR previews, cron and volumes, it adds a few things the others lack: scale-to-zero, an AI assistant, a no-code site builder and built-in domain purchasing. It is younger than every tool above — the community is smaller, and some integrations (for example a GitHub App) are still maturing.',
     pushifyBest:
       'Developers who want one tool to cover deploys, databases, domains and sites — self-hosted or managed — and accept a younger ecosystem.',
     howToChooseTitle: 'How to actually choose',
