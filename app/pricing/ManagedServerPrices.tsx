@@ -2,24 +2,9 @@
 
 import { MSection } from '@/components/landing/MarketingKit';
 import { useTranslation } from '@/hooks';
+import { largestPerPlan, type ManagedServerPricesData } from '@/lib/managed-server-prices';
 
-/** Shape of GET /public/managed-server-prices (customer prices only). */
-export interface ManagedServerPricesData {
-  region: string;
-  currency: 'USD';
-  hoursPerMonth: number;
-  updatedAt: string;
-  servers: {
-    size: string;
-    serverType: string;
-    vcpus: number;
-    memoryGb: number;
-    diskGb: number;
-    priceHourlyUsd: number;
-    priceMonthlyCents: number;
-    minPlan: 'hobby' | 'pro' | 'business' | 'enterprise';
-  }[];
-}
+export type { ManagedServerPricesData };
 
 const copy = {
   en: {
@@ -34,6 +19,9 @@ const copy = {
     monthly: '≈ Per month',
     plan: 'Available from',
     plans: { hobby: 'Hobby', pro: 'Pro', business: 'Business', enterprise: 'Enterprise' },
+    largestTitle: 'Largest managed server per plan',
+    none: 'none in this region',
+    enterpriseLargest: 'larger sizes on request',
     note: (where: string, hours: number) =>
       `${where}. Monthly figures assume the server runs all month (${hours} hours). Credits are charged while the server runs; it stops when credits reach $0.`,
     fallback:
@@ -51,6 +39,9 @@ const copy = {
     monthly: '≈ Aylık',
     plan: 'Hangi plandan',
     plans: { hobby: 'Hobby', pro: 'Pro', business: 'Business', enterprise: 'Enterprise' },
+    largestTitle: 'Plan başına en büyük yönetilen sunucu',
+    none: 'bu bölgede yok',
+    enterpriseLargest: 'daha büyük boyutlar talep üzerine',
     note: (where: string, hours: number) =>
       `${where}. Aylık tutar sunucunun ay boyunca (${hours} saat) açık kaldığını varsayar. Kredi sunucu çalıştıkça düşer; kredi $0 olunca sunucu durur.`,
     fallback:
@@ -70,6 +61,7 @@ export function ManagedServerPrices({ prices }: { prices?: ManagedServerPricesDa
   const { locale } = useTranslation();
   const c = copy[locale === 'tr' ? 'tr' : 'en'];
   const rows = prices?.servers ?? [];
+  const largest = largestPerPlan(rows);
 
   return (
     <MSection eyebrow={c.eyebrow} title={c.title} lead={c.lead}>
@@ -109,6 +101,16 @@ export function ManagedServerPrices({ prices }: { prices?: ManagedServerPricesDa
               </tbody>
             </table>
           </div>
+          <p className="mt-6 text-[1rem]" style={{ color: 'var(--hp-body)' }}>
+            <span style={{ color: 'var(--hp-ink)' }}>{c.largestTitle}:</span>{' '}
+            {(['hobby', 'pro', 'business'] as const)
+              .map((plan) => {
+                const s = largest[plan];
+                return `${c.plans[plan]} ${s ? `${s.vcpus} vCPU / ${s.memoryGb} GB` : c.none}`;
+              })
+              .concat(`${c.plans.enterprise} ${c.enterpriseLargest}`)
+              .join(' · ')}
+          </p>
           <p className="mt-4 text-[0.9rem]" style={{ color: 'var(--hp-muted)' }}>
             {c.note(REGION_NAMES[prices!.region]?.[locale === 'tr' ? 'tr' : 'en'] ?? prices!.region, prices!.hoursPerMonth)}
           </p>
