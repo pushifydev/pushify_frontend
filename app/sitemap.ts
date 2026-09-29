@@ -30,7 +30,7 @@ const CONTENT_DATES: Record<string, string> = {
   '/guides/deploy-nextjs': '2026-07-19',
   '/privacy': '2026-05-01',
   '/terms': '2026-05-01',
-  '/refund': '2026-05-01',
+  '/refund': '2026-09-29',
   '/security': '2026-09-29',
   '/contact': '2026-09-29',
   '/deploy/nextjs': '2026-06-20',

@@ -10,7 +10,7 @@ export default function RefundPage() {
 
 function RefundEN() {
   return (
-    <LegalPageLayout title="Delivery & Refund Policy" lastUpdated="May 3, 2026">
+    <LegalPageLayout title="Delivery & Refund Policy" lastUpdated="September 29, 2026">
       <h2>1. Service Type</h2>
       <p>
         Pushify is a subscription-based SaaS platform offering cloud deployment and server
@@ -48,6 +48,14 @@ function RefundEN() {
         run. One-time top-ups through Stripe are generally <strong>non-refundable</strong> once
         credited, including if a server stops because the balance reached zero. Contact support if
         you believe a top-up was charged in error.
+      </p>
+
+      <h3>3.4. Included server credit</h3>
+      <p>
+        Paid plans include monthly credit for managed servers. If you request a refund under 3.1
+        after using some of that credit, we deduct the credit you used from the refund. The
+        deduction is never more than the credit your plan includes for that month. Any unused
+        included credit is removed when the refund is processed.
       </p>
 
       <h2>4. How to Request a Refund</h2>
@@ -116,7 +124,7 @@ function RefundEN() {
 
 function RefundTR() {
   return (
-    <LegalPageLayout title="Teslimat ve İade Şartları">
+    <LegalPageLayout title="Teslimat ve İade Şartları" lastUpdated="29 Eylül 2026">
       <h2>1. Hizmet Türü</h2>
       <p>
         Pushify, dijital bulut yayınlama (deployment) ve sunucu yönetimi hizmeti
@@ -156,6 +164,14 @@ function RefundTR() {
         çalışırken krediler saatlik düşer. Stripe ile yapılan tek seferlik yüklemeler genelde
         cüzdana aktarıldıktan sonra <strong>iade edilmez</strong>; bakiye sıfırlanınca sunucunun
         durması da buna dahildir. Hatalı tahsilat olduğunu düşünüyorsanız destek ile iletişime geçin.
+      </p>
+
+      <h3>3.4. Dahil sunucu kredisi</h3>
+      <p>
+        Ücretli planlar yönetilen sunucular için aylık kredi içerir. Bu kredinin bir kısmını
+        kullandıktan sonra 3.1 kapsamında iade isterseniz, kullandığınız kredi iade tutarından
+        düşülür. Düşülen tutar, planınızın o ay için içerdiği krediden fazla olamaz. Kullanılmamış
+        dahil kredi, iade işlendiğinde kaldırılır.
       </p>
 
       <h2>4. İade Talebi Nasıl Yapılır?</h2>
