@@ -1823,6 +1823,11 @@ export interface TranslationKeys {
     infraWalletTitle: string;
     infraWalletDesc: string;
     infraBalance: string;
+    infraIncludedCredit: string;
+    infraIncludedCreditValue: string;
+    infraIncludedCreditResets: string;
+    infraIncludedCreditHint: string;
+    infraFromIncludedCredit: string;
     infraMarginNote: string;
     infraEstimatedBurn: string;
     infraRunningServers: string;
@@ -3521,7 +3526,7 @@ export const en: TranslationKeys = {
     custom: 'Custom',
     contactForPricing: 'Contact us for pricing',
     pricingBottomNote:
-      'All platform plans include SSL, CI/CD, and monitoring. Managed Hetzner servers are not included in plan price — they draw from prepaid infrastructure credits billed by the hour while running.',
+      'All platform plans include SSL, CI/CD, and monitoring. Paid plans include monthly managed-server credit; beyond it, managed Hetzner servers draw from prepaid infrastructure credits billed by the hour while running.',
     billingHowItWorksBadge: 'Billing',
     billingHowItWorksTitle: 'How billing works',
     billingHowItWorksSubtitle:
@@ -4954,7 +4959,7 @@ export const en: TranslationKeys = {
     plansFooterLead:
       'Platform plans include SSL, GitHub integration, and deployments. Managed servers use separate prepaid infrastructure credits.',
     plansPricingNote:
-      'Subscription = platform limits (projects, deploys, team). Managed Hetzner servers are billed hourly from your infrastructure wallet (provider cost + margin), not included in the monthly plan price.',
+      'Subscription = platform limits (projects, deploys, team) plus monthly managed-server credit, used before your infrastructure wallet. Managed Hetzner servers beyond the credit are billed hourly from the wallet.',
     plansFooterNeedCustom: 'Need custom limits?',
     plansContactUs: 'Contact us',
     planMostPopular: 'Recommended',
@@ -4970,6 +4975,11 @@ export const en: TranslationKeys = {
     infraWalletDesc:
       'Managed cloud servers (Hetzner) are billed separately from your platform plan. Prepaid credits are used while your servers are running.',
     infraBalance: 'Available balance',
+    infraIncludedCredit: 'Included credit this month',
+    infraFromIncludedCredit: '{amount} from included credit',
+    infraIncludedCreditValue: '{left} of {total} left',
+    infraIncludedCreditResets: 'Used before your balance, managed servers only. Resets on {date}; unused credit does not roll over.',
+    infraIncludedCreditHint: 'Used before your balance, managed servers only. Resets every month; unused credit does not roll over.',
     infraMarginNote: 'Prices shown are all-in rates for managed server usage.',
     infraEstimatedBurn: 'Estimated monthly burn (running servers)',
     infraRunningServers: '{count} running managed server(s)',

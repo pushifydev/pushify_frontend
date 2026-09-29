@@ -9,6 +9,7 @@ import { useAvailablePlans } from '@/hooks/useBilling';
 import type { AvailablePlans, PlanLimits, PlanType } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
 import { MSection } from '@/components/landing/MarketingKit';
+import { includedServerFor, type ManagedServerPricesData } from '@/lib/managed-server-prices';
 
 type BillingKey = keyof TranslationKeys['billing'];
 
@@ -43,6 +44,8 @@ const copy = {
     },
     ctas: { free: 'Start free', hobby: 'Choose Hobby', pro: 'Choose Pro', business: 'Choose Business', enterprise: 'Talk to us' },
     freeServerNote: 'your own, over SSH',
+    includedCredit: (usd: string) => `Includes $${usd} of managed-server credit every month`,
+    includedServer: (vcpus: number, gb: number) => `A ${vcpus} vCPU / ${gb} GB server, included`,
     limits: {
       servers: (n: string) => `${n} servers`,
       server: '1 server',
@@ -68,6 +71,7 @@ const copy = {
       'A prepaid USD balance you top up by card.',
       'Managed Hetzner servers draw from it hourly while running.',
       'Servers you connect over SSH never touch it.',
+      'Monthly credit is used before your wallet, applies to managed servers only, and does not roll over. Yearly plans get it every month.',
     ],
     compareEyebrow: 'Side by side',
     compareTitle: 'Every limit, per plan.',
@@ -96,6 +100,8 @@ const copy = {
     },
     ctas: { free: 'Ücretsiz başla', hobby: 'Hobby’yi seç', pro: 'Pro’yu seç', business: 'Business’ı seç', enterprise: 'Bize yazın' },
     freeServerNote: 'kendi sunucunuz, SSH ile',
+    includedCredit: (usd: string) => `Her ay $${usd} yönetilen sunucu kredisi dahil`,
+    includedServer: (vcpus: number, gb: number) => `${vcpus} vCPU / ${gb} GB sunucu dahil`,
     limits: {
       servers: (n: string) => `${n} sunucu`,
       server: '1 sunucu',
@@ -121,6 +127,7 @@ const copy = {
       'Kartla yüklediğiniz ön ödemeli bir USD bakiye.',
       'Yönetilen Hetzner sunucuları çalıştıkça saatlik düşer.',
       'SSH ile bağladığınız sunucular bu bakiyeye hiç dokunmaz.',
+      'Aylık kredi cüzdanınızdan önce kullanılır, yalnızca yönetilen sunuculara uygulanır ve devretmez. Yıllık planlar da her ay alır.',
     ],
     compareEyebrow: 'Yan yana',
     compareTitle: 'Plan plan tüm limitler.',
@@ -172,7 +179,13 @@ function Cta({ plan, label, primary }: { plan: PlanType; label: string; primary:
   );
 }
 
-export function PricingPlans({ initialPlans }: { initialPlans?: AvailablePlans }) {
+export function PricingPlans({
+  initialPlans,
+  serverPrices,
+}: {
+  initialPlans?: AvailablePlans;
+  serverPrices?: ManagedServerPricesData;
+}) {
   const { t, locale } = useTranslation();
   const c = copy[locale === 'tr' ? 'tr' : 'en'];
   const [yearly, setYearly] = useState(false);
@@ -181,6 +194,19 @@ export function PricingPlans({ initialPlans }: { initialPlans?: AvailablePlans }
   const price = (key: PlanType) => {
     const p = plans?.[key]?.price ?? 0;
     return yearly && p > 0 ? Math.round(p * (1 - YEARLY_DISCOUNT)) : p;
+  };
+
+  // Monthly included credit, and for Hobby the server it fully pays for — shown only while the
+  // live price list confirms the cheapest Hobby server fits inside the credit.
+  const creditLines = (key: PlanType): string[] => {
+    const cents = plans?.[key]?.includedInfraCreditCents ?? 0;
+    if (cents <= 0 || key === 'free' || key === 'enterprise') return [];
+    const lines = [c.includedCredit(String(cents / 100))];
+    if (key === 'hobby') {
+      const server = includedServerFor('hobby', serverPrices?.servers ?? [], cents);
+      if (server) lines.unshift(c.includedServer(server.vcpus, server.memoryGb));
+    }
+    return lines;
   };
 
   const limitLines = (key: PlanType): string[] => {
@@ -258,6 +284,12 @@ export function PricingPlans({ initialPlans }: { initialPlans?: AvailablePlans }
                       </div>
 
                       <ul className="mt-8 space-y-3 text-[15px]" style={{ color: 'var(--hp-body)' }}>
+                        {creditLines(key).map((line, i) => (
+                          <li key={line} className="flex gap-2.5" style={i === 0 ? { color: 'var(--hp-ink)' } : undefined}>
+                            <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: 'var(--hp-ink)' }} aria-hidden="true" />
+                            {line}
+                          </li>
+                        ))}
                         {limitLines(key).map((line) => (
                           <li key={line} className="flex gap-2.5">
                             <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: 'var(--hp-ink)' }} aria-hidden="true" />

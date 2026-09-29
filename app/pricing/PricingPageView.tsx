@@ -33,7 +33,7 @@ export function PricingPageView({
   return (
     <MarketingShell noPad>
       <MarketingPageHero label={c.label} title={c.title} description={c.lead} />
-      <PricingPlans initialPlans={initialPlans} />
+      <PricingPlans initialPlans={initialPlans} serverPrices={serverPrices} />
       <ManagedServerPrices prices={serverPrices} />
       {/* The same estimate as the homepage, and the billing questions people ask before paying. */}
       <HomeCost />

@@ -33,3 +33,19 @@ export function largestPerPlan(servers: ManagedServerPricesData['servers']) {
   }
   return out;
 }
+
+/**
+ * The server a plan's monthly credit fully pays for, if any: the cheapest server that plan can
+ * create, when its monthly price fits within the credit. Drives Hobby's "server, included" line,
+ * which disappears by itself if prices rise or the entry server sells out.
+ */
+export function includedServerFor(
+  plan: 'hobby' | 'pro' | 'business',
+  servers: ManagedServerPricesData['servers'],
+  monthlyCreditCents: number,
+) {
+  const cheapest = servers
+    .filter((s) => PLAN_RANK[s.minPlan] <= PLAN_RANK[plan])
+    .sort((a, b) => a.priceMonthlyCents - b.priceMonthlyCents)[0];
+  return cheapest && monthlyCreditCents > 0 && cheapest.priceMonthlyCents <= monthlyCreditCents ? cheapest : undefined;
+}
