@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useSignedIn } from '@/hooks/useSignedIn';
 import { Eyebrow } from './Eyebrow';
+import { TryWithoutServerLine } from '../TryWithoutServer';
 
 /** Centered thesis under a single shaft of light that rises on load — a push going live. */
 export function HomeHero() {
@@ -35,6 +36,7 @@ export function HomeHero() {
             {t('landing', 'heroStarGithub')}
           </a>
         </div>
+        <TryWithoutServerLine className="hp-rise mt-6" style={{ animationDelay: '320ms' }} />
       </div>
     </section>
   );

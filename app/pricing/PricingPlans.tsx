@@ -9,6 +9,7 @@ import { useAvailablePlans } from '@/hooks/useBilling';
 import type { AvailablePlans, PlanLimits, PlanType } from '@/lib/api';
 import type { TranslationKeys } from '@/lib/i18n/locales/en';
 import { MSection } from '@/components/landing/MarketingKit';
+import { TryWithoutServerRow } from '@/components/landing/TryWithoutServer';
 import { includedServerFor, type ManagedServerPricesData } from '@/lib/managed-server-prices';
 
 type BillingKey = keyof TranslationKeys['billing'];
@@ -334,6 +335,7 @@ export function PricingPlans({
               )}
             </>
           )}
+          <TryWithoutServerRow />
         </div>
       </section>
 

@@ -109,6 +109,12 @@ export default function NewProjectPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+  // "Upload a site" links on the homepage and pricing (?source=upload) open the upload step.
+  useEffect(() => {
+    if (searchParams.get('source') === 'upload') importSource.setSourceType('upload');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   const steps: { id: Step; label: string }[] = [
     { id: 'source', label: t('newProject', 'importSource') },
     { id: 'configure', label: t('newProject', 'configure') },

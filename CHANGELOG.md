@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.96] - 2026-09-29
+
+### Added
+- **Try Pushify without a server.**
+  - The homepage hero has a one-line link: upload a static site and get a `https://…pushify.dev` address.
+  - /pricing has a "Try it without a server" row under the plans. It says the site is static only, up to 50 MB, works on every plan including Free, and counts as one project.
+  - Both links open the new-project wizard on the upload step. Visitors sign up first and land there afterwards.
+- The new-project wizard accepts `?source=upload`.
+
 ## [0.2.0-beta.95] - 2026-09-29
 
 ### Added
