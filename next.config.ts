@@ -58,6 +58,25 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: pkg.version,
   },
+  // Guessable URLs that used to 404. Only renamed pages are permanent; the docs targets are
+  // temporary because those paths will get real pages when the product docs are split out.
+  async redirects() {
+    return [
+      { source: '/marketplace', destination: '/apps', permanent: true },
+      { source: '/signup', destination: '/register', permanent: true },
+      { source: '/cli', destination: 'https://www.npmjs.com/package/pushify-cli', permanent: false },
+      { source: '/docs/cli', destination: 'https://www.npmjs.com/package/pushify-cli', permanent: false },
+      { source: '/guides', destination: '/guides/deploy-nextjs', permanent: false },
+      { source: '/docs/getting-started', destination: '/docs#intro-quick-start', permanent: false },
+      { source: '/docs/quickstart', destination: '/docs#intro-quick-start', permanent: false },
+      { source: '/docs/self-hosting', destination: '/open-source', permanent: false },
+      { source: '/docs/servers', destination: '/docs#servers', permanent: false },
+      { source: '/docs/databases', destination: '/docs#databases', permanent: false },
+      { source: '/docs/deploy', destination: '/docs#deployments', permanent: false },
+      { source: '/docs/api', destination: '/docs', permanent: false },
+      { source: '/vs/dokploy', destination: '/alternatives', permanent: false },
+    ];
+  },
   async headers() {
     return [
       {
