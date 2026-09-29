@@ -14,6 +14,7 @@ import {
   getSubscriptionStatus,
   cancelSubscription,
   resumeSubscription,
+  cancelScheduledChange,
   getInfraBilling,
   createInfraTopUpSession,
   type UpdateBillingEmailInput,
@@ -120,7 +121,7 @@ export function useChangePlan() {
       return result.data!;
     },
     onSuccess: (data) => {
-      if (data.status === 'changed') queryClient.invalidateQueries({ queryKey: billingKeys.all });
+      if (data.status === 'changed' || data.status === 'scheduled') queryClient.invalidateQueries({ queryKey: billingKeys.all });
     },
   });
 }
@@ -177,6 +178,18 @@ export function useCancelSubscription() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: billingKeys.all });
     },
+  });
+}
+
+export function useCancelScheduledChange() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const result = await cancelScheduledChange();
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: billingKeys.all }),
   });
 }
 

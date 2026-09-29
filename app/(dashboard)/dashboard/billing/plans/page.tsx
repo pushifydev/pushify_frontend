@@ -20,7 +20,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { PlansCompareView } from '../components/PlansCompareView';
 
 export default function PlansPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const { data: plans, isLoading: plansLoading } = useAvailablePlans();
   const { data: billingInfo, isLoading: billingLoading } = useBillingInfo();
@@ -63,7 +63,17 @@ export default function PlansPage() {
           }
           setConfirmPlan(null);
           setPendingPlan(null);
-          toast.success(formatMessage(t('billing', 'planChanged'), { plan: plans?.[result.plan]?.name ?? result.plan }));
+          const planName = plans?.[result.plan]?.name ?? result.plan;
+          if (result.status === 'scheduled') {
+            const date = new Date(result.effectiveAt).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            });
+            toast.success(formatMessage(t('billing', 'planChangeScheduled'), { plan: planName, date }));
+          } else {
+            toast.success(formatMessage(t('billing', 'planChanged'), { plan: planName }));
+          }
           router.push('/dashboard/billing');
         },
         onError: (err) => {
@@ -107,7 +117,9 @@ export default function PlansPage() {
 
   if (!plans) return null;
 
-  const isUpgrade = confirmPlan !== null && plans[confirmPlan].price > plans[currentPlan].price;
+  // Same rule as the backend: only a higher plan applies now; anything else waits for the period end.
+  const RANK: Record<PlanType, number> = { free: 0, hobby: 1, pro: 2, business: 3, enterprise: 4 };
+  const isUpgrade = confirmPlan !== null && RANK[confirmPlan] > RANK[currentPlan];
 
   return (
     <>

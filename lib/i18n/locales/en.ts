@@ -1856,6 +1856,10 @@ export interface TranslationKeys {
     changePlanTitle: string;
     changePlanUpgradeDesc: string;
     changePlanDowngradeDesc: string;
+    planChangeScheduled: string;
+    pendingChangeNote: string;
+    keepCurrentPlan: string;
+    pendingChangeCancelled: string;
     changePlanConfirm: string;
     planChanged: string;
     grandfatherBanner: string;
@@ -5010,7 +5014,11 @@ export const en: TranslationKeys = {
     openingPaymentPage: 'Your bank needs to confirm this payment. Opening the payment page…',
     changePlanTitle: 'Switch to {plan}?',
     changePlanUpgradeDesc: 'Your card on file is charged now for the rest of this billing period, pro-rated. The new limits apply right away.',
-    changePlanDowngradeDesc: 'The new plan applies right away. The unused part of your current plan is credited to your next invoice.',
+    changePlanDowngradeDesc: 'Nothing changes until the end of this billing period: you keep your current plan and its included credit, then the new plan starts. The rest of this period is not refunded.',
+    planChangeScheduled: 'Your plan changes to {plan} on {date}.',
+    pendingChangeNote: 'Changes to {plan} on {date}.',
+    keepCurrentPlan: 'Keep current plan',
+    pendingChangeCancelled: 'Your plan stays as it is.',
     changePlanConfirm: 'Switch plan',
     planChanged: 'You are now on {plan}.',
   },
