@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.79] - 2026-09-29
+
+### Fixed
+- **Shared links always showed the homepage card.** Twitter/X tags now come from each page's own Open Graph data.
+- **Guessable URLs returned 404.** `/marketplace` and `/signup` redirect permanently to `/apps` and `/register`; `/cli`, `/guides`, `/vs/dokploy` and `/docs/*` paths redirect temporarily until they get pages of their own.
+
+### Changed
+- **Hero:** eyebrow reads "Open-source PaaS for developers"; the secondary GitHub button reads "View on GitHub".
+
 ## [0.2.0-beta.78] - 2026-09-29
 
 ### Added

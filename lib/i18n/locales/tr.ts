@@ -316,7 +316,7 @@ export const tr: TranslationKeys = {
     sites: 'Siteler',
     exploreMore: 'Daha fazlasını keşfet',
     // Hero
-    openSourcePlatform: 'Açık kaynak bulut platformu',
+    openSourcePlatform: 'Geliştiriciler için açık kaynak PaaS',
     heroTitleLead: 'Kendi sunucularınıza',
     heroTitleEm: 'operasyon yükü olmadan dağıtın',
     getStartedFree: 'Ücretsiz başlayın',
@@ -327,7 +327,7 @@ export const tr: TranslationKeys = {
     configRequired: 'Yapılandırma Gerekli',
     heroLead:
       'Vendor lock-in olmadan Vercel kalitesinde geliştirici deneyimi isteyen ekipler için açık kaynak PaaS. Bir repo bağlayın, bir sunucu seçin (sizin veya bizim), HTTPS, build ve sıfır kesinti ile saniyeler içinde üretime alın.',
-    heroStarGithub: "GitHub'da yıldız ver",
+    heroStarGithub: "GitHub'da incele",
     heroStatMitLicensed: 'MIT lisanslı',
     heroStatDeployFast: 'Git push → canlı',
     heroStatNoVendorLockIn: 'Vendor kilidi yok',

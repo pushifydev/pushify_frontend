@@ -83,12 +83,11 @@ export const metadata: Metadata = {
       },
     ],
   },
+  // Only the card type lives here. A title/description/image set at the root is inherited
+  // verbatim by every page, so each shared link showed the homepage card; without them X
+  // falls back to each page's own og:* tags.
   twitter: {
     card: 'summary_large_image',
-    title: 'Pushify - Open Source Cloud Deployment Platform',
-    description:
-      'Open-source deployment platform. Connect a repository, pick a server (yours or ours) and ship with HTTPS and zero-downtime deploys.',
-    images: ['/og-image.png'],
   },
   robots: {
     index: true,

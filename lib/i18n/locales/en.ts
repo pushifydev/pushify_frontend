@@ -3422,7 +3422,7 @@ export const en: TranslationKeys = {
     sites: 'Sites',
     exploreMore: 'Explore more',
     // Hero
-    openSourcePlatform: 'Open-source cloud platform',
+    openSourcePlatform: 'Open-source PaaS for developers',
     heroTitleLead: 'Deploy to your own servers',
     heroTitleEm: 'without the ops work',
     getStartedFree: 'Get started free',
@@ -3433,7 +3433,7 @@ export const en: TranslationKeys = {
     configRequired: 'Config Required',
     heroLead:
       'Open-source PaaS for teams that want Vercel-grade developer experience without the vendor lock-in. Connect a repository, choose a server (yours or ours), and ship to production with HTTPS, builds, and zero-downtime cutover — in under a minute.',
-    heroStarGithub: 'Star on GitHub',
+    heroStarGithub: 'View on GitHub',
     heroStatMitLicensed: 'MIT licensed',
     heroStatDeployFast: 'Git push → live',
     heroStatNoVendorLockIn: 'No vendor lock-in',
