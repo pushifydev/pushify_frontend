@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.82] - 2026-09-29
+
+### Fixed
+- **Managed server billing described correctly.** Comparison pages, `/alternatives`, `/about` and the blog said managed Hetzner servers have flat monthly prices; they are billed at a fixed hourly rate from prepaid credits, while the platform plan stays a fixed monthly fee (EN and TR).
+
 ## [0.2.0-beta.81] - 2026-09-29
 
 ### Added
