@@ -80,6 +80,8 @@ export interface Region {
   country: string;
   city: string;
   available: boolean;
+  /** Sent for an organization: its plan can create at least one in-stock size here. */
+  availableForPlan?: boolean;
 }
 
 export interface Image {

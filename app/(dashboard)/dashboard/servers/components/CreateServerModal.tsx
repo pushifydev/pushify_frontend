@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { usableRegions, defaultRegion } from '@/lib/servers/regions';
+import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Server, Loader2, Cpu, HardDrive, MemoryStick, Globe, Key } from 'lucide-react';
 import { useTranslation, useCreateServer, useProviderRegions, useProviderSizes, useProviderImages } from '@/hooks';
@@ -27,7 +28,8 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
   });
   const [byosData, setByosData] = useState({ name: '', ipv4: '', sshPrivateKey: '' });
 
-  const { data: regions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
+  const { data: allRegions = [], isLoading: regionsLoading } = useProviderRegions('hetzner');
+  const regions = useMemo(() => usableRegions(allRegions), [allRegions]);
   const { data: providerSizes = [], isLoading: sizesLoading } = useProviderSizes('hetzner', formData.region);
 
   // Sizes are priced and stocked per region: the effective choice is one the region offers.
@@ -38,8 +40,9 @@ export function CreateServerModal({ isOpen, onClose }: CreateServerModalProps) {
 
   // Auto-select first region
   useEffect(() => {
-    if (regions.length > 0 && !formData.region) {
-      setFormData((prev) => ({ ...prev, region: regions[0].id }));
+    const initial = defaultRegion(regions);
+    if (initial && !formData.region) {
+      setFormData((prev) => ({ ...prev, region: initial.id }));
     }
   }, [regions, formData.region]);
 
