@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.100] - 2026-09-30
+
+### Added
+- **Deletion confirmed by email.** Accounts with neither a password nor two-factor authentication now confirm a deletion by email.
+  - The delete dialog explains this, and its button reads "Email me the link".
+  - After sending, it shows "Check your email".
+  - The link opens `/confirm-deletion`, which starts the deletion and shows its date. For an account deletion, it also signs this browser out.
+
+  Needs backend 0.2.0-beta.89.
+
 ## [0.2.0-beta.99] - 2026-09-29
 
 ### Added
