@@ -4,7 +4,7 @@
  * plain pattern string).
  */
 export const MARKETING_PATH_PATTERN =
-  '^/($|features|pricing|sites|domains|open-source|about|alternatives|apps|blog|changelog|deploy-button|guides|partners|privacy|terms|refund|status|pushify-yaml|vs/|docs|deploy/)';
+  '^/($|features|pricing|sites|domains|open-source|about|alternatives|apps|blog|changelog|deploy-button|guides|partners|privacy|terms|refund|security|exit-plan|contact|status|pushify-yaml|vs/|docs|deploy/)';
 
 const marketing = new RegExp(MARKETING_PATH_PATTERN);
 

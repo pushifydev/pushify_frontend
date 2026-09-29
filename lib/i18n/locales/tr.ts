@@ -305,6 +305,7 @@ export const tr: TranslationKeys = {
     terms: 'Mesafeli Satış Sözleşmesi',
     refund: 'Teslimat ve İade Şartları',
     security: 'Güvenlik',
+    exitPlan: 'Çıkış planı',
     cookies: 'Çerez Politikası',
   },
   landing: {
