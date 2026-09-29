@@ -52,12 +52,13 @@ export function LandingFooter({ lit = false }: { lit?: boolean } = {}) {
     [t('landing', 'company')]: [
       { label: t('legal', 'about'), href: '/about' },
       { label: t('landing', 'partners'), href: '/partners' },
-      { label: t('landing', 'contact'), href: 'mailto:support@pushify.dev' },
+      { label: t('landing', 'contact'), href: '/contact' },
     ],
     [t('legal', 'legal')]: [
       { label: t('legal', 'privacy'), href: '/privacy' },
       { label: t('legal', 'terms'), href: '/terms' },
       { label: t('legal', 'refund'), href: '/refund' },
+      { label: t('legal', 'security'), href: '/security' },
     ],
   };
 

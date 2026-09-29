@@ -31,6 +31,8 @@ const CONTENT_DATES: Record<string, string> = {
   '/privacy': '2026-05-01',
   '/terms': '2026-05-01',
   '/refund': '2026-05-01',
+  '/security': '2026-09-29',
+  '/contact': '2026-09-29',
   '/deploy/nextjs': '2026-06-20',
   '/deploy/react': '2026-06-20',
   '/deploy/vue': '2026-06-20',
