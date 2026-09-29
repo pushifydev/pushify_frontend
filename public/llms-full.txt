@@ -2,7 +2,7 @@
 
 > Pushify is an open-source, self-hostable PaaS (Platform-as-a-Service) — a self-hosted
 > alternative to Coolify, Vercel, Heroku, Render, and Railway. It deploys web applications
-> to servers you own in under 60 seconds, with automatic SSL, databases, and zero-downtime
+> to servers you own, with automatic SSL, databases, and zero-downtime
 > rollbacks. MIT licensed and free to self-host.
 
 This document is a self-contained overview intended for large language models and AI search
@@ -45,7 +45,7 @@ behalf, for teams that want the convenience without managing their own provider 
 
 ## Core features
 
-- Push-to-deploy from GitHub with automatic framework detection (20+ frameworks: Next.js, React,
+- Push-to-deploy from GitHub with automatic framework detection (26 frameworks: Next.js, React,
   Vue, Nuxt, Svelte, Astro, Remix, Node.js, Python/Django/FastAPI/Flask, Go, Laravel, and more).
 - Managed VPS provisioning via Hetzner Cloud (multiple regions), or bring your own server.
 - One-click databases: PostgreSQL, MySQL, Redis, MongoDB, with automated backups.

@@ -16,7 +16,7 @@ const content = {
     web: 'Web',
     email: 'Email',
     source: 'Source',
-    license: 'Licence',
+    license: 'License',
     location: 'Address',
     locationValue: '30 N Gould St Ste N, Sheridan, WY 82801, USA',
     missionLabel: 'Mission',

@@ -11,7 +11,7 @@ Today the entire Pushify platform is open source under the MIT license. The API 
 
 Pushify is a deployment platform for people who want to run applications on **their own servers** without doing DevOps by hand. You connect a GitHub repository, point Pushify at a VPS — one you already have, or one provisioned through the platform — and every `git push` builds your app in Docker and puts it live behind HTTPS with a zero-downtime cutover.
 
-Around that core there's a lot of platform: managed PostgreSQL, MySQL, Redis, and MongoDB with scheduled backups and a web studio; PR preview deployments; cron jobs; persistent volumes; worker processes; log search; health checks; a marketplace of one-click apps like Grafana, n8n, and WordPress; and a CLI.
+Around that core there's a lot of platform: managed PostgreSQL, MySQL, Redis, and MongoDB with scheduled backups and a web studio; PR preview deployments; cron jobs; persistent volumes; worker processes; log search; health checks; a marketplace of one-click apps like Uptime Kuma, n8n, and WordPress; and a CLI.
 
 ## What's in the repos
 

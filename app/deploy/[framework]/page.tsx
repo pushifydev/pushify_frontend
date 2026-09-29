@@ -42,12 +42,12 @@ const DEPLOY_CODE = 'pushify deploy --prod --wait';
 
 const SHARED_EN = {
   readyDesc: 'Free on one server you bring. Paid plans add managed servers and more projects.',
-  startBtn: 'Start for free',
+  startBtn: 'Start free',
   docsBtn: 'Read the docs',
 };
 const SHARED_TR = {
   readyDesc: 'Getirdiğiniz tek sunucuda ücretsiz. Ücretli planlar yönetilen sunucu ve daha fazla proje ekler.',
-  startBtn: 'Ücretsiz başlayın',
+  startBtn: 'Ücretsiz başla',
   docsBtn: 'Dokümantasyonu okuyun',
 };
 

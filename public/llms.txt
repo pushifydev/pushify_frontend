@@ -2,17 +2,16 @@
 
 > Pushify is an open-source, self-hostable PaaS (Platform-as-a-Service) — a
 > self-hosted alternative to Coolify, Vercel, Heroku, Render, and Railway. It lets
-> developers deploy web applications to their own VPS servers in under 60 seconds,
-> without configuration. Pushify runs on servers you own — provisioned through
-> Hetzner Cloud or any custom VPS — so your data never touches third-party
-> infrastructure. MIT-licensed. Supports 20+ frameworks including Next.js, React,
+> developers deploy web applications to their own VPS servers without
+> configuration. Apps run on servers you own or on managed Hetzner Cloud
+> servers rented through Pushify. MIT-licensed. Auto-detects 26 frameworks including Next.js, React,
 > Vue.js, Nuxt, Svelte, Astro, Remix, Node.js, Python, Go, and Laravel.
 
 ## Key Pages
 
 - [Home](https://pushify.dev): Platform overview and value proposition
 - [Features](https://pushify.dev/features): Full feature set — deploy, servers, databases, CLI, monitoring
-- [Pricing](https://pushify.dev/pricing): Free tier and Pro plans
+- [Pricing](https://pushify.dev/pricing): Free, Hobby, Pro, Business and Enterprise plans
 - [Docs](https://pushify.dev/docs): REST API reference, authentication, CI/CD integration
 - [Site Builder](https://pushify.dev/sites): No-code visual website builder with multi-page management and one-click publish
 - [Open Source](https://pushify.dev/open-source): MIT license, self-hosting, contribution guide
