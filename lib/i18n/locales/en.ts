@@ -6009,7 +6009,7 @@ export const en: TranslationKeys = {
     ctaSecondary: 'View pricing',
     tldrTitle: 'TL;DR',
     tldrBody:
-      "Heroku is a fully managed platform: you never touch a server, and you pay per dyno — a Basic dyno is $7/mo, the smallest Postgres is $5/mo, so a small always-on app starts around $12/mo (the free tier was removed in November 2022; the $5 Eco plan sleeps after 30 minutes of inactivity). Pushify keeps Heroku's push-to-deploy feel but runs on infrastructure you control: self-host the whole platform for free, bring your own VPS, or let Pushify provision managed Hetzner servers at flat monthly prices. If you want zero server responsibility and a decade-old add-on ecosystem, Heroku is still excellent. If you want ownership and predictable bills, that's Pushify.",
+      "Heroku is a fully managed platform: you never touch a server, and you pay per dyno — a Basic dyno is $7/mo, the smallest Postgres is $5/mo, so a small always-on app starts around $12/mo (the free tier was removed in November 2022; the $5 Eco plan sleeps after 30 minutes of inactivity). Pushify keeps Heroku's push-to-deploy feel but runs on infrastructure you control: self-host the whole platform for free, bring your own VPS, or let Pushify provision managed Hetzner servers billed at a fixed hourly rate from prepaid credits. If you want zero server responsibility and a decade-old add-on ecosystem, Heroku is still excellent. If you want ownership and predictable bills, that's Pushify.",
     choosePushifyTitle: 'Choose Pushify if…',
     choosePushify1: "You want flat server pricing, not per-dyno and per-add-on billing.",
     choosePushify2: "You want apps and data on servers you own.",
@@ -6031,7 +6031,7 @@ export const en: TranslationKeys = {
     diff1Title: 'Where your app runs',
     diff1Body: "Heroku can't be self-hosted. Pushify is MIT-licensed and deploys to any VPS or managed Hetzner server.",
     diff2Title: 'How the bill grows',
-    diff2Body: "Heroku bills per dyno and add-on. On Pushify, one server has one flat monthly price.",
+    diff2Body: "Heroku bills per dyno and add-on. On Pushify, a fixed monthly plan covers the platform, and one server runs all your apps — your own, or a managed one at a fixed hourly rate from prepaid credits.",
     diff3Title: 'What happened to free',
     diff3Body: "Heroku's free tier ended in 2022. Self-hosting Pushify is free, and scale-to-zero is a feature.",
     faqTitle: 'Frequently asked questions',

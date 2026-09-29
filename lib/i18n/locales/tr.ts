@@ -2905,7 +2905,7 @@ export const tr: TranslationKeys = {
     ctaSecondary: 'Fiyatları gör',
     tldrTitle: 'Özet',
     tldrBody:
-      "Heroku tamamen yönetilen bir platform: sunucuya hiç dokunmazsın ve dyno başına ödersin — Basic dyno ayda $7, en küçük Postgres $5; yani sürekli açık küçük bir uygulama yaklaşık $12/ay'dan başlar (ücretsiz katman Kasım 2022'de kaldırıldı; $5'lık Eco planındaki dyno'lar 30 dakika hareketsizlikte uyur). Pushify, Heroku'nun push-to-deploy hissini korur ama kontrolü sende olan altyapıda çalışır: platformu ücretsiz self-host et, kendi VPS'ini getir ya da Pushify'ın sabit aylık fiyatlı yönetilen Hetzner sunucularını kullan. Sıfır sunucu sorumluluğu ve on yıllık eklenti ekosistemi istiyorsan Heroku hâlâ mükemmel. Sahiplik ve öngörülebilir fatura istiyorsan Pushify.",
+      "Heroku tamamen yönetilen bir platform: sunucuya hiç dokunmazsın ve dyno başına ödersin — Basic dyno ayda $7, en küçük Postgres $5; yani sürekli açık küçük bir uygulama yaklaşık $12/ay'dan başlar (ücretsiz katman Kasım 2022'de kaldırıldı; $5'lık Eco planındaki dyno'lar 30 dakika hareketsizlikte uyur). Pushify, Heroku'nun push-to-deploy hissini korur ama kontrolü sende olan altyapıda çalışır: platformu ücretsiz self-host et, kendi VPS'ini getir ya da Pushify'ın ön ödemeli krediden sabit saatlik ücretle faturalanan yönetilen Hetzner sunucularını kullan. Sıfır sunucu sorumluluğu ve on yıllık eklenti ekosistemi istiyorsan Heroku hâlâ mükemmel. Sahiplik ve öngörülebilir fatura istiyorsan Pushify.",
     choosePushifyTitle: 'Şu durumda Pushify seç…',
     choosePushify1: "Dyno ve eklenti başına değil, sabit sunucu fiyatı istiyorsun.",
     choosePushify2: "Uygulamaların ve verin kendi sunucularında olsun istiyorsun.",
@@ -2927,7 +2927,7 @@ export const tr: TranslationKeys = {
     diff1Title: 'Uygulaman nerede çalışıyor',
     diff1Body: "Heroku self-host edilemez. Pushify MIT lisanslı; herhangi bir VPS'e ya da yönetilen Hetzner sunucusuna deploy eder.",
     diff2Title: 'Fatura nasıl büyüyor',
-    diff2Body: "Heroku dyno ve eklenti başına faturalar. Pushify'da bir sunucunun tek bir sabit aylık fiyatı var.",
+    diff2Body: "Heroku dyno ve eklenti başına faturalar. Pushify'da platformu sabit aylık bir plan karşılar ve tüm uygulamaların tek bir sunucuda çalışır — kendi sunucun ya da ön ödemeli krediden sabit saatlik ücretli yönetilen bir sunucu.",
     diff3Title: "Ücretsiz katmana ne oldu",
     diff3Body: "Heroku'nun ücretsiz planı 2022'de bitti. Pushify'ı self-host etmek ücretsiz; sıfıra ölçekleme bir özellik.",
     faqTitle: 'Sık sorulan sorular',
