@@ -52,6 +52,7 @@ export function LandingFooter({ lit = false }: { lit?: boolean } = {}) {
     // own, and as a column they balance the row.
     [t('landing', 'compare')]: [
       { label: 'Coolify', href: '/vs/coolify' },
+      { label: 'Dokploy', href: '/vs/dokploy' },
       { label: 'Vercel', href: '/vs/vercel' },
       { label: 'Heroku', href: '/vs/heroku' },
       { label: 'Railway', href: '/vs/railway' },

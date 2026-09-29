@@ -79,7 +79,6 @@ const nextConfig: NextConfig = {
       { source: '/docs/databases', destination: '/docs#databases', permanent: false },
       { source: '/docs/deploy', destination: '/docs#deployments', permanent: false },
       { source: '/docs/api', destination: '/docs', permanent: false },
-      { source: '/vs/dokploy', destination: '/alternatives', permanent: false },
     ];
   },
   async headers() {
