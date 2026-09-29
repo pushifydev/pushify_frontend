@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.90] - 2026-09-29
+
+### Fixed
+- **Server creation no longer opens on a region you cannot use.** The create-server forms hide regions where your plan cannot create any in-stock server (for example Hobby in Nuremberg while its entry server is sold out there) and preselect the first region that works. Needs backend beta.78.
+
 ## [0.2.0-beta.89] - 2026-09-29
 
 ### Added
