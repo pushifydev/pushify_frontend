@@ -27,6 +27,8 @@ export interface ComparisonPageViewProps {
   competitorReasons: string[];
   tableTitle: string;
   tableNote: string;
+  /** Where each competitor fact was read, listed under the table. */
+  sources?: { label: string; href: string }[];
   colFeature: string;
   colPushify: string;
   colCompetitor: string;
@@ -53,6 +55,7 @@ const copy = {
     relatedTitle: 'Other comparisons and guides',
     yes: 'Yes',
     no: 'No',
+    sources: 'Sources',
   },
   tr: {
     fitEyebrow: 'Hangisi ne zaman',
@@ -63,6 +66,7 @@ const copy = {
     relatedTitle: 'Diğer karşılaştırmalar ve rehberler',
     yes: 'Var',
     no: 'Yok',
+    sources: 'Kaynaklar',
   },
 };
 
@@ -89,7 +93,7 @@ function Mark({ value, ours, yes, no }: { value: boolean; ours: boolean; yes: st
 const OURS_BG = 'color-mix(in srgb, var(--hp-ink) 5%, transparent)';
 
 /** The page's one object: the side-by-side sheet, framed like a card and placed right under the hero. */
-function ComparisonTable({ p, yes, no }: { p: ComparisonPageViewProps; yes: string; no: string }) {
+function ComparisonTable({ p, yes, no, sourcesLabel }: { p: ComparisonPageViewProps; yes: string; no: string; sourcesLabel: string }) {
   const head = 'hp-mono py-3.5 text-[11px] font-normal uppercase tracking-[0.1em]';
   return (
     <figure
@@ -140,6 +144,24 @@ function ComparisonTable({ p, yes, no }: { p: ComparisonPageViewProps; yes: stri
         style={{ color: 'var(--hp-muted)', borderTop: '1px solid var(--hp-line-strong)' }}
       >
         {p.tableNote}
+        {p.sources && p.sources.length > 0 && (
+          <span className="block mt-2">
+            {sourcesLabel}:{' '}
+            {p.sources.map((src, i) => (
+              <span key={src.href}>
+                {i > 0 && ' · '}
+                <a
+                  href={src.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-(--hp-ink)"
+                >
+                  {src.label}
+                </a>
+              </span>
+            ))}
+          </span>
+        )}
       </figcaption>
     </figure>
   );
@@ -204,7 +226,7 @@ export function ComparisonPageView(p: ComparisonPageViewProps) {
 
         {/* The comparison sheet — the first thing under the hero */}
         <div className="lp-container max-w-3xl pt-14 md:pt-16 pb-20 md:pb-24">
-          <ComparisonTable p={p} yes={c.yes} no={c.no} />
+          <ComparisonTable p={p} yes={c.yes} no={c.no} sourcesLabel={c.sources} />
         </div>
 
         {/* Choose if… — the two sides, so these stay as a pair of cards. */}

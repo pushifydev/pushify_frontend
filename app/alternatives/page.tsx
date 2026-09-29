@@ -178,6 +178,7 @@ export default function AlternativesPage() {
 
   const vsLinks = [
     { href: '/vs/coolify', label: t('vsCoolify', 'h1') },
+    { href: '/vs/dokploy', label: 'Pushify vs Dokploy' },
     { href: '/vs/heroku', label: t('vsHeroku', 'h1') },
     { href: '/vs/railway', label: t('vsRailway', 'h1') },
     { href: '/vs/render', label: t('vsRender', 'h1') },

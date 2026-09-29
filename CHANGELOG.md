@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.97] - 2026-09-29
+
+### Added
+- **/vs/dokploy**, with every Dokploy fact checked against dokploy.com, docs.dokploy.com and GitHub on September 29, 2026.
+  - Sources are linked under the table.
+  - It covers the hosted plans, licensing (Apache-2.0 plus DSAL for enterprise features since January 2026), scaling, zero-downtime defaults, clustering and templates.
+  - It says plainly where Dokploy is ahead.
+  - It is linked from the footer, /alternatives and the sitemap. The temporary redirect to /alternatives is removed.
+- Comparison pages can list their sources under the table.
+
 ## [0.2.0-beta.96] - 2026-09-29
 
 ### Added
