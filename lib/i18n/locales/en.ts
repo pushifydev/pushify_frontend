@@ -3485,7 +3485,7 @@ export const en: TranslationKeys = {
     activityLogs: 'Activity Logs',
     activityLogsDesc: 'Full audit trail of every action. Know who deployed what, when, and why.',
     healthChecks: 'Health Checks',
-    healthChecksDesc: 'Automated endpoint monitoring with configurable intervals and instant alerts on failure.',
+    healthChecksDesc: 'Your own endpoint, expected status and interval. Every plan gets basic uptime checks and down/recovery emails.',
     previewDeployments: 'Preview Deployments',
     previewDeploymentsDesc: 'Every pull request gets its own preview URL. Review changes before they hit production.',
     environmentVariables: 'Environment Variables',
@@ -3780,7 +3780,7 @@ export const en: TranslationKeys = {
       'Stripe retries the charge. Your organization is marked past due: you cannot create new projects, servers, databases, or deployments until you update your payment method in Billing. We send a reminder email to your billing address (at most once per day). Existing resources may continue during the retry window.',
     faq9Q: 'What happens when I cancel my platform subscription?',
     faq9A:
-      'At the end of the billing period your plan becomes Free. Managed Hetzner servers are powered off, active projects are paused, and new deploys are blocked. Your data is retained so you can resubscribe and resume manually. Infrastructure credits already in your wallet remain until used; they are not automatically refunded.',
+      'At the end of the billing period your plan becomes Free. Managed Hetzner servers are powered off, active projects are paused, and new deploys are blocked. Your data is retained for at least 30 days so you can resubscribe and resume manually. Infrastructure credits already in your wallet remain until used; they are not automatically refunded.',
     editorialHeroLabel: 'Hero',
     editorialLedeLabel: 'Lede',
     howItWorksH1Before: 'From ',
@@ -4913,7 +4913,7 @@ export const en: TranslationKeys = {
     used: 'used',
     // Features
     previewDeployments: 'Preview Deployments',
-    healthChecks: 'Health Checks',
+    healthChecks: 'Custom health checks',
     prioritySupport: 'Priority Support',
     included: 'Included',
     notIncluded: 'Not included',
