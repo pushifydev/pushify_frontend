@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.77] - 2026-09-29
+
+### Fixed
+- **Status page showed "Unknown" before JavaScript ran.** The page now reads the API health probe on the server (30s cache, falls back to the browser probe), so the first HTML — what crawlers and link previews see — shows the real state. Probe latency is displayed again (the API reports `responseTime`).
+
 ## [0.2.0-beta.76] - 2026-09-29
 
 ### Fixed
