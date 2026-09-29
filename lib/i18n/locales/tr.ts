@@ -1590,6 +1590,9 @@ export const tr: TranslationKeys = {
     turkish: 'Türkçe',
     saved: 'Tercihler kaydedildi!',
   },
+  deletion: {
+    title: 'Silme',
+  },
   sessions: {
     title: 'Oturumlar',
     description: 'Cihazlarınızdaki aktif oturumları yönetin.',

@@ -1565,6 +1565,9 @@ export interface TranslationKeys {
     turkish: string;
     saved: string;
   };
+  deletion: {
+    title: string;
+  };
   sessions: {
     title: string;
     description: string;
@@ -4710,6 +4713,9 @@ export const en: TranslationKeys = {
     english: 'English',
     turkish: 'Türkçe',
     saved: 'Preferences saved!',
+  },
+  deletion: {
+    title: 'Delete',
   },
   sessions: {
     title: 'Sessions',

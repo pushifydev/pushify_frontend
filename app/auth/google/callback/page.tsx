@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { googleLoginCallback } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
+import { pendingDeletionFromError, rememberPendingDeletion } from '@/lib/pending-deletion';
 import { consumeAuthRedirect } from '@/lib/auth-redirect';
 
 function GoogleCallbackContent() {
@@ -52,6 +53,13 @@ function GoogleCallbackContent() {
         const result = await googleLoginCallback(code, state);
 
         if (result.error) {
+          // An account scheduled for deletion: the login page offers to restore it.
+          const pending = pendingDeletionFromError(result.error);
+          if (pending) {
+            rememberPendingDeletion(pending);
+            router.replace('/login?pendingDeletion=1');
+            return;
+          }
           setStatus('error');
           setErrorMessage(result.error.message || 'Google login failed');
           return;

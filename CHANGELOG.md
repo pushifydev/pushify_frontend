@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.99] - 2026-09-29
+
+### Added
+- **Settings → Delete.**
+  - The owner can delete the organization. The dialog lists what happens now and after 30 days, the managed and connected servers, domains (with a pointer to transfer codes), the remaining wallet balance ("write to support to have it refunded"), and that included credit is not refunded. It links to database backups.
+  - Any user can delete their account.
+  - Both require the typed name or email, the password, and a 2FA code when 2FA is on.
+  - The result lists commands for any connected server that could not be reached.
+- **A banner on every dashboard page** while the organization waits to be deleted. The owner gets a Restore link.
+- **Restore screen at sign-in.** An account scheduled for deletion gets a "Restore account" screen at sign-in, whether it signs in with a password, 2FA, GitHub, Google or SSO.
+
+### Changed
+- The server delete dialog's command box is now a shared `CommandLine` component.
+
 ## [0.2.0-beta.98] - 2026-09-29
 
 ### Added
