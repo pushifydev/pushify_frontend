@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.95] - 2026-09-29
+
+### Added
+- **Deleting a connected server when Pushify cannot reach it:** the dialog now shows the one-line command that removes Pushify's SSH key from the server, plus the uninstall script command. Both have a copy button. Needs backend 0.2.0-beta.84.
+
+### Changed
+- **/security, "What Pushify does on your server":** now separates connected servers from servers Pushify creates.
+  - The ufw reset and the `nginx.conf` replacement happen only on servers Pushify creates. `nginx.conf` is now backed up first.
+  - Pushify's key is removed automatically when a connected server is deleted.
+  - Documents the manual command and the uninstall script.
+
 ## [0.2.0-beta.94] - 2026-09-29
 
 ### Fixed
