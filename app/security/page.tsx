@@ -13,6 +13,8 @@ export default function SecurityPage() {
 }
 
 const REPO_SECURITY = 'https://github.com/pushifydev/pushify_backend/security';
+const UNINSTALL_SCRIPT = 'https://github.com/pushifydev/pushify_backend/blob/master/scripts/server-uninstall.sh';
+const UNINSTALL_SCRIPT_RAW = 'https://raw.githubusercontent.com/pushifydev/pushify_backend/master/scripts/server-uninstall.sh';
 
 function SecurityEN() {
   return (
@@ -56,25 +58,41 @@ function SecurityEN() {
       </p>
 
       <h2>5. What Pushify does on your server</h2>
-      <p>When you connect a server over SSH, Pushify:</p>
+      <p>When you <strong>connect your own server</strong> over SSH, Pushify:</p>
       <ul>
         <li>connects as <code>root</code> and appends its own public key to <code>~/.ssh/authorized_keys</code> (the key&rsquo;s comment starts with <code>pushify-</code>);</li>
-        <li>installs Docker, nginx and certbot, and creates <code>/opt/pushify</code>;</li>
+        <li>installs Docker, nginx and certbot if they are missing, and creates <code>/opt/pushify</code>;</li>
         <li>
-          installs <code>ufw</code>, <strong>resets its existing rules</strong>, denies incoming traffic by default and
-          allows ports 22, 80 and 443 (plus the port of any app you deploy without a domain);
+          adds one nginx site per app (<code>pushify-&lt;app&gt;</code>) and, for an app deployed without a domain,
+          opens its port in the firewall it finds (ufw, firewalld or iptables). Existing firewall rules and your{' '}
+          <code>nginx.conf</code> are left as they are.
         </li>
-        <li>writes its own nginx configuration, replacing <code>/etc/nginx/nginx.conf</code> and the default site.</li>
       </ul>
+      <p>
+        On a <strong>server Pushify creates for you</strong>, setup also resets <code>ufw</code> (deny incoming, allow
+        22, 80 and 443) and replaces <code>/etc/nginx/nginx.conf</code> and the default site. Setup now keeps the
+        original <code>nginx.conf</code> as <code>nginx.conf.pushify-backup</code>; servers created before this change
+        have no copy.
+      </p>
       <p>
         Connect a server you dedicate to Pushify rather than one already running other services. Metrics are read
         over the same SSH connection; no agent or telemetry is installed.
       </p>
+
+      <h3>Removing a server</h3>
       <p>
-        <strong>Removing a server from Pushify does not yet remove our key.</strong> Delete the line ending in{' '}
-        <code>pushify-&hellip;</code> from <code>/root/.ssh/authorized_keys</code> yourself. Automatic removal is
-        on our list.
+        Deleting a connected server in Pushify removes our key from <code>/root/.ssh/authorized_keys</code>. Your
+        own keys are not touched. If the server cannot be reached at that moment, the deletion still completes and
+        the dashboard shows the command to run yourself:
       </p>
+      <pre><code>sed -i &apos;/ pushify-&lt;id&gt;$/d&apos; /root/.ssh/authorized_keys</code></pre>
+      <p>
+        To remove everything else Pushify added (containers, nginx sites, firewall openings,{' '}
+        <code>/opt/pushify</code>), run the{' '}
+        <a href={UNINSTALL_SCRIPT}>uninstall script</a>. Try it with <code>--dry-run</code> first. It keeps Docker
+        volumes (your database data), Docker, nginx, certbot and your certificates.
+      </p>
+      <pre><code>curl -fsSL {UNINSTALL_SCRIPT_RAW} | sudo bash -s -- --dry-run</code></pre>
 
       <h2>6. Isolation on shared runners</h2>
       <p>
@@ -135,25 +153,41 @@ function SecurityTR() {
       </p>
 
       <h2>5. Pushify sunucunuzda ne yapar</h2>
-      <p>Bir sunucuyu SSH ile bağladığınızda Pushify:</p>
+      <p><strong>Kendi sunucunuzu</strong> SSH ile bağladığınızda Pushify:</p>
       <ul>
         <li><code>root</code> olarak bağlanır ve kendi açık anahtarını <code>~/.ssh/authorized_keys</code> dosyasına ekler (anahtarın yorumu <code>pushify-</code> ile başlar);</li>
-        <li>Docker, nginx ve certbot kurar, <code>/opt/pushify</code> dizinini oluşturur;</li>
+        <li>eksikse Docker, nginx ve certbot kurar, <code>/opt/pushify</code> dizinini oluşturur;</li>
         <li>
-          <code>ufw</code> kurar, <strong>mevcut kurallarını sıfırlar</strong>, gelen trafiği varsayılan olarak reddeder
-          ve 22, 80, 443 portlarına (ve domainsiz deploy ettiğiniz uygulamaların portuna) izin verir;
+          her uygulama için bir nginx sitesi (<code>pushify-&lt;uygulama&gt;</code>) ekler; domainsiz deploy edilen bir
+          uygulamanın portunu bulduğu güvenlik duvarında (ufw, firewalld veya iptables) açar. Mevcut güvenlik duvarı
+          kurallarınıza ve <code>nginx.conf</code> dosyanıza dokunmaz.
         </li>
-        <li>kendi nginx yapılandırmasını yazar; <code>/etc/nginx/nginx.conf</code> ve varsayılan siteyi değiştirir.</li>
       </ul>
+      <p>
+        <strong>Pushify&rsquo;ın sizin için oluşturduğu sunucularda</strong> kurulum ayrıca <code>ufw</code>&rsquo;yu
+        sıfırlar (gelen trafik reddedilir; 22, 80 ve 443 açık) ve <code>/etc/nginx/nginx.conf</code> ile varsayılan
+        siteyi değiştirir. Kurulum artık orijinal <code>nginx.conf</code>&rsquo;u
+        <code>nginx.conf.pushify-backup</code> olarak saklıyor; bu değişiklikten önce oluşturulan sunucularda kopya yoktur.
+      </p>
       <p>
         Başka servisler çalışan bir sunucu yerine Pushify&rsquo;a ayırdığınız bir sunucu bağlayın. Metrikler aynı SSH
         bağlantısı üzerinden okunur; agent veya telemetri kurulmaz.
       </p>
+
+      <h3>Sunucuyu kaldırmak</h3>
       <p>
-        <strong>Bir sunucuyu Pushify&rsquo;dan kaldırmak şu an anahtarımızı silmiyor.</strong>{' '}
-        <code>/root/.ssh/authorized_keys</code> dosyasından <code>pushify-&hellip;</code> ile biten satırı kendiniz
-        silin. Otomatik silme listemizde.
+        Bağlı bir sunucuyu Pushify&rsquo;dan sildiğinizde anahtarımız <code>/root/.ssh/authorized_keys</code>{' '}
+        dosyasından kaldırılır; sizin anahtarlarınıza dokunulmaz. Sunucuya o anda ulaşılamazsa silme yine tamamlanır ve
+        panel, kendiniz çalıştırmanız gereken komutu gösterir:
       </p>
+      <pre><code>sed -i &apos;/ pushify-&lt;id&gt;$/d&apos; /root/.ssh/authorized_keys</code></pre>
+      <p>
+        Pushify&rsquo;ın eklediği diğer her şeyi (konteynerler, nginx siteleri, güvenlik duvarı açıklıkları,{' '}
+        <code>/opt/pushify</code>) kaldırmak için <a href={UNINSTALL_SCRIPT}>kaldırma betiğini</a> çalıştırın. Önce{' '}
+        <code>--dry-run</code> ile deneyin. Docker volume&rsquo;larını (veritabanı verileriniz), Docker&rsquo;ı, nginx&rsquo;i,
+        certbot&rsquo;u ve sertifikalarınızı korur.
+      </p>
+      <pre><code>curl -fsSL {UNINSTALL_SCRIPT_RAW} | sudo bash -s -- --dry-run</code></pre>
 
       <h2>6. Paylaşımlı sunucularda izolasyon</h2>
       <p>

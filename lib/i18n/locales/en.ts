@@ -1917,6 +1917,11 @@ export interface TranslationKeys {
     reboot: string;
     deleteServer: string;
     deleteConfirm: string;
+    keyNotRemovedTitle: string;
+    keyNotRemovedDesc: string;
+    keyNotRemovedUninstall: string;
+    copyCommand: string;
+    commandCopied: string;
     sync: string;
     syncing: string;
     viewCards: string;
@@ -5071,6 +5076,11 @@ export const en: TranslationKeys = {
     reboot: 'Reboot',
     deleteServer: 'Delete Server',
     deleteConfirm: 'Are you sure you want to delete this server? This action cannot be undone.',
+    keyNotRemovedTitle: 'Server deleted — remove the SSH key yourself',
+    keyNotRemovedDesc: 'Pushify could not reach the server to remove its SSH key. Run this as root on the server to revoke Pushify\'s access:',
+    keyNotRemovedUninstall: 'To remove everything else Pushify installed (containers, nginx sites, firewall rules), use the uninstall script:',
+    copyCommand: 'Copy',
+    commandCopied: 'Copied',
     sync: 'Sync',
     syncing: 'Syncing...',
     viewCards: 'Cards',
