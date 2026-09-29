@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.98] - 2026-09-29
+
+### Added
+- **/exit-plan** (EN + TR):
+  - Commits to at least 90 days notice by email and on the site before the hosted service shuts down, with the dashboard, API and exports working throughout.
+  - Says what keeps running on your own servers without Pushify, and what stops.
+  - Explains how to take each kind of data (env vars, database backups, logs, managed servers).
+  - Explains how to move to self-hosted Pushify.
+  - Lists what is not there yet: account deletion, settings export, static-site download, image push, unmasked secrets.
+  - Linked from the footer and the sitemap.
+
+### Fixed
+- /security, /contact and /exit-plan now follow the public site's dark theme like the other legal pages.
+
 ## [0.2.0-beta.97] - 2026-09-29
 
 ### Added
