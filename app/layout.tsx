@@ -228,14 +228,34 @@ export default async function RootLayout({
                     'No-code site builder',
                     'App marketplace with 24 one-click apps',
                   ],
+                  // Monthly list prices from lib/plans.ts in the backend (GET /billing/plans).
+                  // Enterprise is custom-priced, so it is not an Offer here.
                   offers: {
                     '@type': 'AggregateOffer',
                     priceCurrency: 'USD',
                     lowPrice: '0',
-                    highPrice: '13',
-                    offerCount: 5,
+                    highPrice: '99',
+                    offerCount: 4,
                     availability: 'https://schema.org/InStock',
                     url: 'https://pushify.dev/pricing',
+                    offers: [
+                      ['Free', '0'],
+                      ['Hobby', '15'],
+                      ['Pro', '29'],
+                      ['Business', '99'],
+                    ].map(([name, price]) => ({
+                      '@type': 'Offer',
+                      name,
+                      price,
+                      priceCurrency: 'USD',
+                      url: 'https://pushify.dev/pricing',
+                      priceSpecification: {
+                        '@type': 'UnitPriceSpecification',
+                        price,
+                        priceCurrency: 'USD',
+                        unitCode: 'MON',
+                      },
+                    })),
                   },
                   license: 'https://opensource.org/licenses/MIT',
                   downloadUrl: 'https://www.npmjs.com/package/pushify-cli',
@@ -247,7 +267,9 @@ export default async function RootLayout({
                   '@id': 'https://pushify.dev/#website',
                   name: 'Pushify',
                   url: 'https://pushify.dev',
-                  inLanguage: ['en', 'tr'],
+                  // Turkish is served on the same URLs by Accept-Language/cookie, so crawlers only
+                  // ever see English; there are no /tr URLs that hreflang could point at.
+                  inLanguage: 'en',
                   publisher: { '@id': 'https://pushify.dev/#organization' },
                   potentialAction: {
                     '@type': 'SearchAction',
