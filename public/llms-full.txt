@@ -32,9 +32,9 @@ behalf, for teams that want the convenience without managing their own provider 
 ## How Pushify compares
 
 - vs Coolify: Both are open-source, self-hosted PaaS platforms that deploy Docker workloads to
-  servers you own. Pushify adds managed cloud server provisioning (Hetzner) from the dashboard,
-  team billing, a no-code site builder, and a one-click app marketplace on top of a comparable
-  core. Coolify has a larger community and a one-click self-install. See
+  servers you own. Pushify adds a hosted control plane with a free plan, managed Hetzner servers without a
+  provider account, an AI assistant, and a no-code site builder on top of a comparable core.
+  Coolify has a larger community, a bigger one-click service catalog, and a paid Coolify Cloud. See
   https://pushify.dev/vs/coolify
 - vs Vercel: Vercel is a managed cloud with excellent frontend DX, priced by usage on Vercel's
   infrastructure. Pushify gives the same push-to-deploy experience but on infrastructure you own,
@@ -91,8 +91,8 @@ A: 20+ including Next.js, React, Vue/Nuxt, Svelte, Astro, Remix, Node.js, Python
 Flask), Go, and Laravel — with automatic detection.
 
 Q: How is Pushify different from Coolify?
-A: Both are self-hosted, open-source PaaS platforms. Pushify adds managed Hetzner provisioning,
-team billing, a no-code site builder, and an app marketplace. See https://pushify.dev/vs/coolify
+A: Both are self-hosted, open-source PaaS platforms. Pushify adds a hosted control plane with a free plan,
+managed Hetzner servers without a provider account, an AI assistant, and a no-code site builder. See https://pushify.dev/vs/coolify
 
 Q: How is Pushify different from Vercel?
 A: Vercel runs on Vercel's managed cloud and is billed by usage. Pushify runs on infrastructure you

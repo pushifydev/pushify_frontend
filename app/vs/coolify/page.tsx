@@ -19,7 +19,6 @@ export default function VsCoolifyPage() {
     { label: t('vsCoolify', 'rowCommunity'), pushify: false, competitor: true },
     { label: t('homepage', 'rowAIAssistant'), pushify: true, competitor: false },
     { label: t('homepage', 'rowSiteBuilder'), pushify: true, competitor: false },
-    { label: t('vsCoolify', 'rowBilling'), pushify: true, competitor: false },
   ];
 
   return (

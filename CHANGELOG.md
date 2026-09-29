@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.76] - 2026-09-29
+
+### Fixed
+- **Competitor claims corrected.** The homepage/pricing FAQ said Coolify lacks team collaboration and a hosted option (it has both); `/vs/railway` said Railway Pro is $20 per seat (it is $20 per workspace with unlimited seats); `/alternatives` listed CapRover as MIT (Apache-2.0) and Dokploy as source-available (Apache-2.0 open-core). `/vs/render` now reflects Render's April 2026 bandwidth and $25 Pro workspace pricing. Unverifiable lines were removed rather than reworded, and every comparison table note carries a "last checked" date. Same corrections in Turkish and in `llms.txt`.
+
 ## [0.2.0-beta.75] - 2026-09-27
 
 ### Added
