@@ -137,12 +137,13 @@ export const getCurrentUser = async (): Promise<ApiResponse<User>> => {
     return { data: response.data.data };
   } catch (error) {
     const axiosError = error as AxiosError<{ error: ApiError }>;
-    return {
-      error: axiosError.response?.data?.error || {
-        code: 'NETWORK_ERROR',
-        message: 'Unable to connect to server',
-      },
+    const status = axiosError.response?.status;
+    const apiError = axiosError.response?.data?.error || {
+      code: status ? 'SERVER_ERROR' : 'NETWORK_ERROR',
+      message: 'Unable to connect to server',
     };
+    // checkAuth needs the status to tell a dead session (401/403) from a transient outage
+    return { error: status ? { ...apiError, status } : apiError };
   }
 };
 
