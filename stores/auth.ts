@@ -42,7 +42,13 @@ function pendingPatch(error: { code?: string; details?: unknown; message: string
   return { pendingDeletion: pending };
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+/** True only when the backend actually refused the session (vs. a transient outage). */
+function isSessionRejected(error: { code?: string; status?: number } | undefined): boolean {
+  if (!error) return false;
+  return error.status === 401 || error.status === 403 || error.code === 'UNAUTHORIZED';
+}
+
+export const useAuthStore =create<AuthState>((set, get) => ({
   user: null,
   organization: null,
   isLoading: true,
@@ -181,12 +187,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isAuthenticated: true,
         isLoading: false,
       });
-    } else {
+    } else if (isSessionRejected(result.error)) {
       clearTokens();
       set({
         user: null,
         isAuthenticated: false,
         isLoading: false,
+      });
+    } else {
+      // Network error / 5xx: the session may still be valid, so keep the tokens (a reload
+      // recovers once the backend is back) and keep whatever auth state we already had.
+      set({
+        isLoading: false,
+        error: result.error?.message ?? 'Unknown error',
       });
     }
   },

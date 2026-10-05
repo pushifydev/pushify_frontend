@@ -4,6 +4,8 @@ export interface ApiError {
   code: string;
   message: string;
   details?: Array<{ field: string; message: string }>;
+  /** HTTP status of the failed response, when the service exposes it (absent on network errors) */
+  status?: number;
 }
 
 export interface ApiResponse<T> {

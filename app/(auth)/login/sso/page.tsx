@@ -49,7 +49,14 @@ function SsoCallback() {
 
     setTokens(accessToken, refreshToken);
     checkAuth()
-      .then(() => router.replace(sanitizeRedirectPath(consumeAuthRedirect('')) || '/dashboard'))
+      .then(() => {
+        // checkAuth reports failure through the store, not by throwing
+        if (!useAuthStore.getState().isAuthenticated) {
+          setFailed(true);
+          return;
+        }
+        router.replace(sanitizeRedirectPath(consumeAuthRedirect('')) || '/dashboard');
+      })
       .catch(() => setFailed(true));
   }, [router, checkAuth]);
 
