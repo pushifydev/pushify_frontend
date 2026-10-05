@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { PushifyWebSocket, type WSEventType } from '@/lib/ws';
 import { useAuthStore } from '@/stores/auth';
 
@@ -23,51 +23,56 @@ const WebSocketContext = createContext<WebSocketContextValue>({
 // ============ Provider ============
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
-  const wsRef = useRef<PushifyWebSocket | null>(null);
+  // Held in state (not a ref) so consumers re-run their effects once the instance exists.
+  // Child effects run before this provider's effect, so the first subscribe() calls from
+  // useWebSocketEvent happen while ws is still null; when setWs() fires, `subscribe`
+  // changes identity and those effects re-subscribe on the real instance.
+  const [ws, setWs] = useState<PushifyWebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      // Disconnect if user logs out
-      if (wsRef.current) {
-        wsRef.current.disconnect();
-        wsRef.current = null;
-        setIsConnected(false);
-      }
-      return;
-    }
+    if (!isAuthenticated) return;
 
     // Create and connect
-    const ws = new PushifyWebSocket();
-    wsRef.current = ws;
+    const instance = new PushifyWebSocket();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the instance is an external resource tied to auth state
+    setWs(instance);
 
-    const cleanup = ws.onConnectionChange((connected) => {
+    const cleanup = instance.onConnectionChange((connected) => {
       setIsConnected(connected);
     });
 
-    ws.connect();
+    instance.connect();
 
     return () => {
       cleanup();
-      ws.disconnect();
-      wsRef.current = null;
+      instance.disconnect();
+      setWs(null);
+      setIsConnected(false);
     };
   }, [isAuthenticated]);
 
-  const subscribe = useCallback((channel: string) => {
-    wsRef.current?.subscribe(channel);
-  }, []);
-
-  const unsubscribe = useCallback((channel: string) => {
-    wsRef.current?.unsubscribe(channel);
-  }, []);
-
-  return (
-    <WebSocketContext.Provider value={{ ws: wsRef.current, isConnected, subscribe, unsubscribe }}>
-      {children}
-    </WebSocketContext.Provider>
+  const subscribe = useCallback(
+    (channel: string) => {
+      ws?.subscribe(channel);
+    },
+    [ws]
   );
+
+  const unsubscribe = useCallback(
+    (channel: string) => {
+      ws?.unsubscribe(channel);
+    },
+    [ws]
+  );
+
+  const value = useMemo(
+    () => ({ ws, isConnected, subscribe, unsubscribe }),
+    [ws, isConnected, subscribe, unsubscribe]
+  );
+
+  return <WebSocketContext.Provider value={value}>{children}</WebSocketContext.Provider>;
 }
 
 // ============ Hooks ============
