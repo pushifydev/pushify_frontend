@@ -7,7 +7,7 @@ import {
   ExternalLink,
   GitBranch,
   Rocket,
-  RotateCcw, Moon, Sun, ArrowUpCircle } from 'lucide-react';
+  RotateCcw, Moon, Sun, ArrowUpCircle, FileText } from 'lucide-react';
 import { DeploymentFailureSummary } from '@/components/DeploymentFailureSummary';
 import { DeploymentTimeline } from '@/components/DeploymentTimeline';
 import { findLastGoodDeployment } from '@/lib/deployment-utils';
@@ -21,6 +21,7 @@ export function OverviewTab({
   formatTimeAgo,
   getStatusBadge,
   onRollback,
+  onViewLogs,
   t,
 }: {
   project: NonNullable<ReturnType<typeof useProject>['data']>;
@@ -29,7 +30,8 @@ export function OverviewTab({
   formatTimeAgo: (date: string, t?: any) => string;
   getStatusBadge: (status: string) => string;
   onRollback: (deploymentId: string) => void;
-  t: ReturnType<typeof useTranslation>['t'];
+  onViewLogs?: (deployment: NonNullable<ReturnType<typeof useDeployments>['data']>[number]) => void;
+  t:ReturnType<typeof useTranslation>['t'];
 }) {
   const queryClient = useQueryClient();
   const [wakePending, setWakePending] = useState(false);
@@ -110,6 +112,17 @@ export function OverviewTab({
                   logs={latestDeployment.buildLogs}
                   errorMessage={latestDeployment.errorMessage}
                 />
+                {onViewLogs && (
+                  <button
+                    type="button"
+                    onClick={() => onViewLogs(latestDeployment)}
+                    className="btn btn-ghost btn-sm mt-2"
+                    title={t('projectDetail', 'logsHelpBuild')}
+                  >
+                    <FileText className="w-3.5 h-3.5 shrink-0" />
+                    {t('projectDetail', 'viewLogs')}
+                  </button>
+                )}
               </div>
             )}
             {latestDeployment.status === 'failed' && lastGood && (

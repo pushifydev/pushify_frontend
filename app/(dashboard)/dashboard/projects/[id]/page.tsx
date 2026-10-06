@@ -397,6 +397,11 @@ export default function ProjectDetailPage() {
             formatTimeAgo={formatTimeAgo}
             getStatusBadge={getStatusBadge}
             onRollback={(id) => rollbackDeployment.mutate(id)}
+            onViewLogs={(deployment) => setSelectedDeploymentForLogs({
+              id: deployment.id,
+              branch: deployment.branch,
+              commitHash: deployment.commitHash,
+            })}
             t={t}
           />
         )}
