@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.105] - 2026-10-07
+
+### Added
+- **Nano servers in Servers → New.** The size list can now show `NANO` (1 vCPU / 1 GB), which backend beta.99 offers on every paid plan when Hetzner has no cheaper 2 GB server in stock. Sizes under 1.5 GB carry a note that they come with 2 GB of swap and that large builds can be slow. The Servers doc describes it. Pricing tables already read live sizes, so Hobby's "server, included" line shows 1 vCPU / 1 GB when nano is the cheapest option.
+
 ## [0.2.0-beta.104] - 2026-09-30
 
 ### Fixed
