@@ -14,6 +14,7 @@ On a paid plan, **Servers → New server** can create a Hetzner server for you. 
 
 - **Regions** are the Hetzner locations with stock for your plan's sizes, read live from Hetzner.
 - **Sizes** go up to 2 vCPU / 4 GB on Hobby, 4 vCPU / 8 GB on Pro and 8 vCPU / 16 GB on Business. The exact prices are on the [pricing page](/pricing).
+- **Nano** (1 vCPU / 1 GB) is offered on every paid plan when Hetzner has no cheaper 2 GB server in stock. It comes with 2 GB of swap, since apps are built on the server; large builds can be slow.
 - A managed server comes with a firewall that allows SSH, HTTP and HTTPS, plus Docker, nginx and certbot.
 
 ## Power, resize and snapshots
