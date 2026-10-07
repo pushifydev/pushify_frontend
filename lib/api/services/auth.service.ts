@@ -404,9 +404,25 @@ export const getGithubLoginUrl = async (): Promise<ApiResponse<{ url: string; st
   }
 };
 
+export interface OAuthLoginCallbackOptions {
+  /**
+   * Set when this browser holds no locally stored OAuth state, i.e. the flow was not
+   * started here. The only legitimate case is the mobile bridge, so the result is
+   * accepted solely as a mobile handoff: without `appRedirect` it is refused and no
+   * tokens are written (guards against login CSRF via an attacker's code+state link).
+   */
+  requireMobileHandoff?: boolean;
+}
+
+export const UNVERIFIED_OAUTH_LOGIN_ERROR: ApiError = {
+  code: 'OAUTH_STATE_MISSING',
+  message: 'Sign-in could not be verified. Please start the login again from this browser.',
+};
+
 export const githubLoginCallback = async (
   code: string,
   state: string,
+  options: OAuthLoginCallbackOptions = {},
 ): Promise<ApiResponse<LoginResponse>> => {
   try {
     const response = await api.post<
@@ -415,6 +431,11 @@ export const githubLoginCallback = async (
     >('/auth/github/login-callback', { code, state });
 
     const appRedirect = response.data.appRedirect;
+
+    // No local state and not a mobile flow: refuse before surfacing any session/challenge.
+    if (options.requireMobileHandoff && !appRedirect) {
+      return { error: UNVERIFIED_OAUTH_LOGIN_ERROR };
+    }
 
     // 2FA-enabled account: no tokens yet — surface the challenge to the caller
     if ('requiresTwoFactor' in response.data) {
@@ -471,6 +492,7 @@ export const getGoogleLoginUrl = async (): Promise<ApiResponse<{ url: string; st
 export const googleLoginCallback = async (
   code: string,
   state: string,
+  options: OAuthLoginCallbackOptions = {},
 ): Promise<ApiResponse<LoginResponse>> => {
   try {
     const response = await api.post<
@@ -479,6 +501,11 @@ export const googleLoginCallback = async (
     >('/auth/google/login-callback', { code, state });
 
     const appRedirect = response.data.appRedirect;
+
+    // No local state and not a mobile flow: refuse before surfacing any session/challenge.
+    if (options.requireMobileHandoff && !appRedirect) {
+      return { error: UNVERIFIED_OAUTH_LOGIN_ERROR };
+    }
 
     // 2FA-enabled account: no tokens yet — surface the challenge to the caller
     if ('requiresTwoFactor' in response.data) {

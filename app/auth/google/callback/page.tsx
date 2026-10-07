@@ -38,7 +38,8 @@ function GoogleCallbackContent() {
 
       // Verify state matches what we stored. The mobile flow opens this page in a
       // throwaway in-app browser that never stored one, so only enforce the match
-      // when an entry exists — the backend validates the one-time state regardless.
+      // when an entry exists. Without a stored state the result is accepted only as a
+      // mobile handoff, never as a web session (login CSRF guard).
       const storedState = localStorage.getItem('google_oauth_state');
       if (storedState && storedState !== state) {
         setStatus('error');
@@ -50,7 +51,9 @@ function GoogleCallbackContent() {
       localStorage.removeItem('google_oauth_state');
 
       try {
-        const result = await googleLoginCallback(code, state);
+        const result = await googleLoginCallback(code, state, {
+          requireMobileHandoff: !storedState,
+        });
 
         if (result.error) {
           // An account scheduled for deletion: the login page offers to restore it.
