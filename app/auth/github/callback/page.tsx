@@ -40,8 +40,8 @@ function GitHubCallbackContent() {
 
       // Verify state (connect flow used sessionStorage briefly; login uses localStorage).
       // A mobile login opens this page in a throwaway in-app browser that stored
-      // neither, so only enforce the match when an entry exists — the backend
-      // validates the one-time state server-side regardless.
+      // neither, so only enforce the match when an entry exists. Without a stored
+      // state the result is accepted only as a mobile handoff (login CSRF guard).
       const storedState =
         localStorage.getItem('github_oauth_state') ??
         sessionStorage.getItem('github_oauth_state');
@@ -61,7 +61,9 @@ function GitHubCallbackContent() {
       // Handle login intent
       if (isLoginIntent) {
         try {
-          const result = await githubLoginCallback(code, state);
+          const result = await githubLoginCallback(code, state, {
+            requireMobileHandoff: !storedState,
+          });
 
           if (result.error) {
             // An account scheduled for deletion: the login page offers to restore it.
