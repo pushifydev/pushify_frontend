@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.107] - 2026-10-10
+
+### Added
+- **Acceptable Use Policy** at `/acceptable-use` (English, approved 2026-10-10):
+  - **§1:** what is prohibited everywhere;
+  - **§2:** what is additionally prohibited on managed servers, shared infrastructure and *.pushify.dev addresses (§2.1 proxy/VPN/tunnel/relay services, §2.2 network and port scanning). Legal use on your own server with your own domain is not affected;
+  - **§3:** how it is enforced: no traffic contents or environment values are read, and a person reviews every case before suspension;
+  - **§4–6:** reporting, appeals and changes.
+
+  The section numbers match the clauses cited in suspension emails.
+- **Report abuse** at `/abuse`: a form (URL, email, category, details; honeypot) that feeds the admin review queue (backend beta.101), plus abuse@pushify.dev.
+- Footer, sitemap and the legal documents bar link both pages.
+
+### Changed
+- **Terms §9 Prohibited Use (English):** it now references the Acceptable Use Policy and adds the proxy/VPN/tunnel/relay and scanning ban on Pushify infrastructure and *.pushify.dev addresses. A violation may suspend the affected project or the account, with or without prior notice. Last updated: October 10, 2026. The Turkish version is unchanged for now (with the lawyer).
+
 ## [0.2.0-beta.106] - 2026-10-10
 
 ### Added

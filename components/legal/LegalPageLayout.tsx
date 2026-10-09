@@ -16,6 +16,7 @@ const DOCS = [
   { href: '/terms', en: 'Terms', tr: 'Koşullar' },
   { href: '/privacy', en: 'Privacy', tr: 'Gizlilik' },
   { href: '/refund', en: 'Refunds', tr: 'İadeler' },
+  { href: '/acceptable-use', en: 'Acceptable use', tr: 'Kabul edilebilir kullanım' },
 ] as const;
 
 export function LegalPageLayout({ title, lastUpdated, children }: LegalPageLayoutProps) {
