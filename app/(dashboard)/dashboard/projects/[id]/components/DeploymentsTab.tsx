@@ -95,6 +95,8 @@ export function DeploymentsTab({
   onViewLogs,
   onViewContainerLogs,
   onViewHistoricalLogs,
+  canRollback = true,
+  rollbackPendingId = null,
   t,
 }: {
   deployments: ReturnType<typeof useDeployments>['data'];
@@ -106,12 +108,18 @@ export function DeploymentsTab({
   onViewLogs: (deployment: NonNullable<ReturnType<typeof useDeployments>['data']>[number]) => void;
   onViewContainerLogs: (deploymentId: string) => void;
   onViewHistoricalLogs: (deploymentId: string) => void;
+  /** False for roles that may not deploy (e.g. viewer): rollback buttons are hidden. */
+  canRollback?: boolean;
+  /** Deployment id whose rollback request is in flight; rollback buttons are disabled meanwhile. */
+  rollbackPendingId?: string | null;
   t: ReturnType<typeof useTranslation>['t'];
 }) {
   const confirm = useConfirm();
   const lastGood = deployments ? findLastGoodDeployment(deployments) : null;
+  const rollbackBusy = rollbackPendingId != null;
 
   const handleRollback = async (deployment: NonNullable<typeof deployments>[number]) => {
+    if (rollbackBusy) return;
     const commit = deployment.commitHash?.slice(0, 7) ?? deployment.id.slice(0, 8);
     const ok = await confirm({
       title: t('projectDetail', 'rollbackConfirmTitle'),
@@ -189,28 +197,36 @@ export function DeploymentsTab({
                   {t('projectDetail', 'cancel')}
                 </button>
               )}
-              {canRollbackToDeployment(deployment) && (
+              {canRollback && canRollbackToDeployment(deployment) && (
                 <button
                   type="button"
                   onClick={() => handleRollback(deployment)}
                   className="btn btn-secondary btn-sm"
+                  disabled={rollbackBusy}
+                  aria-busy={rollbackPendingId === deployment.id || undefined}
                   title={
                     deployment.dockerImageId
                       ? t('projectDetail', 'rollbackQuickHint')
                       : undefined
                   }
                 >
-                  <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                  <RotateCcw
+                    className={`w-3.5 h-3.5 shrink-0${rollbackPendingId === deployment.id ? ' animate-spin' : ''}`}
+                  />
                   {t('projectDetail', 'rollbackToVersion')}
                 </button>
               )}
-              {deployment.status === 'failed' && lastGood && deployment.id === deployments[0]?.id && (
+              {canRollback && deployment.status === 'failed' && lastGood && deployment.id === deployments[0]?.id && (
                 <button
                   type="button"
                   onClick={() => handleRollback(lastGood)}
                   className="btn btn-secondary btn-sm"
+                  disabled={rollbackBusy}
+                  aria-busy={rollbackPendingId === lastGood.id || undefined}
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <RotateCcw
+                    className={`w-3.5 h-3.5${rollbackPendingId === lastGood.id ? ' animate-spin' : ''}`}
+                  />
                   {t('projectDetail', 'rollbackToLastGood')}
                 </button>
               )}
