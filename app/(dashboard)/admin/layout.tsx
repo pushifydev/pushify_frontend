@@ -28,6 +28,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/admin/users', label: t('admin', 'navUsers') },
     { href: '/admin/activity', label: t('admin', 'navActivity') },
     { href: '/admin/signins', label: t('admin', 'navSignins') },
+    { href: '/admin/abuse', label: t('admin', 'navAbuse') },
   ];
 
   return (
