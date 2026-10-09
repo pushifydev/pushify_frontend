@@ -164,8 +164,8 @@ export default function ProjectsPage() {
                   className="dash-row group flex items-center gap-3 border-t border-[var(--border-subtle)] first:border-t-0 last:rounded-b-[14px] hover:bg-[var(--hover-overlay)] transition-colors"
                 >
                   <span
-                    className={`dash-status-dot ${project.status === 'active' ? 'is-success' : project.status === 'paused' ? 'is-warning' : ''}`}
-                    title={project.status}
+                    className={`dash-status-dot ${project.suspendedAt ? 'is-error' : project.status === 'active' ? 'is-success' : project.status === 'paused' ? 'is-warning' : ''}`}
+                    title={project.suspendedAt ? t('projects', 'suspended') : project.status}
                     aria-hidden
                   />
                   <div className="flex-1 min-w-0">
@@ -176,8 +176,14 @@ export default function ProjectsPage() {
                       >
                         {project.name}
                       </Link>
-                      {project.status !== 'active' && (
-                        <span className="badge badge-warning shrink-0">{project.status}</span>
+                      {project.suspendedAt ? (
+                        <span className="badge badge-error shrink-0" title={t('projects', 'suspendedHint')}>
+                          {t('projects', 'suspended')}
+                        </span>
+                      ) : (
+                        project.status !== 'active' && (
+                          <span className="badge badge-warning shrink-0">{project.status}</span>
+                        )
                       )}
                     </div>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-xs text-[var(--text-muted)] min-w-0">
@@ -238,7 +244,12 @@ export default function ProjectsPage() {
                             </a>
                           )}
                           <div className="dash-menu-separator" />
-                          {project.status === 'active' ? (
+                          {project.suspendedAt ? (
+                            <span className="dash-menu-item opacity-60 cursor-default" role="menuitem" aria-disabled="true" title={t('projects', 'suspendedHint')}>
+                              <Play className="w-3.5 h-3.5" />
+                              {t('projects', 'suspended')}
+                            </span>
+                          ) : project.status === 'active' ? (
                             <button
                               type="button"
                               role="menuitem"
