@@ -112,6 +112,10 @@ export interface Project {
   /** awake | sleeping | waking */
   sleepState: string;
   lastWakeAt: string | null;
+  /** Set while the project is suspended under the Acceptable Use Policy (only an admin can lift it) */
+  suspendedAt?: string | null;
+  suspensionReason?: string | null;
+  suspensionEndsAt?: string | null;
   productionUrl: string | null;
   settings: Record<string, unknown>;
   createdAt: string;

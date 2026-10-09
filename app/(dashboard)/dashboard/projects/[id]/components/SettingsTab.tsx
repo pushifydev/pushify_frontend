@@ -763,6 +763,8 @@ export function SettingsTab({
               <Pause className="w-4 h-4" />
               {t('projectDetail', 'pauseProject')}
             </button>
+          ) : project.suspendedAt ? (
+            <span className="text-xs text-[var(--status-error)]">{t('projectDetail', 'suspendedResume')}</span>
           ) : (
             <button onClick={() => onStatusChange('active')} className="btn btn-primary btn-sm">
               <Play className="w-4 h-4" />

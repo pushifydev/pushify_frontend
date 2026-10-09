@@ -39,6 +39,7 @@ Everything is set in `.env`. The settings that turn features on:
 | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Paid plans and the prepaid balance |
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_ID` | Automatic subdomains for apps and previews |
 | `REGISTRAR_PROVIDER`, `NAMECOM_USERNAME`, `NAMECOM_TOKEN` | Buying domains |
+| `ABUSE_DETECTION_ENABLED` | Acceptable Use checks of deploys and traffic, with a review queue in the admin panel. Off by default: what your users may run is your policy. `ABUSE_AUTO_SUSPEND` (also off) lets a strong finding suspend a project on its own. Rules: `config/abuse-rules.yaml` |
 
 The dashboard's API address is built into it, so rebuild the frontend after changing `PUSHIFY_API_URL`. Behind your own HTTPS proxy, set `PUSHIFY_FRONTEND_URL`, `PUSHIFY_API_URL` and `TRUSTED_PROXY_HOPS=1`.
 

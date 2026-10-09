@@ -1,12 +1,19 @@
 'use client';
 
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import {
   getAdminOverview,
   getAdminUsers,
   getAdminUser,
   getAdminActivity,
   getAdminAuthEvents,
+  getAdminAbuseFlags,
+  getAdminAbuseClauses,
+  dismissAdminAbuseFlag,
+  suspendAdminProject,
+  unsuspendAdminProject,
+  type AbuseFlagStatus,
+  type AbuseSuspendInput,
   type AdminUserSort,
   type AdminUserFilter,
 } from '@/lib/api';
@@ -35,6 +42,8 @@ export const adminKeys = {
   user: (userId: string) => [...adminKeys.all, 'user', userId] as const,
   activity: (page: number, pageSize: number) => [...adminKeys.all, 'activity', page, pageSize] as const,
   authEvents: (page: number, pageSize: number) => [...adminKeys.all, 'auth-events', page, pageSize] as const,
+  abuse: (status: string, page: number, pageSize: number) => [...adminKeys.all, 'abuse', status, page, pageSize] as const,
+  abuseClauses: () => [...adminKeys.all, 'abuse-clauses'] as const,
 };
 
 export function useAdminOverview() {
@@ -93,4 +102,42 @@ export function useAdminAuthEvents(page: number, pageSize = 50) {
     queryFn: async () => unwrap(await getAdminAuthEvents({ limit: pageSize, offset: (page - 1) * pageSize })),
     placeholderData: keepPreviousData,
   });
+}
+
+export function useAdminAbuseFlags(status: AbuseFlagStatus | 'all', page: number, pageSize = 50) {
+  return useQuery({
+    queryKey: adminKeys.abuse(status, page, pageSize),
+    queryFn: async () => unwrap(await getAdminAbuseFlags({ status, limit: pageSize, offset: (page - 1) * pageSize })),
+    placeholderData: keepPreviousData,
+    retry: false,
+  });
+}
+
+export function useAdminAbuseClauses() {
+  return useQuery({
+    queryKey: adminKeys.abuseClauses(),
+    queryFn: async () => unwrap(await getAdminAbuseClauses()),
+    staleTime: Infinity,
+    retry: false,
+  });
+}
+
+/** Dismiss, suspend and unsuspend all refresh the queue. */
+export function useAdminAbuseActions() {
+  const queryClient = useQueryClient();
+  const refresh = () => queryClient.invalidateQueries({ queryKey: [...adminKeys.all, 'abuse'] });
+  return {
+    dismiss: useMutation({
+      mutationFn: async (v: { flagId: string; note: string | null }) => unwrap(await dismissAdminAbuseFlag(v.flagId, v.note)),
+      onSuccess: refresh,
+    }),
+    suspend: useMutation({
+      mutationFn: async (v: { projectId: string; input: AbuseSuspendInput }) => unwrap(await suspendAdminProject(v.projectId, v.input)),
+      onSuccess: refresh,
+    }),
+    unsuspend: useMutation({
+      mutationFn: async (v: { projectId: string; note: string | null }) => unwrap(await unsuspendAdminProject(v.projectId, v.note)),
+      onSuccess: refresh,
+    }),
+  };
 }

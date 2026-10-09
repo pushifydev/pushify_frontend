@@ -381,4 +381,7 @@ export {
   useAdminUser,
   useAdminActivity,
   useAdminAuthEvents,
+  useAdminAbuseFlags,
+  useAdminAbuseClauses,
+  useAdminAbuseActions,
 } from './useAdmin';

@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.106] - 2026-10-10
+
+### Added
+- **Admin → Abuse:** the Acceptable Use review queue (backend beta.101). Flags are listed by score, with source (deploy scan, runtime, report), reasons (strong/medium/weak, file and line) and report text, filtered by open, actioned, dismissed or all. Actions:
+  - **Suspend:** a reason sent to the owner, a policy section, and a duration (until appeal, 7, 30 or 90 days);
+  - **Lift suspension;**
+  - **Dismiss**, with an optional note.
+
+  The forms open inline; there are no browser dialogs.
+- **Suspended projects** show a notice on their page with the reason and the appeal address, and Settings no longer offers "Resume" for them.
+- Self-hosting docs list `ABUSE_DETECTION_ENABLED` / `ABUSE_AUTO_SUSPEND`, both off by default.
+
 ## [0.2.0-beta.105] - 2026-10-07
 
 ### Added

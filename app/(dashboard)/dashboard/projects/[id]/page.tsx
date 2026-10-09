@@ -58,6 +58,7 @@ import {
 import { useConfirm } from '@/hooks/useConfirm';
 import { type ProjectStatus } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
+import { formatMessage } from '@/lib/i18n/format-message';
 
 type Tab = 'overview' | 'deployments' | 'logs' | 'environment' | 'domains' | 'cron' | 'workers' | 'notifications' | 'settings';
 
@@ -230,6 +231,16 @@ export default function ProjectDetailPage() {
         <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-60" aria-hidden />
         <span className="text-[var(--text-secondary)] truncate" aria-current="page">{project.name}</span>
       </nav>
+
+      {project.suspendedAt && (
+        <div className="dash-callout flex-col items-start gap-1.5" role="alert">
+          <p className="text-sm font-medium text-[var(--status-error)]">{t('projectDetail', 'suspendedTitle')}</p>
+          <p className="text-[13px] text-[var(--text-secondary)] break-words">
+            {formatMessage(t('projectDetail', 'suspendedDesc'), { reason: project.suspensionReason ?? '—' })}
+          </p>
+          <p className="text-[13px] text-[var(--text-muted)]">{t('projectDetail', 'suspendedAppeal')}</p>
+        </div>
+      )}
 
       {(fromStudio || isSiteStudioProject) && (
         <div className="dash-callout flex-col items-start gap-3 sm:flex-row sm:items-center" role="status">

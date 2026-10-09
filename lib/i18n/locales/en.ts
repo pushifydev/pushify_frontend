@@ -922,6 +922,10 @@ export interface TranslationKeys {
     currentServer: string;
     projectStatus: string;
     projectStatusDesc: string;
+    suspendedTitle: string;
+    suspendedDesc: string;
+    suspendedAppeal: string;
+    suspendedResume: string;
     pauseProject: string;
     resumeProject: string;
     // Webhooks
@@ -3005,6 +3009,40 @@ export interface TranslationKeys {
     navUsers: string;
     navActivity: string;
     navSignins: string;
+    navAbuse: string;
+    abuseTitle: string;
+    abuseEmpty: string;
+    abuseFilterOpen: string;
+    abuseFilterActioned: string;
+    abuseFilterDismissed: string;
+    abuseFilterAll: string;
+    abuseSourceDeploy: string;
+    abuseSourceRuntime: string;
+    abuseSourceReport: string;
+    abuseScore: string;
+    abuseSuspended: string;
+    abuseUnmatched: string;
+    abuseReportedBy: string;
+    abuseSuspend: string;
+    abuseUnsuspend: string;
+    abuseDismiss: string;
+    abuseCancel: string;
+    abuseReasonLabel: string;
+    abuseReasonPlaceholder: string;
+    abuseClauseLabel: string;
+    abuseDurationLabel: string;
+    abuseUntilAppeal: string;
+    abuseDays: string;
+    abuseNoteLabel: string;
+    abuseConfirmSuspend: string;
+    abuseConfirmUnsuspend: string;
+    abuseConfirmDismiss: string;
+    abuseSuspendHint: string;
+    abuseSuspendedToast: string;
+    abuseUnsuspendedToast: string;
+    abuseDismissedToast: string;
+    abuseContainersWarn: string;
+    abuseReasonTooShort: string;
     twoFactorTitle: string;
     twoFactorDesc: string;
     twoFactorCta: string;
@@ -4066,6 +4104,10 @@ export const en: TranslationKeys = {
     currentServer: 'Current server',
     projectStatus: 'Project Status',
     projectStatusDesc: 'Pausing your project will stop all deployments and take your application offline.',
+    suspendedTitle: 'This project is suspended',
+    suspendedDesc: 'It was stopped under the Acceptable Use Policy and cannot be resumed or deployed. Reason: {reason}',
+    suspendedAppeal: 'If you think this is a mistake, email abuse@pushify.dev with the project name.',
+    suspendedResume: 'Suspended — see the notice above',
     pauseProject: 'Pause Project',
     resumeProject: 'Resume Project',
     // Webhooks
@@ -6392,6 +6434,40 @@ export const en: TranslationKeys = {
     navUsers: 'Users',
     navActivity: 'Activity',
     navSignins: 'Sign-ins',
+    navAbuse: 'Abuse',
+    abuseTitle: 'Acceptable Use review',
+    abuseEmpty: 'Nothing to review.',
+    abuseFilterOpen: 'Open',
+    abuseFilterActioned: 'Actioned',
+    abuseFilterDismissed: 'Dismissed',
+    abuseFilterAll: 'All',
+    abuseSourceDeploy: 'Deploy scan',
+    abuseSourceRuntime: 'Runtime',
+    abuseSourceReport: 'Report',
+    abuseScore: 'Score',
+    abuseSuspended: 'Suspended',
+    abuseUnmatched: 'No matching project',
+    abuseReportedBy: 'Reported by',
+    abuseSuspend: 'Suspend',
+    abuseUnsuspend: 'Lift suspension',
+    abuseDismiss: 'Dismiss',
+    abuseCancel: 'Cancel',
+    abuseReasonLabel: 'Reason (sent to the owner)',
+    abuseReasonPlaceholder: 'Runs a VLESS relay and an MTProxy on a pushify.dev subdomain.',
+    abuseClauseLabel: 'Policy section',
+    abuseDurationLabel: 'Duration',
+    abuseUntilAppeal: 'Until the appeal is resolved',
+    abuseDays: '{days} days',
+    abuseNoteLabel: 'Note (optional)',
+    abuseConfirmSuspend: 'Suspend project',
+    abuseConfirmUnsuspend: 'Lift and restart',
+    abuseConfirmDismiss: 'Dismiss flag',
+    abuseSuspendHint: 'Stops the app, blocks resume and deploys, shows a neutral “suspended” page and emails the owner with the reason, the section and abuse@ for appeals.',
+    abuseSuspendedToast: 'Project suspended',
+    abuseUnsuspendedToast: 'Suspension lifted',
+    abuseDismissedToast: 'Flag dismissed',
+    abuseContainersWarn: 'Saved, but the containers could not be reached — check the server.',
+    abuseReasonTooShort: 'Write at least 10 characters.',
     twoFactorTitle: 'Two-factor is required here',
     twoFactorDesc: 'Your account is on the operator list, but the admin panel only opens for accounts with two-factor authentication turned on.',
     twoFactorCta: 'Turn on two-factor',

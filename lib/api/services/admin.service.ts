@@ -314,3 +314,119 @@ export const getAdminAuthEvents = async (
     return handleError(error);
   }
 };
+
+// ============ Acceptable Use review queue ============
+// Mirror of pushify_backend/src/services/abuse.service.ts and src/db/schema/abuse.ts.
+
+export type AbuseFlagStatus = 'open' | 'dismissed' | 'actioned';
+export type AbuseFlagSource = 'deploy_scan' | 'runtime' | 'report';
+export type AbuseClause =
+  | 'proxy-vpn'
+  | 'scanning'
+  | 'spam-malware'
+  | 'attacks-mining'
+  | 'unauthorized-access'
+  | 'illegal'
+  | 'other';
+
+export interface AbuseReason {
+  ruleId: string;
+  weight: number;
+  strength: 'strong' | 'medium' | 'weak';
+  message: string;
+  file?: string;
+  line?: number;
+}
+
+export interface AdminAbuseFlag {
+  id: string;
+  source: AbuseFlagSource;
+  status: AbuseFlagStatus;
+  score: number;
+  reasons: AbuseReason[];
+  reportedUrl: string | null;
+  reporterEmail: string | null;
+  reportText: string | null;
+  deploymentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  reviewedAt: string | null;
+  project: {
+    id: string;
+    name: string;
+    slug: string;
+    status: 'active' | 'paused' | 'deleted';
+    suspendedAt: string | null;
+    serverId: string | null;
+  } | null;
+  organization: { id: string; name: string } | null;
+}
+
+export interface AbuseSuspendInput {
+  reason: string;
+  clause: AbuseClause;
+  /** null = until an appeal is resolved */
+  days: number | null;
+  flagId?: string | null;
+}
+
+export const getAdminAbuseFlags = async (
+  params: AdminPage & { status?: AbuseFlagStatus | 'all' } = {}
+): Promise<ApiResponse<{ items: AdminAbuseFlag[]; total: number }>> => {
+  try {
+    const response = await api.get<{ data: { items: AdminAbuseFlag[]; total: number } }>(
+      `/admin/abuse/flags${pageParams(params)}`
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const getAdminAbuseClauses = async (): Promise<ApiResponse<Record<AbuseClause, string>>> => {
+  try {
+    const response = await api.get<{ data: Record<AbuseClause, string> }>('/admin/abuse/clauses');
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const dismissAdminAbuseFlag = async (flagId: string, note: string | null): Promise<ApiResponse<{ ok: true }>> => {
+  try {
+    const response = await api.post<{ data: { ok: true } }>(`/admin/abuse/flags/${flagId}/dismiss`, { note });
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const suspendAdminProject = async (
+  projectId: string,
+  input: AbuseSuspendInput
+): Promise<ApiResponse<{ containersStopped: boolean; ownerNotified: boolean }>> => {
+  try {
+    const response = await api.post<{ data: { containersStopped: boolean; ownerNotified: boolean } }>(
+      `/admin/abuse/projects/${projectId}/suspend`,
+      input
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const unsuspendAdminProject = async (
+  projectId: string,
+  note: string | null
+): Promise<ApiResponse<{ containersStarted: boolean; ownerNotified: boolean }>> => {
+  try {
+    const response = await api.post<{ data: { containersStarted: boolean; ownerNotified: boolean } }>(
+      `/admin/abuse/projects/${projectId}/unsuspend`,
+      { note }
+    );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
