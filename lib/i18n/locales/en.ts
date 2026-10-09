@@ -1893,6 +1893,7 @@ export interface TranslationKeys {
     selectRegion: string;
     size: string;
     selectSize: string;
+    smallServerSwapNote: string;
     image: string;
     selectImage: string;
     // Sizes
@@ -5056,6 +5057,7 @@ export const en: TranslationKeys = {
     selectRegion: 'Select a region',
     size: 'Size',
     selectSize: 'Select a size',
+    smallServerSwapNote: 'Comes with 2 GB of swap for builds. Large builds can be slow.',
     image: 'Image',
     selectImage: 'Select an image',
     // Sizes

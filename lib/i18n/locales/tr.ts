@@ -1932,6 +1932,7 @@ export const tr: TranslationKeys = {
     selectRegion: 'Bir bölge seçin',
     size: 'Boyut',
     selectSize: 'Bir boyut seçin',
+    smallServerSwapNote: 'Build’ler için 2 GB swap ile gelir. Büyük build’ler yavaş olabilir.',
     image: 'İmaj',
     selectImage: 'Bir imaj seçin',
     // Sizes

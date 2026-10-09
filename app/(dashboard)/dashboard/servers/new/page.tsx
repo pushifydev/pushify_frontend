@@ -271,10 +271,16 @@ export default function NewServerPage() {
                               {sizeOption.specs.vcpus} vCPU · {formatMb(sizeOption.specs.memoryMb)} RAM · {sizeOption.specs.diskGb} GB SSD
                             </span>
                           </span>
-                          {disabled && (
+                          {disabled ? (
                             <span className="block text-xs mt-1 text-[var(--status-warning)]">
                               {getSizeDisallowLabel(t, sizeOption)}
                             </span>
+                          ) : (
+                            sizeOption.specs.memoryMb < 1536 && (
+                              <span className="block text-xs mt-1 text-[var(--text-muted)]">
+                                {t('servers', 'smallServerSwapNote')}
+                              </span>
+                            )
                           )}
                         </span>
                         <span className={`terminal-text text-xs tabular-nums shrink-0 ${isSelected ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
