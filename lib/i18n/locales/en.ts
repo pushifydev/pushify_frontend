@@ -228,6 +228,8 @@ export interface TranslationKeys {
     allStatus: string;
     active: string;
     paused: string;
+    suspended: string;
+    suspendedHint: string;
     inactive: string;
     noProjectsFound: string;
     viewCards: string;
@@ -3394,6 +3396,8 @@ export const en: TranslationKeys = {
     allStatus: 'All Status',
     active: 'Active',
     paused: 'Paused',
+    suspended: 'Suspended',
+    suspendedHint: 'Suspended under the Acceptable Use Policy — open the project for details',
     inactive: 'Inactive',
     noProjectsFound: 'No projects found',
     viewCards: 'Cards',

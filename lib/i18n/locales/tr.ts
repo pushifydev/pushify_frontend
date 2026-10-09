@@ -228,6 +228,8 @@ export const tr: TranslationKeys = {
     allStatus: 'Tüm Durumlar',
     active: 'Aktif',
     paused: 'Duraklatıldı',
+    suspended: 'Askıya alındı',
+    suspendedHint: 'Kabul Edilebilir Kullanım Politikası kapsamında askıya alındı — ayrıntılar için projeyi açın',
     inactive: 'Pasif',
     noProjectsFound: 'Proje bulunamadı',
     viewCards: 'Kartlar',

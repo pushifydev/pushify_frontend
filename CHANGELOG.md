@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.109] - 2026-10-10
+
+### Fixed
+- **Projects list shows suspended projects as suspended.** A project suspended under the Acceptable Use Policy looked like an ordinary paused one: yellow "paused" badge, and a Resume item that only failed with an error. It now has a red dot and a **Suspended** badge (with a hint to open the project for details), and the menu shows a disabled "Suspended" entry instead of Resume. The project page already shows the reason and the appeal address (beta.106).
+
 ## [0.2.0-beta.108] - 2026-10-10
 
 ### Changed
