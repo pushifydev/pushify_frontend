@@ -53,6 +53,7 @@ import {
   useSetPrimaryDomain,
   useVerifyDomain,
   useTranslation,
+  useOrganization,
 } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
 import { type ProjectStatus } from '@/lib/api';
@@ -97,6 +98,9 @@ export default function ProjectDetailPage() {
   useHealthCheckEvents(projectId);
   const cancelDeployment = useCancelDeployment(projectId);
   const rollbackDeployment = useRollbackDeployment(projectId);
+  const { data: organization } = useOrganization();
+  // Viewers are read-only; hide rollback until the role is known.
+  const canRollback = !!organization?.role && organization.role !== 'viewer';
   const redeployDeployment = useRedeployDeployment(projectId);
   const createDeployment = useCreateDeployment(projectId);
   const createEnvVar = useCreateEnvVar(projectId);
@@ -425,6 +429,8 @@ export default function ProjectDetailPage() {
             })}
             onViewContainerLogs={(deploymentId) => setShowContainerLogs(deploymentId)}
             onViewHistoricalLogs={(deploymentId) => setShowHistoricalLogs(deploymentId)}
+            canRollback={canRollback}
+            rollbackPendingId={rollbackDeployment.isPending ? rollbackDeployment.variables : null}
             t={t}
           />
         )}
