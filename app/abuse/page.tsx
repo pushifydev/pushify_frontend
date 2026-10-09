@@ -4,6 +4,7 @@ import { useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 import { useTranslation } from '@/hooks';
+import { ABUSE_CONTACT_EMAIL } from '@/lib/contact';
 import {
   ABUSE_REPORT_CATEGORIES,
   submitAbuseReport,
@@ -145,7 +146,7 @@ export default function AbusePage() {
       )}
 
       <p className="mt-8">
-        Or email <a href="mailto:abuse@pushify.dev"><strong>abuse@pushify.dev</strong></a>.
+        Or email <a href={`mailto:${ABUSE_CONTACT_EMAIL}`}><strong>{ABUSE_CONTACT_EMAIL}</strong></a>.
       </p>
     </LegalPageLayout>
   );

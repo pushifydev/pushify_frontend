@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.108] - 2026-10-10
+
+### Changed
+- The reports and appeals address shown on /abuse, /acceptable-use and a suspended project's notice comes from `NEXT_PUBLIC_ABUSE_CONTACT_EMAIL` (default abuse@pushify.dev), defined once in `lib/contact.ts`. Some mail hosts reserve `abuse@`, so it can now be any address you can receive. Keep it equal to the backend's `ABUSE_CONTACT_EMAIL` (backend beta.102). It is read at build time, so rebuild after changing it.
+
 ## [0.2.0-beta.107] - 2026-10-10
 
 ### Added

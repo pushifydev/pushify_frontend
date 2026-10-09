@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 import { useTranslation } from '@/hooks';
+import { ABUSE_CONTACT_EMAIL } from '@/lib/contact';
 
 /*
  * English only, as approved on 2026-10-10. Section numbers are cited in suspension emails
@@ -58,12 +59,12 @@ export default function AcceptableUsePage() {
       <h2 id="reporting">4. Reporting abuse</h2>
       <p>
         Use <Link href="/abuse">pushify.dev/abuse</Link> or email{' '}
-        <a href="mailto:abuse@pushify.dev">abuse@pushify.dev</a>.
+        <a href={`mailto:${ABUSE_CONTACT_EMAIL}`}>{ABUSE_CONTACT_EMAIL}</a>.
       </p>
 
       <h2 id="appeals">5. Appeals</h2>
       <p>
-        Email <a href="mailto:abuse@pushify.dev">abuse@pushify.dev</a> with the project name. A person
+        Email <a href={`mailto:${ABUSE_CONTACT_EMAIL}`}>{ABUSE_CONTACT_EMAIL}</a> with the project name. A person
         reviews every appeal.
       </p>
 

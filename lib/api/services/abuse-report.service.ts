@@ -2,6 +2,8 @@
 // Plain fetch on purpose: the page is public, and the dashboard client's auth handling has no
 // business here.
 
+import { ABUSE_CONTACT_EMAIL } from '@/lib/contact';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
 
 export const ABUSE_REPORT_CATEGORIES = [
@@ -36,6 +38,6 @@ export async function submitAbuseReport(input: AbuseReportInput): Promise<{ ok: 
     const body = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
     return { ok: false, message: body?.error?.message ?? `Request failed (${res.status})` };
   } catch {
-    return { ok: false, message: 'Could not reach Pushify. Email abuse@pushify.dev instead.' };
+    return { ok: false, message: `Could not reach Pushify. Email ${ABUSE_CONTACT_EMAIL} instead.` };
   }
 }
