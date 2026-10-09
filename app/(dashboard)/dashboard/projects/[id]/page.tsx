@@ -59,6 +59,7 @@ import { useConfirm } from '@/hooks/useConfirm';
 import { type ProjectStatus } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
 import { formatMessage } from '@/lib/i18n/format-message';
+import { ABUSE_CONTACT_EMAIL } from '@/lib/contact';
 
 type Tab = 'overview' | 'deployments' | 'logs' | 'environment' | 'domains' | 'cron' | 'workers' | 'notifications' | 'settings';
 
@@ -238,7 +239,7 @@ export default function ProjectDetailPage() {
           <p className="text-[13px] text-[var(--text-secondary)] break-words">
             {formatMessage(t('projectDetail', 'suspendedDesc'), { reason: project.suspensionReason ?? '—' })}
           </p>
-          <p className="text-[13px] text-[var(--text-muted)]">{t('projectDetail', 'suspendedAppeal')}</p>
+          <p className="text-[13px] text-[var(--text-muted)]">{formatMessage(t('projectDetail', 'suspendedAppeal'), { email: ABUSE_CONTACT_EMAIL })}</p>
         </div>
       )}
 
