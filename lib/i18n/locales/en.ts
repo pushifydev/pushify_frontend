@@ -306,6 +306,8 @@ export interface TranslationKeys {
     refund: string;
     security: string;
     exitPlan: string;
+    acceptableUse: string;
+    reportAbuse: string;
     cookies: string;
   };
   landing: {
@@ -3470,6 +3472,8 @@ export const en: TranslationKeys = {
     refund: 'Refund Policy',
     security: 'Security',
     exitPlan: 'Exit plan',
+    acceptableUse: 'Acceptable use',
+    reportAbuse: 'Report abuse',
     cookies: 'Cookie Policy',
   },
   landing: {

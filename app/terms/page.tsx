@@ -11,7 +11,7 @@ export default function TermsPage() {
 
 function TermsEN() {
   return (
-    <LegalPageLayout title="Terms of Service" lastUpdated="May 3, 2026">
+    <LegalPageLayout title="Terms of Service" lastUpdated="October 10, 2026">
       <h2>1. Parties</h2>
       <p>This Agreement is concluded between the following parties:</p>
       <ul>
@@ -80,8 +80,11 @@ function TermsEN() {
         <li>Pay your subscription on time</li>
       </ul>
 
-      <h2>9. Prohibited Use</h2>
-      <p>Pushify may not be used for:</p>
+      <h2 id="prohibited-use">9. Prohibited Use</h2>
+      <p>
+        Your use of Pushify is subject to the <Link href="/acceptable-use">Acceptable Use Policy</Link>,
+        which is part of these Terms. Pushify may not be used for:
+      </p>
       <ul>
         <li>Hosting or distributing illegal content</li>
         <li>Spam or malware distribution</li>
@@ -90,8 +93,15 @@ function TermsEN() {
         <li>Unauthorized access attempts to third-party systems</li>
       </ul>
       <p>
-        In case of violation, Pushify reserves the right to suspend or terminate your account
-        without prior notice.
+        On managed servers, on Pushify&apos;s shared infrastructure and at *.pushify.dev addresses, you
+        may also not run proxy, VPN, tunnel or relay services (including Xray, V2Ray, sing-box, Trojan,
+        Shadowsocks, Hysteria, Telegram MTProxy, open HTTP/SOCKS proxies and Tor relays or exits), or
+        scan networks or ports.
+      </p>
+      <p>
+        If you violate these rules, Pushify may suspend the affected project or your account, with or
+        without prior notice, as described in the Acceptable Use Policy. Serious violations may lead to
+        termination.
       </p>
 
       <h2>10. Limitation of Liability</h2>

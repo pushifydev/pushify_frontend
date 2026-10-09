@@ -68,6 +68,8 @@ export function LandingFooter({ lit = false }: { lit?: boolean } = {}) {
       { label: t('legal', 'privacy'), href: '/privacy' },
       { label: t('legal', 'terms'), href: '/terms' },
       { label: t('legal', 'refund'), href: '/refund' },
+      { label: t('legal', 'acceptableUse'), href: '/acceptable-use' },
+      { label: t('legal', 'reportAbuse'), href: '/abuse' },
       { label: t('legal', 'security'), href: '/security' },
       { label: t('legal', 'exitPlan'), href: '/exit-plan' },
     ],

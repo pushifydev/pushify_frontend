@@ -306,6 +306,8 @@ export const tr: TranslationKeys = {
     refund: 'Teslimat ve İade Şartları',
     security: 'Güvenlik',
     exitPlan: 'Çıkış planı',
+    acceptableUse: 'Kabul edilebilir kullanım',
+    reportAbuse: 'Kötüye kullanım bildir',
     cookies: 'Çerez Politikası',
   },
   landing: {
