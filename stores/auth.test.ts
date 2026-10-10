@@ -13,7 +13,8 @@ vi.stubGlobal('localStorage', {
 });
 
 const { api, setTokens, getAccessToken, getRefreshToken } = await import('@/lib/api/client');
-const { useAuthStore } = await import('./auth');
+const { useAuthStore, onSessionEnd } = await import('./auth');
+const { QueryClient } = await import('@tanstack/react-query');
 
 type Reply = { status: number; data?: unknown } | 'network-error';
 
@@ -99,11 +100,70 @@ describe('checkAuth', () => {
     expect(s.user).toBeNull();
   });
 
+  it('does not end the session on a transient error', async () => {
+    const listener = vi.fn();
+    const unsubscribe = onSessionEnd(listener);
+    try {
+      api.defaults.adapter = adapter(() => 'network-error');
+      await useAuthStore.getState().checkAuth();
+      expect(listener).not.toHaveBeenCalled();
+    } finally {
+      unsubscribe();
+    }
+  });
+
   it('clears the tokens on 403', async () => {
     api.defaults.adapter = adapter(() => ({ status: 403 }));
     await useAuthStore.getState().checkAuth();
     expect(getAccessToken()).toBeNull();
     expect(getRefreshToken()).toBeNull();
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
+  });
+});
+
+describe('session end clears the query cache', () => {
+  // Mirrors the subscription in app/providers.tsx
+  let queryClient: InstanceType<typeof QueryClient>;
+  let unsubscribe: () => void;
+
+  beforeEach(() => {
+    queryClient = new QueryClient();
+    queryClient.setQueryData(['projects'], [{ id: 'p1', name: "A's project" }]);
+    unsubscribe = onSessionEnd(() => queryClient.clear());
+  });
+
+  afterEach(() => {
+    unsubscribe();
+  });
+
+  it('on logout', async () => {
+    useAuthStore.setState({ user: user as never, isAuthenticated: true });
+    api.defaults.adapter = adapter(() => ({ status: 200 }));
+    await useAuthStore.getState().logout();
+    expect(queryClient.getQueryData(['projects'])).toBeUndefined();
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
+  });
+
+  it('when the API client gives up on the session', async () => {
+    useAuthStore.setState({ user: user as never, isAuthenticated: true });
+    // Request 401s and the refresh (global axios, see beforeEach) 401s too
+    api.defaults.adapter = adapter(() => ({ status: 401 }));
+    await api.get('/projects').catch(() => undefined);
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
+  });
+
+  it('when /auth/me rejects the stored token', async () => {
+    api.defaults.adapter = adapter(() => ({ status: 401 }));
+    await useAuthStore.getState().checkAuth();
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+  });
+
+  it('stops clearing after unsubscribe', async () => {
+    unsubscribe();
+    api.defaults.adapter = adapter(() => ({ status: 200 }));
+    await useAuthStore.getState().logout();
+    expect(queryClient.getQueryData(['projects'])).toBeDefined();
   });
 });

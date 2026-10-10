@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider, MutationCache } from '@tanstack/react-query';
 import { Toaster, toast } from 'sonner';
 import { useThemeStore, type Theme } from '@/stores/theme';
+import { onSessionEnd } from '@/stores/auth';
 import { ConfirmProvider } from '@/hooks/useConfirm';
 import { getApiErrorMessage } from '@/lib/api/get-error-message';
 import { appT } from '@/lib/i18n/app-translate';
@@ -70,6 +71,10 @@ export function Providers({
         }),
       })
   );
+
+  // Cached queries are not keyed by user: wipe them whenever the session ends (logout,
+  // expired/rejected session) so the next sign-in in this tab can't see the old data.
+  useEffect(() => onSessionEnd(() => queryClient.clear()), [queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
