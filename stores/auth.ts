@@ -48,7 +48,36 @@ function isSessionRejected(error: { code?: string; status?: number } | undefined
   return error.status === 401 || error.status === 403 || error.code === 'UNAUTHORIZED';
 }
 
-export const useAuthStore =create<AuthState>((set, get) => ({
+// ============ Session End Listeners ============
+
+type SessionEndListener = () => void;
+
+const sessionEndListeners = new Set<SessionEndListener>();
+
+/**
+ * Register a callback fired whenever the signed-in session ends: explicit logout, the API
+ * client giving up on the session, or /auth/me rejecting the stored token. Used to drop
+ * per-user client caches (e.g. the React Query cache) so the next user in the same tab
+ * never sees the previous user's data. Returns an unsubscribe function.
+ */
+export function onSessionEnd(listener: SessionEndListener): () => void {
+  sessionEndListeners.add(listener);
+  return () => {
+    sessionEndListeners.delete(listener);
+  };
+}
+
+function notifySessionEnd(): void {
+  sessionEndListeners.forEach((listener) => {
+    try {
+      listener();
+    } catch {
+      // A misbehaving listener must not break logout
+    }
+  });
+}
+
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   organization: null,
   isLoading: true,
@@ -164,6 +193,7 @@ export const useAuthStore =create<AuthState>((set, get) => ({
       requiresTwoFactor: false,
       twoFactorToken: null,
     });
+    notifySessionEnd();
   },
 
   checkAuth: async () => {
@@ -194,6 +224,7 @@ export const useAuthStore =create<AuthState>((set, get) => ({
         isAuthenticated: false,
         isLoading: false,
       });
+      notifySessionEnd();
     } else {
       // Network error / 5xx: the session may still be valid, so keep the tokens (a reload
       // recovers once the backend is back) and keep whatever auth state we already had.
@@ -215,6 +246,8 @@ export const useAuthStore =create<AuthState>((set, get) => ({
 // When the API client gives up on the session (refresh failed / no refresh
 // token), drop the in-memory auth state so DashboardShell redirects to login.
 onAuthFailure(() => {
+  // Always drop cached per-user data, even if the store was already cleared.
+  notifySessionEnd();
   const { isAuthenticated, user, organization } = useAuthStore.getState();
   if (!isAuthenticated && !user && !organization) return;
   useAuthStore.setState({
