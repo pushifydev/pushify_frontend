@@ -50,6 +50,7 @@ export class PushifyWebSocket {
   private subscriptions = new Set<string>();
   private _isConnected = false;
   private intentionalClose = false;
+  private browserListenersAttached = false;
 
   constructor() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
@@ -68,6 +69,8 @@ export class PushifyWebSocket {
       return;
     }
 
+    this.attachBrowserListeners();
+
     const token = getAccessToken();
     if (!token) {
       console.warn('[WS] No access token, skipping connection');
@@ -77,9 +80,13 @@ export class PushifyWebSocket {
     this.intentionalClose = false;
 
     try {
-      this.ws = new WebSocket(`${this.url}?token=${token}`);
+      const socket = new WebSocket(`${this.url}?token=${token}`);
+      this.ws = socket;
 
-      this.ws.onopen = () => {
+      // Handlers ignore events from a socket that has since been replaced (e.g. by reconnect()),
+      // so a late onclose from the old socket can't flip state or schedule a stray reconnect.
+      socket.onopen = () => {
+        if (this.ws !== socket) return;
         this.reconnectAttempts = 0;
         this._isConnected = true;
         this.notifyConnectionChange(true);
@@ -91,7 +98,8 @@ export class PushifyWebSocket {
         }
       };
 
-      this.ws.onmessage = (event) => {
+      socket.onmessage = (event) => {
+        if (this.ws !== socket) return;
         try {
           const msg: WSServerMessage = JSON.parse(event.data);
           this.handleMessage(msg);
@@ -100,7 +108,8 @@ export class PushifyWebSocket {
         }
       };
 
-      this.ws.onclose = () => {
+      socket.onclose = () => {
+        if (this.ws !== socket) return;
         this._isConnected = false;
         this.notifyConnectionChange(false);
         this.stopHeartbeat();
@@ -110,7 +119,7 @@ export class PushifyWebSocket {
         }
       };
 
-      this.ws.onerror = () => {
+      socket.onerror = () => {
         // onclose will fire after onerror
       };
     } catch {
@@ -128,6 +137,7 @@ export class PushifyWebSocket {
     }
 
     this.stopHeartbeat();
+    this.detachBrowserListeners();
 
     if (this.ws) {
       this.ws.close(1000, 'Client disconnecting');
@@ -136,6 +146,16 @@ export class PushifyWebSocket {
 
     this._isConnected = false;
     this.notifyConnectionChange(false);
+  }
+
+  /**
+   * Drop the current socket and open a new one with the current access token
+   * (e.g. after switching organization). Subscriptions are kept and re-sent on open.
+   */
+  reconnect(): void {
+    this.disconnect();
+    this.intentionalClose = false;
+    this.connect();
   }
 
   // ============ Subscriptions ============
@@ -260,6 +280,45 @@ export class PushifyWebSocket {
     this.reconnectTimer = setTimeout(() => {
       this.connect();
     }, delay);
+  }
+
+  // Retry immediately when the network comes back or the tab becomes visible again
+  // (after sleep / long outages the backoff may have given up at MAX_RECONNECT_ATTEMPTS).
+  private handleWake = (): void => {
+    if (this.intentionalClose) return;
+    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
+    if (this.ws?.readyState === WebSocket.OPEN || this.ws?.readyState === WebSocket.CONNECTING) {
+      return;
+    }
+
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+    this.reconnectAttempts = 0;
+    this.connect();
+  };
+
+  private attachBrowserListeners(): void {
+    if (this.browserListenersAttached) return;
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', this.handleWake);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', this.handleWake);
+    }
+    this.browserListenersAttached = true;
+  }
+
+  private detachBrowserListeners(): void {
+    if (!this.browserListenersAttached) return;
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('online', this.handleWake);
+    }
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('visibilitychange', this.handleWake);
+    }
+    this.browserListenersAttached = false;
   }
 
   private notifyConnectionChange(connected: boolean): void {
