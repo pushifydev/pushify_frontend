@@ -24,6 +24,7 @@ import {
   type StudioAccess,
 } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
+import { useWebSocket } from '@/providers/WebSocketProvider';
 
 // Query Keys
 export const organizationKeys = {
@@ -74,11 +75,13 @@ export function useMyOrganizations() {
 
 /**
  * Switch the active workspace. switchOrganization() persists the new scoped tokens; here we
- * reflect the org in the auth store and refetch every query so all org-scoped data reloads.
+ * reflect the org in the auth store, reopen the WebSocket with the new token and refetch every query so all org-scoped data reloads.
  */
 export function useSwitchOrganization() {
   const queryClient = useQueryClient();
   const setOrganization = useAuthStore((s) => s.setOrganization);
+  // null outside WebSocketProvider (e.g. accept-invitation page), where there is no socket.
+  const { ws } = useWebSocket();
 
   return useMutation({
     mutationFn: async (organizationId: string) => {
@@ -88,6 +91,8 @@ export function useSwitchOrganization() {
     },
     onSuccess: (organization) => {
       setOrganization(organization);
+      // The socket authenticated with the previous org's token; reopen it with the new one.
+      ws?.reconnect();
       queryClient.invalidateQueries();
     },
   });
