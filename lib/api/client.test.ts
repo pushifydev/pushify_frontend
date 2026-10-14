@@ -102,6 +102,43 @@ describe('api client 401 handling', () => {
     expect(failures).toBe(1);
   });
 
+  it('keeps tokens and does not fire auth failure when refresh hits a network error', async () => {
+    setTokens('old-access', 'refresh-1');
+    const { apiCalls } = mockAdapters(
+      () => ({ status: 401 }),
+      () => ({ status: 200 })
+    );
+    const refreshCalls: InternalAxiosRequestConfig[] = [];
+    axios.defaults.adapter = (config) => {
+      refreshCalls.push(config);
+      return Promise.reject(new AxiosError('Network Error', 'ERR_NETWORK', config));
+    };
+
+    await expect(api.get('/projects')).rejects.toMatchObject({ response: { status: 401 } });
+
+    expect(refreshCalls).toHaveLength(1);
+    expect(apiCalls).toHaveLength(1);
+    expect(getAccessToken()).toBe('old-access');
+    expect(getRefreshToken()).toBe('refresh-1');
+    expect(failures).toBe(0);
+  });
+
+  it('keeps tokens and does not fire auth failure when refresh returns 503', async () => {
+    setTokens('old-access', 'refresh-1');
+    const { apiCalls, refreshCalls } = mockAdapters(
+      () => ({ status: 401 }),
+      () => ({ status: 503 })
+    );
+
+    await expect(api.get('/projects')).rejects.toMatchObject({ response: { status: 401 } });
+
+    expect(refreshCalls).toHaveLength(1);
+    expect(apiCalls).toHaveLength(1);
+    expect(getAccessToken()).toBe('old-access');
+    expect(getRefreshToken()).toBe('refresh-1');
+    expect(failures).toBe(0);
+  });
+
   it('fires auth failure once for concurrent 401s sharing a failed refresh', async () => {
     setTokens('old-access', 'revoked-refresh');
     const { refreshCalls } = mockAdapters(
