@@ -111,9 +111,15 @@ const refreshAccessToken = async (): Promise<boolean> => {
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
       setTokens(newAccessToken, newRefreshToken);
       return true;
-    } catch {
-      clearTokens();
-      notifyAuthFailure();
+    } catch (error) {
+      // Only an explicit rejection from the server means the session is gone.
+      // Network errors, 5xx and 429 are transient: keep the tokens so the next
+      // request can retry the refresh (mirrors isSessionRejected in stores/auth.ts).
+      const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+      if (status === 400 || status === 401 || status === 403) {
+        clearTokens();
+        notifyAuthFailure();
+      }
       return false;
     } finally {
       refreshPromise = null;
