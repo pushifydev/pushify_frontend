@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.2.1-beta.111] - 2026-10-20
+
+### Changed
+- **Versioning rules** (CONTRIBUTING.md → Versioning). Every PR raises `version` in package.json and adds its section here. A fix raises the patch number, a new feature the minor number and a breaking change the major number. While in beta, the `-beta.N` counter also goes up by one. `package-lock.json` is not edited in the PR; `npm install` after the merge brings its version in line.
+- A unit test checks that the newest section here has the version in package.json.
+
 ## [0.2.0-beta.110] - 2026-10-20
 
 ### Added

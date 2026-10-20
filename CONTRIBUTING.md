@@ -30,8 +30,41 @@ refactor: extract modal into shared component
 
 1. Ensure your code passes linting and type checks
 2. Update documentation if you've changed APIs or added features
-3. Write a clear PR description explaining what changed and why
-4. Link any related issues
+3. Raise the version in `package.json` and add a `CHANGELOG.md` section (see [Versioning](#versioning))
+4. Write a clear PR description explaining what changed and why
+5. Link any related issues
+
+## Versioning
+
+Every PR raises `version` in `package.json` and adds a section for that version to the top of
+`CHANGELOG.md`, under `## [Unreleased]`:
+
+```
+## [0.2.1-beta.111] - 2026-10-20
+
+### Fixed
+- ...
+```
+
+The `/changelog` page reads these `## [version] - YYYY-MM-DD` headings, so keep the format.
+
+Which number goes up:
+
+| Change | Bump | Example |
+|--------|------|---------|
+| Bug fix (`fix:`) | patch | 0.2.0 → 0.2.1 |
+| New feature (`feat:`) | minor | 0.2.1 → 0.3.0 |
+| Breaking change | major | 0.3.0 → 1.0.0 |
+
+Changes that are none of these (docs, refactoring, tests, blog posts) raise the patch number.
+
+While Pushify is in beta, keep the `-beta.N` suffix and raise `N` by one on every PR. The rule above
+applies to the numbers before it, e.g. from `0.2.0-beta.110` a fix gives `0.2.1-beta.111` and a
+feature gives `0.3.0-beta.111`. The `/changelog` page orders releases from the same day by `N`,
+and changelog entries refer to releases as "beta.N".
+
+Do not edit `package-lock.json` in the PR. Its `version` field is brought in line by running
+`npm install` after the merge.
 
 ## Code Style
 
