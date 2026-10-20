@@ -12,6 +12,9 @@ import {
   dismissAdminAbuseFlag,
   suspendAdminProject,
   unsuspendAdminProject,
+  banAdminUser,
+  unbanAdminUser,
+  type AbuseClause,
   type AbuseFlagStatus,
   type AbuseSuspendInput,
   type AdminUserSort,
@@ -137,6 +140,25 @@ export function useAdminAbuseActions() {
     }),
     unsuspend: useMutation({
       mutationFn: async (v: { projectId: string; note: string | null }) => unwrap(await unsuspendAdminProject(v.projectId, v.note)),
+      onSuccess: refresh,
+    }),
+  };
+}
+
+/** Ban and unban refresh the user's page and the abuse queue (their projects get suspended). */
+export function useAdminUserBan(userId: string) {
+  const queryClient = useQueryClient();
+  const refresh = () => {
+    queryClient.invalidateQueries({ queryKey: adminKeys.user(userId) });
+    queryClient.invalidateQueries({ queryKey: [...adminKeys.all, 'abuse'] });
+  };
+  return {
+    ban: useMutation({
+      mutationFn: async (v: { reason: string; clause: AbuseClause }) => unwrap(await banAdminUser(userId, v)),
+      onSuccess: refresh,
+    }),
+    unban: useMutation({
+      mutationFn: async (note: string | null) => unwrap(await unbanAdminUser(userId, note)),
       onSuccess: refresh,
     }),
   };

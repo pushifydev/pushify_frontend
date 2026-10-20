@@ -196,6 +196,9 @@ export interface AdminUserDetail {
     githubLinked: boolean;
     googleLinked: boolean;
     signupMethod: AdminSignupMethod;
+    /** Banned under the Acceptable Use Policy (null = not banned) */
+    bannedAt: string | null;
+    banReason: string | null;
   };
   organizations: AdminUserOrganization[];
   projects: AdminUserProject[];
@@ -425,6 +428,36 @@ export const unsuspendAdminProject = async (
       `/admin/abuse/projects/${projectId}/unsuspend`,
       { note }
     );
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+// ============ Account bans ============
+
+export interface AdminBanResult {
+  projectsSuspended: number;
+  serversStopped: number;
+  apiKeysDeleted: number;
+  identifiersBlocked: number;
+}
+
+export const banAdminUser = async (
+  userId: string,
+  input: { reason: string; clause: AbuseClause }
+): Promise<ApiResponse<AdminBanResult>> => {
+  try {
+    const response = await api.post<{ data: AdminBanResult }>(`/admin/users/${userId}/ban`, input);
+    return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const unbanAdminUser = async (userId: string, note: string | null): Promise<ApiResponse<{ ok: true }>> => {
+  try {
+    const response = await api.post<{ data: { ok: true } }>(`/admin/users/${userId}/unban`, { note });
     return { data: response.data.data };
   } catch (error) {
     return handleError(error);

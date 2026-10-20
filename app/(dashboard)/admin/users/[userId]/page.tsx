@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { useTranslation, useAdminUser } from '@/hooks';
-import type { AdminTimelineEntry } from '@/lib/api';
+import { toast } from 'sonner';
+import { useTranslation, useAdminUser, useAdminUserBan, useAdminAbuseClauses } from '@/hooks';
+import type { AbuseClause, AdminTimelineEntry, AdminUserDetail } from '@/lib/api';
+import { formatMessage } from '@/lib/i18n/format-message';
 import { getStatusColor } from '@/lib/constants';
 import { MetaLabel, PageHeader } from '@/components/dashboard/PageKit';
 import {
@@ -54,9 +57,13 @@ export default function AdminUserPage() {
             back={back}
             title={data.user.name}
             badge={
-              <span className={`badge ${data.user.emailVerified ? 'badge-success' : 'badge-warning'}`}>
-                {data.user.emailVerified ? t('admin', 'emailVerified') : t('admin', 'emailUnverified')}
-              </span>
+              data.user.bannedAt ? (
+                <span className="badge badge-error">{t('admin', 'userBanned')}</span>
+              ) : (
+                <span className={`badge ${data.user.emailVerified ? 'badge-success' : 'badge-warning'}`}>
+                  {data.user.emailVerified ? t('admin', 'emailVerified') : t('admin', 'emailUnverified')}
+                </span>
+              )
             }
             description={<span className="terminal-text text-[13px]">{data.user.email}</span>}
             meta={[
@@ -73,6 +80,8 @@ export default function AdminUserPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start min-w-0">
         {/* What they own */}
         <div className="lg:col-span-2 space-y-8 min-w-0">
+          {data && <AccountBanPanel userId={userId} user={data.user} />}
+
           <AdminPanel title={t('admin', 'orgsTitle')} meta={data?.organizations.length}>
             {!data ? <LoadingRows /> : data.organizations.length === 0 ? <EmptyRow>{t('admin', 'sectionEmpty')}</EmptyRow> : (
               <ul>
@@ -84,6 +93,7 @@ export default function AdminUserPage() {
                     </div>
                     <p className="terminal-text text-xs mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[var(--text-muted)]">
                       <span className="text-[var(--text-secondary)]">{o.role}</span>
+                      <span className="select-all" title="Organization id (npm run grant-org -- --org …)">{o.id}</span>
                       <span>{o.memberCount} {t('admin', 'members')}</span>
                       <span>{o.projectCount} {t('admin', 'projects').toLowerCase()}</span>
                       {o.infraWalletBalanceCents !== 0 && (
@@ -318,3 +328,112 @@ function describe(entry: AdminTimelineEntry, t: T): {
       };
   }
 }
+
+/** Ban / lift ban. Inline forms only — no browser dialogs. */
+function AccountBanPanel({ userId, user }: { userId: string; user: AdminUserDetail['user'] }) {
+  const { t } = useTranslation();
+  const { ban, unban } = useAdminUserBan(userId);
+  const { data: clauses } = useAdminAbuseClauses();
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState('');
+  const [clause, setClause] = useState<AbuseClause>('proxy-vpn');
+  const [note, setNote] = useState('');
+  const tooShort = reason.trim().length < 10;
+  const onError = (e: unknown) => toast.error(e instanceof Error ? e.message : String(e));
+
+  if (user.bannedAt) {
+    return (
+      <AdminPanel title={t('admin', 'banSectionTitle')}>
+        <div className="dash-row space-y-3">
+          <p className="text-sm text-[var(--status-error)]">{formatMessage(t('admin', 'bannedSince'), { when: shortDate(user.bannedAt) })}</p>
+          {user.banReason && <p className="text-xs text-[var(--text-secondary)] whitespace-pre-wrap break-words">{user.banReason}</p>}
+          {open ? (
+            <div className="space-y-3">
+              <p className="text-xs text-[var(--text-muted)]">{t('admin', 'unbanHint')}</p>
+              <label className="block space-y-1">
+                <span className="text-xs text-[var(--text-secondary)]">{t('admin', 'abuseNoteLabel')}</span>
+                <textarea className="input w-full min-h-[56px]" value={note} maxLength={2000} onChange={(e) => setNote(e.target.value)} />
+              </label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  className="btn btn-primary btn-sm"
+                  disabled={unban.isPending}
+                  onClick={() =>
+                    unban.mutate(note.trim() || null, {
+                      onSuccess: () => {
+                        toast.success(t('admin', 'unbanDoneToast'));
+                        setOpen(false);
+                      },
+                      onError,
+                    })
+                  }
+                >
+                  {t('admin', 'unbanConfirm')}
+                </button>
+                <button className="btn btn-ghost btn-sm" onClick={() => setOpen(false)}>{t('admin', 'abuseCancel')}</button>
+              </div>
+            </div>
+          ) : (
+            <button className="btn btn-secondary btn-sm" onClick={() => setOpen(true)}>{t('admin', 'unbanAction')}</button>
+          )}
+        </div>
+      </AdminPanel>
+    );
+  }
+
+  return (
+    <AdminPanel title={t('admin', 'banSectionTitle')}>
+      <div className="dash-row space-y-3">
+        {open ? (
+          <>
+            <p className="text-xs text-[var(--text-muted)]">{t('admin', 'banHint')}</p>
+            <label className="block space-y-1">
+              <span className="text-xs text-[var(--text-secondary)]">{t('admin', 'banReasonLabel')}</span>
+              <textarea
+                className="input w-full min-h-[72px]"
+                value={reason}
+                maxLength={2000}
+                placeholder={t('admin', 'banReasonPlaceholder')}
+                onChange={(e) => setReason(e.target.value)}
+              />
+              {reason.length > 0 && tooShort && <span className="text-xs text-[var(--status-warning)]">{t('admin', 'abuseReasonTooShort')}</span>}
+            </label>
+            <label className="block space-y-1">
+              <span className="text-xs text-[var(--text-secondary)]">{t('admin', 'abuseClauseLabel')}</span>
+              <select className="input w-full" value={clause} onChange={(e) => setClause(e.target.value as AbuseClause)}>
+                {Object.entries(clauses ?? {}).map(([key, label]) => (
+                  <option key={key} value={key}>{label}</option>
+                ))}
+              </select>
+            </label>
+            <div className="flex flex-wrap gap-2">
+              <button
+                className="btn btn-danger btn-sm"
+                disabled={tooShort || ban.isPending}
+                onClick={() =>
+                  ban.mutate(
+                    { reason: reason.trim(), clause },
+                    {
+                      onSuccess: (r) => {
+                        toast.success(formatMessage(t('admin', 'banDoneToast'), { projects: r.projectsSuspended, servers: r.serversStopped }));
+                        setOpen(false);
+                        setReason('');
+                      },
+                      onError,
+                    }
+                  )
+                }
+              >
+                {t('admin', 'banConfirm')}
+              </button>
+              <button className="btn btn-ghost btn-sm" onClick={() => setOpen(false)}>{t('admin', 'abuseCancel')}</button>
+            </div>
+          </>
+        ) : (
+          <button className="btn btn-danger btn-sm" onClick={() => setOpen(true)}>{t('admin', 'banAction')}</button>
+        )}
+      </div>
+    </AdminPanel>
+  );
+}
+
