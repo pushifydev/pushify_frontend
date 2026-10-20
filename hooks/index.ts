@@ -384,4 +384,5 @@ export {
   useAdminAbuseFlags,
   useAdminAbuseClauses,
   useAdminAbuseActions,
+  useAdminUserBan,
 } from './useAdmin';

@@ -3014,6 +3014,19 @@ export interface TranslationKeys {
     navActivity: string;
     navSignins: string;
     navAbuse: string;
+    userBanned: string;
+    banSectionTitle: string;
+    banHint: string;
+    banAction: string;
+    banConfirm: string;
+    banReasonLabel: string;
+    banReasonPlaceholder: string;
+    bannedSince: string;
+    unbanAction: string;
+    unbanConfirm: string;
+    unbanHint: string;
+    banDoneToast: string;
+    unbanDoneToast: string;
     abuseTitle: string;
     abuseEmpty: string;
     abuseFilterOpen: string;
@@ -6443,6 +6456,19 @@ export const en: TranslationKeys = {
     navActivity: 'Activity',
     navSignins: 'Sign-ins',
     navAbuse: 'Abuse',
+    userBanned: 'Banned',
+    banSectionTitle: 'Account',
+    banHint: 'Banning signs the user out everywhere, deletes their API keys, suspends every project in workspaces they own, powers off their managed servers and blocks their email, GitHub and Google account from signing up again. They get one email with the reason and how to appeal.',
+    banAction: 'Ban user',
+    banConfirm: 'Ban and suspend everything',
+    banReasonLabel: 'Reason (sent to the user)',
+    banReasonPlaceholder: 'Repeatedly deployed proxy/VPN relays on Pushify infrastructure.',
+    bannedSince: 'Banned {when}',
+    unbanAction: 'Lift ban',
+    unbanConfirm: 'Lift ban',
+    unbanHint: 'The user can sign in and sign up again. Suspended projects and stopped servers stay as they are; review them one by one.',
+    banDoneToast: 'Banned — {projects} projects suspended, {servers} servers stopped',
+    unbanDoneToast: 'Ban lifted',
     abuseTitle: 'Acceptable Use review',
     abuseEmpty: 'Nothing to review.',
     abuseFilterOpen: 'Open',

@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.110] - 2026-10-20
+
+### Added
+- **Admin → Users → a user → Account:** **Ban user**, with a reason sent to the user and the policy section, and **Lift ban**, with an optional note. The forms open inline. A banned user shows a red "Banned" badge with the date and reason. Backend beta.108 does the work: sessions, API keys, projects, managed servers, sign-up block and email.
+- The admin user page shows each workspace's **organization id** (selectable), the value `npm run grant-org -- --org …` needs.
+
 ## [0.2.0-beta.109] - 2026-10-10
 
 ### Fixed
