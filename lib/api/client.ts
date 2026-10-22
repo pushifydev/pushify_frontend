@@ -84,7 +84,12 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
+  // The handler only reads localStorage and the locale, so it is safe to run
+  // synchronously. This keeps axios off its async interceptor chain, which in
+  // the installed build drops values returned from rejection handlers (the
+  // retried response after a token refresh would otherwise be lost).
+  { synchronous: true }
 );
 
 // ============ Response Interceptor ============
