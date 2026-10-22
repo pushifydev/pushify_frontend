@@ -74,16 +74,39 @@ describe('api client 401 handling', () => {
       () => ({ status: 200, data: { accessToken: 'new-access', refreshToken: 'refresh-2' } })
     );
 
-    // The resolved value is not asserted: the locally installed axios build
-    // drops values returned from rejection interceptors. We verify the retry
-    // itself (second call with the refreshed token) instead.
-    await api.get('/projects');
+    // The caller must receive the retried response, not the request config.
+    await expect(api.get('/projects')).resolves.toMatchObject({
+      status: 200,
+      data: { ok: true },
+    });
 
     expect(apiCalls).toHaveLength(2);
     expect(apiCalls[1].headers.Authorization).toBe('Bearer new-access');
     expect(refreshCalls).toHaveLength(1);
     expect(getAccessToken()).toBe('new-access');
     expect(getRefreshToken()).toBe('refresh-2');
+    expect(failures).toBe(0);
+  });
+
+  it('returns the retried POST response body after a token refresh', async () => {
+    setTokens('old-access', 'refresh-1');
+    const { apiCalls, refreshCalls } = mockAdapters(
+      (config) =>
+        config.headers.Authorization === 'Bearer new-access'
+          ? { status: 200, data: { data: { plan: 'pro', echoed: JSON.parse(config.data) } } }
+          : { status: 401 },
+      () => ({ status: 200, data: { accessToken: 'new-access', refreshToken: 'refresh-2' } })
+    );
+
+    const response = await api.post('/billing/change-plan', { plan: 'pro' });
+
+    expect(response.status).toBe(200);
+    expect(response.data.data).toEqual({ plan: 'pro', echoed: { plan: 'pro' } });
+    expect(apiCalls).toHaveLength(2);
+    expect(apiCalls[0].method).toBe('post');
+    expect(apiCalls[1].method).toBe('post');
+    expect(JSON.parse(apiCalls[1].data)).toEqual({ plan: 'pro' });
+    expect(refreshCalls).toHaveLength(1);
     expect(failures).toBe(0);
   });
 
