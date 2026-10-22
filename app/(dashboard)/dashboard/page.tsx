@@ -48,6 +48,10 @@ const copy = {
     tr: 'Bir GitHub reposu bağla, sonra nerede çalışacağını seç: yönetilen bir Hetzner sunucusu ya da kendi sunucun (BYOS).',
   },
   connectRepoCta: { en: 'Connect your repo', tr: 'Repo’nu bağla' },
+  marketplaceCta: {
+    en: 'Or install a one-click app from the marketplace',
+    tr: 'Ya da marketplace’ten tek tıkla bir uygulama kur',
+  },
 };
 
 export default function DashboardPage() {
@@ -129,7 +133,8 @@ export default function DashboardPage() {
         }
       />
 
-      {!projectsLoading && !serversLoading && (
+      {/* With no projects yet, the "Deploy your first app" card below is the one guide. */}
+      {!projectsLoading && !serversLoading && projects.length > 0 && (
         <OnboardingChecklist
           progress={{
             hasServer: servers.length > 0,
@@ -221,6 +226,11 @@ export default function DashboardPage() {
                   icon: <Github className="w-4 h-4" />,
                 }}
               />
+              <p className="mt-2.5 text-xs">
+                <Link href="/dashboard/marketplace" className="dash-link">
+                  {l(copy.marketplaceCta)}
+                </Link>
+              </p>
             </section>
           ) : (
             <RowList
