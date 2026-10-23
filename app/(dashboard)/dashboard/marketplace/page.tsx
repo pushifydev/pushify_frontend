@@ -1,27 +1,26 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { useMarketplaceTemplates } from '@/hooks/useMarketplace';
 import { InstalledAppsPanel } from '@/components/marketplace/InstalledAppsPanel';
-import type { MarketplaceCategory } from '@/lib/api';
+import {
+  MARKETPLACE_CATEGORIES,
+  filterMarketplaceTemplates,
+  marketplaceFilterSearch,
+  parseMarketplaceFilter,
+  type MarketplaceCategoryFilter,
+  type MarketplaceFilter,
+} from '@/lib/marketplace-filter';
 import TemplateCard from './components/TemplateCard';
 import { SkeletonMarketplaceTemplateCard } from '@/components/Skeleton';
 import { CrossPromoBanner } from '@/components/dashboard/CrossPromoBanner';
 import { EmptyState } from '@/components/EmptyState';
 import { MetaLabel, PageHeader, TabPanel, Tabs } from '@/components/dashboard/PageKit';
 
-const CATEGORIES: (MarketplaceCategory | 'all')[] = [
-  'all',
-  'cms',
-  'automation',
-  'monitoring',
-  'storage',
-  'devtools',
-  'analytics',
-  'database',
-];
+const CATEGORIES: MarketplaceCategoryFilter[] = ['all', ...MARKETPLACE_CATEGORIES];
 
 const CATEGORY_I18N: Record<string, string> = {
   all: 'categoryAll',
@@ -36,25 +35,23 @@ const CATEGORY_I18N: Record<string, string> = {
 
 export default function MarketplacePage() {
   const { t, locale } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState<MarketplaceCategory | 'all'>('all');
+  const searchParams = useSearchParams();
+  // A shared link (?q=…&category=…) opens with its filter applied.
+  const [filter, setFilter] = useState<MarketplaceFilter>(() => parseMarketplaceFilter(searchParams));
   const [pageTab, setPageTab] = useState<'catalog' | 'installed'>('catalog');
 
-  const { data: templates, isLoading } = useMarketplaceTemplates(
-    activeCategory !== 'all' ? { category: activeCategory } : undefined
-  );
+  // The whole catalogue is loaded once and narrowed client-side, so the visible list always
+  // follows the tested filter in lib/marketplace-filter.
+  const { data: templates, isLoading } = useMarketplaceTemplates();
 
-  const filtered = useMemo(() => {
-    if (!templates) return [];
-    if (!searchQuery.trim()) return templates;
-    const q = searchQuery.toLowerCase();
-    return templates.filter(
-      (t) =>
-        t.name.toLowerCase().includes(q) ||
-        t.description.toLowerCase().includes(q) ||
-        t.tags.some((tag) => tag.toLowerCase().includes(q))
-    );
-  }, [templates, searchQuery]);
+  const filtered = useMemo(() => filterMarketplaceTemplates(templates ?? [], filter), [templates, filter]);
+
+  // Mirror the filter into the URL. replaceState: no navigation and no history entry per keystroke.
+  useEffect(() => {
+    const search = marketplaceFilterSearch(window.location.search, filter);
+    if (search === window.location.search) return;
+    window.history.replaceState(null, '', `${window.location.pathname}${search}${window.location.hash}`);
+  }, [filter]);
 
   const featured = filtered.filter((t) => t.featured);
   const rest = filtered.filter((t) => !t.featured);
@@ -83,7 +80,7 @@ export default function MarketplacePage() {
         title={t('marketplace', 'title')}
         description={t('marketplace', 'description')}
         meta={
-          templates && templates.length > 0 && activeCategory === 'all'
+          templates && templates.length > 0 && filter.category === 'all'
             ? [<MetaLabel key="count">{templates.length} {locale === 'tr' ? 'uygulama' : 'apps'}</MetaLabel>]
             : undefined
         }
@@ -111,8 +108,11 @@ export default function MarketplacePage() {
                 />
                 <input
                   type="search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={filter.search}
+                  onChange={(e) => {
+                    const search = e.target.value;
+                    setFilter((f) => ({ ...f, search }));
+                  }}
                   placeholder={t('marketplace', 'searchPlaceholder')}
                   aria-label={t('marketplace', 'searchPlaceholder')}
                   className="input pl-10!"
@@ -124,8 +124,8 @@ export default function MarketplacePage() {
                     <button
                       key={key}
                       type="button"
-                      onClick={() => setActiveCategory(key)}
-                      aria-pressed={activeCategory === key}
+                      onClick={() => setFilter((f) => ({ ...f, category: key }))}
+                      aria-pressed={filter.category === key}
                     >
                       {t('marketplace', CATEGORY_I18N[key] as 'categoryAll')}
                     </button>
