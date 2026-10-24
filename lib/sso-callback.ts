@@ -7,6 +7,43 @@ export interface SsoCallbackParams {
 
 const SSO_KEYS = ['accessToken', 'refreshToken', 'twoFactorToken'] as const;
 
+/** sessionStorage key holding when this tab sent the browser to the identity provider. */
+export const SSO_PENDING_KEY = 'sso_pending';
+
+/** How long a sign-in may take at the identity provider before its callback is refused. */
+export const SSO_PENDING_MAX_AGE_MS = 10 * 60 * 1000;
+
+/**
+ * Login CSRF guard: credentials in the callback URL are only accepted when this tab started an
+ * SSO sign-in recently (`startedAt` is the timestamp `rememberSsoStart` wrote). Without it the
+ * link came from somewhere else — e.g. an attacker's own tokens — and must not become a session.
+ */
+export function isExpectedSsoCallback(startedAt: string | null, now: number): boolean {
+  if (!startedAt || !/^\d+$/.test(startedAt)) return false;
+  const age = now - Number(startedAt);
+  return age >= 0 && age <= SSO_PENDING_MAX_AGE_MS;
+}
+
+/** Called right before the browser leaves for the identity provider. */
+export function rememberSsoStart(now: number = Date.now()): void {
+  try {
+    sessionStorage.setItem(SSO_PENDING_KEY, String(now));
+  } catch {
+    /* storage unavailable: the callback is refused and the user is asked to try again */
+  }
+}
+
+/** Reads and removes the start marker, so one sign-in admits exactly one callback. */
+export function takeSsoStart(): string | null {
+  try {
+    const startedAt = sessionStorage.getItem(SSO_PENDING_KEY);
+    sessionStorage.removeItem(SSO_PENDING_KEY);
+    return startedAt;
+  } catch {
+    return null;
+  }
+}
+
 function toParams(raw: string, prefix: '#' | '?'): URLSearchParams {
   return new URLSearchParams(raw.startsWith(prefix) ? raw.slice(1) : raw);
 }

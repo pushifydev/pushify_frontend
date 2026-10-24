@@ -23,6 +23,7 @@ import {
   type PendingDeletion,
 } from '@/lib/pending-deletion';
 import { buildAuthPath, consumeAuthRedirect, saveAuthRedirect, sanitizeRedirectPath } from '@/lib/auth-redirect';
+import { rememberSsoStart } from '@/lib/sso-callback';
 
 function LoginPageContent() {
   const router = useRouter();
@@ -100,6 +101,8 @@ function LoginPageContent() {
   }, [email]);
 
   const startSso = () => {
+    // /login/sso only accepts tokens in a tab that started a sign-in (login CSRF guard)
+    rememberSsoStart();
     window.location.href = ssoStartUrl(email);
   };
 
