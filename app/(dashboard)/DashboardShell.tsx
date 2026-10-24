@@ -2,9 +2,13 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { RefreshCw, WifiOff } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
+import { getAccessToken } from '@/lib/api';
 import { buildAuthPath } from '@/lib/auth-redirect';
+import { dashboardGate } from '@/lib/auth-gate';
+import { useTranslation } from '@/hooks';
 import { Sidebar } from '@/components/sidebar';
 import { Header } from '@/components/header';
 import { WebSocketProvider } from '@/providers/WebSocketProvider';
@@ -20,22 +24,26 @@ export function DashboardShell({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isAuthenticated, isLoading, checkAuth, user } = useAuthStore();
+  const { isAuthenticated, isLoading, checkAuth, logout, user } = useAuthStore();
   const { collapsed } = useSidebarStore();
+  const { t } = useTranslation();
+  const gate = dashboardGate({ isLoading, isAuthenticated, hasToken: getAccessToken() !== null });
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    // Only when there is no session left. With the tokens still stored (network error / 5xx /
+    // 429) /login would send the user straight back here, looping on /auth/me.
+    if (gate === 'login') {
       // Send the attempted URL along so login returns the user here, not /dashboard
       const attempted = `${window.location.pathname}${window.location.search}`;
       router.push(buildAuthPath('login', attempted === '/dashboard' ? null : attempted));
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [gate, router]);
 
-  if (isLoading) {
+  if (gate === 'loading') {
     return (
       <div className="dash-app min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
         <div className="w-8 h-8 rounded-full border-2 border-[var(--border-subtle)] border-t-[var(--text-primary)] animate-spin" />
@@ -43,7 +51,32 @@ export function DashboardShell({
     );
   }
 
-  if (!isAuthenticated) {
+  if (gate === 'unreachable') {
+    return (
+      <div className="dash-app min-h-screen flex items-center justify-center px-4 bg-[var(--bg-primary)]">
+        <div className="text-center max-w-md">
+          <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6">
+            <WifiOff className="w-7 h-7 text-red-400" />
+          </div>
+          <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+            {t('errors', 'networkUnavailable')}
+          </p>
+          <div className="flex items-center justify-center gap-3 mt-6">
+            {/* Escape hatch: logout clears the tokens even when the server is down */}
+            <button onClick={() => logout()} className="btn btn-secondary h-10 px-4 text-sm">
+              {t('common', 'logout')}
+            </button>
+            <button onClick={() => checkAuth()} className="btn btn-primary h-10 px-4 gap-2 text-sm">
+              <RefreshCw className="w-4 h-4" />
+              {t('errors', 'tryAgain')}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (gate === 'login') {
     return null;
   }
 

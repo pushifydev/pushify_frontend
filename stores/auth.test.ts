@@ -14,6 +14,7 @@ vi.stubGlobal('localStorage', {
 
 const { api, setTokens, getAccessToken, getRefreshToken } = await import('@/lib/api/client');
 const { useAuthStore, onSessionEnd } = await import('./auth');
+const { dashboardGate } = await import('@/lib/auth-gate');
 const { QueryClient } = await import('@tanstack/react-query');
 
 type Reply = { status: number; data?: unknown } | 'network-error';
@@ -118,6 +119,39 @@ describe('checkAuth', () => {
     expect(getAccessToken()).toBeNull();
     expect(getRefreshToken()).toBeNull();
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
+  });
+});
+
+describe('dashboard guard after checkAuth', () => {
+  // Mirrors DashboardShell: the gate sees the store state plus whether a token is still stored
+  const gateAfterCheckAuth = async () => {
+    await useAuthStore.getState().checkAuth();
+    const { isLoading, isAuthenticated } = useAuthStore.getState();
+    return dashboardGate({ isLoading, isAuthenticated, hasToken: getAccessToken() !== null });
+  };
+
+  it.each<[string, Reply]>([
+    ['a network error', 'network-error'],
+    ['a 5xx', { status: 503 }],
+    ['a 429', { status: 429, data: { error: { code: 'RATE_LIMITED', message: 'slow down' } } }],
+  ])('does not redirect to login on %s', async (_, reply) => {
+    api.defaults.adapter = adapter(() => reply);
+    expect(await gateAfterCheckAuth()).toBe('unreachable');
+  });
+
+  it.each<[string, Reply]>([
+    ['a 401', { status: 401, data: { error: { code: 'UNAUTHORIZED', message: 'nope' } } }],
+    ['a 403', { status: 403 }],
+  ])('redirects to login on %s', async (_, reply) => {
+    api.defaults.adapter = adapter(() => reply);
+    expect(await gateAfterCheckAuth()).toBe('login');
+  });
+
+  it('renders the dashboard once the backend is back', async () => {
+    api.defaults.adapter = adapter(() => 'network-error');
+    expect(await gateAfterCheckAuth()).toBe('unreachable');
+    api.defaults.adapter = adapter(() => ({ status: 200, data: { data: user } }));
+    expect(await gateAfterCheckAuth()).toBe('ready');
   });
 });
 

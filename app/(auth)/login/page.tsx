@@ -1,6 +1,5 @@
 'use client';
 
-import { getAccessToken } from '@/lib/api/client';
 import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -27,11 +26,9 @@ import { buildAuthPath, consumeAuthRedirect, saveAuthRedirect, sanitizeRedirectP
 
 function LoginPageContent() {
   const router = useRouter();
-
-  // Already signed in: the auth pages are not a destination — go straight to the dashboard.
-  useEffect(() => {
-    if (getAccessToken()) router.replace('/dashboard');
-  }, [router]);
+  // Already signed in? AuthLayout sends the user to /dashboard once checkAuth confirms the
+  // session. Don't redirect on a stored token alone: while the backend is unreachable the
+  // token is kept but the dashboard can't load, and the two pages would bounce forever.
   const searchParams = useSearchParams();
   const {
     login,
