@@ -56,17 +56,45 @@ for f in .env .env.production .env.local .env.production.local; do
 done
 log "Release assembled: $RELEASE"
 
-# …and try it before anyone else does
-( cd "$RELEASE" && PORT="$TEST_PORT" HOSTNAME=127.0.0.1 NODE_ENV=production node server.js >"$RELEASE/.smoke.log" 2>&1 ) &
+# …and try it before anyone else does.
+# Anything accepting connections on 127.0.0.1:<port>? (curl exit 7 = connection refused)
+port_open() { local rc=0; curl -s -o /dev/null -m 2 "http://127.0.0.1:$1/" || rc=$?; [[ $rc -ne 7 ]]; }
+# SIGTERM, then SIGKILL if it is still there after 10 s
+stop_smoke() {
+  [[ -n "${SMOKE_PID:-}" ]] || return 0
+  kill "$SMOKE_PID" 2>/dev/null || true
+  for _ in $(seq 1 10); do kill -0 "$SMOKE_PID" 2>/dev/null || break; sleep 1; done
+  kill -0 "$SMOKE_PID" 2>/dev/null && kill -KILL "$SMOKE_PID" 2>/dev/null || true
+  wait "$SMOKE_PID" 2>/dev/null || true
+  SMOKE_PID=""
+}
+# A server left on the test port (e.g. by an earlier run) would answer in place of the new release,
+# which dies with EADDRINUSE — and a broken release would go live.
+if port_open "$TEST_PORT"; then
+  echo "ERROR: port $TEST_PORT is busy — stop whatever listens there (ss -ltnp 'sport = :$TEST_PORT'); the live site was not touched" >&2
+  rm -rf "$RELEASE"
+  exit 1
+fi
+# exec: $! is node itself, not a subshell around it (killing the subshell left node running)
+( cd "$RELEASE" && PORT="$TEST_PORT" HOSTNAME=127.0.0.1 NODE_ENV=production exec node server.js >"$RELEASE/.smoke.log" 2>&1 ) &
 SMOKE_PID=$!
+trap stop_smoke EXIT
 ok=""
 for _ in $(seq 1 30); do
+  kill -0 "$SMOKE_PID" 2>/dev/null || break   # it exited: whatever answers now is not this release
   code="$(curl -s -o /dev/null -m 5 -w '%{http_code}' "http://127.0.0.1:$TEST_PORT/" || true)"
   if [[ "$code" =~ ^[23] ]]; then ok=1; break; fi
   sleep 1
 done
-kill "$SMOKE_PID" 2>/dev/null || true
-wait "$SMOKE_PID" 2>/dev/null || true
+stop_smoke
+trap - EXIT
+for _ in $(seq 1 5); do port_open "$TEST_PORT" || break; sleep 1; done
+if port_open "$TEST_PORT"; then
+  echo "ERROR: port $TEST_PORT still answers after the test server was stopped — not trusting the check; the live site was not touched" >&2
+  echo "       find it: ss -ltnp 'sport = :$TEST_PORT'" >&2
+  rm -rf "$RELEASE"
+  exit 1
+fi
 if [[ -z "$ok" ]]; then
   echo "ERROR: the new release did not answer on port $TEST_PORT — the live site was not touched" >&2
   tail -30 "$RELEASE/.smoke.log" >&2 || true
