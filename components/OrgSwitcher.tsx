@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { useOrganization, useMyOrganizations, useSwitchOrganization } from '@/hooks';
 import { useAuthStore } from '@/stores/auth';
+import { listRouteAfterOrgSwitch } from '@/lib/org-switch';
 import { toast } from 'sonner';
 
 /**
@@ -14,6 +16,8 @@ import { toast } from 'sonner';
 export function OrgSwitcher() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const { data: currentOrg } = useOrganization();
   const storeOrg = useAuthStore((s) => s.organization);
@@ -39,6 +43,9 @@ export function OrgSwitcher() {
     try {
       await switchOrg.mutateAsync(id);
       setOpen(false);
+      // A detail page shows the previous org's resource; land on the new org's list instead.
+      const listRoute = pathname ? listRouteAfterOrgSwitch(pathname) : null;
+      if (listRoute) router.push(listRoute);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Failed to switch workspace');
     }

@@ -25,6 +25,7 @@ import {
 } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import { useWebSocket } from '@/providers/WebSocketProvider';
+import { resetQueriesForOrgSwitch } from '@/lib/org-switch';
 
 // Query Keys
 export const organizationKeys = {
@@ -75,7 +76,8 @@ export function useMyOrganizations() {
 
 /**
  * Switch the active workspace. switchOrganization() persists the new scoped tokens; here we
- * reflect the org in the auth store, reopen the WebSocket with the new token and refetch every query so all org-scoped data reloads.
+ * reflect the org in the auth store, reopen the WebSocket with the new token and reset every query so
+ * the previous org's data is dropped and the active queries reload for the new org.
  */
 export function useSwitchOrganization() {
   const queryClient = useQueryClient();
@@ -93,7 +95,8 @@ export function useSwitchOrganization() {
       setOrganization(organization);
       // The socket authenticated with the previous org's token; reopen it with the new one.
       ws?.reconnect();
-      queryClient.invalidateQueries();
+      // Reset, not invalidate: the previous org's data must not stay on screen (see helper).
+      resetQueriesForOrgSwitch(queryClient);
     },
   });
 }
