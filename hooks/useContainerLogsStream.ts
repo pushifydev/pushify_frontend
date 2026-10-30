@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { API_BASE_URL, getAccessToken } from '@/lib/api/client';
+import { containerLogsReconnectPlan } from '@/lib/log-stream-reconnect';
 
 interface ContainerLogMessage {
   type: 'connected' | 'log' | 'error' | 'end' | 'ping';
@@ -58,9 +59,16 @@ export function useContainerLogsStream(
   const endedGracefullyRef = useRef(false);
   const reconnectAttemptsRef = useRef(0);
   const streamStartedAtRef = useRef<string | null>(null);
+  const lastEventAtRef = useRef<string | null>(null);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(false);
   const maxReconnectAttempts = 3;
 
   const closeStream = useCallback(() => {
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current);
+      reconnectTimerRef.current = null;
+    }
     if (abortRef.current) {
       abortRef.current.abort();
       abortRef.current = null;
@@ -70,10 +78,18 @@ export function useContainerLogsStream(
 
   const connect = useCallback(
     (options?: { since?: string; append?: boolean }) => {
-      if (!projectId || !deploymentId || !enabled) return;
+      if (!projectId || !deploymentId || !enabled || !mountedRef.current) return;
 
       closeStream();
       endedGracefullyRef.current = false;
+
+      // A fresh connect (open, resume, new deployment) gets the full tail again — start
+      // from an empty screen so those lines are not shown twice.
+      if (!options?.append) {
+        setLogs([]);
+        streamStartedAtRef.current = null;
+        lastEventAtRef.current = null;
+      }
 
       const token = getAccessToken();
       if (!token) {
@@ -137,6 +153,7 @@ export function useContainerLogsStream(
                   break;
                 case 'log':
                   if (data.message !== undefined) {
+                    lastEventAtRef.current = new Date().toISOString();
                     setLogs((prev) => [...prev, data.message!]);
                   }
                   break;
@@ -159,7 +176,8 @@ export function useContainerLogsStream(
             throw new Error('Connection closed unexpectedly');
           }
         } catch (err) {
-          if (err instanceof Error && err.name === 'AbortError') {
+          // Closed on purpose (unmount, pause, or a newer connect took over) — no retry.
+          if ((err instanceof Error && err.name === 'AbortError') || controller.signal.aborted) {
             return;
           }
 
@@ -171,11 +189,14 @@ export function useContainerLogsStream(
 
             if (reconnectAttemptsRef.current < maxReconnectAttempts) {
               reconnectAttemptsRef.current += 1;
-              const since =
-                streamStartedAtRef.current ??
-                new Date(Date.now() - 5000).toISOString();
-              setTimeout(() => {
-                connect({ since, append: true });
+              reconnectTimerRef.current = setTimeout(() => {
+                reconnectTimerRef.current = null;
+                connect(
+                  containerLogsReconnectPlan({
+                    lastEventAt: lastEventAtRef.current,
+                    streamStartedAt: streamStartedAtRef.current,
+                  })
+                );
               }, 2000 * reconnectAttemptsRef.current);
             }
           }
@@ -189,15 +210,21 @@ export function useContainerLogsStream(
 
   const reconnect = useCallback(() => {
     reconnectAttemptsRef.current = 0;
-    streamStartedAtRef.current = null;
     endedGracefullyRef.current = false;
-    setLogs([]);
     setError(null);
-    connect();
+    connect(); // a fresh connect clears the logs and the stream timestamps
   }, [connect]);
 
   const clearLogs = useCallback(() => {
     setLogs([]);
+  }, []);
+
+  // Declared before the connect effect so it is set by the time that effect runs.
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
   useEffect(() => {
