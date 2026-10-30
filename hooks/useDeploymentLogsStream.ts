@@ -34,9 +34,15 @@ export function useDeploymentLogsStream(
   const abortRef = useRef<AbortController | null>(null);
   const reconnectAttempts = useRef<number>(0);
   const isCompleteRef = useRef(false);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(false);
   const maxReconnectAttempts = 3;
 
   const closeStream = useCallback(() => {
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current);
+      reconnectTimerRef.current = null;
+    }
     if (abortRef.current) {
       abortRef.current.abort();
       abortRef.current = null;
@@ -45,7 +51,7 @@ export function useDeploymentLogsStream(
   }, []);
 
   const connect = useCallback(() => {
-    if (!projectId || !deploymentId) return;
+    if (!projectId || !deploymentId || !mountedRef.current) return;
 
     closeStream();
 
@@ -99,6 +105,12 @@ export function useDeploymentLogsStream(
           throw new Error('No reader available');
         }
 
+        // The stream replays the whole log on every connection, so start from empty
+        // (as the manual reconnect does) or an automatic reconnect shows every line twice.
+        // Cleared only once the new stream is open, so the old lines stay visible while
+        // a retry is still waiting or failing.
+        setLogs('');
+
         const decoder = new TextDecoder();
         let buffer = '';
 
@@ -143,8 +155,8 @@ export function useDeploymentLogsStream(
           }
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {
-          return; // Normal abort, not an error
+        if ((err instanceof Error && err.name === 'AbortError') || controller.signal.aborted) {
+          return; // Normal abort (unmount or a newer connect took over), not an error
         }
 
         setError(err instanceof Error ? err.message : 'Connection failed');
@@ -152,7 +164,8 @@ export function useDeploymentLogsStream(
 
         if (!isCompleteRef.current && reconnectAttempts.current < maxReconnectAttempts) {
           reconnectAttempts.current++;
-          setTimeout(() => {
+          reconnectTimerRef.current = setTimeout(() => {
+            reconnectTimerRef.current = null;
             connect();
           }, 2000 * reconnectAttempts.current);
         }
@@ -170,6 +183,14 @@ export function useDeploymentLogsStream(
     setError(null);
     connect();
   }, [connect]);
+
+  // Declared before the connect effect so it is set by the time that effect runs.
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     isCompleteRef.current = false;
