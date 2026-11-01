@@ -11,8 +11,12 @@ import {
 import { DeploymentFailureSummary } from '@/components/DeploymentFailureSummary';
 import { DeploymentTimeline } from '@/components/DeploymentTimeline';
 import { findLastGoodDeployment } from '@/lib/deployment-utils';
+import { formatMessage } from '@/lib/i18n/format-message';
 import { useProject, useDeployments, useProjectHealthStatus, useTranslation } from '@/hooks';
+import { useConfirm } from '@/hooks/useConfirm';
 import { MetricsSection } from './MetricsSection';
+
+type DeploymentItem = NonNullable<ReturnType<typeof useDeployments>['data']>[number];
 
 export function OverviewTab({
   project,
@@ -22,6 +26,8 @@ export function OverviewTab({
   getStatusBadge,
   onRollback,
   onViewLogs,
+  canRollback = true,
+  rollbackPending = false,
   t,
 }: {
   project: NonNullable<ReturnType<typeof useProject>['data']>;
@@ -30,7 +36,11 @@ export function OverviewTab({
   formatTimeAgo: (date: string, t?: any) => string;
   getStatusBadge: (status: string) => string;
   onRollback: (deploymentId: string) => void;
-  onViewLogs?: (deployment: NonNullable<ReturnType<typeof useDeployments>['data']>[number]) => void;
+  onViewLogs?: (deployment: DeploymentItem) => void;
+  /** False for roles that may not deploy (e.g. viewer): the rollback button stays visible but disabled. */
+  canRollback?: boolean;
+  /** A rollback request is in flight; the button is disabled meanwhile. */
+  rollbackPending?: boolean;
   t:ReturnType<typeof useTranslation>['t'];
 }) {
   const queryClient = useQueryClient();
@@ -126,24 +136,13 @@ export function OverviewTab({
               </div>
             )}
             {latestDeployment.status === 'failed' && lastGood && (
-              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-[13px] text-[var(--text-secondary)]">
-                  {t('projectDetail', 'deploymentFailedBanner')}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => onRollback(lastGood.id)}
-                  className="btn btn-secondary btn-sm shrink-0"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  {t('projectDetail', 'rollbackToLastGood')}
-                  {lastGood.commitHash && (
-                    <span className="terminal-text text-[var(--text-muted)]">
-                      @{lastGood.commitHash.slice(0, 7)}
-                    </span>
-                  )}
-                </button>
-              </div>
+              <LastGoodRollback
+                lastGood={lastGood}
+                canRollback={canRollback}
+                pending={rollbackPending}
+                onRollback={onRollback}
+                t={t}
+              />
             )}
             <DeploymentTimeline deployment={latestDeployment} />
           </div>
@@ -179,6 +178,65 @@ export function OverviewTab({
       </div>
     </div>
     </>
+  );
+}
+
+/**
+ * The latest deploy failed and an earlier one ran: offer to restore it. Asks first, like the
+ * Deployments tab, because it changes what is live. Viewers see it disabled rather than not at all.
+ */
+export function LastGoodRollback({
+  lastGood,
+  canRollback,
+  pending,
+  onRollback,
+  t,
+}: {
+  lastGood: DeploymentItem;
+  canRollback: boolean;
+  pending: boolean;
+  onRollback: (deploymentId: string) => void;
+  t: ReturnType<typeof useTranslation>['t'];
+}) {
+  const confirm = useConfirm();
+  const disabled = !canRollback || pending;
+
+  const handleRollback = async () => {
+    if (disabled) return;
+    const ok = await confirm({
+      title: t('projectDetail', 'rollbackConfirmTitle'),
+      description: formatMessage(t('projectDetail', 'rollbackConfirmDesc'), {
+        commit: lastGood.commitHash?.slice(0, 7) ?? lastGood.id.slice(0, 8),
+        branch: lastGood.branch || '—',
+      }),
+      confirmText: t('projectDetail', 'rollback'),
+      variant: 'warning',
+    });
+    if (ok) onRollback(lastGood.id);
+  };
+
+  return (
+    <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-[13px] text-[var(--text-secondary)]">
+        {t('projectDetail', 'deploymentFailedBanner')}
+      </p>
+      <button
+        type="button"
+        onClick={handleRollback}
+        className="btn btn-secondary btn-sm shrink-0"
+        disabled={disabled}
+        aria-busy={pending || undefined}
+        title={canRollback ? undefined : t('team', 'viewerDesc')}
+      >
+        <RotateCcw className={`w-4 h-4${pending ? ' animate-spin' : ''}`} />
+        {t('projectDetail', 'rollbackToLastGood')}
+        {lastGood.commitHash && (
+          <span className="terminal-text text-[var(--text-muted)]">
+            @{lastGood.commitHash.slice(0, 7)}
+          </span>
+        )}
+      </button>
+    </div>
   );
 }
 
