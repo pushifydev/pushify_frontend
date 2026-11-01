@@ -418,6 +418,8 @@ export default function ProjectDetailPage() {
               branch: deployment.branch,
               commitHash: deployment.commitHash,
             })}
+            canRollback={canRollback}
+            rollbackPending={rollbackDeployment.isPending}
             t={t}
           />
         )}
