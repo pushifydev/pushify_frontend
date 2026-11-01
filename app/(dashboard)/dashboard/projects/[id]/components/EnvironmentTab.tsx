@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { Copy, FileText, Info, Key, Trash2, Pencil, Check } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { AlertTriangle, Copy, FileText, Info, Key, Trash2, Pencil, Check } from 'lucide-react';
 import { useEnvVars, useTranslation } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
 import type { Environment } from '@/lib/api';
+import { parseEnvContent, type EnvParseWarning } from '@/lib/env-parse';
 import { Select } from '@/components/ui/select';
 
 const ENVIRONMENTS: Environment[] = ['production', 'staging', 'development', 'preview'];
@@ -15,6 +16,7 @@ export function EnvironmentTab({
   onUpdate,
   onDelete,
   onBulkCreate,
+  isBulkCreating,
   onClone,
   marketplaceTemplateId,
   productionUrl,
@@ -24,7 +26,9 @@ export function EnvironmentTab({
   onCreate: (data: { key: string; value: string }) => void;
   onUpdate: (id: string, value: string) => void;
   onDelete: (id: string) => void;
-  onBulkCreate: (data: { key: string; value: string }[]) => void;
+  /** `onSuccess` runs only once the server has stored the variables. */
+  onBulkCreate: (data: { key: string; value: string }[], onSuccess: () => void) => void;
+  isBulkCreating: boolean;
   onClone: (input: { sourceEnvironment: Environment; targetEnvironment: Environment; overwrite?: boolean }) => void;
   marketplaceTemplateId?: string;
   productionUrl?: string | null;
@@ -40,7 +44,6 @@ export function EnvironmentTab({
   const [newKey, setNewKey] = useState('');
   const [newValue, setNewValue] = useState('');
   const [envContent, setEnvContent] = useState('');
-  const [parsedVars, setParsedVars] = useState<{ key: string; value: string }[]>([]);
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
@@ -60,45 +63,30 @@ export function EnvironmentTab({
     cancelEdit();
   };
 
-  const parseEnvContent = (content: string) => {
-    const lines = content.split('\n');
-    const vars: { key: string; value: string }[] = [];
+  // dotenv-compatible parsing (multi-line quoted values, export, comments) lives in lib/env-parse.
+  const parsedEnv = useMemo(() => parseEnvContent(envContent), [envContent]);
+  const parsedVars = parsedEnv.vars;
 
-    for (const line of lines) {
-      // Skip empty lines and comments
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) continue;
-
-      // Match KEY=VALUE pattern (supports quotes)
-      const match = trimmed.match(/^([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/i);
-      if (match) {
-        const key = match[1].toUpperCase();
-        let value = match[2];
-
-        // Remove surrounding quotes if present
-        if ((value.startsWith('"') && value.endsWith('"')) ||
-            (value.startsWith("'") && value.endsWith("'"))) {
-          value = value.slice(1, -1);
-        }
-
-        vars.push({ key, value });
-      }
-    }
-
-    return vars;
-  };
-
-  const handleEnvContentChange = (content: string) => {
-    setEnvContent(content);
-    setParsedVars(parseEnvContent(content));
+  const warningMessage = (warning: EnvParseWarning) => {
+    const messages = {
+      invalidLine: 'envParseInvalidLine',
+      invalidKey: 'envParseInvalidKey',
+      unterminatedQuote: 'envParseUnterminatedQuote',
+      trailingText: 'envParseTrailingText',
+      duplicateKey: 'envParseDuplicateKey',
+    } as const;
+    const line = t('projectDetail', 'envParseLine').replace('{line}', String(warning.line));
+    const message = t('projectDetail', messages[warning.reason]).replace('{key}', warning.key ?? '');
+    return `${line}: ${message}`;
   };
 
   const handleBulkAdd = () => {
-    if (parsedVars.length === 0) return;
-    onBulkCreate(parsedVars);
-    setEnvContent('');
-    setParsedVars([]);
-    setShowPasteForm(false);
+    if (parsedVars.length === 0 || isBulkCreating) return;
+    // Clear the paste only once the server has it; if the request fails it stays for a retry.
+    onBulkCreate(parsedVars, () => {
+      setEnvContent('');
+      setShowPasteForm(false);
+    });
   };
 
   const handleAdd = () => {
@@ -243,7 +231,7 @@ export function EnvironmentTab({
             </label>
             <textarea
               value={envContent}
-              onChange={(e) => handleEnvContentChange(e.target.value)}
+              onChange={(e) => setEnvContent(e.target.value)}
               placeholder={`# Paste your .env file content here\nAPI_KEY=your-api-key\nDATABASE_URL=postgres://...\nSECRET_KEY="value with spaces"`}
               rows={8}
               className="input terminal-text font-mono text-sm resize-none w-full"
@@ -257,27 +245,54 @@ export function EnvironmentTab({
                 {t('projectDetail', 'parsedVariables')} ({parsedVars.length})
               </p>
               <div className="space-y-1 max-h-32 overflow-y-auto">
-                {parsedVars.map((v, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[13px] min-w-0">
-                    <span className="terminal-text text-[var(--text-primary)]">{v.key}</span>
-                    <span className="text-[var(--text-muted)]">=</span>
-                    <span className="text-[var(--text-secondary)] truncate">{v.value.substring(0, 30)}{v.value.length > 30 ? '...' : ''}</span>
-                  </div>
-                ))}
+                {parsedVars.map((v, i) => {
+                  // Show the first line and a line count so a multi-line value (PEM) is visibly whole.
+                  const valueLines = v.value.split('\n');
+                  const firstLine = valueLines[0];
+                  return (
+                    <div key={i} className="flex items-center gap-2 text-[13px] min-w-0">
+                      <span className="terminal-text text-[var(--text-primary)]">{v.key}</span>
+                      <span className="text-[var(--text-muted)]">=</span>
+                      <span className="text-[var(--text-secondary)] truncate">{firstLine.substring(0, 30)}{firstLine.length > 30 || valueLines.length > 1 ? '...' : ''}</span>
+                      {valueLines.length > 1 && (
+                        <span className="text-[var(--text-muted)] shrink-0">
+                          ({t('projectDetail', 'parsedValueLines').replace('{count}', String(valueLines.length))})
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Lines that were not imported as written */}
+          {parsedEnv.warnings.length > 0 && (
+            <div className="dash-callout dash-callout-attention" role="status">
+              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0 text-[var(--status-warning)]" aria-hidden />
+              <div className="min-w-0 text-[13px]">
+                <p className="font-medium text-[var(--text-primary)] mb-1">
+                  {t('projectDetail', 'envParseWarnings')} ({parsedEnv.warnings.length})
+                </p>
+                <ul className="space-y-0.5 max-h-32 overflow-y-auto text-[var(--text-secondary)] break-words">
+                  {parsedEnv.warnings.map((warning, i) => (
+                    <li key={i}>{warningMessage(warning)}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           )}
 
           <div className="flex items-center justify-end gap-2">
             <button
-              onClick={() => { setShowPasteForm(false); setEnvContent(''); setParsedVars([]); }}
+              onClick={() => { setShowPasteForm(false); setEnvContent(''); }}
               className="btn btn-ghost"
             >
               {t('common', 'cancel')}
             </button>
             <button
               onClick={handleBulkAdd}
-              disabled={parsedVars.length === 0}
+              disabled={parsedVars.length === 0 || isBulkCreating}
               className="btn btn-primary disabled:opacity-50"
             >
               {t('projectDetail', 'addVariables')} ({parsedVars.length})

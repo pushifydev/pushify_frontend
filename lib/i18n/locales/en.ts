@@ -837,6 +837,14 @@ export interface TranslationKeys {
     cloneEnvRun: string;
     pasteEnvContent: string;
     parsedVariables: string;
+    parsedValueLines: string;
+    envParseWarnings: string;
+    envParseLine: string;
+    envParseInvalidLine: string;
+    envParseInvalidKey: string;
+    envParseUnterminatedQuote: string;
+    envParseTrailingText: string;
+    envParseDuplicateKey: string;
     addVariables: string;
     key: string;
     value: string;
@@ -4036,6 +4044,14 @@ export const en: TranslationKeys = {
     cloneEnvRun: 'Copy Variables',
     pasteEnvContent: 'Paste your .env file content',
     parsedVariables: 'Parsed variables',
+    parsedValueLines: '{count} lines',
+    envParseWarnings: 'Check these lines',
+    envParseLine: 'Line {line}',
+    envParseInvalidLine: 'not a KEY=VALUE line, skipped. Multi-line values must be in double quotes.',
+    envParseInvalidKey: '{key} is not a valid name (uppercase letters, digits and underscores, not starting with a digit), skipped.',
+    envParseUnterminatedQuote: 'the quote around {key} is never closed, skipped.',
+    envParseTrailingText: 'unexpected text after the closing quote of {key}, skipped.',
+    envParseDuplicateKey: '{key} is set again; this later value is used.',
     addVariables: 'Add Variables',
     key: 'Key',
     value: 'Value',
