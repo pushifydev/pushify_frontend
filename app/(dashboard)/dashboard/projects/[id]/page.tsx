@@ -486,7 +486,8 @@ export default function ProjectDetailPage() {
             onCreate={(data) => createEnvVar.mutate(data)}
             onUpdate={(id, value) => updateEnvVar.mutate({ envVarId: id, input: { value } })}
             onDelete={(id) => deleteEnvVar.mutate(id)}
-            onBulkCreate={(data) => bulkCreateEnvVars.mutate(data)}
+            onBulkCreate={(data, onSuccess) => bulkCreateEnvVars.mutate(data, { onSuccess })}
+            isBulkCreating={bulkCreateEnvVars.isPending}
             onClone={(input) => cloneEnvVars.mutate(input)}
             marketplaceTemplateId={
               typeof projectSettings.marketplaceTemplateId === 'string'

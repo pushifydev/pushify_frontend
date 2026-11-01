@@ -89,9 +89,11 @@ export const bulkCreateEnvVars = async (
   envVars: CreateEnvVarInput[]
 ): Promise<ApiResponse<EnvVar[]>> => {
   try {
+    // Same default as createEnvVar. The backend defaults isSecret to false, so without it a
+    // pasted .env was stored unmasked while a variable added on its own was masked.
     const response = await api.post<{ data: EnvVar[]; message: string }>(
       `/projects/${projectId}/env/bulk`,
-      { variables: envVars }
+      { variables: envVars.map((envVar) => ({ ...envVar, isSecret: envVar.isSecret ?? true })) }
     );
     return { data: response.data.data };
   } catch (error) {
