@@ -12,7 +12,9 @@ import {
   useDomainSettingsMutations,
   useTranslation,
 } from '@/hooks';
-import type { DnsRecordType } from '@/lib/api';
+import { useConfirm } from '@/hooks/useConfirm';
+import type { DnsRecordType, DomainDnsRecord } from '@/lib/api';
+import { formatMessage } from '@/lib/i18n/format-message';
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/EmptyState';
 import { MetaLabel, PageHeader, TabPanel, Tabs } from '@/components/dashboard/PageKit';
@@ -105,6 +107,7 @@ function DnsTab({ domainName }: { domainName: string }) {
   const { t } = useTranslation();
   const { data: records = [], isLoading } = useDomainDns(domainName);
   const { create, remove } = useDnsMutations(domainName);
+  const confirm = useConfirm();
 
   const [host, setHost] = useState('@');
   const [type, setType] = useState<DnsRecordType>('A');
@@ -123,6 +126,21 @@ function DnsTab({ domainName }: { domainName: string }) {
       priority: needsPriority ? parseInt(priority, 10) || 10 : undefined,
     });
     setAnswer('');
+  };
+
+  const deleteRecord = async (record: DomainDnsRecord) => {
+    const ok = await confirm({
+      variant: 'danger',
+      title: t('domainSales', 'dnsDeleteTitle'),
+      description: formatMessage(t('domainSales', 'dnsDeleteMessage'), {
+        type: record.type,
+        host: record.host || '@',
+        answer: record.answer,
+      }),
+      confirmText: t('common', 'delete'),
+      cancelText: t('common', 'cancel'),
+    });
+    if (ok) remove.mutate(record.id);
   };
 
   return (
@@ -185,7 +203,7 @@ function DnsTab({ domainName }: { domainName: string }) {
             </span>
             <button
               type="button"
-              onClick={() => remove.mutate(r.id)}
+              onClick={() => deleteRecord(r)}
               disabled={remove.isPending}
               className="dash-icon-action hover:text-[var(--status-error)]!"
               aria-label={`${t('common', 'delete')} ${r.type} ${r.host || '@'}`}
@@ -204,6 +222,7 @@ function ForwardingTab({ domainName }: { domainName: string }) {
   const { t } = useTranslation();
   const { data: forwardings = [], isLoading } = useDomainForwarding(domainName);
   const { add, remove } = useForwardingMutations(domainName);
+  const confirm = useConfirm();
   const [emailBox, setEmailBox] = useState('');
   const [emailTo, setEmailTo] = useState('');
 
@@ -212,6 +231,20 @@ function ForwardingTab({ domainName }: { domainName: string }) {
     await add.mutateAsync({ emailBox, emailTo });
     setEmailBox('');
     setEmailTo('');
+  };
+
+  const deleteForwarding = async (box: string, to: string) => {
+    const ok = await confirm({
+      variant: 'danger',
+      title: t('domainSales', 'fwdDeleteTitle'),
+      description: formatMessage(t('domainSales', 'fwdDeleteMessage'), {
+        from: `${box}@${domainName}`,
+        to,
+      }),
+      confirmText: t('common', 'delete'),
+      cancelText: t('common', 'cancel'),
+    });
+    if (ok) remove.mutate(box);
   };
 
   return (
@@ -260,7 +293,7 @@ function ForwardingTab({ domainName }: { domainName: string }) {
               <span className="text-[var(--text-secondary)] truncate flex-1 min-w-0">{f.emailTo}</span>
               <button
                 type="button"
-                onClick={() => remove.mutate(f.emailBox)}
+                onClick={() => deleteForwarding(f.emailBox, f.emailTo)}
                 disabled={remove.isPending}
                 className="dash-icon-action hover:text-[var(--status-error)]!"
                 aria-label={`${t('common', 'delete')} ${f.emailBox}@${domainName}`}

@@ -2105,6 +2105,9 @@ export const tr: TranslationKeys = {
     snapshotRestoreWarning:
       'Sunucu diski bu anlık görüntüden yeniden oluşturulur. Mevcut diskteki tüm veriler değişir. Çalışan konteynerler ve uygulamalar yeniden dağıtılana kadar kaybolabilir.',
     snapshotRestoreConfirm: 'Sunucuyu geri yükle',
+    snapshotDeleteTitle: 'Anlık görüntüyü sil',
+    snapshotDeleteMessage:
+      '"{name}" anlık görüntüsü sağlayıcıdan kalıcı olarak silinecek ve sunucu artık bu görüntüden geri yüklenemeyecek. Bu işlem geri alınamaz.',
     snapshotStatusAvailable: 'hazır',
     snapshotStatusCreating: 'Oluşturuluyor…',
     snapshotProgress: '{percent}% tamamlandı',
@@ -3230,6 +3233,9 @@ export const tr: TranslationKeys = {
     dnsTtl: 'TTL',
     dnsPriority: 'Öncelik',
     dnsEmpty: 'Henüz DNS kaydı yok. İlk kaydını yukarıdan ekle.',
+    dnsDeleteTitle: 'DNS kaydını sil',
+    dnsDeleteMessage:
+      '{host} için {answer} değerini gösteren {type} kaydı silinecek. Siten veya e-postan bu kayda bağlıysa çalışmayı durdurabilir.',
     lockTitle: 'Transfer kilidi',
     lockDesc: 'Alan adını yetkisiz transferlere karşı kilitli tutar. Sadece taşınırken kapat.',
     nsTitle: 'Nameserver\'lar',
@@ -3258,6 +3264,8 @@ export const tr: TranslationKeys = {
     fwdDestPh: 'hedef@ornek.com',
     fwdAdd: 'Yönlendirme ekle',
     fwdEmpty: 'Henüz yönlendirme adresi yok.',
+    fwdDeleteTitle: 'E-posta yönlendirmesini sil',
+    fwdDeleteMessage: '{from} adresine gelen e-postalar artık {to} adresine yönlendirilmeyecek.',
     publicHeroTitle: 'Alan adını bul',
     publicHeroDesc: 'Tek yerden ara, kaydet ve uygulamana bağla — DNS ve SSL bizden.',
     publicTldsLabel: 'Tek aramada bakılanlar',

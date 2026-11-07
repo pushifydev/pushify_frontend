@@ -17,6 +17,7 @@ import { Modal, ModalActions } from '@/components/Modal';
 import { RowList } from '@/components/dashboard/PageKit';
 import { SettingsField, SettingsSwitch } from '@/components/dashboard/SettingsParts';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useConfirm } from '@/hooks/useConfirm';
 import { formatMessage } from '@/lib/i18n/format-message';
 import {
   useServerResizeOptions,
@@ -313,10 +314,22 @@ export function ServerSnapshotsPanel({ server }: { server: Server }) {
   const createSnapshot = useCreateServerSnapshot();
   const deleteSnapshot = useDeleteServerSnapshot();
   const restoreSnapshot = useRestoreServerSnapshot();
+  const confirm = useConfirm();
   const [restoreTarget, setRestoreTarget] = useState<{ id: string; name: string } | null>(null);
 
   const canRestore =
     server.status !== 'provisioning' && server.status !== 'deleting' && !restoreSnapshot.isPending;
+
+  const handleDeleteSnapshot = async (snapshotId: string, name: string) => {
+    const ok = await confirm({
+      variant: 'danger',
+      title: t('servers', 'snapshotDeleteTitle'),
+      description: formatMessage(t('servers', 'snapshotDeleteMessage'), { name }),
+      confirmText: t('common', 'delete'),
+      cancelText: t('common', 'cancel'),
+    });
+    if (ok) deleteSnapshot.mutate({ serverId: server.id, snapshotId });
+  };
 
   if (!enabled) return null;
 
@@ -423,7 +436,7 @@ export function ServerSnapshotsPanel({ server }: { server: Server }) {
                   )}
                   <button
                     type="button"
-                    onClick={() => deleteSnapshot.mutate({ serverId: server.id, snapshotId: snap.id })}
+                    onClick={() => handleDeleteSnapshot(snap.id, snap.name)}
                     disabled={deleteSnapshot.isPending}
                     className="dash-icon-action hover:!text-[var(--status-error)]"
                     title={t('common', 'delete')}
