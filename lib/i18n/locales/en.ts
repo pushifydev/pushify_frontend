@@ -852,6 +852,7 @@ export interface TranslationKeys {
     noEnvVariablesDesc: string;
     hide: string;
     reveal: string;
+    secretNewValuePlaceholder: string;
     deleteEnvVarConfirm: string;
     // Domains tab
     domainsDesc: string;
@@ -4059,6 +4060,7 @@ export const en: TranslationKeys = {
     noEnvVariablesDesc: 'Add environment variables to configure your application',
     hide: 'Hide',
     reveal: 'Reveal',
+    secretNewValuePlaceholder: 'Secret value is hidden. Enter a new value',
     deleteEnvVarConfirm: 'Delete this environment variable?',
     // Domains tab
     domainsDesc: 'Add custom domains to your project. DNS verification is required for new domains.',

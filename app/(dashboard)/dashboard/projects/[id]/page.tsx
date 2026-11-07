@@ -483,8 +483,12 @@ export default function ProjectDetailPage() {
         {activeTab === 'environment' && (
           <EnvironmentTab
             envVars={envVars}
-            onCreate={(data) => createEnvVar.mutate(data)}
-            onUpdate={(id, value) => updateEnvVar.mutate({ envVarId: id, input: { value } })}
+            onCreate={(data, onSuccess) => createEnvVar.mutate(data, { onSuccess })}
+            isCreating={createEnvVar.isPending}
+            onUpdate={(id, value, onSuccess) =>
+              updateEnvVar.mutate({ envVarId: id, input: { value } }, { onSuccess })
+            }
+            isUpdating={updateEnvVar.isPending}
             onDelete={(id) => deleteEnvVar.mutate(id)}
             onBulkCreate={(data, onSuccess) => bulkCreateEnvVars.mutate(data, { onSuccess })}
             isBulkCreating={bulkCreateEnvVars.isPending}
