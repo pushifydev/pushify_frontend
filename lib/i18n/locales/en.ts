@@ -2060,6 +2060,8 @@ export interface TranslationKeys {
     snapshotRestoreTitle: string;
     snapshotRestoreWarning: string;
     snapshotRestoreConfirm: string;
+    snapshotDeleteTitle: string;
+    snapshotDeleteMessage: string;
     snapshotStatusAvailable: string;
     snapshotStatusCreating: string;
     snapshotProgress: string;
@@ -2967,6 +2969,8 @@ export interface TranslationKeys {
     dnsTtl: string;
     dnsPriority: string;
     dnsEmpty: string;
+    dnsDeleteTitle: string;
+    dnsDeleteMessage: string;
     lockTitle: string;
     lockDesc: string;
     nsTitle: string;
@@ -2995,6 +2999,8 @@ export interface TranslationKeys {
     fwdDestPh: string;
     fwdAdd: string;
     fwdEmpty: string;
+    fwdDeleteTitle: string;
+    fwdDeleteMessage: string;
     publicHeroTitle: string;
     publicHeroDesc: string;
     publicTldsLabel: string;
@@ -5293,6 +5299,9 @@ export const en: TranslationKeys = {
     snapshotRestoreWarning:
       'This rebuilds the server disk from the snapshot. All data on the current disk will be replaced. Running containers and apps may be lost until you redeploy.',
     snapshotRestoreConfirm: 'Restore server',
+    snapshotDeleteTitle: 'Delete snapshot',
+    snapshotDeleteMessage:
+      'The snapshot "{name}" will be permanently deleted from the provider and the server can no longer be restored from it. This can\'t be undone.',
     snapshotStatusAvailable: 'available',
     snapshotStatusCreating: 'Creating…',
     snapshotProgress: '{percent}% complete',
@@ -6418,6 +6427,9 @@ export const en: TranslationKeys = {
     dnsTtl: 'TTL',
     dnsPriority: 'Priority',
     dnsEmpty: 'No DNS records yet. Add your first record above.',
+    dnsDeleteTitle: 'Delete DNS record',
+    dnsDeleteMessage:
+      'The {type} record for {host} pointing to {answer} will be deleted. Your site or email may stop working if they depend on it.',
     lockTitle: 'Transfer lock',
     lockDesc: 'Keeps the domain locked against unauthorized transfers. Turn off only when moving away.',
     nsTitle: 'Nameservers',
@@ -6446,6 +6458,8 @@ export const en: TranslationKeys = {
     fwdDestPh: 'destination@example.com',
     fwdAdd: 'Add forwarding',
     fwdEmpty: 'No forwarding addresses yet.',
+    fwdDeleteTitle: 'Delete email forwarding',
+    fwdDeleteMessage: 'Mail sent to {from} will no longer be forwarded to {to}.',
     publicHeroTitle: 'Find your domain',
     publicHeroDesc: 'Search, register, and connect a domain to your app in one place — DNS and SSL handled for you.',
     publicTldsLabel: 'Searched in one go',
