@@ -4,8 +4,9 @@ import { useMemo, useState } from 'react';
 import { AlertTriangle, Copy, FileText, Info, Key, Trash2, Pencil, Check } from 'lucide-react';
 import { useEnvVars, useTranslation } from '@/hooks';
 import { useConfirm } from '@/hooks/useConfirm';
-import type { Environment } from '@/lib/api';
+import type { Environment, EnvVar } from '@/lib/api';
 import { parseEnvContent, type EnvParseWarning } from '@/lib/env-parse';
+import { editSaveAction, initialEditValue } from '@/lib/env-var-edit';
 import { Select } from '@/components/ui/select';
 
 const ENVIRONMENTS: Environment[] = ['production', 'staging', 'development', 'preview'];
@@ -13,7 +14,9 @@ const ENVIRONMENTS: Environment[] = ['production', 'staging', 'development', 'pr
 export function EnvironmentTab({
   envVars,
   onCreate,
+  isCreating,
   onUpdate,
+  isUpdating,
   onDelete,
   onBulkCreate,
   isBulkCreating,
@@ -23,8 +26,12 @@ export function EnvironmentTab({
   t,
 }: {
   envVars: ReturnType<typeof useEnvVars>['data'];
-  onCreate: (data: { key: string; value: string }) => void;
-  onUpdate: (id: string, value: string) => void;
+  /** `onSuccess` runs only once the server has stored the variable. */
+  onCreate: (data: { key: string; value: string }, onSuccess: () => void) => void;
+  isCreating: boolean;
+  /** `onSuccess` runs only once the server has stored the new value. */
+  onUpdate: (id: string, value: string, onSuccess: () => void) => void;
+  isUpdating: boolean;
   onDelete: (id: string) => void;
   /** `onSuccess` runs only once the server has stored the variables. */
   onBulkCreate: (data: { key: string; value: string }[], onSuccess: () => void) => void;
@@ -48,19 +55,29 @@ export function EnvironmentTab({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  const startEdit = (id: string, currentValue: string) => {
-    setEditingId(id);
-    setEditValue(currentValue);
-    setRevealedIds((prev) => new Set(prev).add(id)); // reveal while editing
+  const startEdit = (envVar: EnvVar) => {
+    setEditingId(envVar.id);
+    // Secrets come back masked, so they open empty rather than with the mask (lib/env-var-edit).
+    setEditValue(initialEditValue(envVar));
+    if (!envVar.isSecret) setRevealedIds((prev) => new Set(prev).add(envVar.id)); // reveal while editing
   };
   const cancelEdit = () => {
     setEditingId(null);
     setEditValue('');
   };
-  const saveEdit = (id: string) => {
-    if (editValue.trim() === '') return; // value is required
-    onUpdate(id, editValue);
-    cancelEdit();
+  const saveEdit = (envVar: EnvVar) => {
+    if (isUpdating) return;
+    const action = editSaveAction(envVar, editValue);
+    if (action === 'empty') return; // value is required
+    if (action === 'unchanged') {
+      cancelEdit();
+      return;
+    }
+    // Close only once the server has the value; if the request fails the edit stays for a retry.
+    // Another row may have been opened meanwhile, so only close the one that was saved.
+    onUpdate(envVar.id, editValue, () => {
+      setEditingId((current) => (current === envVar.id ? null : current));
+    });
   };
 
   // dotenv-compatible parsing (multi-line quoted values, export, comments) lives in lib/env-parse.
@@ -90,11 +107,13 @@ export function EnvironmentTab({
   };
 
   const handleAdd = () => {
-    if (!newKey || !newValue) return;
-    onCreate({ key: newKey, value: newValue });
-    setNewKey('');
-    setNewValue('');
-    setShowAddForm(false);
+    if (!newKey || !newValue || isCreating) return;
+    // Clear the form only once the server has it; if the request fails it stays for a retry.
+    onCreate({ key: newKey, value: newValue }, () => {
+      setNewKey('');
+      setNewValue('');
+      setShowAddForm(false);
+    });
   };
 
   const toggleReveal = (id: string) => {
@@ -328,7 +347,13 @@ export function EnvironmentTab({
           </div>
           <div className="flex items-center justify-end gap-2">
             <button onClick={() => setShowAddForm(false)} className="btn btn-ghost">{t('common', 'cancel')}</button>
-            <button onClick={handleAdd} className="btn btn-primary">{t('projectDetail', 'addVariable')}</button>
+            <button
+              onClick={handleAdd}
+              disabled={isCreating}
+              className="btn btn-primary disabled:opacity-50"
+            >
+              {t('projectDetail', 'addVariable')}
+            </button>
           </div>
         </div>
       )}
@@ -359,9 +384,10 @@ export function EnvironmentTab({
                     onChange={(e) => setEditValue(e.target.value)}
                     onKeyDown={(e) => {
                       // Cmd/Ctrl+Enter saves (plain Enter inserts a newline for multi-line values)
-                      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveEdit(envVar.id);
+                      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveEdit(envVar);
                       if (e.key === 'Escape') cancelEdit();
                     }}
+                    placeholder={envVar.isSecret ? t('projectDetail', 'secretNewValuePlaceholder') : undefined}
                     rows={1}
                     className="input terminal-text flex-1 min-w-0 text-xs resize-y min-h-[32px] py-1"
                   />
@@ -375,8 +401,8 @@ export function EnvironmentTab({
                 {editingId === envVar.id ? (
                   <>
                     <button
-                      onClick={() => saveEdit(envVar.id)}
-                      disabled={editValue.trim() === ''}
+                      onClick={() => saveEdit(envVar)}
+                      disabled={editValue.trim() === '' || isUpdating}
                       className="btn btn-primary btn-sm"
                     >
                       <Check className="w-4 h-4" />
@@ -388,11 +414,14 @@ export function EnvironmentTab({
                   </>
                 ) : (
                   <>
-                    <button onClick={() => toggleReveal(envVar.id)} className="btn btn-ghost btn-sm">
-                      {revealedIds.has(envVar.id) ? t('projectDetail', 'hide') : t('projectDetail', 'reveal')}
-                    </button>
+                    {/* The API only returns a secret masked, so there is nothing to reveal. */}
+                    {!envVar.isSecret && (
+                      <button onClick={() => toggleReveal(envVar.id)} className="btn btn-ghost btn-sm">
+                        {revealedIds.has(envVar.id) ? t('projectDetail', 'hide') : t('projectDetail', 'reveal')}
+                      </button>
+                    )}
                     <button
-                      onClick={() => startEdit(envVar.id, envVar.value)}
+                      onClick={() => startEdit(envVar)}
                       title={t('common', 'edit')}
                       aria-label={`${t('common', 'edit')} ${envVar.key}`}
                       className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-overlay-md)] transition-colors"

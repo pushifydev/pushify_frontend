@@ -870,6 +870,7 @@ export const tr: TranslationKeys = {
     noEnvVariablesDesc: 'Uygulamanızı yapılandırmak için ortam değişkenleri ekleyin',
     hide: 'Gizle',
     reveal: 'Göster',
+    secretNewValuePlaceholder: 'Gizli değer gösterilmez. Yeni değeri girin',
     deleteEnvVarConfirm: 'Bu ortam değişkenini silmek istiyor musunuz?',
     // Domains tab
     domainsDesc: 'Projenize özel domainler ekleyin. Yeni domainler için DNS doğrulaması gereklidir.',
