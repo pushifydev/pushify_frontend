@@ -122,6 +122,13 @@ const refreshAccessToken = async (): Promise<boolean> => {
       // request can retry the refresh (mirrors isSessionRejected in stores/auth.ts).
       const status = axios.isAxiosError(error) ? error.response?.status : undefined;
       if (status === 400 || status === 401 || status === 403) {
+        // Refresh tokens rotate. If the stored token changed while our request was in
+        // flight, another tab refreshed with the same token first: ours was rejected as
+        // stale, but the stored pair is newer. Keep it and let the caller retry with it.
+        const currentRefreshToken = getRefreshToken();
+        if (currentRefreshToken && currentRefreshToken !== refreshToken) {
+          return true;
+        }
         clearTokens();
         notifyAuthFailure();
       }

@@ -125,6 +125,35 @@ describe('api client 401 handling', () => {
     expect(failures).toBe(1);
   });
 
+  it('keeps a newer token pair written by another tab when its own refresh is rejected', async () => {
+    setTokens('old-access', 'refresh-1');
+    const { apiCalls, refreshCalls } = mockAdapters(
+      (config) =>
+        config.headers.Authorization === 'Bearer other-tab-access'
+          ? { status: 200, data: { ok: true } }
+          : { status: 401 },
+      () => {
+        // Another tab rotated refresh-1 first; the backend now rejects it as stale.
+        storage.set('accessToken', 'other-tab-access');
+        storage.set('refreshToken', 'refresh-2');
+        return { status: 401 };
+      }
+    );
+
+    await expect(api.get('/projects')).resolves.toMatchObject({
+      status: 200,
+      data: { ok: true },
+    });
+
+    expect(refreshCalls).toHaveLength(1);
+    expect(JSON.parse(refreshCalls[0].data)).toEqual({ refreshToken: 'refresh-1' });
+    expect(apiCalls).toHaveLength(2);
+    expect(apiCalls[1].headers.Authorization).toBe('Bearer other-tab-access');
+    expect(getAccessToken()).toBe('other-tab-access');
+    expect(getRefreshToken()).toBe('refresh-2');
+    expect(failures).toBe(0);
+  });
+
   it('keeps tokens and does not fire auth failure when refresh hits a network error', async () => {
     setTokens('old-access', 'refresh-1');
     const { apiCalls } = mockAdapters(
