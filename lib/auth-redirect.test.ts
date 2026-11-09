@@ -44,6 +44,10 @@ describe('sanitizeRedirectPath', () => {
     expect(sanitizeRedirectPath('  /dashboard  ')).toBe('/dashboard');
     expect(sanitizeRedirectPath('/')).toBe('/');
   });
+
+  it('keeps the invitation acceptance path with its token', () => {
+    expect(sanitizeRedirectPath('/accept-invitation?token=abc')).toBe('/accept-invitation?token=abc');
+  });
 });
 
 describe('buildAuthPath', () => {
@@ -55,5 +59,11 @@ describe('buildAuthPath', () => {
     expect(buildAuthPath('register', '/dashboard/x?y=1')).toBe(
       `/register?redirect=${encodeURIComponent('/dashboard/x?y=1')}`,
     );
+  });
+
+  it('round-trips an invitation link through ?redirect=', () => {
+    const path = buildAuthPath('login', `/accept-invitation?token=${encodeURIComponent('a+b/c=')}`);
+    const redirect = new URL(path, 'https://x.invalid').searchParams.get('redirect');
+    expect(sanitizeRedirectPath(redirect)).toBe('/accept-invitation?token=a%2Bb%2Fc%3D');
   });
 });

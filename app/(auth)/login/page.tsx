@@ -70,16 +70,9 @@ function LoginPageContent() {
   }, [searchParams]);
 
   const getPostLoginRedirect = () => {
-    const fromQuery = sanitizeRedirectPath(searchParams.get('redirect'));
-    if (fromQuery) return fromQuery;
+    // Always consume the stored copy (saved on mount) so it can't hijack a later sign-in in this tab.
     const stored = consumeAuthRedirect('');
-    if (stored) return stored;
-    const pendingToken = sessionStorage.getItem('pending_invitation_token');
-    if (pendingToken) {
-      sessionStorage.removeItem('pending_invitation_token');
-      return `/accept-invitation?token=${pendingToken}`;
-    }
-    return '/dashboard';
+    return sanitizeRedirectPath(searchParams.get('redirect')) || stored || '/dashboard';
   };
 
   // Asked as the address is typed, a moment after they stop. A domain with enforced SSO has no

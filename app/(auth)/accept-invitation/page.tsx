@@ -10,6 +10,7 @@ import { getInvitationInfo } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import type { InvitationInfo } from '@/lib/api';
 import { AuthMobileBrand } from '@/components/auth';
+import { buildAuthPath } from '@/lib/auth-redirect';
 
 const roleIcons: Record<string, typeof Shield> = {
   admin: Shield,
@@ -73,11 +74,11 @@ function AcceptInvitationContent() {
     }
   };
 
-  const handleLoginRedirect = (path: '/login' | '/register') => {
-    if (token) {
-      sessionStorage.setItem('pending_invitation_token', token);
-    }
-    router.push(path);
+  // Carry the invite as ?redirect= so every sign-in path (password, 2FA, GitHub, Google, SSO)
+  // lands back here instead of on /dashboard.
+  const handleLoginRedirect = (page: 'login' | 'register') => {
+    const redirect = token ? `/accept-invitation?token=${encodeURIComponent(token)}` : null;
+    router.push(buildAuthPath(page, redirect));
   };
 
   const RoleIcon = invitation ? (roleIcons[invitation.role] ?? User) : User;
@@ -153,14 +154,14 @@ function AcceptInvitationContent() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => handleLoginRedirect('/login')}
+                  onClick={() => handleLoginRedirect('login')}
                   className="lp-cta w-full h-12"
                 >
                   {t('team', 'loginToAccept')}
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleLoginRedirect('/register')}
+                  onClick={() => handleLoginRedirect('register')}
                   className="lp-cta-ghost w-full h-12 text-sm"
                 >
                   {t('team', 'registerToAccept')}
