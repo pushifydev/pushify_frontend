@@ -1061,6 +1061,7 @@ export interface TranslationKeys {
     autoDeployDesc: string;
     creating: string;
     createAndDeploy: string;
+    envVarsNotSaved: string;
     // GitHub connection
     connected: string;
     checkingGitHub: string;
@@ -4275,6 +4276,7 @@ export const en: TranslationKeys = {
     autoDeployDesc: 'Automatically deploy when you push to the selected branch',
     creating: 'Creating...',
     createAndDeploy: 'Create & Deploy',
+    envVarsNotSaved: 'Project created, but its environment variables were not saved. Add them here, then deploy.',
     // GitHub connection
     connected: 'Connected',
     checkingGitHub: 'Checking GitHub connection...',

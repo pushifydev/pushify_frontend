@@ -1079,6 +1079,7 @@ export const tr: TranslationKeys = {
     autoDeployDesc: 'Seçili dala push yaptığınızda otomatik olarak dağıt',
     creating: 'Oluşturuluyor...',
     createAndDeploy: 'Oluştur & Dağıt',
+    envVarsNotSaved: 'Proje oluşturuldu ama ortam değişkenleri kaydedilemedi. Onları buradan ekleyip dağıtın.',
     // GitHub connection
     connected: 'Bağlandı',
     checkingGitHub: 'GitHub bağlantısı kontrol ediliyor...',
