@@ -11,6 +11,7 @@ import { useAuthStore } from '@/stores/auth';
 import type { InvitationInfo } from '@/lib/api';
 import { AuthMobileBrand } from '@/components/auth';
 import { buildAuthPath } from '@/lib/auth-redirect';
+import { scrubUrlToken, URL_TOKEN_PARAM } from '@/lib/url-token';
 
 const roleIcons: Record<string, typeof Shield> = {
   admin: Shield,
@@ -23,7 +24,9 @@ function AcceptInvitationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuthStore();
-  const token = searchParams.get('token');
+  // Kept in state, then scrubbed from the address bar so the invite token never reaches
+  // analytics, history or a Referer. The sign-in redirect below still carries it.
+  const [token] = useState(() => searchParams.get(URL_TOKEN_PARAM));
 
   const [status, setStatus] = useState<'loading' | 'ready' | 'accepting' | 'success' | 'error'>('loading');
   const [invitation, setInvitation] = useState<InvitationInfo | null>(null);
@@ -34,6 +37,7 @@ function AcceptInvitationContent() {
   const switchOrganization = useSwitchOrganization();
 
   useEffect(() => {
+    scrubUrlToken();
     if (hasFetched.current) return;
     hasFetched.current = true;
 

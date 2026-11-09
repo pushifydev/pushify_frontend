@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, CheckCircle, ArrowLeft, XCircle } from 'lucide-react';
 import { useTranslation } from '@/hooks';
 import { authService } from '@/lib/api/services/auth.service';
+import { scrubUrlToken, URL_TOKEN_PARAM } from '@/lib/url-token';
 import {
   AuthSubmitButton,
   AuthErrorAlert,
@@ -17,7 +18,13 @@ import {
 function ResetPasswordForm() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  // Kept in state, then scrubbed from the address bar so the unused reset token never reaches
+  // analytics, history or a Referer.
+  const [token] = useState(() => searchParams.get(URL_TOKEN_PARAM));
+
+  useEffect(() => {
+    scrubUrlToken();
+  }, []);
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

@@ -8,10 +8,14 @@ import { useTranslation } from '@/hooks';
 import { verifyEmail, sendVerificationEmail } from '@/lib/api';
 import { AuthMobileBrand, AuthPageHeader } from '@/components/auth';
 import { FUNNEL_EVENTS, trackEvent } from '@/lib/analytics';
+import { scrubUrlToken, URL_TOKEN_PARAM } from '@/lib/url-token';
 
 function VerifyEmailContent() {
   const { t, locale } = useTranslation();
   const searchParams = useSearchParams();
+  // Kept in state, then scrubbed from the address bar so the token never reaches analytics,
+  // history or a Referer.
+  const [token] = useState(() => searchParams.get(URL_TOKEN_PARAM));
   const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'no-token'>('loading');
   const [message, setMessage] = useState('');
   const [resendLoading, setResendLoading] = useState(false);
@@ -19,10 +23,9 @@ function VerifyEmailContent() {
   const hasProcessed = useRef(false);
 
   useEffect(() => {
+    scrubUrlToken();
     if (hasProcessed.current) return;
     hasProcessed.current = true;
-
-    const token = searchParams.get('token');
 
     if (!token) {
       setStatus('no-token');
@@ -38,7 +41,7 @@ function VerifyEmailContent() {
         setMessage(result.data?.message || '');
       }
     });
-  }, [searchParams]);
+  }, [token]);
 
   const handleResend = async () => {
     setResendLoading(true);
