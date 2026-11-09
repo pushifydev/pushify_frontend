@@ -2,6 +2,7 @@
 
 import { useTranslation } from '@/hooks';
 import { FRAMEWORKS } from '@/lib/frameworks';
+import { wizardEnvVarsToCreate } from '@/lib/new-project-env';
 import { SettingsSection, SettingsField, SettingsSwitch } from '@/components/dashboard/SettingsParts';
 import type { EnvVariable } from './types';
 
@@ -35,6 +36,8 @@ export function ReviewStep({
   setAutoDeploy,
 }: ReviewStepProps) {
   const { t } = useTranslation();
+  // List what will be saved: blank rows are skipped on create, so they are not counted here.
+  const envVarsToSave = wizardEnvVarsToCreate(envVariables);
 
   return (
     <div className="dash-settings-stack">
@@ -85,19 +88,19 @@ export function ReviewStep({
         </div>
       </SettingsSection>
 
-      {envVariables.length > 0 && (
+      {envVarsToSave.length > 0 && (
         <SettingsSection
           id="np-review-env"
           title={
             <>
               {t('newProject', 'envVariables')}
-              <span className="ml-2 opacity-60 tabular-nums">{envVariables.length}</span>
+              <span className="ml-2 opacity-60 tabular-nums">{envVarsToSave.length}</span>
             </>
           }
           padded
         >
-          {envVariables.map((env) => (
-            <div key={env.id} className="dash-kv">
+          {envVarsToSave.map((env, index) => (
+            <div key={`${index}-${env.key}`} className="dash-kv">
               <span className="terminal-text text-xs">{env.key}</span>
               <span>{env.isSecret ? '••••••••' : env.value}</span>
             </div>

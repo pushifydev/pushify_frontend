@@ -15,10 +15,11 @@ import {
   useServers,
 } from '@/hooks';
 import { toast } from 'sonner';
-import { createDeployment, getApiErrorMessage } from '@/lib/api';
+import { bulkCreateEnvVars, createDeployment, getApiErrorMessage } from '@/lib/api';
 import { buildGitWebhookUrl } from '@/lib/build-webhook-url';
 import type { CreateProjectInput } from '@/lib/api';
 import { FRAMEWORKS } from '@/lib/frameworks';
+import { wizardEnvVarsToCreate } from '@/lib/new-project-env';
 import { FUNNEL_EVENTS, trackEvent } from '@/lib/analytics';
 import {
   ProgressSteps,
@@ -252,6 +253,21 @@ export default function NewProjectPage() {
 
       if (!result?.id) {
         return;
+      }
+
+      // Save the Environment step's variables before the first deploy, which needs them. If they
+      // are not saved, do not deploy: send the user to the Environment tab to add them.
+      const envVars = wizardEnvVarsToCreate(envVariables);
+      if (envVars.length > 0) {
+        const saved = await bulkCreateEnvVars(result.id, envVars);
+        if (saved.error) {
+          console.error('Failed to save environment variables:', saved.error);
+          toast.error(t('newProject', 'envVarsNotSaved'), {
+            description: saved.error.message,
+          });
+          router.push(`/dashboard/projects/${result.id}?tab=environment`);
+          return;
+        }
       }
 
       const secret = result.webhookSecret?.trim();
