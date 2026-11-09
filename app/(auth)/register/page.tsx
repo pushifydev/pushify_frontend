@@ -55,15 +55,9 @@ function RegisterPageContent() {
 
     const success = await register(email, password, name);
     if (success) {
-      const pendingToken = sessionStorage.getItem('pending_invitation_token');
-      if (pendingToken) {
-        sessionStorage.removeItem('pending_invitation_token');
-        router.push(`/accept-invitation?token=${pendingToken}`);
-      } else {
-        // Honor ?redirect= (saved to sessionStorage on mount) — e.g. domain
-        // purchase flows land back where the user started, not on /dashboard.
-        router.push(consumeAuthRedirect('/dashboard'));
-      }
+      // Honor ?redirect= (saved to sessionStorage on mount) — e.g. invitation links and
+      // domain purchase flows land back where the user started, not on /dashboard.
+      router.push(consumeAuthRedirect('/dashboard'));
     }
   };
 
