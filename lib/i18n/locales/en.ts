@@ -777,6 +777,12 @@ export interface TranslationKeys {
     failureProjectConfig: string;
     failureUnknown: string;
     failureRepositoryAccess: string;
+    diskFullOnServer: string;
+    diskFullOnUnknownServer: string;
+    diskFullUsage: string;
+    diskFullUsageFree: string;
+    diskFullOpenHealth: string;
+    diskFullResize: string;
     gitAccessTitle: string;
     gitAccessDesc: string;
     gitAccessOkApp: string;
@@ -3997,6 +4003,12 @@ export const en: TranslationKeys = {
     failureProjectConfig: 'Project configuration issue — check root directory, scripts, and framework settings.',
     failureUnknown: 'Deployment failed — review logs or contact support.',
     failureRepositoryAccess: 'Pushify could not read the repository. Fix it under Settings → GitHub access: connect a GitHub account that can see it, or install the GitHub App on the repository owner.',
+    diskFullOnServer: 'The disk on {server} is full, so the deploy could not finish. Redeploying fails the same way until there is free space.',
+    diskFullOnUnknownServer: 'The server disk is full, so the deploy could not finish. Redeploying fails the same way until there is free space.',
+    diskFullUsage: '{percent}% used',
+    diskFullUsageFree: '{percent}% used · {free} GB free',
+    diskFullOpenHealth: 'Open server health',
+    diskFullResize: 'Resize server',
     gitAccessTitle: 'GitHub access',
     gitAccessDesc: 'The GitHub connection Pushify uses to pull this repository.',
     gitAccessOkApp: 'Pushify reads this repository through the GitHub App on',

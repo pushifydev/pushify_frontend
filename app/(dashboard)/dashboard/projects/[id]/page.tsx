@@ -432,6 +432,7 @@ export default function ProjectDetailPage() {
           <DeploymentsTab
             deployments={deployments}
             gitRepoUrl={project?.gitRepoUrl}
+            serverId={project.serverId}
             formatTimeAgo={formatTimeAgo}
             getStatusBadge={getStatusBadge}
             onCancel={(id) => cancelDeployment.mutate(id)}
@@ -456,6 +457,7 @@ export default function ProjectDetailPage() {
             deploymentId={selectedDeploymentForLogs.id}
             branch={selectedDeploymentForLogs.branch}
             commitHash={selectedDeploymentForLogs.commitHash}
+            serverId={project.serverId}
             onClose={() => setSelectedDeploymentForLogs(null)}
           />
         )}

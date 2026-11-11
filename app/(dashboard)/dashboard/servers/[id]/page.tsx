@@ -83,6 +83,8 @@ export default function ServerDetailPage({ params }: PageProps) {
 
   const tabParam = searchParams.get('tab') as Tab | null;
   const activeTab: Tab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'overview';
+  // ?resize=1 (e.g. from a full-disk deploy failure) opens the resize flow on arrival
+  const resizeRequested = searchParams.get('resize') === '1';
   const setActiveTab = useCallback(
     (tab: Tab) => {
       const next = new URLSearchParams(searchParams.toString());
@@ -172,6 +174,16 @@ export default function ServerDetailPage({ params }: PageProps) {
   const runMenu = (fn: () => void) => {
     setMenuOpen(false);
     fn();
+  };
+
+  const canResize = server.isManaged && server.provider === 'hetzner';
+  const closeResizeModal = () => {
+    setShowResizeModal(false);
+    if (!resizeRequested) return;
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete('resize');
+    const qs = next.toString();
+    router.replace(`/dashboard/servers/${id}${qs ? `?${qs}` : ''}`, { scroll: false });
   };
 
   return (
@@ -440,7 +452,11 @@ export default function ServerDetailPage({ params }: PageProps) {
         onSuccess={() => router.push('/dashboard/servers')}
       />
       <EditServerModal server={server} isOpen={showEditModal} onClose={() => setShowEditModal(false)} />
-      <ResizeServerModal server={server} isOpen={showResizeModal} onClose={() => setShowResizeModal(false)} />
+      <ResizeServerModal
+        server={server}
+        isOpen={showResizeModal || (resizeRequested && canResize)}
+        onClose={closeResizeModal}
+      />
     </div>
   );
 }
