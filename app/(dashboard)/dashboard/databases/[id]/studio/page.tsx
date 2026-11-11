@@ -56,6 +56,7 @@ import {
   TableSchemaModal,
   pickPrimaryKey,
   rowKey,
+  selectedVisibleRows,
 } from '@/components/databases/studio';
 
 const PAGE_SIZE = 50;
@@ -181,9 +182,21 @@ export default function DatabaseStudioPage() {
       setOrderDir('asc');
     }
     setPage(1);
+    setSelectedRows(new Set());
+  };
+
+  // A selection belongs to the page it was made on: changing page, sort or filters drops it.
+  const goToPage = (next: (page: number) => number) => {
+    setPage(next);
+    setSelectedRows(new Set());
   };
 
   const totalPages = rows ? Math.max(1, Math.ceil(rows.total / rows.pageSize)) : 1;
+
+  // Only selected rows the grid is showing count, for both the delete button and the request.
+  const visibleSelected = rows
+    ? selectedVisibleRows(rows.rows, rows.primaryKey, selectedRows)
+    : [];
 
   const notSupportedNotice = database && !isSupported;
   const notRunningNotice = database && isSupported && !isRunning;
@@ -367,7 +380,7 @@ export default function DatabaseStudioPage() {
                       {t('databases', 'studioRefresh')}
                     </button>
 
-                    {canWrite && selectedRows.size > 0 && (
+                    {canWrite && visibleSelected.length > 0 && (
                       <button
                         type="button"
                         onClick={() => setConfirmDelete(true)}
@@ -375,7 +388,7 @@ export default function DatabaseStudioPage() {
                         style={{ color: 'var(--status-error)' }}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                        {t('databases', 'studioDeleteSelected')} ({selectedRows.size})
+                        {t('databases', 'studioDeleteSelected')} ({visibleSelected.length})
                       </button>
                     )}
 
@@ -414,6 +427,7 @@ export default function DatabaseStudioPage() {
                       onChange={(next) => {
                         setFilters(next);
                         setPage(1);
+                        setSelectedRows(new Set());
                       }}
                       t={t}
                     />
@@ -465,7 +479,8 @@ export default function DatabaseStudioPage() {
                     }
                     onToggleAll={() =>
                       setSelectedRows((prev) =>
-                        prev.size === rows.rows.length
+                        selectedVisibleRows(rows.rows, rows.primaryKey, prev).length ===
+                        rows.rows.length
                           ? new Set()
                           : new Set(rows.rows.map((row) => rowKey(row, rows.primaryKey)))
                       )
@@ -491,7 +506,7 @@ export default function DatabaseStudioPage() {
                     <div className="flex items-center gap-1.5">
                       <button
                         type="button"
-                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        onClick={() => goToPage((p) => Math.max(1, p - 1))}
                         disabled={rows.page <= 1}
                         className="btn btn-secondary btn-sm w-7.5 px-0!"
                         aria-label={t('databases', 'studioPrevPage')}
@@ -501,7 +516,7 @@ export default function DatabaseStudioPage() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setPage((p) => p + 1)}
+                        onClick={() => goToPage((p) => p + 1)}
                         disabled={rows.page >= totalPages && rows.rows.length < rows.pageSize}
                         className="btn btn-secondary btn-sm w-7.5 px-0!"
                         aria-label={t('databases', 'studioNextPage')}
@@ -736,9 +751,15 @@ export default function DatabaseStudioPage() {
         loading={deleteRows.isPending}
         onConfirm={async () => {
           if (!rows) return;
-          const pks = rows.rows
-            .filter((row) => selectedRows.has(rowKey(row, rows.primaryKey)))
-            .map((row) => pickPrimaryKey(row, rows.primaryKey));
+          const pks = selectedVisibleRows(rows.rows, rows.primaryKey, selectedRows).map((row) =>
+            pickPrimaryKey(row, rows.primaryKey)
+          );
+          // Nothing selected on this page any more (e.g. the rows vanished on refetch): no request.
+          if (pks.length === 0) {
+            setSelectedRows(new Set());
+            setConfirmDelete(false);
+            return;
+          }
 
           try {
             await deleteRows.mutateAsync({ schema: rows.schema, table: rows.name, pks });

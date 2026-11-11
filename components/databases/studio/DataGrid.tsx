@@ -2,7 +2,14 @@
 
 import { ArrowDown, ArrowUp, KeyRound, Pencil } from 'lucide-react';
 import type { StudioRows } from '@/lib/api';
-import { displayValue, iconButtonClass, monoStyle, rowKey, type T } from './_shared';
+import {
+  displayValue,
+  iconButtonClass,
+  monoStyle,
+  rowKey,
+  selectedVisibleRows,
+  type T,
+} from './_shared';
 import { useTranslation } from '@/hooks';
 
 interface DataGridProps {
@@ -38,7 +45,9 @@ export function DataGrid({
 }: DataGridProps) {
   const { locale } = useTranslation();
   const editable = data.editable && canWrite;
-  const allSelected = data.rows.length > 0 && selected.size === data.rows.length;
+  const allSelected =
+    data.rows.length > 0 &&
+    selectedVisibleRows(data.rows, data.primaryKey, selected).length === data.rows.length;
 
   if (data.rows.length === 0) {
     return (
