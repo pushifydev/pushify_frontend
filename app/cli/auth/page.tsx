@@ -2,8 +2,9 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Terminal, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Terminal, CheckCircle, XCircle, Loader2, AlertTriangle } from 'lucide-react';
 import { api } from '@/lib/api/client';
+import { cliAuthCodeMatches } from '@/lib/cli-auth-code';
 import { useAuthStore } from '@/stores/auth';
 
 function CliAuthContent() {
@@ -15,6 +16,10 @@ function CliAuthContent() {
   const [status, setStatus] = useState<'confirm' | 'loading' | 'success' | 'error'>('confirm');
   const [errorMessage, setErrorMessage] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
+  // The code from the URL is never shown: the user must type the one their own terminal printed,
+  // otherwise a link from someone else would approve *their* CLI session (device-code phishing).
+  const [typedCode, setTypedCode] = useState('');
+  const codeMatches = cliAuthCodeMatches(code, typedCode);
 
   useEffect(() => {
     checkAuth().finally(() => setAuthChecked(true));
@@ -22,13 +27,13 @@ function CliAuthContent() {
 
   useEffect(() => {
     if (authChecked && !authLoading && !user) {
-      const redirect = encodeURIComponent(`/cli/auth?code=${code}`);
+      const redirect = encodeURIComponent(`/cli/auth?code=${encodeURIComponent(code ?? '')}`);
       router.push(`/login?redirect=${redirect}`);
     }
   }, [authChecked, authLoading, user, router, code]);
 
   const handleApprove = async () => {
-    if (!code) return;
+    if (!code || !codeMatches) return;
     setStatus('loading');
 
     try {
@@ -36,7 +41,7 @@ function CliAuthContent() {
       setStatus('success');
     } catch (err: any) {
       setStatus('error');
-      setErrorMessage(err.response?.data?.message || 'Failed to approve. Code may be expired.');
+      setErrorMessage(err.response?.data?.error?.message || 'Failed to approve. Code may be expired.');
     }
   };
 
@@ -125,7 +130,7 @@ function CliAuthContent() {
               A CLI session is requesting access to your account.
             </p>
 
-            {/* Code display */}
+            {/* Code entry — the code from the link is deliberately not displayed */}
             <div
               className="rounded-xl p-4 my-6"
               style={{
@@ -133,15 +138,46 @@ function CliAuthContent() {
                 border: '1px solid var(--glass-border)',
               }}
             >
-              <p className="text-xs mb-2" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                Verification Code
-              </p>
-              <p
-                className="text-2xl font-bold tracking-[0.3em]"
-                style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)' }}
+              <label
+                htmlFor="cli-auth-code"
+                className="block text-xs mb-2"
+                style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
               >
-                {code}
-              </p>
+                Enter the code shown in your terminal
+              </label>
+              <input
+                id="cli-auth-code"
+                type="text"
+                value={typedCode}
+                onChange={(e) => setTypedCode(e.target.value)}
+                placeholder="XXXX-XXXX"
+                className="input text-center text-xl tracking-widest font-mono"
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                autoFocus
+              />
+              {typedCode.trim() && !codeMatches && (
+                <p className="text-xs mt-2" style={{ color: 'var(--status-error)' }}>
+                  This code does not match the login request.
+                </p>
+              )}
+            </div>
+
+            {/* Phishing warning */}
+            <div
+              className="flex items-start gap-2 rounded-xl p-3 mb-4 text-left text-xs"
+              style={{
+                background: 'rgba(239,68,68,0.1)',
+                border: '1px solid rgba(239,68,68,0.3)',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--status-error)' }} />
+              <span>
+                If you did not start this login yourself by running <code>pushify login</code>, do not
+                approve it. Approving gives whoever started it full access to your account.
+              </span>
             </div>
 
             <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>
@@ -163,8 +199,8 @@ function CliAuthContent() {
               </button>
               <button
                 onClick={handleApprove}
-                disabled={status === 'loading'}
-                className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                disabled={status === 'loading' || !codeMatches}
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   background: 'var(--accent-cyan)',
                   color: '#020206',
