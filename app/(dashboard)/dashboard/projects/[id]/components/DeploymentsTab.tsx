@@ -88,6 +88,7 @@ function DeploymentDiffLine({
 export function DeploymentsTab({
   deployments,
   gitRepoUrl,
+  serverId,
   formatTimeAgo,
   getStatusBadge,
   onCancel,
@@ -101,6 +102,8 @@ export function DeploymentsTab({
 }: {
   deployments: ReturnType<typeof useDeployments>['data'];
   gitRepoUrl?: string | null;
+  /** Project's server; a full-disk failure links to its health and resize */
+  serverId?: string | null;
   formatTimeAgo: (date: string, t?: any) => string;
   getStatusBadge: (status: string) => string;
   onCancel: (id: string) => void;
@@ -276,6 +279,7 @@ export function DeploymentsTab({
               <DeploymentFailureSummary
                 logs={deployment.buildLogs}
                 errorMessage={deployment.errorMessage}
+                serverId={serverId}
               />
             </div>
           )}

@@ -11,6 +11,8 @@ interface DeploymentLogsModalProps {
   deploymentId: string;
   branch?: string | null;
   commitHash?: string | null;
+  /** Project's server; a full-disk failure links to its health and resize */
+  serverId?: string | null;
   onClose: () => void;
 }
 
@@ -19,6 +21,7 @@ export function DeploymentLogsModal({
   deploymentId,
   branch,
   commitHash,
+  serverId,
   onClose,
 }: DeploymentLogsModalProps) {
   const { t } = useTranslation();
@@ -252,7 +255,7 @@ export function DeploymentLogsModal({
           className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 bg-black font-mono text-xs sm:text-sm touch-pan-y"
         >
           {(errorMessage || status === 'failed') && (
-            <DeploymentFailureSummary logs={logs} errorMessage={errorMessage} />
+            <DeploymentFailureSummary logs={logs} errorMessage={errorMessage} serverId={serverId} />
           )}
           {logLines.length > 0 ? (
             <div className="text-[#e7e7e4] leading-relaxed">

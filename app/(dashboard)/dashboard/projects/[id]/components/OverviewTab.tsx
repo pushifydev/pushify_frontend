@@ -121,6 +121,7 @@ export function OverviewTab({
                 <DeploymentFailureSummary
                   logs={latestDeployment.buildLogs}
                   errorMessage={latestDeployment.errorMessage}
+                  serverId={project.serverId}
                 />
                 {onViewLogs && (
                   <button
