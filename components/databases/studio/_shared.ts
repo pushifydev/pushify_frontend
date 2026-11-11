@@ -35,6 +35,20 @@ export function rowKey(row: Record<string, unknown>, primaryKey: string[]): stri
   return primaryKey.map((column) => String(row[column])).join('\u241f');
 }
 
+/**
+ * The rows on the current page whose key is in `selected`. Keys left over from another page,
+ * sort or filter (or a row that vanished on refetch) are ignored, so counts and deletes only
+ * ever cover what the grid is showing.
+ */
+export function selectedVisibleRows(
+  rows: Record<string, unknown>[],
+  primaryKey: string[],
+  selected: Set<string>
+): Record<string, unknown>[] {
+  if (selected.size === 0) return [];
+  return rows.filter((row) => selected.has(rowKey(row, primaryKey)));
+}
+
 export function pickPrimaryKey(
   row: Record<string, unknown>,
   primaryKey: string[]
