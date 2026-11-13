@@ -13,6 +13,7 @@ import {
 } from '@/hooks';
 import type { ApiKeyWithSecret } from '@/lib/api';
 import { formatTimeAgo } from '@/lib/formatters';
+import { apiKeyProjectCount } from '@/lib/api-key-projects';
 import { CreateApiKeyModal } from './CreateApiKeyModal';
 import { ApiKeySecretModal } from './ApiKeySecretModal';
 import { RevokeApiKeyModal } from './RevokeApiKeyModal';
@@ -34,7 +35,12 @@ export function ApiKeysTab() {
   const [newKeyResult, setNewKeyResult] = useState<ApiKeyWithSecret | null>(null);
   const [keyToRevoke, setKeyToRevoke] = useState<string | null>(null);
 
-  const handleCreateKey = async (data: { name: string; scopes: string[]; expiresAt?: string }) => {
+  const handleCreateKey = async (data: {
+    name: string;
+    scopes: string[];
+    expiresAt?: string;
+    projectIds?: string[];
+  }) => {
     const result = await createApiKey.mutateAsync(data);
     setNewKeyResult(result);
     setShowCreateModal(false);
@@ -151,6 +157,7 @@ interface ApiKeyRowProps {
     lastUsedAt: string | null;
     expiresAt: string | null;
     isActive: boolean;
+    projectIds?: string[] | null;
   };
   isExpired: boolean;
   onRevoke: () => void;
@@ -159,6 +166,7 @@ interface ApiKeyRowProps {
 function ApiKeyRow({ apiKey, isExpired, onRevoke }: ApiKeyRowProps) {
   const { t } = useTranslation();
   const live = apiKey.isActive && !isExpired;
+  const projectCount = apiKeyProjectCount(apiKey);
 
   return (
     <div className="dash-row flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -174,6 +182,13 @@ function ApiKeyRow({ apiKey, isExpired, onRevoke }: ApiKeyRowProps) {
               <span className="badge badge-error">{t('apiKeys', 'expired')}</span>
             ) : (
               apiKey.isActive && <span className="badge badge-success">{t('security', 'active')}</span>
+            )}
+            {projectCount !== null && (
+              <span className="badge badge-neutral">
+                {projectCount === 1
+                  ? t('apiKeys', 'projectsBadgeOne')
+                  : t('apiKeys', 'projectsBadge').replace('{count}', String(projectCount))}
+              </span>
             )}
           </div>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 terminal-text text-xs text-[var(--text-muted)]">

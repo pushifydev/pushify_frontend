@@ -3,13 +3,25 @@
 import { useState } from 'react';
 import { Modal, ModalActions } from './Modal';
 import { Checkbox } from '@/components/Checkbox';
-import { useTranslation } from '@/hooks';
+import { useTranslation, useProjects } from '@/hooks';
 import { Select } from '@/components/ui/select';
+import { getApiErrorMessage } from '@/lib/api/get-error-message';
+import {
+  API_KEY_MAX_PROJECTS,
+  apiKeyProjectIdsToCreate,
+  isDeleteScope,
+  toggleApiKeyProject,
+} from '@/lib/api-key-projects';
 
 interface CreateApiKeyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (data: { name: string; scopes: string[]; expiresAt?: string }) => Promise<void>;
+  onCreate: (data: {
+    name: string;
+    scopes: string[];
+    expiresAt?: string;
+    projectIds?: string[];
+  }) => Promise<void>;
   availableScopes: Record<string, string>;
   isPending: boolean;
 }
@@ -25,11 +37,23 @@ export function CreateApiKeyModal({
   const [keyName, setKeyName] = useState('');
   const [selectedScopes, setSelectedScopes] = useState<string[]>(['*']);
   const [expiresIn, setExpiresIn] = useState<string>('never');
+  const [restrictProjects, setRestrictProjects] = useState(false);
+  const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
+  const [error, setError] = useState('');
+  // The projects list only holds projects the current user can access.
+  const { data: projects = [] } = useProjects();
+
+  const hasDeleteScopes = Object.keys(availableScopes).some(isDeleteScope);
+  const projectLimitReached = selectedProjectIds.length >= API_KEY_MAX_PROJECTS;
+  const missingProjects = restrictProjects && selectedProjectIds.length === 0;
 
   const handleClose = () => {
     setKeyName('');
     setSelectedScopes(['*']);
     setExpiresIn('never');
+    setRestrictProjects(false);
+    setSelectedProjectIds([]);
+    setError('');
     onClose();
   };
 
@@ -42,11 +66,19 @@ export function CreateApiKeyModal({
       expiresAt = date.toISOString();
     }
 
-    await onCreate({
-      name: keyName,
-      scopes: selectedScopes,
-      expiresAt,
-    });
+    setError('');
+    try {
+      await onCreate({
+        name: keyName,
+        scopes: selectedScopes,
+        expiresAt,
+        projectIds: apiKeyProjectIdsToCreate(restrictProjects, selectedProjectIds),
+      });
+    } catch (err) {
+      // Keep the form open so a 400/403 from the backend can be fixed in place.
+      setError(getApiErrorMessage(err));
+      return;
+    }
 
     handleClose();
   };
@@ -107,6 +139,9 @@ export function CreateApiKeyModal({
           {t('apiKeys', 'scopes')}
         </label>
         <p className="text-xs text-[var(--text-muted)] mb-3">{t('apiKeys', 'scopesDesc')}</p>
+        {hasDeleteScopes && (
+          <p className="text-xs text-[var(--text-muted)] mb-3">{t('apiKeys', 'deleteScopesHint')}</p>
+        )}
         <div className="space-y-1 max-h-48 overflow-y-auto rounded-lg border border-[var(--border-subtle)] p-2">
           <div className="p-2 rounded-lg hover:bg-[var(--bg-secondary)]">
             <Checkbox
@@ -129,13 +164,69 @@ export function CreateApiKeyModal({
         </div>
       </div>
 
+      {/* Project restriction */}
+      <div className="mt-4 mb-2">
+        <Checkbox
+          checked={restrictProjects}
+          onChange={setRestrictProjects}
+          label={t('apiKeys', 'restrictProjects')}
+          description={t('apiKeys', 'restrictProjectsDesc').replace('{max}', String(API_KEY_MAX_PROJECTS))}
+        />
+        {restrictProjects && (
+          <div className="mt-3">
+            <div className="space-y-1 max-h-48 overflow-y-auto rounded-lg border border-[var(--border-subtle)] p-2">
+              {projects.length === 0 ? (
+                <p className="p-2 text-sm text-[var(--text-muted)]">{t('apiKeys', 'noProjectsAvailable')}</p>
+              ) : (
+                projects.map((project) => {
+                  const checked = selectedProjectIds.includes(project.id);
+                  return (
+                    <div key={project.id} className="p-2 rounded-lg hover:bg-[var(--bg-secondary)]">
+                      <Checkbox
+                        checked={checked}
+                        onChange={() =>
+                          setSelectedProjectIds((prev) => toggleApiKeyProject(prev, project.id))
+                        }
+                        disabled={!checked && projectLimitReached}
+                        label={project.name}
+                      />
+                    </div>
+                  );
+                })
+              )}
+            </div>
+            <p className="text-xs text-[var(--text-muted)] mt-2">
+              {t('apiKeys', 'projectsSelected')
+                .replace('{count}', String(selectedProjectIds.length))
+                .replace('{max}', String(API_KEY_MAX_PROJECTS))}
+            </p>
+            {projectLimitReached && (
+              <p className="text-xs mt-1" style={{ color: 'var(--status-warning)' }}>
+                {t('apiKeys', 'projectsLimitReached').replace('{max}', String(API_KEY_MAX_PROJECTS))}
+              </p>
+            )}
+            {missingProjects && projects.length > 0 && (
+              <p className="text-xs mt-1" style={{ color: 'var(--status-warning)' }}>
+                {t('apiKeys', 'noProjectsSelected')}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {error && (
+        <p role="alert" className="text-sm mt-3" style={{ color: 'var(--status-error)' }}>
+          {error}
+        </p>
+      )}
+
       <ModalActions>
         <button onClick={handleClose} className="btn btn-secondary">
           {t('common', 'cancel')}
         </button>
         <button
           onClick={handleSubmit}
-          disabled={!keyName.trim() || isPending}
+          disabled={!keyName.trim() || missingProjects || isPending}
           className="btn btn-primary"
         >
           {isPending ? t('apiKeys', 'creating') : t('common', 'create')}
