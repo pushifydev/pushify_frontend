@@ -49,4 +49,6 @@ Create keys in **Settings → API keys** for scripts and CI. A key acts with the
 
 `projects:read`, `projects:write`, `projects:delete`, `deployments:read`, `deployments:write`, `deployments:cancel`, `envvars:read`, `envvars:write`, `domains:read`, `domains:write`, `servers:read`, `servers:write`, `databases:read`, `databases:write`, `logs:read`, `metrics:read`.
 
+`projects:delete` is separate from `projects:write`: a key with write access can create and update projects but cannot delete them. A key can also be limited to up to 50 of the projects you can access.
+
 Keys are managed from the dashboard only: a key cannot create keys, and cannot manage people, single sign-on or registry credentials. Requests with a key are limited per minute by plan: 60 on Free, 120 on Hobby, 300 on Pro, 600 on Business. The [API reference](/docs/api) has the endpoints.

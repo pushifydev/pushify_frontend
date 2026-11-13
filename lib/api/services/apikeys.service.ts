@@ -13,6 +13,8 @@ export interface ApiKey {
   lastUsedAt: string | null;
   createdAt: string;
   expiresAt: string | null;
+  /** Projects the key is limited to; null or empty when it works on every project. */
+  projectIds?: string[] | null;
   user?: {
     id: string;
     name: string | null;
@@ -28,6 +30,8 @@ export interface CreateApiKeyInput {
   name: string;
   scopes?: string[];
   expiresAt?: string;
+  /** Limit the key to these projects (at most 50); omit for every project. */
+  projectIds?: string[];
 }
 
 export interface UpdateApiKeyInput {

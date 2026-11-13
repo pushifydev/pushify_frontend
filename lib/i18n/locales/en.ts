@@ -1481,9 +1481,19 @@ export interface TranslationKeys {
     noKeysDesc: string;
     creating: string;
     revoking: string;
+    restrictProjects: string;
+    restrictProjectsDesc: string;
+    projectsSelected: string;
+    projectsLimitReached: string;
+    noProjectsSelected: string;
+    noProjectsAvailable: string;
+    projectsBadge: string;
+    projectsBadgeOne: string;
+    deleteScopesHint: string;
     // Scope labels
     scopeProjectsRead: string;
     scopeProjectsWrite: string;
+    scopeProjectsDelete: string;
     scopeDeploymentsRead: string;
     scopeDeploymentsWrite: string;
     scopeEnvvarsRead: string;
@@ -4728,9 +4738,19 @@ export const en: TranslationKeys = {
     noKeysDesc: 'Create an API key to get started with programmatic access.',
     creating: 'Creating...',
     revoking: 'Revoking...',
+    restrictProjects: 'Limit to specific projects',
+    restrictProjectsDesc: 'Optional. The key only works on the projects you pick, up to {max}. Leave this off to let it reach every project you can access.',
+    projectsSelected: '{count} of {max} projects selected',
+    projectsLimitReached: 'You can pick at most {max} projects.',
+    noProjectsSelected: 'Pick at least one project, or turn off the limit.',
+    noProjectsAvailable: 'You have no projects yet.',
+    projectsBadge: '{count} projects',
+    projectsBadgeOne: '1 project',
+    deleteScopesHint: 'Delete permissions are separate from write: a key with projects:write can create and update projects but cannot delete them unless you also grant projects:delete.',
     // Scope labels
     scopeProjectsRead: 'Read projects',
     scopeProjectsWrite: 'Create/update projects',
+    scopeProjectsDelete: 'Delete projects',
     scopeDeploymentsRead: 'Read deployments',
     scopeDeploymentsWrite: 'Trigger deployments',
     scopeEnvvarsRead: 'Read environment variables',
