@@ -728,6 +728,7 @@ export interface TranslationKeys {
     networkUnavailable: string;
     rateLimited: string;
     payloadTooLarge: string;
+    orgTwoFactorRequired: string;
   };
   toasts: ToastsKeys;
   projectDetail: {
@@ -1547,6 +1548,11 @@ export interface TranslationKeys {
     enabledSuccess: string;
     disabledSuccess: string;
     regeneratedSuccess: string;
+    orgRequiredTitle: string;
+    orgRequiredDesc: string;
+    orgRequiredDoneTitle: string;
+    orgRequiredDoneDesc: string;
+    orgRequiredDoneCta: string;
   };
   profile: {
     setPassword: string;
@@ -1676,6 +1682,21 @@ export interface TranslationKeys {
     orgSlugHint: string;
     saving: string;
     saved: string;
+    // Organization security (require 2FA)
+    securityTitle: string;
+    securityDesc: string;
+    requireTwoFactor: string;
+    requireTwoFactorHint: string;
+    requireTwoFactorReadOnly: string;
+    requireTwoFactorOn: string;
+    requireTwoFactorOff: string;
+    twoFactorConfirmTitle: string;
+    twoFactorConfirmDesc: string;
+    twoFactorConfirmCta: string;
+    twoFactorOwnFirstTitle: string;
+    twoFactorOwnFirstDesc: string;
+    twoFactorOwnFirstCta: string;
+    twoFactorPolicyFailed: string;
     // Invitations
     pendingInvitations: string;
     inviteByEmail: string;
@@ -3948,6 +3969,8 @@ export const en: TranslationKeys = {
     networkUnavailable: 'Unable to reach the server. Check your connection and API URL.',
     rateLimited: 'Too many requests. Please wait a moment and try again.',
     payloadTooLarge: 'Request payload is too large.',
+    orgTwoFactorRequired:
+      'Your organization requires two-factor authentication. Turn it on in Settings → Security to continue.',
   },
   toasts: toastsEn,
   projectDetail: {
@@ -4773,6 +4796,12 @@ export const en: TranslationKeys = {
     enabledSuccess: 'Two-factor authentication has been enabled successfully.',
     disabledSuccess: 'Two-factor authentication has been disabled.',
     regeneratedSuccess: 'New backup codes have been generated.',
+    orgRequiredTitle: 'Your organization requires two-factor authentication',
+    orgRequiredDesc:
+      "An owner or admin turned on 2FA for all members. Until you set it up below, this organization's projects, servers and settings stay locked for you.",
+    orgRequiredDoneTitle: 'Two-factor authentication is on',
+    orgRequiredDoneDesc: 'You meet your organization’s 2FA requirement and have full access again.',
+    orgRequiredDoneCta: 'Back to dashboard',
   },
   profile: {
     setPassword: 'Set password',
@@ -4904,6 +4933,23 @@ export const en: TranslationKeys = {
     orgSlugHint: 'Used in URLs. Lowercase letters, numbers, and hyphens only.',
     saving: 'Saving...',
     saved: 'Organization settings saved!',
+    securityTitle: 'Security',
+    securityDesc: 'Sign-in rules that apply to everyone in this organization.',
+    requireTwoFactor: 'Require 2FA for all members',
+    requireTwoFactorHint:
+      'Members without two-factor authentication are sent to set it up and cannot use this organization until they do.',
+    requireTwoFactorReadOnly: 'Only owners and admins can change this.',
+    requireTwoFactorOn: 'Required',
+    requireTwoFactorOff: 'Not required',
+    twoFactorConfirmTitle: 'Require 2FA for all members?',
+    twoFactorConfirmDesc:
+      "Members who haven't set up two-factor authentication will lose access to this organization's projects, servers and settings right away. They will be sent to set up 2FA and get access back as soon as they do.",
+    twoFactorConfirmCta: 'Require 2FA',
+    twoFactorOwnFirstTitle: 'Turn on your own 2FA first',
+    twoFactorOwnFirstDesc:
+      "Your account doesn't have two-factor authentication yet, so requiring it would lock you out too. Set it up in Settings → Security, then come back and turn this on.",
+    twoFactorOwnFirstCta: 'Set up 2FA',
+    twoFactorPolicyFailed: 'Could not update the 2FA requirement.',
     // Invitations
     pendingInvitations: 'Pending Invitations',
     inviteByEmail: 'Invite by email',

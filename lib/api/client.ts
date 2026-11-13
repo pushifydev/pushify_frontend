@@ -60,6 +60,37 @@ const notifyAuthFailure = (): void => {
   });
 };
 
+// ============ Organization 2FA Policy Listeners ============
+
+/** Error code the backend returns when the organization requires 2FA and the user has none. */
+export const ORG_2FA_REQUIRED = 'ORG_2FA_REQUIRED';
+
+type OrgTwoFactorRequiredListener = () => void;
+
+const orgTwoFactorRequiredListeners = new Set<OrgTwoFactorRequiredListener>();
+
+/**
+ * Register a callback fired whenever any API request is refused with ORG_2FA_REQUIRED
+ * (the active organization requires 2FA and the user has not set it up). The request
+ * still rejects for its caller. Returns an unsubscribe function.
+ */
+export const onOrgTwoFactorRequired = (listener: OrgTwoFactorRequiredListener): (() => void) => {
+  orgTwoFactorRequiredListeners.add(listener);
+  return () => {
+    orgTwoFactorRequiredListeners.delete(listener);
+  };
+};
+
+const notifyOrgTwoFactorRequired = (): void => {
+  orgTwoFactorRequiredListeners.forEach((listener) => {
+    try {
+      listener();
+    } catch {
+      // A misbehaving listener must not break the request pipeline
+    }
+  });
+};
+
 // ============ Axios Instance ============
 
 export const api = axios.create({
@@ -157,6 +188,10 @@ api.interceptors.response.use(
         }
         return api(originalRequest);
       }
+    }
+
+    if (error.response?.data?.error?.code === ORG_2FA_REQUIRED) {
+      notifyOrgTwoFactorRequired();
     }
 
     return Promise.reject(error);

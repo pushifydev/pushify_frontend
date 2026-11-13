@@ -16,6 +16,7 @@ import {
   RemoveMemberModal,
   ChangeRoleDropdown,
   OrganizationSettingsSection,
+  OrganizationSecuritySection,
   ProjectAccessModal,
 } from './components';
 import { formatShortDate } from '@/lib/formatters';
@@ -270,6 +271,9 @@ export default function TeamPage() {
 
       {/* Organization Settings */}
       {isAdminOrOwner && <OrganizationSettingsSection id="team-organization" />}
+
+      {/* Organization security: owner/admin can change it, everyone else sees it read-only */}
+      <OrganizationSecuritySection id="team-security" />
 
       {/* Modals */}
       <InviteMemberModal isOpen={inviteModalOpen} onClose={() => setInviteModalOpen(false)} />
