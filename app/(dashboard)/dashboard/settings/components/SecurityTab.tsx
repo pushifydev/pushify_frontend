@@ -23,7 +23,8 @@ interface TwoFactorSetupData {
   backupCodes: string[];
 }
 
-export function SecurityTab() {
+/** orgTwoFactorRequired: the user was sent here because their organization requires 2FA. */
+export function SecurityTab({ orgTwoFactorRequired = false }: { orgTwoFactorRequired?: boolean } = {}) {
   const { t } = useTranslation();
   const { user } = useAuthStore();
   // Default true so older backends (no hasPassword field) keep the password flow
@@ -99,6 +100,28 @@ export function SecurityTab() {
 
   return (
     <>
+      {orgTwoFactorRequired && !isLoading2FA && (
+        <div className="dash-callout flex-col items-start gap-3 sm:flex-row sm:items-center" role="alert">
+          <span
+            className={`dash-status-dot mt-2 sm:mt-0 shrink-0 ${enabled2FA ? 'is-success' : 'is-warning'}`}
+            aria-hidden
+          />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-[var(--text-primary)]">
+              {enabled2FA ? t('security', 'orgRequiredDoneTitle') : t('security', 'orgRequiredTitle')}
+            </p>
+            <p className="text-[13px] mt-0.5 text-[var(--text-secondary)]">
+              {enabled2FA ? t('security', 'orgRequiredDoneDesc') : t('security', 'orgRequiredDesc')}
+            </p>
+          </div>
+          {enabled2FA && (
+            <Link href="/dashboard" className="btn btn-secondary btn-sm shrink-0">
+              {t('security', 'orgRequiredDoneCta')}
+            </Link>
+          )}
+        </div>
+      )}
+
       <SettingsSection
         id="security-2fa"
         title={t('security', 'twoFactor')}

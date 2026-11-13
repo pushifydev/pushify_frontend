@@ -4,6 +4,7 @@ import { useEffect, useState, type MouseEvent } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useTranslation } from '@/hooks';
 import { PageHeader } from '@/components/dashboard/PageKit';
+import { ORG_2FA_REASON } from '@/lib/org-2fa-redirect';
 import { ProfileTab, AppearanceTab, SessionsTab, NotificationsTab, SecurityTab, ApiKeysTab, RegistriesTab, SsoTab, DeletionTab } from './components';
 
 type SettingsTab = 'profile' | 'appearance' | 'sessions' | 'notifications' | 'security' | 'api-keys' | 'registries' | 'sso' | 'deletion';
@@ -42,8 +43,15 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTab = (searchParams.get('tab') as SettingsTab) || 'profile';
-  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
+  const urlTab = (searchParams.get('tab') as SettingsTab) || 'profile';
+  const [activeTab, setActiveTab] = useState<SettingsTab>(urlTab);
+  // Follow URL changes made while this page is open (e.g. the org 2FA redirect to ?tab=security)
+  const [syncedUrlTab, setSyncedUrlTab] = useState<SettingsTab>(urlTab);
+  if (urlTab !== syncedUrlTab) {
+    setSyncedUrlTab(urlTab);
+    setActiveTab(urlTab);
+  }
+  const orgTwoFactorRequired = searchParams.get('reason') === ORG_2FA_REASON;
 
   const handleTabChange = (tab: SettingsTab) => {
     setActiveTab(tab);
@@ -117,7 +125,7 @@ export default function SettingsPage() {
           {activeTab === 'appearance' && <AppearanceTab />}
           {activeTab === 'sessions' && <SessionsTab />}
           {activeTab === 'notifications' && <NotificationsTab />}
-          {activeTab === 'security' && <SecurityTab />}
+          {activeTab === 'security' && <SecurityTab orgTwoFactorRequired={orgTwoFactorRequired} />}
           {activeTab === 'api-keys' && <ApiKeysTab />}
           {activeTab === 'deletion' && <DeletionTab />}
           {activeTab === 'registries' && <RegistriesTab />}

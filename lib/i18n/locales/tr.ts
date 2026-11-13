@@ -745,6 +745,8 @@ export const tr: TranslationKeys = {
     networkUnavailable: 'Sunucuya ulaşılamıyor. Bağlantınızı ve API adresini kontrol edin.',
     rateLimited: 'Çok fazla istek. Lütfen kısa bir süre bekleyip tekrar deneyin.',
     payloadTooLarge: 'İstek gövdesi çok büyük.',
+    orgTwoFactorRequired:
+      'Organizasyonunuz iki adımlı doğrulama zorunlu tutuyor. Devam etmek için Ayarlar → Güvenlik bölümünden açın.',
   },
   toasts: toastsTr,
   projectDetail: {
@@ -1571,6 +1573,12 @@ export const tr: TranslationKeys = {
     enabledSuccess: 'İki faktörlü kimlik doğrulama başarıyla etkinleştirildi.',
     disabledSuccess: 'İki faktörlü kimlik doğrulama devre dışı bırakıldı.',
     regeneratedSuccess: 'Yeni yedek kodlar oluşturuldu.',
+    orgRequiredTitle: 'Organizasyonunuz iki adımlı doğrulama zorunlu tutuyor',
+    orgRequiredDesc:
+      'Bir sahip ya da yönetici tüm üyeler için 2FA’yı zorunlu kıldı. Aşağıdan kurana kadar bu organizasyonun projeleri, sunucuları ve ayarları size kapalı kalır.',
+    orgRequiredDoneTitle: 'İki adımlı doğrulama açık',
+    orgRequiredDoneDesc: 'Organizasyonunuzun 2FA şartını karşılıyorsunuz, tüm erişiminiz geri geldi.',
+    orgRequiredDoneCta: 'Panele dön',
   },
   profile: {
     setPassword: 'Şifre belirle',
@@ -1702,6 +1710,23 @@ export const tr: TranslationKeys = {
     orgSlugHint: 'URL\'lerde kullanılır. Sadece küçük harf, rakam ve tire.',
     saving: 'Kaydediliyor...',
     saved: 'Organizasyon ayarları kaydedildi!',
+    securityTitle: 'Güvenlik',
+    securityDesc: 'Bu organizasyondaki herkes için geçerli giriş kuralları.',
+    requireTwoFactor: 'Tüm üyeler için 2FA zorunlu',
+    requireTwoFactorHint:
+      'İki adımlı doğrulaması olmayan üyeler kurulum sayfasına yönlendirilir ve kurana kadar bu organizasyonu kullanamaz.',
+    requireTwoFactorReadOnly: 'Bunu yalnızca sahipler ve yöneticiler değiştirebilir.',
+    requireTwoFactorOn: 'Zorunlu',
+    requireTwoFactorOff: 'Zorunlu değil',
+    twoFactorConfirmTitle: 'Tüm üyeler için 2FA zorunlu olsun mu?',
+    twoFactorConfirmDesc:
+      'İki adımlı doğrulamayı kurmamış üyeler bu organizasyonun projelerine, sunucularına ve ayarlarına erişimini hemen kaybeder. 2FA kurulumuna yönlendirilirler ve kurdukları anda erişimleri geri gelir.',
+    twoFactorConfirmCta: '2FA’yı zorunlu kıl',
+    twoFactorOwnFirstTitle: 'Önce kendi 2FA’nızı açın',
+    twoFactorOwnFirstDesc:
+      'Hesabınızda henüz iki adımlı doğrulama yok; zorunlu kılarsanız siz de dışarıda kalırsınız. Ayarlar → Güvenlik bölümünden kurun, sonra dönüp bunu açın.',
+    twoFactorOwnFirstCta: '2FA kur',
+    twoFactorPolicyFailed: '2FA zorunluluğu güncellenemedi.',
     // Invitations
     pendingInvitations: 'Bekleyen Davetler',
     inviteByEmail: 'E-posta ile davet et',

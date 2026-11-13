@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { RefreshCw, WifiOff } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { useSidebarStore } from '@/stores/sidebar';
-import { getAccessToken } from '@/lib/api';
+import { getAccessToken, onOrgTwoFactorRequired } from '@/lib/api';
 import { buildAuthPath } from '@/lib/auth-redirect';
+import { orgTwoFactorRedirectTarget } from '@/lib/org-2fa-redirect';
 import { dashboardGate } from '@/lib/auth-gate';
 import { useTranslation } from '@/hooks';
 import { Sidebar } from '@/components/sidebar';
@@ -42,6 +43,17 @@ export function DashboardShell({
       router.push(buildAuthPath('login', attempted === '/dashboard' ? null : attempted));
     }
   }, [gate, router]);
+
+  // The organization requires 2FA and this user has none: any refused request sends them to
+  // the 2FA setup, which explains why. Not again once there (see orgTwoFactorRedirectTarget).
+  useEffect(
+    () =>
+      onOrgTwoFactorRequired(() => {
+        const target = orgTwoFactorRedirectTarget(window.location.pathname, window.location.search);
+        if (target) router.replace(target);
+      }),
+    [router]
+  );
 
   if (gate === 'loading') {
     return (

@@ -1,5 +1,15 @@
 // Axios Instance & Token Management
-export { api, getAccessToken, getRefreshToken, setTokens, clearTokens, onAuthFailure, API_BASE_URL } from './client';
+export {
+  api,
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+  clearTokens,
+  onAuthFailure,
+  onOrgTwoFactorRequired,
+  ORG_2FA_REQUIRED,
+  API_BASE_URL,
+} from './client';
 export { DOCS_API_BASE_URL, PRODUCTION_API_BASE_URL } from './public-url';
 
 export { getApiErrorMessage } from './get-error-message';
@@ -271,6 +281,7 @@ export {
   getMyOrganizations,
   switchOrganization,
   updateOrganization,
+  updateTwoFactorPolicy,
   getMembers,
   addMember,
   updateMemberRole,
@@ -289,6 +300,7 @@ export {
   type StudioAccess,
   type MemberRole,
   type UpdateOrganizationInput,
+  type TwoFactorPolicy,
   type AddMemberInput,
   type UpdateMemberRoleInput,
   type UpdateMemberProjectAccessInput,

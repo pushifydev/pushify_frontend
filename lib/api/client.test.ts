@@ -12,7 +12,8 @@ vi.stubGlobal('localStorage', {
   removeItem: (k: string) => void storage.delete(k),
 });
 
-const { api, onAuthFailure, setTokens, getAccessToken, getRefreshToken } = await import('./client');
+const { api, onAuthFailure, onOrgTwoFactorRequired, setTokens, getAccessToken, getRefreshToken } =
+  await import('./client');
 
 type Handler = (config: InternalAxiosRequestConfig) => { status: number; data?: unknown };
 
@@ -242,5 +243,84 @@ describe('api client 401 handling', () => {
     await expect(api.get('/projects')).rejects.toBeTruthy();
 
     expect(failures).toBe(0);
+  });
+});
+
+describe('api client ORG_2FA_REQUIRED handling', () => {
+  const originalAxiosAdapter = axios.defaults.adapter;
+  const originalApiAdapter = api.defaults.adapter;
+  let notified: number;
+  let unsubscribe: () => void;
+
+  const orgTwoFactorBody = {
+    error: { code: 'ORG_2FA_REQUIRED', message: 'This organization requires two-factor authentication' },
+  };
+
+  beforeEach(() => {
+    storage.clear();
+    notified = 0;
+    unsubscribe = onOrgTwoFactorRequired(() => {
+      notified += 1;
+    });
+  });
+
+  afterEach(() => {
+    unsubscribe();
+    axios.defaults.adapter = originalAxiosAdapter;
+    api.defaults.adapter = originalApiAdapter;
+  });
+
+  it('notifies listeners and still rejects for the caller', async () => {
+    setTokens('access', 'refresh');
+    const { apiCalls, refreshCalls } = mockAdapters(
+      () => ({ status: 403, data: orgTwoFactorBody }),
+      () => ({ status: 200 })
+    );
+
+    await expect(api.get('/projects')).rejects.toMatchObject({
+      response: { status: 403, data: orgTwoFactorBody },
+    });
+
+    expect(notified).toBe(1);
+    // No retry and no token refresh: the session itself is fine
+    expect(apiCalls).toHaveLength(1);
+    expect(refreshCalls).toHaveLength(0);
+    expect(getAccessToken()).toBe('access');
+  });
+
+  it('notifies once per refused request', async () => {
+    setTokens('access', 'refresh');
+    mockAdapters(
+      () => ({ status: 403, data: orgTwoFactorBody }),
+      () => ({ status: 200 })
+    );
+
+    await Promise.allSettled([api.get('/projects'), api.get('/servers')]);
+
+    expect(notified).toBe(2);
+  });
+
+  it('does not notify for other 403 errors', async () => {
+    setTokens('access', 'refresh');
+    mockAdapters(
+      () => ({ status: 403, data: { error: { code: 'FORBIDDEN', message: 'Forbidden' } } }),
+      () => ({ status: 200 })
+    );
+
+    await expect(api.get('/projects')).rejects.toMatchObject({ response: { status: 403 } });
+
+    expect(notified).toBe(0);
+  });
+
+  it('stops notifying after unsubscribe', async () => {
+    unsubscribe();
+    mockAdapters(
+      () => ({ status: 403, data: orgTwoFactorBody }),
+      () => ({ status: 200 })
+    );
+
+    await expect(api.get('/projects')).rejects.toBeTruthy();
+
+    expect(notified).toBe(0);
   });
 });

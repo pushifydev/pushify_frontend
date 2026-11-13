@@ -23,6 +23,8 @@ export interface OrganizationDetails {
   role: MemberRole;
   /** Set while the organization waits to be deleted: read-only until then, restorable by the owner */
   deletionScheduledFor?: string | null;
+  /** Members without 2FA are refused (ORG_2FA_REQUIRED) until they set it up. Missing = off. */
+  requireTwoFactor?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -56,6 +58,10 @@ export interface UpdateMemberProjectAccessInput {
 export interface UpdateOrganizationInput {
   name?: string;
   slug?: string;
+}
+
+export interface TwoFactorPolicy {
+  requireTwoFactor: boolean;
 }
 
 export interface AddMemberInput {
@@ -172,6 +178,21 @@ export const updateOrganization = async (
       input
     );
     return { data: response.data.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+/** Require (or stop requiring) 2FA for every member of the active organization (owner/admin only). */
+export const updateTwoFactorPolicy = async (
+  requireTwoFactor: boolean
+): Promise<ApiResponse<TwoFactorPolicy>> => {
+  try {
+    const response = await api.put<{ data?: Partial<TwoFactorPolicy>; message?: string }>(
+      '/organizations/two-factor-policy',
+      { requireTwoFactor }
+    );
+    return { data: { requireTwoFactor: response.data?.data?.requireTwoFactor ?? requireTwoFactor } };
   } catch (error) {
     return handleError(error);
   }
@@ -324,6 +345,7 @@ export const organizationsService = {
   getMyOrganizations,
   switchOrganization,
   updateOrganization,
+  updateTwoFactorPolicy,
   getMembers,
   addMember,
   updateMemberRole,

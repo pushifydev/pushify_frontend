@@ -7,6 +7,7 @@ const API_ERROR_MESSAGE_KEYS: Record<
   { category: 'errors' | 'billing' | 'servers'; key: string }
 > = {
   RATE_LIMITED: { category: 'errors', key: 'rateLimited' },
+  ORG_2FA_REQUIRED: { category: 'errors', key: 'orgTwoFactorRequired' },
   STRIPE_NOT_CONFIGURED: { category: 'billing', key: 'stripeNotConfigured' },
   PLAN_NO_MANAGED_SERVERS: { category: 'servers', key: 'managedNotAllowedOnPlan' },
   PLAN_SERVER_VCPU_EXCEEDED: { category: 'servers', key: 'sizeExceedsPlan' },

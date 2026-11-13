@@ -6,6 +6,7 @@ import {
   getMyOrganizations,
   switchOrganization,
   updateOrganization,
+  updateTwoFactorPolicy,
   getMembers,
   addMember,
   updateMemberRole,
@@ -22,6 +23,7 @@ import {
   type UpdateMemberProjectAccessInput,
   type SendInvitationInput,
   type StudioAccess,
+  type OrganizationDetails,
 } from '@/lib/api';
 import { useAuthStore } from '@/stores/auth';
 import { useWebSocket } from '@/providers/WebSocketProvider';
@@ -111,6 +113,25 @@ export function useUpdateOrganization() {
       return result.data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: organizationKeys.details() });
+    },
+  });
+}
+
+/** Require 2FA for every member of the active organization (owner/admin only). */
+export function useUpdateTwoFactorPolicy() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (requireTwoFactor: boolean) => {
+      const result = await updateTwoFactorPolicy(requireTwoFactor);
+      if (result.error) throw new Error(result.error.message);
+      return result.data!;
+    },
+    onSuccess: (policy) => {
+      queryClient.setQueryData<OrganizationDetails>(organizationKeys.details(), (prev) =>
+        prev ? { ...prev, requireTwoFactor: policy.requireTwoFactor } : prev
+      );
       queryClient.invalidateQueries({ queryKey: organizationKeys.details() });
     },
   });

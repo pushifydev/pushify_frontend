@@ -131,6 +131,7 @@ export {
   useMyOrganizations,
   useSwitchOrganization,
   useUpdateOrganization,
+  useUpdateTwoFactorPolicy,
   useAddMember,
   useUpdateMemberRole,
   useRemoveMember,
