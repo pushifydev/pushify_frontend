@@ -46,6 +46,7 @@ const CONTENT_DATES: Record<string, string> = {
   '/privacy': '2026-05-01',
   '/terms': '2026-10-10',
   '/acceptable-use': '2026-10-10',
+  '/closing': '2026-11-23',
   '/abuse': '2026-10-10',
   '/refund': '2026-09-29',
   '/security': '2026-09-29',

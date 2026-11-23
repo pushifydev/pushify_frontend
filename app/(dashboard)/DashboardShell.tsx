@@ -18,6 +18,7 @@ import { OrganizationDeletionBanner } from '@/components/OrganizationDeletionBan
 import { CommandPalette } from '@/components/CommandPalette';
 import { KeyboardShortcuts } from '@/components/KeyboardShortcuts';
 import { AiAssistantSheet } from '@/components/AiAssistantSheet';
+import { ClosingNotice } from '@/components/ClosingNotice';
 
 export function DashboardShell({
   children,
@@ -104,6 +105,7 @@ export function DashboardShell({
           {user && user.emailVerified === false && <EmailVerificationBanner />}
           {user && <OrganizationDeletionBanner />}
           <main className="dash-main min-w-0">
+            <ClosingNotice />
             {children}
           </main>
         </div>

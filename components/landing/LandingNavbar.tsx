@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from '@/hooks';
 import { useSignedIn } from '@/hooks/useSignedIn';
 import { LogoMark } from '@/components/logo';
+import { ClosingNotice } from '@/components/ClosingNotice';
 
 export function LandingNavbar() {
   const { t } = useTranslation();
@@ -68,6 +69,7 @@ export function LandingNavbar() {
 
   return (
     <>
+      <ClosingNotice pinned />
       <header
         className="fixed top-0 left-0 right-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-300 supports-[padding:max(0px)]:pt-[env(safe-area-inset-top)]"
         style={{

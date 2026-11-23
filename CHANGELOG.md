@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.2.0-beta.111] - 2026-11-23
+
+### Added
+- **Closing notice.** When the backend reports a closing date (`/public/service-status`, backend 0.9.3), every page shows one line with the date and a link: pinned to the bottom on the site, at the top of the dashboard. Nothing shows while no date is set.
+- **/closing** page: what happens on the closing date, refunds, how to move apps to your own server, what is deleted, and the shortened notice period.
+- The register page says sign-ups are closed instead of showing the form.
+
 ## [0.2.0-beta.110] - 2026-10-20
 
 ### Added

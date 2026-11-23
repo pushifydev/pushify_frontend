@@ -15,6 +15,7 @@ import {
   AuthDivider,
   AuthPageHeader,
 } from '@/components/auth';
+import { formatClosingDate, useServiceClosingDate } from '@/hooks/useServiceStatus';
 import { buildAuthPath, consumeAuthRedirect, saveAuthRedirect } from '@/lib/auth-redirect';
 
 function RegisterPageContent() {
@@ -26,7 +27,8 @@ function RegisterPageContent() {
   }, [router]);
   const searchParams = useSearchParams();
   const { register, isLoading, error, clearError } = useAuthStore();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const closingDate = useServiceClosingDate();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -60,6 +62,25 @@ function RegisterPageContent() {
       router.push(consumeAuthRedirect('/dashboard'));
     }
   };
+
+  if (closingDate) {
+    return (
+      <div className="w-full animate-slide-in space-y-4">
+        <AuthMobileBrand />
+        <h1 className="text-xl font-semibold text-[var(--text-primary)]">
+          {locale === 'tr' ? 'Yeni kayıtlar kapalı' : 'Sign-ups are closed'}
+        </h1>
+        <p className="text-sm text-[var(--text-secondary)]">
+          {locale === 'tr'
+            ? `Pushify'ın barındırma hizmeti ${formatClosingDate(closingDate, 'tr')} tarihinde kapanıyor.`
+            : `Pushify's hosted service is closing on ${formatClosingDate(closingDate, 'en')}.`}{' '}
+          <Link href="/closing" className="underline underline-offset-2">
+            {locale === 'tr' ? 'Ayrıntılar' : 'Details'}
+          </Link>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full animate-slide-in">
